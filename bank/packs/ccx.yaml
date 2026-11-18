@@ -340,7 +340,7 @@ questions:
   - id: B06
     exams:
       CCDV-F: D5
-    stem: What does raising the `effort` setting do?
+    stem: "A teammate proposes raising the `effort` setting on a production Messages API route. What does that change do?"
     options:
       - Switches the request to a larger model in the same family automatically.
       - Trades speed and token spend for more thorough reasoning and work.
@@ -348,8 +348,9 @@ questions:
       - Only changes the formatting and length of the final output.
     answer:
       - B
-    explanation: Effort là núm đánh đổi độ kỹ với tốc độ và token trong cùng một model. Effort thấp hợp với subagent, việc đơn giản.
+    explanation: "Theo tài liệu Effort, `effort` điều khiển lượng token Claude bỏ ra cho mỗi phản hồi, tức đánh đổi độ kỹ lấy tốc độ và chi phí ngay trong cùng một model. Nó ảnh hưởng mọi token output: text, tool call và thinking. Effort không tự đổi sang model lớn hơn và không tăng context window. Nó cũng không chỉ đổi định dạng hay độ dài; với một số model, tài liệu còn lưu ý effort không làm đổi độ dài câu trả lời một cách đáng tin cậy, muốn đổi độ dài thì dùng prompt. Effort thấp hợp với việc đơn giản cần nhanh và rẻ, như subagent."
     ref: lessons/02-model-toi-uu.html#thinking
+    reviewed: 2026-11-18
   - id: B07
     exams:
       CCDV-F: D5
@@ -376,6 +377,8 @@ questions:
       - A
     explanation: "Cache theo tiền tố: phần cố định để trước và đặt breakpoint sau nó; phần thay đổi để sau. Có giới hạn số breakpoint (4) và độ dài tối thiểu."
     ref: lessons/02-model-toi-uu.html#caching
+    status: retired
+    reviewed: 2026-11-18
   - id: B09
     exams:
       CCDV-F: D5
@@ -747,6 +750,8 @@ questions:
       - C
     explanation: Mô tả tool là cơ chế chính để model chọn tool. Bước đầu tiên là sửa mô tả; router, gộp tool hay few-shot là quá tay.
     ref: lessons/04-tool-mcp.html#mo-ta-tool
+    status: retired
+    reviewed: 2026-11-18
   - id: D02
     exams:
       CCAR-F: D2
@@ -871,8 +876,9 @@ questions:
       - Put the token inline in `.mcp.json` and add `.mcp.json` to `.gitignore`.
     answer:
       - B
-    explanation: Cấu hình dùng chung ở project scope `.mcp.json` (commit vào repo); secret lấy từ biến môi trường. Gitignore file thì mất tính chia sẻ.
+    explanation: "Server dùng chung cho cả đội đặt ở project scope: `.mcp.json` ở gốc repo, commit vào git để mọi người có cùng cấu hình. Claude Code mở rộng biến môi trường trong `.mcp.json` (cú pháp `${VAR}`), nên token nằm trên máy từng người và không bao giờ vào repo. `~/.claude.json` là scope cá nhân, không chia sẻ qua git, mỗi người phải tự cấu hình và dễ lệch nhau, lại còn ghi token dạng rõ. CLAUDE.md chỉ là chỉ dẫn cho Claude, không cấu hình được kết nối MCP. Ghi token thẳng vào `.mcp.json` rồi gitignore file thì mất luôn tính chia sẻ của cấu hình dự án."
     ref: lessons/04-tool-mcp.html#mcp-cau-hinh
+    reviewed: 2026-11-18
   - id: D11
     exams:
       CCAR-F: D2
@@ -1049,6 +1055,8 @@ questions:
       - A
     explanation: "Gọi tool song song: chạy đồng thời rồi trả mọi `tool_result` trong một user message. Tách ra nhiều message khiến model dần thôi gọi song song."
     ref: lessons/04-tool-mcp.html#client-server
+    status: retired
+    reviewed: 2026-11-18
   - id: E01
     exams:
       CCAR-F: D3
@@ -1092,6 +1100,8 @@ questions:
       - B
     explanation: "Rule theo glob chỉ nạp khi sửa file khớp, hợp với file rải khắp codebase. CLAUDE.md thư mục con gắn với một thư mục. Theo exam guide, skill không tự nạp theo đường dẫn. (Thực tế 11/2026: skill đã có trường `paths`, nhưng đề vẫn chọn `.claude/rules/`.)"
     ref: lessons/05-claude-code.html#rules
+    status: retired
+    reviewed: 2026-11-18
   - id: E04
     exams:
       CCAR-F: D3
@@ -1128,12 +1138,13 @@ questions:
     options:
       - Start editing files immediately and switch to plan mode only if problems appear later.
       - Use plan mode to investigate and design first, then execute the agreed plan.
-      - Ask Claude to migrate one random file and see what happens.
-      - Use `claude -p` in CI.
+      - Write exhaustive conversion rules up front, then use direct execution without first exploring the codebase.
+      - Ask Claude to convert one file directly, then copy that pattern to the remaining files without further planning.
     answer:
       - B
-    explanation: "Thay đổi lớn, nhiều file, nhiều hướng hợp lệ: plan mode ngay. “Làm rồi tính” là bẫy khi đề đã nói rõ việc phức tạp."
+    explanation: "Việc lớn (45+ file) với nhiều hướng kiến trúc hợp lệ: dùng plan mode ngay từ đầu để khám phá codebase, hiểu phụ thuộc và chốt cách làm, rồi mới thực thi theo kế hoạch. Bắt đầu sửa ngay rồi chỉ đổi sang plan mode khi gặp vấn đề là bẫy, vì độ phức tạp đã nêu sẵn trong đề và phát hiện phụ thuộc muộn thì phải làm lại tốn kém. Viết sẵn quy tắc chuyển đổi rồi thực thi trực tiếp là giả định đã biết hướng đúng khi chưa khảo sát code. Chuyển thử một file rồi chép mẫu sang các file còn lại bỏ qua việc chọn giữa các hướng kiến trúc và các phụ thuộc giữa file mà một file mẫu không bộc lộ."
     ref: lessons/05-claude-code.html#plan-mode
+    reviewed: 2026-11-18
   - id: E07
     exams:
       CCAR-F: D3
@@ -1205,6 +1216,8 @@ questions:
       - A
     explanation: "Review lại sau commit mới: đưa kết quả review cũ vào, yêu cầu chỉ báo lỗi mới hoặc chưa sửa."
     ref: lessons/05-claude-code.html#ci-cd
+    status: retired
+    reviewed: 2026-11-18
   - id: E12
     exams:
       CCAR-F: D3
@@ -1219,6 +1232,8 @@ questions:
       - A
     explanation: "`/memory` cho xem file memory nào đang được nạp. `/init` tạo CLAUDE.md ban đầu; `/compact` giảm context."
     ref: lessons/05-claude-code.html#claude-md
+    status: retired
+    reviewed: 2026-11-18
   - id: E13
     exams:
       CCAR-F: D3
@@ -1288,6 +1303,8 @@ questions:
       - B
     explanation: "Deny luôn thắng: luật deny ở bất kỳ cấp nào không bị allow ở cấp khác gỡ bỏ."
     ref: lessons/05-claude-code.html#settings
+    status: retired
+    reviewed: 2026-11-18
   - id: E18
     exams:
       CCDV-F: D2
@@ -1536,6 +1553,7 @@ questions:
       - B
     explanation: Tắt Memory ở menu "+" trước tin nhắn đầu giữ chat lại nhưng không đọc, không ghi memory. Incognito chỉ có ngoài Project và không lưu chat; xoá memory hay dời file là quá tay.
     ref: lessons/20-san-pham-du-lieu.html#memory-project
+    reviewed: 2026-11-18
   - id: Y13
     exams:
       CCAO-F: D3
@@ -1719,6 +1737,7 @@ questions:
       - C
     explanation: Skill nạp theo nhu cầu (progressive disclosure) và cần bật code execution. Không nạp vào mọi chat; người dùng và tổ chức tự tạo được skill.
     ref: lessons/20-san-pham-du-lieu.html#connector-skill
+    reviewed: 2026-11-18
   - id: Y27
     exams:
       CCAO-F: D6
@@ -1863,6 +1882,7 @@ questions:
       - B
     explanation: "Discernment: đọc kỹ, chỉ đúng chỗ chưa đạt, góp ý cụ thể rồi lặp lại. Góp ý chung chung không cho Claude biết sửa gì; làm lại từ đầu bỏ phần đã đúng; nghe tự tin hơn không phải tiêu chí chất lượng."
     ref: lessons/15-claude-101-fluency.html#ai-fluency
+    reviewed: 2026-11-18
   - id: Q11
     exams:
       CCAO-F: D6
@@ -1945,6 +1965,8 @@ questions:
       - A
     explanation: Chỉ dẫn cho cả đội phải ở cấp project và commit vào repo. File ở thư mục nhà là cấp user, không chia sẻ; chép tay dễ lệch; `settings.local.json` không chứa chỉ dẫn và không commit; `/memory` chỉ xem file đang nạp.
     ref: lessons/21-lab-ccar-f.html#lab-ex2
+    status: retired
+    reviewed: 2026-11-18
   - id: Z05
     exams:
       CCAR-F: D3
@@ -2252,6 +2274,7 @@ questions:
       - B
     explanation: Đưa kết quả review cũ vào context và yêu cầu chỉ báo lỗi mới hoặc chưa sửa. Xoá và đăng lại vẫn lặp; bỏ review commit sau bỏ sót lỗi mới; ngưỡng số dòng không liên quan.
     ref: lessons/13-evals-sdlc.html#claude-code-in-action
+    reviewed: 2026-11-18
   - id: N08
     exams:
       CCAR-F: D3
@@ -2411,6 +2434,7 @@ questions:
       - A
     explanation: "`fork_session` đi kèm `resume`: `resume` chọn phiên xuất phát, `fork_session` bảo SDK tạo phiên mới (ID riêng) từ bản sao lịch sử, còn phiên gốc giữ nguyên. Đặt `fork_session` mà không có `resume` thì không có phiên nào để phân nhánh. Hai lần `resume` cùng ID đều nối vào cùng một lịch sử. Sao chép thư mục dự án chỉ nhân bản file, không phân nhánh hội thoại."
     ref: lessons/03-agent.html#phien
+    reviewed: 2026-11-18
   - id: C265
     exams:
       CCAR-F: D1
@@ -2425,6 +2449,7 @@ questions:
       - A
     explanation: Fork chỉ phân nhánh lịch sử hội thoại. Hệ thống file dùng chung, nên file bị sửa trong nhánh là thật và mọi phiên cùng thư mục đều thấy. Muốn hoàn tác thay đổi file cần cơ chế riêng như file checkpointing. Fork không có bản sao thư mục riêng, không tự hoàn tác khi kết thúc, và không có bước hợp nhất lịch sử.
     ref: lessons/03-agent.html#phien
+    reviewed: 2026-11-18
   - id: C266
     exams:
       CCAR-F: D1
@@ -2511,6 +2536,7 @@ questions:
       - A
     explanation: Claude Code bỏ qua trường nó không biết, nhưng đóng gói hoặc tải skill lên claude.ai và Skills API chỉ nhận một tập trường theo spec (gồm `name`, `description`, `license`, `compatibility`, `metadata`, `allowed-tools`), nên `argument-hint` gây lỗi unexpected key. Do đó hai môi trường cư xử khác nhau. Gợi ý autocomplete là tính năng của Claude Code. Chuyển hint vào dòng đầu thân skill không phải cách khai báo hợp lệ.
     ref: lessons/05-claude-code.html#command-skill
+    reviewed: 2026-11-18
   - id: F65
     exams:
       CCAR-F: D4
@@ -2611,6 +2637,7 @@ questions:
       - A
     explanation: "Theo đặc tả MCP, lỗi validate đầu vào (ngày sai định dạng, giá trị ngoài khoảng) là tool execution error, trả trong kết quả với `isError: true` kèm thông báo cụ thể để model sửa tham số và gọi lại. Lỗi giao thức dành cho sự cố cấp yêu cầu như tool không tồn tại hoặc yêu cầu sai cấu trúc, và model khó tự phục hồi. Báo thành công giả làm agent tin sai. Làm sập server mất ngữ cảnh và không giúp model sửa lỗi."
     ref: lessons/04-tool-mcp.html#loi-tool
+    reviewed: 2026-11-18
   - id: D62
     exams:
       CCAR-F: D2
@@ -3013,8 +3040,9 @@ questions:
       - Ask why they want a human.
     answer:
       - A
-    explanation: Khách yêu cầu gặp người thì chuyển ngay.
+    explanation: "Khách nói rõ muốn gặp người thật thì agent phải chuyển (escalate) ngay, không điều tra hay cố tự giải quyết trước, kể cả khi vấn đề trông dễ. Đây là một trong ba trigger escalate của Exam Guide: khách yêu cầu gặp người, ngoại lệ hoặc khoảng trống chính sách, và không thể tiến triển. Giải quyết trước rồi mới đề nghị chuyển người là phớt lờ yêu cầu rõ ràng của khách. Giải thích rằng agent tự lo được rồi làm tiếp cũng là gạt yêu cầu đó đi. Hỏi vì sao khách muốn gặp người chỉ trì hoãn việc chuyển, khách không cần biện minh. (Khác ca khách chỉ bực bội mà chưa đòi người: khi đó ghi nhận cảm xúc và đề nghị giải quyết, chỉ escalate nếu khách nhắc lại.)"
     ref: lessons/07-context.html#escalation
+    reviewed: 2026-11-18
   - id: G04
     exams:
       CCAR-F: D5
@@ -3085,6 +3113,8 @@ questions:
       - B
     explanation: "Hai anti-pattern: nuốt lỗi (rỗng như thành công) và dừng cả workflow. Lỗi có cấu trúc cho coordinator quyết định."
     ref: lessons/07-context.html#loi-lan-truyen
+    status: retired
+    reviewed: 2026-11-18
   - id: G09
     exams:
       CCAR-F: D5
@@ -3106,14 +3136,15 @@ questions:
     stem: During a long investigation of a large codebase, the agent starts referring to “typical patterns” instead of the specific classes it found earlier. Which TWO changes help most?
     options:
       - Keep key findings in a scratchpad file the agent re-reads when needed.
-      - Delegate focused questions (e.g. “trace the refund flow”) to subagents, while the main agent keeps the big picture.
-      - Raise `max_tokens`.
-      - Tell the agent to “remember everything”.
+      - Delegate focused questions to subagents while the main agent keeps the big picture.
+      - Raise `max_tokens` so the agent can write longer, more detailed answers.
+      - Add “remember every class you have found” to the agent’s instructions.
     answer:
       - A
       - B
-    explanation: Phiên dài bị suy giảm context. Scratchpad file và subagent cho câu hỏi cụ thể giữ thông tin chính xác; `/compact` cũng giúp khi context đầy output dò tìm.
+    explanation: "Phiên khám phá dài làm context đầy và suy giảm, nên agent bắt đầu nói chung chung (“typical patterns”) thay vì nhắc class cụ thể đã tìm thấy. Ghi phát hiện chính vào scratchpad file rồi đọc lại khi cần giúp giữ thông tin chính xác ngoài context window (structured note-taking). Giao câu hỏi hẹp (vd. lần theo luồng refund) cho subagent chạy với context sạch và chỉ trả về bản tóm tắt, còn agent chính giữ bức tranh tổng. Tăng `max_tokens` chỉ nới độ dài output mỗi lượt, không giảm lượng context đã tích tụ. Dặn agent “nhớ hết mọi class” không làm nó nhớ tốt hơn, vì vấn đề nằm ở context quá tải chứ không ở chỉ dẫn. `/compact` cũng giúp khi context đầy output dò tìm."
     ref: lessons/07-context.html#codebase-lon
+    reviewed: 2026-11-18
   - id: G11
     exams:
       CCAR-F: D5
@@ -3208,8 +3239,9 @@ questions:
       - Increase `max_tokens` so the agent has room to reason its way to the answer.
     answer:
       - A
-    explanation: Đọc trace từng bước để biết lỗi bắt đầu ở đâu; đừng sửa mò.
+    explanation: "Lỗi của agent thường bắt đầu ở một bước giữa chừng (request sai, tool trả lỗi hoặc dữ liệu sai, model hiểu nhầm kết quả tool) rồi lan sang các bước sau. Đọc trace từng bước (request, tool call, tool result) giúp tìm bước hỏng đầu tiên, cô lập lỗi ở tầng tích hợp hay ở prompt/context, rồi sửa đúng chỗ. Bảo Claude “tự tìm và sửa lỗi” trong một prompt mới, không có trace, chỉ là đoán. Đổi model liên tục là sửa mò, có thể che lỗi mà vẫn không biết nguyên nhân. Tăng `max_tokens` chỉ nới giới hạn độ dài output, không sửa được lỗi logic hay dữ liệu sai ở bước trước."
     ref: lessons/07-context.html#debug
+    reviewed: 2026-11-18
   - id: G18
     exams:
       CCDV-F: D6
@@ -3265,16 +3297,17 @@ questions:
   - id: H04
     exams:
       CCDV-F: D7
-    stem: How does a PreToolUse command hook block a tool call and tell Claude why?
+    stem: You are writing a Claude Code PreToolUse command hook that must stop dangerous Bash commands and tell Claude why each one was refused. How should the script signal the block?
     options:
-      - Exit with code 2 and write the reason to stderr (or return a JSON deny).
+      - Exit with code 2 and write the reason to stderr.
       - Exit with code 0 and write the reason to stdout for Claude to read.
       - Print “BLOCKED” followed by the reason to stdout, then exit with code 1.
-      - Delete the tool from settings at runtime and restart the session.
+      - "Exit with code 0 and print JSON with `continue: true` and the reason in `systemMessage`."
     answer:
       - A
-    explanation: Exit code 2 chặn lời gọi và gửi stderr lại cho Claude; hoặc output JSON với quyết định `deny`.
+    explanation: "Với PreToolUse, exit code 2 chặn lời gọi tool và Claude nhận nội dung stderr làm lý do. Cách tương đương là exit 0 kèm JSON `hookSpecificOutput` có `permissionDecision` = `deny` và `permissionDecisionReason`. Exit 0 với stdout thường không chặn gì, và stdout thường của PreToolUse không được đưa vào context của Claude. Exit 1 (kể cả khi in “BLOCKED”) chỉ là lỗi không chặn, tool vẫn chạy; tài liệu hooks nói muốn ép chính sách thì dùng exit 2. `continue: true` cho phiên chạy tiếp, còn `systemMessage` chỉ hiển thị cho người dùng, nên không chặn lời gọi và cũng không báo lý do cho Claude."
     ref: lessons/08-bao-mat.html#hook
+    reviewed: 2026-11-18
   - id: H05
     exams:
       CCDV-F: D7
@@ -3534,8 +3567,9 @@ questions:
       - A single recommendation of the best vendor, without the underlying data.
     answer:
       - A
-    explanation: "Chọn định dạng theo cách dùng: dữ liệu để xử lý tiếp thì yêu cầu bảng có cột xác định."
+    explanation: "Chọn định dạng theo cách dùng: dữ liệu để dán vào bảng tính rồi sắp xếp thì yêu cầu bảng hoặc CSV có cột xác định. Văn xuôi so sánh dài buộc phải chép tay từng số; slide mỗi nhà cung cấp một trang không sắp xếp được; một khuyến nghị duy nhất bỏ mất dữ liệu gốc cần để tự so sánh và kiểm chứng."
     ref: lessons/09-ccao-f.html#danh-gia
+    reviewed: 2026-11-18
   - id: K11
     exams:
       CCAO-F: D2
@@ -3625,8 +3659,9 @@ questions:
       - Choose the vendor, since it can compare products faster than the team.
     answer:
       - A
-    explanation: Dùng Claude để phân tích yêu cầu, lập kế hoạch; con người vẫn xác nhận với các bên liên quan.
+    explanation: "Dùng Claude phân tích yêu cầu: rút câu hỏi mở, giả định từ ghi chú và phác cấu trúc để nhóm xác nhận với các bên liên quan. Viết bản cuối rồi gửi thẳng cho mọi người là bỏ qua bước kiểm chứng; quyết định ngân sách hay chọn nhà cung cấp cần trách nhiệm và dữ liệu nội bộ, Claude chỉ nên hỗ trợ phân tích chứ không quyết thay."
     ref: lessons/09-ccao-f.html#quy-trinh
+    reviewed: 2026-11-18
   - id: K18
     exams:
       CCAO-F: D5
@@ -3881,12 +3916,13 @@ questions:
     options:
       - Employee privacy and legal or policy limits; it may need authorization or be inappropriate.
       - Whether Claude is able to understand the informal language, emoji and slang used in the chats.
-      - Whether the engagement ratings fit on one slide for leadership.
+      - Whether the ratings would come out the same if the messages were analyzed twice.
       - The cost of the subscription needed to process that many messages.
     answer:
       - A
-    explanation: "Nhận diện ca sử dụng không phù hợp: dữ liệu cá nhân, quyền riêng tư, quy định phải được xét trước tính khả thi kỹ thuật."
+    explanation: "Nhận diện ca sử dụng không phù hợp: đọc tin nhắn riêng của nhân viên để chấm điểm đụng tới quyền riêng tư, luật lao động và chính sách nội bộ, nên phải xét có được phép hay không trước mọi câu hỏi kỹ thuật. Claude có hiểu tiếng lóng, emoji hay không, kết quả có lặp lại ổn định không, và chi phí gói dịch vụ đều là chuyện tính khả thi, chỉ đáng bàn sau khi ca sử dụng đã được phép."
     ref: lessons/09-ccao-f.html#quan-tri
+    reviewed: 2026-11-18
   - id: K38
     exams:
       CCAO-F: D7
@@ -4202,6 +4238,8 @@ questions:
       - C
     explanation: "Đọc chữ trong câu trả lời để dừng là anti-pattern: model có thể vừa nói câu kết vừa yêu cầu tool. Dừng theo `stop_reason`; giới hạn số vòng chỉ là lưới an toàn."
     ref: lessons/03-agent.html#vong-lap
+    status: retired
+    reviewed: 2026-11-18
   - id: C202
     exams:
       CCAR-F: D1
@@ -4315,6 +4353,7 @@ questions:
       - D
     explanation: Quy tắc có hệ quả tài chính, tuân thủ cần cơ chế tất định (gate, hook). Giọng văn và cách hỏi lại là hành vi phù hợp để hướng dẫn bằng prompt.
     ref: lessons/03-agent.html#thu-tu
+    reviewed: 2026-11-18
   - id: C210
     exams:
       CCAR-F: D1
@@ -4327,8 +4366,9 @@ questions:
       - Require a `lookup_order` result for that order first, and cap the refund at the paid amount in code.
     answer:
       - D
-    explanation: "Điều kiện tiên quyết và kiểm tra số tiền nằm trong code: phải có dữ liệu đơn hàng, số tiền hoàn không vượt số đã thanh toán. Lời dặn hay model lớn hơn không bảo đảm."
+    explanation: "Quy tắc có hệ quả tài chính phải chặn bằng code: bắt buộc có kết quả `lookup_order` cho đúng đơn đó, và số tiền hoàn bị giới hạn ở số đã thanh toán, nên con số khách tự nêu không thể lọt qua. Dặn trong system prompt chỉ cho tuân thủ xác suất, tỉ lệ thất bại vẫn khác 0. Model lớn hơn cũng không bảo đảm tất định. Bắt khách tải ảnh hoá đơn cho mọi yêu cầu chỉ thêm ma sát mà không ngăn được agent dùng sai số tiền, trong khi số liệu chuẩn đã có sẵn trong hệ thống đơn hàng."
     ref: lessons/03-agent.html#thu-tu
+    reviewed: 2026-11-18
   - id: C211
     exams:
       CCAR-F: D1
@@ -4661,11 +4701,12 @@ questions:
       - Run `/clear` before every brainstorming session so that the earlier context is removed first.
       - Limit the skill to proposing exactly one design per run so that there are no rejected ideas.
       - Move the brainstorming instructions into CLAUDE.md so they are always present in every session.
-      - "Add `context: fork` so the exploration runs in an isolated sub-agent, apart from the session."
+      - "Add `context: fork` so the exploration runs in an isolated subagent, apart from the main session."
     answer:
       - D
-    explanation: "`context: fork` chạy skill trong context riêng, nên ý tưởng thăm dò không làm nhiễu phiên chính. `/clear` xoá luôn context cần giữ; ép chỉ một phương án làm mất mục đích brainstorm."
+    explanation: "`context: fork` chạy skill trong một subagent có context riêng (subagent không thấy lịch sử hội thoại, nội dung skill trở thành prompt của nó), nên các phương án thăm dò và bị loại nằm lại trong subagent, phiên chính chỉ nhận kết quả. Chạy `/clear` trước khi brainstorm không giải quyết gì vì phần gây nhiễu sinh ra sau đó, lại xoá luôn context cần giữ. Ép chỉ một phương án làm mất mục đích brainstorm. Đưa chỉ dẫn brainstorm vào CLAUDE.md khiến nó nạp ở mọi phiên, làm context chính nhiễu hơn chứ không cô lập phần thăm dò."
     ref: lessons/05-claude-code.html#command-skill
+    reviewed: 2026-11-18
   - id: E31
     exams:
       CCAR-F: D3
@@ -4919,8 +4960,9 @@ questions:
       - One prompt asking for all 30 endpoint conversions at once in a single giant response.
     answer:
       - B
-    explanation: "Bước biết trước, lặp lại: chuỗi cố định (prompt chaining). Phân rã động dành cho việc mở, bước sau phụ thuộc phát hiện."
+    explanation: "Các bước đã biết trước và giống nhau cho mọi endpoint, nên hợp với chuỗi cố định (prompt chaining) áp lần lượt cho từng endpoint. Phân rã động dành cho việc mở, khi bước sau phụ thuộc điều vừa phát hiện; để agent tự nghĩ bước mới cho từng endpoint chỉ làm các lần chuyển đổi lệch nhau. Hệ multi-agent tranh luận là quá tay cho một quy trình đã rõ, tốn chi phí mà không thêm giá trị. Gộp cả 30 endpoint vào một câu trả lời khổng lồ dễ chạm giới hạn output và làm loãng sự chú ý, chất lượng không đều giữa các endpoint."
     ref: lessons/03-agent.html#phan-ra
+    reviewed: 2026-11-18
   - id: C214
     exams:
       CCAR-F: D1
@@ -6031,13 +6073,14 @@ questions:
     options:
       - "`-p` (print mode)"
       - "`--output-format json`"
-      - "`--verbose`"
-      - "`--continue`"
+      - "`--verbose` (full logs)"
+      - "`--continue` (last session)"
     answer:
       - A
       - B
-    explanation: "`-p` chạy không tương tác (không treo chờ nhập); `--output-format json` (kèm `--json-schema`) cho kết quả có cấu trúc để script đọc."
+    explanation: "`-p` (`--print`) chạy Claude Code không tương tác: in kết quả ra stdout rồi thoát, không treo chờ nhập. `--output-format json` trả JSON có `result`, session ID và metadata để script đọc; thêm `--json-schema` khi cần output theo schema (nằm trong trường `structured_output`). `--verbose` chỉ hiện chi tiết từng lượt cho người đọc log (thường đi kèm `stream-json`), không làm kết quả máy đọc được. `--continue` nối tiếp hội thoại gần nhất, dùng cho lượt hỏi tiếp, không phải điều kiện để chạy tự động hay parse kết quả."
     ref: lessons/05-claude-code.html#ci-cd
+    reviewed: 2026-11-18
   - id: N01
     exams:
       CCAR-F: D3
@@ -6433,6 +6476,7 @@ questions:
       - B
     explanation: Retry kèm lỗi validate hiệu quả với lỗi định dạng hoặc cấu trúc. Thông tin không có trong tài liệu hoặc không đọc được thì retry bao nhiêu cũng không ra.
     ref: lessons/06-prompt-output.html#validate-retry
+    reviewed: 2026-11-18
   - id: F45
     exams:
       CCAR-F: D4
@@ -6786,6 +6830,7 @@ questions:
       - C
     explanation: Trường cho phép null và giá trị “unclear” cho model đường thoát hợp lệ thay vì bịa. Bắt buộc mọi trường hay bỏ enum làm tăng bịa đặt và dữ liệu lộn xộn.
     ref: lessons/06-prompt-output.html#schema
+    reviewed: 2026-11-18
   - id: C247
     exams:
       CCDV-F: D1
@@ -6836,8 +6881,9 @@ questions:
       - Have the subagent return a concise summary with sources instead of raw results.
     answer:
       - D
-    explanation: Lợi ích của subagent là cô lập context, nên nó phải trả kết quả cô đọng (tóm tắt, nguồn). `max_tokens` giới hạn output chứ không mở rộng context; bỏ subagent thì context chính càng phình.
+    explanation: "Lợi ích của subagent là cô lập context. Subagent có thể dùng hàng chục nghìn token để tìm kiếm nhưng chỉ nên trả về bản tóm tắt cô đọng (thường 1.000–2.000 token) kèm nguồn (Anthropic, Effective context engineering). Tăng `max_tokens` chỉ nâng giới hạn output của coordinator, không làm context chứa được nhiều hơn. Bỏ subagent để coordinator tự tìm thì kết quả thô đổ thẳng vào context chính, càng phình. Gửi kết quả thô cho mọi subagent khác chỉ nhân bản vấn đề sang context của chúng mà không giảm tải cho coordinator."
     ref: lessons/11-platform-subagents-skills.html#subagents
+    reviewed: 2026-11-18
   - id: C249
     exams:
       CCDV-F: D1
@@ -6878,6 +6924,7 @@ questions:
       - C
     explanation: Việc phải xảy ra mọi lần thì dùng hook (tất định), không dựa vào prompt hay trí nhớ của model. Ghi sau khi sửa xong là PostToolUse; PreToolUse chạy trước nên sẽ ghi cả lần sửa bị chặn hoặc thất bại.
     ref: lessons/03-agent.html#hook-sdk
+    reviewed: 2026-11-18
   - id: C252
     exams:
       CCDV-F: D1
@@ -6922,14 +6969,15 @@ questions:
       CCDV-F: D1
     stem: A team already builds its workflows with LangGraph and wants to use Claude in them. Which statement is accurate?
     options:
-      - An agent framework removes the need to design tools, prompts and stopping rules.
-      - Using a framework removes the API's rate limits and token costs for the team.
+      - The framework designs the tools, prompts and stopping rules itself, so the team can skip that work.
+      - Claude calls made through a framework are billed and rate-limited separately from the team's API usage.
       - Claude can be the model inside agent frameworks such as LangGraph, Strands or PydanticAI.
-      - Claude can only be used through the Claude Agent SDK, not through third-party frameworks.
+      - The team must first rewrite its workflows with the Claude Agent SDK, because LangGraph cannot call Claude.
     answer:
       - C
-    explanation: Framework agent (Strands, LangGraph, PydanticAI…) là lớp trừu tượng gọi model qua API, nên dùng được Claude. Framework không thay được việc thiết kế tool, prompt, điều kiện dừng, và không đổi giới hạn hay chi phí API.
+    explanation: "Exam Guide CCDV-F nêu Strands, LangGraph, PydanticAI là framework agent bên thứ ba dùng được với Claude. Framework là lớp trừu tượng gọi model qua API, nên team giữ LangGraph và dùng Claude làm model. Framework không tự thiết kế tool, prompt và điều kiện dừng thay team; Anthropic còn lưu ý lớp trừu tượng có thể che prompt và response, làm khó debug. Lời gọi qua framework vẫn là lời gọi API bằng key của team, nên vẫn tính vào cùng hạn mức và chi phí. Không cần viết lại bằng Agent SDK; Agent SDK chỉ là một lựa chọn."
     ref: lessons/03-agent.html#trien-khai
+    reviewed: 2026-11-18
   - id: C256
     exams:
       CCDV-F: D1
@@ -6943,6 +6991,7 @@ questions:
       - D
     explanation: Agent hợp với việc mở, bước sau phụ thuộc kết quả bước trước (điều tra sự cố). Việc lặp lại với các bước cố định thì workflow rẻ và dễ đoán hơn.
     ref: lessons/03-agent.html#workflow-agent
+    reviewed: 2026-11-18
   - id: L06
     exams:
       CCDV-F: D1
@@ -7363,7 +7412,7 @@ questions:
     ref: lessons/01-api-tich-hop.html#giao-dien
   - id: F58
     exams:
-      CCDV-F: D2
+      CCDV-F: D6
     stem: Your API app's system prompt says “be concise”, but users want detailed answers to complex questions. What is a better instruction?
     options:
       - State when to be brief and when to go deep, with a target length for each case.
@@ -7372,8 +7421,9 @@ questions:
       - Add “be detailed” right after “be concise” so both apply.
     answer:
       - A
-    explanation: Chỉ dẫn mơ hồ hoặc mâu thuẫn cho kết quả thất thường. Nêu điều kiện cụ thể (khi nào ngắn, khi nào dài) và độ dài mục tiêu.
+    explanation: "Claude phản hồi tốt với chỉ dẫn rõ ràng, cụ thể về output (mục Be clear and direct trong Prompting best practices). Vì vậy nên nêu điều kiện: câu hỏi đơn giản thì trả lời ngắn, câu hỏi phức tạp thì đi sâu, kèm độ dài mục tiêu cho từng trường hợp. Bỏ hết chỉ dẫn về độ dài thì mất kiểm soát, độ dài phụ thuộc mặc định của model. Viết hoa “be concise” chỉ làm chỉ dẫn sai mạnh hơn, càng cắt cụt câu trả lời cần chi tiết; tài liệu còn khuyên tránh ngôn từ quá gắt. Thêm “be detailed” ngay sau “be concise” tạo hai chỉ dẫn mâu thuẫn nên kết quả khó đoán."
     ref: lessons/06-prompt-output.html#cau-truc-prompt
+    reviewed: 2026-11-18
   - id: E59
     exams:
       CCDV-F: D2
@@ -7629,12 +7679,13 @@ questions:
     options:
       - Documents near the top, then the instructions and the question at the end.
       - The question first, then the documents, then the instructions.
-      - Documents placed inside the question sentence itself, so that everything is on one line.
+      - Instructions first, then the question, with the documents placed at the very end.
       - Instructions repeated after every paragraph of each document.
     answer:
       - A
-    explanation: Tài liệu dài để đầu, chỉ dẫn và câu hỏi để cuối thường cho kết quả tốt hơn.
+    explanation: "Theo mục Long context prompting: đặt tài liệu dài gần đầu prompt, phía trên câu hỏi, chỉ dẫn và ví dụ. Đặt câu hỏi ở cuối có thể cải thiện chất lượng tới 30% trong thử nghiệm, nhất là với nhiều tài liệu. Đặt câu hỏi lên đầu, hoặc đặt chỉ dẫn và câu hỏi trước rồi để tài liệu ở cuối, đều ngược khuyến nghị. Lặp chỉ dẫn sau mỗi đoạn làm prompt phình và chia cắt tài liệu mà không có lợi; nên tách tài liệu bằng thẻ XML như `<document>`."
     ref: lessons/06-prompt-output.html#cau-truc-prompt
+    reviewed: 2026-11-18
   - id: H15
     exams:
       CCDV-F: D6
@@ -7974,8 +8025,9 @@ questions:
     answer:
       - B
       - C
-    explanation: "Cache theo tiền tố: đổi bất kỳ phần nào phía trước (tools, đầu system prompt) làm mất cache cho mọi phần sau. Phần sau breakpoint thay đổi thì không sao."
+    explanation: "Cache theo tiền tố, thứ tự tools → system → messages; đổi bất kỳ phần nào ở hoặc trước breakpoint thì hash tiền tố khác. Timestamp ở đầu system prompt đổi theo mỗi request nên không bao giờ trúng cache. Sửa một tool definition làm mất toàn bộ cache (tools, system, messages). Gửi lại đúng request đó trong thời gian sống của cache (mặc định 5 phút) thì trúng cache. Chỉ đổi câu hỏi cuối nằm sau breakpoint thì tiền tố đã cache vẫn giữ nguyên."
     ref: lessons/02-model-toi-uu.html#caching
+    reviewed: 2026-11-18
   - id: B29
     exams:
       CCDV-F: D5
@@ -8160,8 +8212,9 @@ questions:
       - “Is this a good contract for us? Please answer with a simple yes or no.”
     answer:
       - B
-    explanation: Nêu vị thế (bên mua), mục tiêu (rủi ro chi phí, điều khoản chấm dứt) và cách trình bày (xếp theo rủi ro). Câu hỏi chung chung cho câu trả lời chung chung.
+    explanation: "Prompt tốt nêu vị thế (bên mua), mục tiêu (điều khoản làm tăng chi phí hoặc hạn chế quyền chấm dứt) và cách trình bày (xếp theo rủi ro). Viết lại cho dễ đọc là việc khác, không phải rà soát rủi ro; yêu cầu nêu mọi thứ không có tiêu chí nên câu trả lời dàn trải; câu hỏi có hoặc không bỏ mất lý do và các điều khoản cần thương lượng."
     ref: lessons/09-ccao-f.html#prompting
+    reviewed: 2026-11-18
   - id: K67
     exams:
       CCAO-F: D1
@@ -8217,7 +8270,7 @@ questions:
     ref: lessons/09-ccao-f.html#prompting
   - id: Q04
     exams:
-      CCAO-F: D1
+      CCAO-F: D4
     stem: A manager wants Claude to produce the final performance rating for each employee. Under good delegation practice, what should be handed to Claude?
     options:
       - Deciding which employees should be placed on performance improvement plans.
@@ -8226,8 +8279,9 @@ questions:
       - The final rating decision itself, so that the ratings are consistent across the whole team.
     answer:
       - C
-    explanation: "Delegation tốt: giao phần soạn thảo, tổng hợp; giữ quyết định ảnh hưởng tới con người cho người có trách nhiệm."
+    explanation: "Delegation tốt (AI Fluency): giao cho Claude phần soạn thảo, tổng hợp thành tích đã ghi nhận; quyết định ảnh hưởng tới con người giữ cho người có trách nhiệm. Chọn ai vào diện cải thiện hiệu suất, quyết định tăng giảm lương hay chấm điểm cuối cùng đều là quyết định nhân sự hệ trọng; muốn kết quả nhất quán không phải lý do để giao trách nhiệm đó cho AI."
     ref: lessons/15-claude-101-fluency.html#ai-fluency
+    reviewed: 2026-11-18
   - id: K70
     exams:
       CCAO-F: D1
@@ -8573,14 +8627,15 @@ questions:
       CCAO-F: D2
     stem: Why should you be careful when Claude summarizes a very long document in one pass?
     options:
-      - Summaries of long documents are always shorter than one sentence.
+      - A well-structured, confident summary shows that nothing important was left out.
       - Details, especially in the middle, can be missed or merged, so check key sections.
-      - Claude refuses to read any document that is longer than about ten pages, so it skips the rest.
-      - Long documents always produce summaries in another language.
+      - Claude accepts only about ten pages per document, so longer files are cut off.
+      - Long documents make Claude switch to a smaller model, which lowers quality.
     answer:
       - B
-    explanation: Tài liệu dài dễ bị bỏ sót hoặc gộp chi tiết (nhất là phần giữa); kiểm tra các phần quan trọng hoặc tóm tắt theo phần.
+    explanation: "Tài liệu dài dễ bị bỏ sót hoặc gộp chi tiết, nhất là phần giữa (hiệu ứng lost in the middle nêu trong Exam Guide CCAR-F; Anthropic cũng mô tả context rot, context càng dài thì khả năng nhớ chính xác càng giảm); hãy kiểm tra các phần quan trọng hoặc tóm tắt theo phần. Bản tóm tắt gọn gàng, giọng tự tin không chứng minh là đầy đủ. Claude không giới hạn khoảng mười trang mỗi tài liệu, và tài liệu dài không làm Claude tự đổi sang model nhỏ hơn."
     ref: lessons/16-capabilities-enterprise.html#ai-capabilities
+    reviewed: 2026-11-18
   - id: K92
     exams:
       CCAO-F: D3
@@ -8690,27 +8745,29 @@ questions:
       CCAO-F: D3
     stem: What is the main benefit of Claude's memory feature for an individual user?
     options:
-      - It guarantees that Claude never makes mistakes.
-      - It shares your chats with your manager.
+      - It keeps your preferences only for the current chat and resets when you start a new one.
+      - It lets your organization's owners read your memories to monitor how you use Claude.
       - It carries useful preferences and context across chats, and you can view and edit it.
       - It automatically stores your company's entire shared file server so you can ask about it later.
     answer:
       - C
-    explanation: Memory mang sở thích, bối cảnh hữu ích sang các cuộc chat; người dùng xem, sửa, xoá được. Nó không tự nạp kho tài liệu công ty.
+    explanation: "Memory mang sở thích, bối cảnh hữu ích sang các cuộc chat khác; người dùng xem, sửa, xoá được từng mục trong Settings. Memory tồn tại xuyên các cuộc chat chứ không chỉ trong một chat rồi mất. Owner của tổ chức không xem hay sửa được memory cá nhân của người dùng. Memory cũng không tự nạp kho tài liệu công ty; tài liệu dùng chung thì đưa vào Project hoặc dùng connector."
     ref: lessons/15-claude-101-fluency.html#claude-101
+    reviewed: 2026-11-18
   - id: Q07
     exams:
       CCAO-F: D3
     stem: You want to ask a one-off question without it being saved to your chat history or memory. Which option fits?
     options:
       - A Project shared with your team
-      - A regular chat saved to memory
+      - A new chat in a private Project that only you can access
       - An artifact published to colleagues
       - An incognito chat
     answer:
       - D
-    explanation: Incognito chat không lưu vào lịch sử và không dùng cho memory (vẫn theo chính sách dữ liệu của tổ chức). Project chia sẻ hay artifact công khai làm lộ thông tin.
+    explanation: "Incognito chat không lưu vào lịch sử chat và không đọc, không ghi memory (ở Team, Enterprise vẫn được giữ theo chính sách lưu trữ của tổ chức, tối thiểu 30 ngày vì lý do an toàn). Chat trong Project riêng vẫn lưu vào lịch sử và có thể ghi vào memory của Project; Project chia sẻ với nhóm hay artifact công bố cho đồng nghiệp còn làm lộ nội dung cho người khác."
     ref: lessons/15-claude-101-fluency.html#claude-101
+    reviewed: 2026-11-18
   - id: K100
     exams:
       CCAO-F: D3
@@ -8751,6 +8808,7 @@ questions:
       - D
     explanation: "Quản lý giới hạn context: chia giai đoạn kèm tóm tắt, đưa tài liệu ổn định vào Project. Nhồi hết vào một tin nhắn hay bỏ chỉ dẫn làm chất lượng giảm."
     ref: lessons/16-capabilities-enterprise.html#ai-capabilities
+    reviewed: 2026-11-18
   - id: K102
     exams:
       CCAO-F: D3
@@ -8847,14 +8905,15 @@ questions:
       CCAO-F: D4
     stem: A finance director asks how accurate Claude will be at summarizing contracts. What is the most honest answer?
     options:
-      - It cannot read contracts at all, because legal language is too complex.
-      - Accuracy does not really matter, since summaries are only for reference.
+      - It is too unpredictable for contracts, so we should not use it for them at all.
+      - It is highly accurate, so we only need to spot-check during the first week.
       - Usually helpful but not error-free, so we will test it on samples and keep review.
-      - It is always 100% accurate on contracts, so no review step is needed once it has been set up.
+      - Its summaries cite clause numbers, so any cited point can be trusted without checking.
     answer:
       - C
-    explanation: "Truyền đạt giá trị và giới hạn trung thực: hữu ích nhưng có thể sai, nên thử nghiệm và giữ bước duyệt."
+    explanation: "Truyền đạt giá trị và giới hạn trung thực: Claude thường hữu ích nhưng có thể sai, nên thử trên mẫu hợp đồng thật và giữ bước duyệt. Từ chối dùng hẳn bỏ qua giá trị có thể kiểm chứng bằng thử nghiệm; chỉ kiểm tra trong tuần đầu là hứa quá, lỗi vẫn có thể xuất hiện về sau; số điều khoản được trích dẫn chính là loại chi tiết trông rất cụ thể dễ bị bịa, phải đối chiếu bản gốc."
     ref: lessons/09-ccao-f.html#quy-trinh
+    reviewed: 2026-11-18
   - id: T06
     exams:
       CCAO-F: D4
@@ -8868,6 +8927,8 @@ questions:
       - D
     explanation: "Làm việc người–AI hiệu quả cần rõ vai trò: ai duyệt, ai chịu trách nhiệm quyết định cuối."
     ref: lessons/16-capabilities-enterprise.html#human-agent-teams
+    status: retired
+    reviewed: 2026-11-18
   - id: K110
     exams:
       CCAO-F: D4
@@ -9084,12 +9145,13 @@ questions:
     options:
       - In the Project instructions.
       - In each team member's first message of every chat.
-      - In a file name.
-      - In a comment on a shared document.
+      - In a reference document uploaded to the Project knowledge.
+      - In your own memory, so Claude applies it in every chat.
     answer:
       - A
-    explanation: Quy tắc áp dụng cho mọi cuộc chat trong Project đặt ở Project instructions để nhất quán.
+    explanation: "Quy tắc áp dụng cho mọi câu trả lời trong Project đặt ở Project instructions để nhất quán. Nhắc trong tin nhắn đầu của từng người dễ bị quên và không đồng đều; Project knowledge dành cho tài liệu tham khảo, không phải quy tắc hành vi; memory là của riêng từng người dùng nên không áp dụng cho cả nhóm."
     ref: lessons/09-ccao-f.html#cau-hinh
+    reviewed: 2026-11-18
   - id: K125
     exams:
       CCAO-F: D5
@@ -9219,8 +9281,9 @@ questions:
       - Drafting a first version of a training plan for a manager to review.
     answer:
       - C
-    explanation: Quyết định có hệ quả lớn với con người cần người duyệt; tự động hoàn toàn là không phù hợp.
+    explanation: "Usage Policy của Anthropic xếp bảo hiểm vào nhóm High-risk: quyết định kết quả một yêu cầu bồi thường cần người có chuyên môn xem xét thực chất trước khi áp dụng, và người bị ảnh hưởng phải được cho biết có dùng AI. Tự động quyết định claim mà không có người duyệt là không phù hợp. Tóm tắt báo cáo ngành công khai và nghĩ tên cho sự kiện nhóm là việc rủi ro thấp, không đụng dữ liệu nhạy cảm hay quyết định hệ trọng. Soạn bản nháp kế hoạch đào tạo để quản lý duyệt lại thì đã có người kiểm soát đầu ra."
     ref: lessons/09-ccao-f.html#quan-tri
+    reviewed: 2026-11-18
   - id: K134
     exams:
       CCAO-F: D6
@@ -9363,8 +9426,9 @@ questions:
       - Post about it on social media.
     answer:
       - B
-    explanation: "Tuân thủ quản trị: báo qua kênh quy định để xử lý đúng."
+    explanation: "Theo D6 (tuân theo chính sách AI và chuẩn governance của tổ chức), khi thấy dữ liệu khách hàng bị đưa vào một công cụ AI chưa được phê duyệt, cách đúng là báo qua kênh mà chính sách AI hoặc bảo mật quy định, để bộ phận có thẩm quyền đánh giá rủi ro lộ dữ liệu và xử lý. Tự dùng luôn công cụ đó là lặp lại chính vi phạm. Làm ngơ vì “không phải nhóm mình” để rủi ro với dữ liệu khách tiếp diễn; tuân thủ governance là trách nhiệm của mọi người. Đăng lên mạng xã hội không giải quyết gì, còn có thể làm lộ thêm thông tin nội bộ và khách hàng."
     ref: lessons/09-ccao-f.html#quan-tri
+    reviewed: 2026-11-18
   - id: T11
     exams:
       CCAO-F: D6
@@ -9480,8 +9544,9 @@ questions:
       - Accept the variation and reorder the columns by hand every single time.
     answer:
       - C
-    explanation: "Định dạng không ổn định: chỉ rõ cấu trúc, kèm ví dụ."
+    explanation: "Thứ tự cột thay đổi vì chỉ dẫn chưa nói rõ cấu trúc. Cách sửa hiệu quả là ghi chính xác thứ tự cột, tốt nhất kèm một bảng mẫu: tài liệu Anthropic nói ví dụ là một trong những cách đáng tin cậy nhất để định hướng định dạng và cấu trúc output, giúp kết quả nhất quán hơn. Đổi model mỗi ngày không sửa được chỉ dẫn mơ hồ. Chỉ bảo Claude “nhất quán” mà không nói nhất quán theo cấu trúc nào thì vẫn mơ hồ. Chấp nhận rồi tự sắp lại cột mỗi lần là bỏ qua nguyên nhân gốc và tốn công lặp lại; nên đưa chỉ dẫn vào Project instructions hoặc template để dùng lại."
     ref: lessons/09-ccao-f.html#xu-ly-su-co
+    reviewed: 2026-11-18
   - id: K150
     exams:
       CCAO-F: D7
@@ -9527,14 +9592,15 @@ questions:
       CCAO-F: D7
     stem: Claude says it cannot find an email you know is in your inbox, even though the Gmail connector is on. What is a likely cause to check?
     options:
-      - Whether the email was written in a serif font that Claude cannot parse.
-      - Whether Claude dislikes the sender.
+      - Whether the email arrived after Claude’s training cutoff date.
+      - Whether extended thinking is turned on for this chat.
       - Whether the connector has the needed permissions and your search terms match the email.
-      - Whether your screen resolution is too low for Claude to read the inbox.
+      - Whether the email is stored in a Project’s knowledge base.
     answer:
       - C
-    explanation: "Sự cố connector: kiểm tra quyền và cách tìm kiếm."
+    explanation: "Gmail connector đọc hộp thư trực tiếp qua tài khoản Google bạn đã kết nối và chỉ thấy những gì tài khoản đó được phép truy cập; trên gói Team/Enterprise, Owner còn phải bật connector trước. Claude tìm thư bằng truy vấn, và một số bộ lọc Gmail nâng cao có thể không được hỗ trợ. Vì vậy cần kiểm tra quyền và kết nối của connector, rồi chỉnh từ khoá tìm (người gửi, tiêu đề, khoảng thời gian) cho khớp thư. Ngày training cutoff của model không liên quan, vì connector đọc dữ liệu sống. Bật hay tắt extended thinking chỉ đổi cách Claude suy luận, không đổi quyền truy cập hộp thư. Thư không cần nằm trong knowledge của Project, vì connector truy vấn Gmail trực tiếp."
     ref: lessons/09-ccao-f.html#xu-ly-su-co
+    reviewed: 2026-11-18
   - id: K154
     exams:
       CCAO-F: D7
@@ -9598,8 +9664,9 @@ questions:
       - Summarize the agreed points and continue in a fresh chat with that summary.
     answer:
       - D
-    explanation: "Chat dài làm giảm tập trung: tóm tắt rồi mở chat mới."
+    explanation: "Chat càng dài thì context càng đầy. Anthropic mô tả hiện tượng context rot: số token trong context tăng thì khả năng nhớ chính xác thông tin của model giảm; độ dài hội thoại cũng làm tốn usage hơn. Cách thực tế là tóm tắt các điểm đã chốt rồi mở chat mới với bản tóm tắt đó, để context gọn mà không mất quyết định quan trọng. Tiếp tục thêm tin nhắn vào cùng chat chỉ làm context dài thêm, càng tệ. Đổi trình duyệt rồi mở lại đúng chat đó vẫn là cùng một hội thoại dài. Bảo Claude “cố gắng hơn” không làm context ngắn lại."
     ref: lessons/09-ccao-f.html#xu-ly-su-co
+    reviewed: 2026-11-18
   - id: K159
     exams:
       CCAO-F: D1
@@ -9698,6 +9765,7 @@ questions:
       - D
     explanation: Làm việc người–AI hiệu quả cần rõ người duyệt và người chịu trách nhiệm quyết định cuối; giấu việc dùng AI hay đổ lỗi đều không phải thiết kế vai trò.
     ref: lessons/16-capabilities-enterprise.html#human-agent-teams
+    reviewed: 2026-11-18
   - id: K165
     exams:
       CCAO-F: D5
@@ -9726,20 +9794,23 @@ questions:
       - B
     explanation: Quyết định có hệ quả lớn tới con người (tín dụng, sa thải) cần người có thẩm quyền; soạn nháp có duyệt hay tóm tắt tài liệu công khai là rủi ro thấp.
     ref: lessons/09-ccao-f.html#quan-tri
+    status: retired
+    reviewed: 2026-11-18
   - id: K167
     exams:
       CCAO-F: D7
     stem: Claude keeps ignoring your formatting instruction in a team Project. Which TWO steps help most?
     options:
-      - Repeat the same vague request more times.
+      - Regenerate the response several times until the format comes out right.
       - Make the format explicit, with an example output.
       - Put the rule in the Project instructions.
-      - Switch to a different AI tool.
+      - Switch to a more capable model and keep the prompt as it is.
     answer:
       - B
       - C
-    explanation: Chỉ dẫn cụ thể kèm ví dụ, đặt ở cấp Project để áp dụng mọi chat. Đổi công cụ hay lặp lại yêu cầu mơ hồ không giải quyết gốc.
+    explanation: "Chỉ dẫn định dạng cụ thể kèm ví dụ output, đặt ở Project instructions để áp dụng cho mọi chat của nhóm. Bấm tạo lại nhiều lần hay đổi sang model mạnh hơn mà giữ nguyên prompt không sửa nguyên nhân gốc là chỉ dẫn mơ hồ, nên kết quả vẫn thất thường."
     ref: lessons/09-ccao-f.html#xu-ly-su-co
+    reviewed: 2026-11-18
   - id: X01
     exams:
       CCDV-F: D5
@@ -9871,6 +9942,7 @@ questions:
       - C
     explanation: Header `anthropic-ratelimit-*-remaining` cho biết còn bao nhiêu, và giới hạn số request đồng thời giữ tải đều. `max_tokens` không bị trừ vào OTPM; lời dặn trong prompt không đổi hạn mức.
     ref: lessons/19-api-nang-cao.html#rate-limit
+    reviewed: 2026-11-18
   - id: X11
     exams:
       CCDV-F: D7
@@ -10224,6 +10296,7 @@ questions:
       - C
     explanation: Timeout và lỗi parse (khớp chuỗi thay vì parse JSON) là lỗi tầng tích hợp, sửa bằng code. Chọn sai tool và bịa giá trị là lỗi đầu ra model, sửa bằng mô tả tool, schema (trường nullable), few-shot.
     ref: lessons/07-context.html#debug
+    reviewed: 2026-11-18
   - id: G56
     exams:
       CCDV-F: D4
@@ -10287,8 +10360,9 @@ questions:
       - Claude asks the user, because conflicting allow and deny rules fall back to ask.
     answer:
       - C
-    explanation: Quyền được xét theo thứ tự deny, ask, allow; deny ở bất kỳ cấp nào thắng allow ở cấp khác. Thứ tự ưu tiên giữa các file áp cho khoá đơn, không cho phép allow khoét ngoại lệ trong deny.
+    explanation: "Luật quyền được xét theo thứ tự deny → ask → allow, luật khớp đầu tiên quyết định, và độ cụ thể của luật không đổi thứ tự này. Tài liệu Claude Code ghi rõ: tool bị deny ở bất kỳ cấp nào thì không cấp nào khác allow lại được, nên lệnh push bị chặn. “Local ưu tiên hơn project” chỉ đúng với khoá giá trị đơn (vd. `model`); danh sách luật như `permissions.allow` được gộp giữa các file chứ không ghi đè deny. Luật allow “cụ thể hơn” không thắng deny (ở đây hai luật còn giống hệt nhau). Allow và deny cùng khớp cũng không chuyển sang hỏi người dùng: deny được xét trước nên chặn luôn."
     ref: lessons/05-claude-code.html#settings
+    reviewed: 2026-11-18
   - id: E66
     exams:
       CCDV-F: D3
@@ -10303,6 +10377,7 @@ questions:
       - C
     explanation: Skill chỉ nạp khi cần, hợp với quy trình theo việc (release, migration kèm script). CLAUDE.md luôn được nạp, hợp với quy ước chung và lệnh dùng gần như mọi phiên.
     ref: lessons/05-claude-code.html#command-skill
+    reviewed: 2026-11-18
   - id: U04
     exams:
       CCDV-F: D4
@@ -10329,6 +10404,7 @@ questions:
       - C
     explanation: "So khớp chính xác là việc của grader bằng code: nhanh, rẻ, đáng tin, mở rộng được. Model-based và người chấm để dành cho tiêu chí chủ quan; hỏi model có tự tin không thì không phải chấm điểm."
     ref: lessons/17-building-api.html#module-2
+    reviewed: 2026-11-18
   - id: U06
     exams:
       CCDV-F: D2
@@ -10381,6 +10457,8 @@ questions:
       - A
     explanation: Phân loại trước rồi chuyển tới pipeline chuyên biệt là routing. Chạy cả ba lãng phí; evaluator-optimizer giải bài khác (nâng chất lượng một đầu ra); gộp thành agent lớn mất tính dự đoán mà không cần thiết.
     ref: lessons/17-building-api.html#module-9
+    status: retired
+    reviewed: 2026-11-18
   - id: U10
     exams:
       CCDV-F: D1
@@ -10446,6 +10524,7 @@ questions:
       - C
     explanation: Mọi `tool_result` của một lượt nằm trong một user message, mỗi khối đúng `tool_use_id`. Tách nhiều message làm Claude dần thôi gọi song song; bỏ bớt hay gộp thành text mất liên kết với lời gọi.
     ref: lessons/18-tool-use.html#parallel-tools
+    reviewed: 2026-11-18
   - id: W06
     exams:
       CCDV-F: D8
@@ -10485,6 +10564,7 @@ questions:
       - C
     explanation: Programmatic tool calling cho Claude viết code chạy trong code execution, gọi tool nhiều lần và lọc kết quả; chỉ kết quả cuối vào context. Cache giảm giá phần lặp nhưng không giảm số vòng; Batches không hỗ trợ vòng tool nhiều lượt; context lớn hơn không bớt token.
     ref: lessons/18-tool-use.html#cost-optimization
+    reviewed: 2026-11-18
   - id: W09
     exams:
       CCDV-F: D5
@@ -10498,6 +10578,7 @@ questions:
       - D
     explanation: Cache theo tiền tố, thứ tự `tools`, `system`, `messages`. Giữ danh sách tool cố định và đặt điểm cache sau phần cố định. Đặt điểm cache ở câu hỏi thay đổi thì không trúng; đảo thứ tự tool hay thêm timestamp làm mất cache.
     ref: lessons/18-tool-use.html#cost-optimization
+    reviewed: 2026-11-18
   - id: W10
     exams:
       CCDV-F: D8
@@ -11085,6 +11166,7 @@ questions:
       - B
     explanation: "Quy định mức nỗ lực theo độ phức tạp: câu đơn giản một agent vài lần gọi tool, câu rộng mới chia nhiều subagent. Bỏ coordinator phá kiến trúc; model lớn đắt hơn; cache câu trả lời không xử lý câu mới."
     ref: lessons/22-thiet-ke-giai-phap.html#multi-agent
+    reviewed: 2026-11-18
   - id: PA12
     exams:
       CCAR-P: D1
@@ -11176,6 +11258,7 @@ questions:
       - A
     explanation: Managed Agents chạy vòng lặp và sandbox, có lịch chạy, giảm gánh vận hành. Máy cá nhân không đáng tin cậy; ứng dụng consumer không tự chạy; Batches không hỗ trợ vòng tool nhiều lượt.
     ref: lessons/22-thiet-ke-giai-phap.html#trien-khai
+    reviewed: 2026-11-18
   - id: PA19
     exams:
       CCAR-P: D1
@@ -11216,6 +11299,7 @@ questions:
       - B
     explanation: Kết quả có cấu trúc giữ context của agent dẫn dắt gọn; lưu trạng thái bền cho phép tiếp tục sau lỗi. Chia sẻ toàn bộ lịch sử phá cô lập context; khởi động lại từ đầu lãng phí và dễ lặp lỗi.
     ref: lessons/22-thiet-ke-giai-phap.html#multi-agent
+    reviewed: 2026-11-18
   - id: PA22
     exams:
       CCAR-P: D1
@@ -11307,19 +11391,21 @@ questions:
       - A
     explanation: Tách rõ chỉ dẫn khỏi dữ liệu bằng thẻ XML (kèm các lớp guardrail khác). Lời dặn viết hoa là xác suất; chỉ dời vị trí chưa đủ; model nhỏ không an toàn hơn.
     ref: lessons/22-thiet-ke-giai-phap.html#prompt-he-thong
+    reviewed: 2026-11-18
   - id: PA29
     exams:
       CCAR-P: D2
     stem: An extraction prompt produces inconsistent output formats even with detailed written instructions, especially on ambiguous documents. Which technique helps most?
     options:
-      - Two to four few-shot examples covering ambiguous cases and the exact format
+      - Three to five few-shot examples covering ambiguous cases and the exact format
       - A longer paragraph repeating the format description in different words
       - Asking the model to “think carefully” before writing the output
       - Raising max_tokens so the model has more room to format output
     answer:
       - A
-    explanation: Few-shot nhắm vào ca mơ hồ và cố định định dạng hiệu quả hơn mô tả dài. Nhắc "suy nghĩ kỹ" hay tăng max_tokens không cố định định dạng.
+    explanation: "Prompting best practices coi ví dụ (few-shot) là một trong những cách đáng tin nhất để cố định định dạng; khuyên dùng 3–5 ví dụ liên quan, đa dạng, phủ edge case, bọc trong thẻ `<example>`. Ví dụ nhắm đúng ca mơ hồ hiệu quả hơn viết thêm một đoạn mô tả dài lặp lại ý cũ. Nhắc “suy nghĩ kỹ” có thể giúp lập luận nhưng không cố định định dạng. Tăng max_tokens chỉ nới giới hạn độ dài output."
     ref: lessons/22-thiet-ke-giai-phap.html#prompt-he-thong
+    reviewed: 2026-11-18
   - id: PA30
     exams:
       CCAR-P: D2
@@ -11359,6 +11445,8 @@ questions:
       - B
     explanation: Phần tĩnh đứng đầu và bật prompt caching giảm cả thời gian tới token đầu lẫn chi phí, không mất nội dung. Cắt chính sách mất thông tin; model nhỏ bất chấp chất lượng là rủi ro; chuyển sang few-shot không tạo tiền tố cache.
     ref: lessons/22-thiet-ke-giai-phap.html#context-token
+    status: retired
+    reviewed: 2026-11-18
   - id: PA33
     exams:
       CCAR-P: D2
@@ -11503,6 +11591,8 @@ questions:
       - B
     explanation: Quyền tối thiểu nghĩa là bỏ năng lực vai trò không cần, loại hẳn bề mặt tấn công. Log và xác nhận là biện pháp phát hiện, bù trừ; cỡ model không liên quan phạm vi quyền.
     ref: lessons/23-tich-hop.html#tool-bloat
+    status: retired
+    reviewed: 2026-11-18
   - id: PB02
     exams:
       CCAR-P: D3
@@ -11589,13 +11679,14 @@ questions:
     stem: A proxy MCP server connects users to a third-party API using one static client ID, and an attacker obtains authorization codes without the user's real consent. What is this attack called?
     options:
       - Confused deputy
-      - Rate-limit exhaustion
-      - Context drift
-      - Prompt caching poisoning
+      - Token passthrough
+      - Server-side request forgery (SSRF)
+      - State handle hijacking
     answer:
       - A
-    explanation: "Confused deputy: proxy bị lợi dụng để lấy quyền mà người dùng chưa đồng ý. Biện pháp: xin đồng ý theo từng client, kiểm tra redirect URI. Các phương án khác là khái niệm không liên quan."
+    explanation: "MCP Security Best Practices mô tả đúng tình huống này là Confused Deputy Problem: MCP proxy dùng một static client ID với authorization server bên thứ ba, kẻ tấn công lợi dụng consent cookie (cùng dynamic client registration và redirect URI độc) để lấy authorization code mà người dùng không thật sự đồng ý. Biện pháp: proxy xin đồng ý theo từng client, kiểm tra redirect URI khớp chính xác, kiểm tra tham số `state`. Token passthrough là server nhận rồi chuyển tiếp token không được cấp cho chính nó. SSRF là ép MCP client gửi request tới địa chỉ nội bộ qua các URL metadata OAuth. State handle hijacking là đoán hoặc lấy được handle trạng thái để thao tác trên dữ liệu của người khác. Ba kiểu này không phải là lấy authorization code qua consent đã cấp cho static client ID."
     ref: lessons/23-tich-hop.html#xac-thuc
+    reviewed: 2026-11-18
   - id: PB09
     exams:
       CCAR-P: D3
@@ -11839,11 +11930,12 @@ questions:
       - Nothing; escalation rate is a business metric and not part of AI monitoring
       - Alert on the escalation trend, then inspect sampled transcripts to find the cause
       - Restart the service, since rising escalations usually indicate a memory leak
-      - Raise the confidence threshold so that the agent escalates fewer conversations
+      - Loosen the escalation rule so that the agent escalates fewer conversations
     answer:
       - B
-    explanation: Tỷ lệ escalation là tín hiệu chất lượng; cần cảnh báo theo xu hướng rồi đọc mẫu transcript để tìm nguyên nhân (dữ liệu mới, prompt, model). Khởi động lại không chạm nguyên nhân; hạ escalation bằng ngưỡng là che triệu chứng và tăng rủi ro.
+    explanation: "Tỷ lệ escalation là tín hiệu chất lượng; cần cảnh báo theo xu hướng rồi đọc mẫu transcript để tìm nguyên nhân (dữ liệu mới, prompt, model). Coi đây chỉ là chỉ số kinh doanh là bỏ sót, vì lỗi chất lượng thường không hiện qua lỗi hệ thống hay độ trễ. Khởi động lại không chạm nguyên nhân; nới quy tắc escalation để giảm số ca là che triệu chứng và tăng rủi ro."
     ref: lessons/23-tich-hop.html#quan-sat
+    reviewed: 2026-11-18
   - id: PB28
     exams:
       CCAR-P: D3
@@ -12211,6 +12303,7 @@ questions:
       - A
     explanation: Định tuyến ca tin cậy thấp, mâu thuẫn cho người, lấy mẫu phân tầng phần còn lại để đo lỗi. Duyệt tất cả mất giá trị; bỏ hẳn người dựa vào trung bình là rủi ro; để model tự chọn không có hiệu chỉnh.
     ref: lessons/24-danh-gia-governance.html#hitl
+    reviewed: 2026-11-18
   - id: PC27
     exams:
       CCAR-P: D5
@@ -12433,6 +12526,7 @@ questions:
       - C
     explanation: "Test phản thực: cặp hồ sơ giống hệt trừ thuộc tính nhạy cảm, đủ nhiều cặp, so kết quả theo nhóm. Hỏi model tự đánh giá không phải bằng chứng; bỏ trường giới tính vẫn còn thuộc tính đại diện như tên; mười mẫu không đủ để thấy chênh lệch."
     ref: lessons/24-danh-gia-governance.html#dao-duc
+    reviewed: 2026-11-18
   - id: PC44
     exams:
       CCAR-P: D5
@@ -12774,6 +12868,7 @@ questions:
       - B
     explanation: Chờ đúng retry-after, backoff, giới hạn đồng thời; chuyển việc không gấp sang Batches và cache để giảm tải. Retry dồn dập làm tệ hơn; hạn mức tính theo tổ chức nên thêm key không giúp.
     ref: lessons/25-ben-lien-quan-van-hanh.html#van-hanh
+    reviewed: 2026-11-18
   - id: PD26
     exams:
       CCAR-P: D7
