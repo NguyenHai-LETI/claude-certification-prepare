@@ -1,0 +1,286 @@
+/* Lesson fragments (notes/lessons/*.html, produced by scripts/import-lessons.ts).
+   Adapted from the study artifact's spec.css + anim.css. Every selector is scoped under `.lesson`: the element that shows
+   a lesson fragment must carry class="lesson". Colours come from the app tokens (--bg --fg --muted --border --card --accent
+   --accent-fg --ok --bad --warn --code-bg --mark, light and dark), mapped onto the artifact's own palette below. */
+
+.lesson {
+  --l-bg: var(--bg, #ffffff);
+  --l-card: var(--card, #ffffff);
+  --l-ink: var(--fg, #1c2430);
+  --l-muted: var(--muted, #5b6573);
+  --l-line: var(--border, #d9dee5);
+  --l-soft: var(--code-bg, #f4f6f9);
+  --l-accent: var(--accent, #1f5fa8);
+  --l-on-accent: var(--accent-fg, #ffffff);
+  --l-good: var(--ok, #1d7a4a);
+  --l-bad: var(--bad, #b4232c);
+  --l-todo: var(--warn, #8a5a00);
+  --l-mark: var(--mark, #fff4d6);
+  /* tinted backgrounds follow the theme: a little of the colour mixed into the card colour */
+  --l-accent-soft: color-mix(in srgb, var(--l-accent) 13%, var(--l-card));
+  --l-good-soft: color-mix(in srgb, var(--l-good) 13%, var(--l-card));
+  --l-bad-soft: color-mix(in srgb, var(--l-bad) 13%, var(--l-card));
+  --l-todo-soft: color-mix(in srgb, var(--l-todo) 16%, var(--l-card));
+  /* exam tag hues: CCDV-F, CCAO-F, CCAR-F, CCAR-P */
+  --l-x1: #2f6fd0;
+  --l-x2: #9a4fc9;
+  --l-x3: #13897a;
+  --l-x4: #c96a12;
+  --l-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  color: var(--l-ink);
+  line-height: 1.6;
+  overflow-wrap: break-word;
+  max-width: 860px;
+}
+@supports not (color: color-mix(in srgb, red 50%, blue)) {
+  .lesson {
+    --l-accent-soft: rgba(31, 95, 168, .12);
+    --l-good-soft: rgba(29, 122, 74, .12);
+    --l-bad-soft: rgba(180, 35, 44, .12);
+    --l-todo-soft: rgba(180, 120, 0, .15);
+  }
+}
+.lesson *, .lesson *::before, .lesson *::after { box-sizing: border-box; }
+.lesson a { color: var(--l-accent); }
+
+/* Source line and practice link added by the importer */
+.lesson .lesson-source { font-size: .82em; color: var(--l-muted); margin: 0 0 12px; }
+.lesson .lesson-practice {
+  margin: 28px 0 12px; padding: 10px 14px; border: 1px dashed var(--l-accent); border-radius: 8px;
+  background: var(--l-accent-soft); font-weight: 600;
+}
+
+/* Cover */
+.lesson .cover { border-bottom: 3px solid var(--l-accent); padding-bottom: 16px; margin-bottom: 16px; }
+.lesson .eyebrow { color: var(--l-accent); font-weight: 700; letter-spacing: .08em; text-transform: uppercase; font-size: .8em; }
+.lesson h1 { font-size: 1.9em; line-height: 1.25; margin: 6px 0 12px; }
+.lesson h1 .ja { display: block; font-size: .5em; font-weight: 600; color: var(--l-muted); margin-top: 4px; }
+.lesson .lead { font-size: 1.05em; color: var(--l-muted); margin: 0 0 14px; }
+.lesson .meta { display: grid; grid-template-columns: max-content 1fr; gap: 3px 16px; font-size: .92em; margin: 0; }
+.lesson .meta dt { color: var(--l-muted); }
+.lesson .meta dd { margin: 0; }
+.lesson .status { display: inline-block; background: var(--l-todo-soft); color: var(--l-todo); border-radius: 4px; padding: 0 8px; font-weight: 600; }
+
+/* In-page table of contents (static, collapsible) */
+.lesson details.toc { margin: 0 0 18px; background: var(--l-soft); border-radius: 8px; font-size: .9em; line-height: 1.35; }
+.lesson details.toc > summary {
+  cursor: pointer; padding: 8px 14px; font-size: .9em; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--l-accent);
+}
+.lesson details.toc ol { list-style: none; margin: 0; padding: 0 8px 10px; }
+.lesson details.toc li { margin: 0; }
+.lesson details.toc a { display: flex; gap: 8px; align-items: baseline; padding: 4px 6px; border-radius: 4px; color: var(--l-ink); text-decoration: none; }
+.lesson details.toc a:hover { background: var(--l-accent-soft); color: var(--l-accent); }
+.lesson details.toc .n { flex: none; width: 1.6em; text-align: right; color: var(--l-muted); font-variant-numeric: tabular-nums; }
+.lesson details.toc .tx { flex: 1; }
+.lesson .xds { display: inline-flex; gap: 3px; align-items: center; flex: none; }
+
+/* "Which section serves which exam" summary */
+.lesson details.xsum { margin: 0 0 18px; border: 1px solid var(--l-line); border-radius: 8px; padding: 0 12px; }
+.lesson details.xsum > summary { cursor: pointer; padding: 8px 0; font-weight: 600; color: var(--l-accent); }
+.lesson details.xsum[open] { padding-bottom: 8px; }
+.lesson .xnote { color: var(--l-muted); font-size: .9em; }
+.lesson .xtags { margin: 0 0 8px; display: flex; flex-wrap: wrap; gap: 4px 6px; align-items: center; }
+
+/* Headings, text */
+.lesson h2 {
+  font-size: 1.4em; margin: 34px 0 10px; padding-bottom: 4px; line-height: 1.3;
+  border-bottom: 1px solid var(--l-line); color: var(--l-accent); scroll-margin-top: 72px;
+}
+.lesson h2 .ja, .lesson h3 .ja { font-weight: 500; color: var(--l-muted); font-size: .8em; margin-left: 6px; }
+.lesson h3 { font-size: 1.15em; margin: 22px 0 8px; scroll-margin-top: 72px; }
+.lesson h4 { font-size: 1em; margin: 14px 0 6px; }
+.lesson p { margin: 6px 0; }
+.lesson ul, .lesson ol { margin: 6px 0; padding-left: 22px; }
+.lesson li { margin: 2px 0; }
+.lesson :lang(ja) { word-break: auto-phrase; }
+.lesson code { font-family: var(--l-mono); font-size: .9em; background: var(--l-soft); padding: 0 3px; border-radius: 3px; }
+.lesson kbd {
+  font-family: var(--l-mono); font-size: .85em; border: 1px solid var(--l-line); border-bottom-width: 2px;
+  border-radius: 4px; padding: 0 4px; background: var(--l-card);
+}
+.lesson pre {
+  font-family: var(--l-mono); font-size: .86em; line-height: 1.5; tab-size: 2;
+  background: var(--l-soft); border: 1px solid var(--l-line); border-radius: 6px;
+  padding: 10px 12px; margin: 8px 0 12px; overflow-x: auto; max-width: 100%;
+  overflow-wrap: normal;
+}
+.lesson pre code { font-size: inherit; background: none; padding: 0; border-radius: 0; }
+.lesson :target { scroll-margin-top: 72px; }
+
+/* Tables: each scrolls horizontally inside its own .tw container */
+.lesson .tw { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 8px 0 12px; max-width: 100%; }
+.lesson table { width: 100%; border-collapse: collapse; font-size: .9em; }
+.lesson th, .lesson td { border: 1px solid var(--l-line); padding: 6px 8px; text-align: left; vertical-align: top; }
+.lesson th { background: var(--l-soft); font-weight: 600; }
+.lesson td.c, .lesson th.c { text-align: center; }
+.lesson table.fixed { table-layout: fixed; }
+.lesson table.fixed td { overflow-wrap: anywhere; }
+.lesson .nw, .lesson td.nw, .lesson th.nw { white-space: nowrap; }
+.lesson .kw { word-break: keep-all; }
+.lesson tr:target > td, .lesson tr:target > th { background: var(--l-mark); }
+.lesson tr.grp th { background: var(--l-accent-soft); color: var(--l-accent); }
+.lesson .yes { color: var(--l-good); font-weight: 700; }
+.lesson .no { color: var(--l-bad); font-weight: 700; }
+
+/* IDs, tags */
+.lesson .id { font-family: var(--l-mono); font-size: .9em; font-weight: 600; white-space: nowrap; }
+.lesson .src { color: var(--l-muted); font-size: .92em; }
+.lesson .tag {
+  display: inline-block; font-size: .76em; font-weight: 700; border-radius: 3px; padding: 0 6px;
+  white-space: nowrap; vertical-align: 1px; line-height: 1.6;
+}
+.lesson table.fixed .tag { display: inline; white-space: normal; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+.lesson .t-new { background: var(--l-todo-soft); color: var(--l-todo); }
+.lesson .t-gap { background: var(--l-bad-soft); color: var(--l-bad); }
+.lesson .t-wait { background: var(--l-accent-soft); color: var(--l-accent); }
+.lesson .t-ok { background: var(--l-good-soft); color: var(--l-good); }
+.lesson .t-none { background: var(--l-soft); color: var(--l-muted); }
+.lesson .star { color: var(--l-todo); font-weight: 700; }
+.lesson .star.add { color: var(--l-accent); }
+/* exam tags (.tag.xtN) and exam dots (.xd.xtN) */
+.lesson .xt1 { --l-x: var(--l-x1); }
+.lesson .xt2 { --l-x: var(--l-x2); }
+.lesson .xt3 { --l-x: var(--l-x3); }
+.lesson .xt4 { --l-x: var(--l-x4); }
+.lesson .x-nen { --l-x: var(--l-muted); }
+.lesson .tag.xt1, .lesson .tag.xt2, .lesson .tag.xt3, .lesson .tag.xt4, .lesson .tag.x-nen {
+  background: color-mix(in srgb, var(--l-x) 16%, var(--l-card));
+  color: color-mix(in srgb, var(--l-x) 72%, var(--l-ink));
+  border: 1px solid color-mix(in srgb, var(--l-x) 35%, transparent);
+}
+.lesson .xd { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--l-x, var(--l-muted)); }
+
+/* Blocks */
+.lesson .note { background: var(--l-soft); border-left: 3px solid var(--l-muted); padding: 8px 12px; margin: 10px 0; font-size: .92em; color: var(--l-muted); }
+.lesson .insight { background: var(--l-accent-soft); border-left: 3px solid var(--l-accent); padding: 8px 12px; margin: 10px 0; font-size: .92em; }
+.lesson .alert { background: var(--l-bad-soft); border-left: 3px solid var(--l-bad); padding: 8px 12px; margin: 10px 0; font-size: .92em; }
+.lesson .analogy { border-left: 3px solid var(--l-good); background: var(--l-good-soft); padding: 8px 12px; margin: 10px 0; font-size: .92em; }
+.lesson .analogy .hd { font-size: .82em; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--l-good); margin-bottom: 2px; }
+.lesson .gloss { background: var(--l-soft); border: 1px solid var(--l-line); border-radius: 6px; padding: 8px 12px; margin: 10px 0; font-size: .92em; }
+.lesson .gloss .hd { font-size: .82em; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--l-accent); margin-bottom: 4px; }
+.lesson .gloss dl { margin: 0; display: grid; grid-template-columns: max-content 1fr; gap: 3px 14px; }
+.lesson .gloss dt { font-weight: 700; }
+.lesson .gloss dd { margin: 0; }
+
+.lesson .principles { counter-reset: lp; list-style: none; padding: 0; }
+.lesson .principles li { counter-increment: lp; position: relative; padding: 6px 0 6px 34px; border-bottom: 1px dashed var(--l-line); }
+.lesson .principles li::before {
+  content: counter(lp); position: absolute; left: 0; top: 6px;
+  width: 22px; height: 22px; border-radius: 50%; background: var(--l-accent); color: var(--l-on-accent);
+  font-size: .8em; font-weight: 700; display: flex; align-items: center; justify-content: center;
+}
+
+.lesson .kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 10px 0; }
+.lesson .kpi { background: var(--l-accent-soft); border-radius: 6px; padding: 10px 12px; }
+.lesson .kpi .v { font-size: 1.4em; font-weight: 700; color: var(--l-accent); line-height: 1.2; }
+.lesson .kpi p { margin: 3px 0 0; font-size: .86em; }
+
+.lesson .split { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 10px 0; }
+.lesson .box { background: var(--l-card); border: 1px solid var(--l-line); border-radius: 6px; padding: 10px 12px; min-width: 0; }
+.lesson .box .hd { font-size: .82em; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--l-accent); margin-bottom: 4px; }
+.lesson .box ul { padding-left: 18px; margin: 4px 0; font-size: .92em; }
+.lesson .split.wrongright .box.wrong { border-color: var(--l-bad); }
+.lesson .split.wrongright .box.wrong .hd { color: var(--l-bad); }
+.lesson .split.wrongright .box.right { border-color: var(--l-good); }
+.lesson .split.wrongright .box.right .hd { color: var(--l-good); }
+
+/* Trace chain */
+.lesson .chain { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 10px 0; font-size: .92em; }
+.lesson .chain .lk { background: var(--l-card); border: 1px solid var(--l-accent); border-radius: 6px; padding: 5px 10px; }
+.lesson .chain .lk b { display: block; color: var(--l-accent); }
+.lesson .chain .lk span { color: var(--l-muted); font-size: .9em; }
+.lesson .chain .ar { color: var(--l-muted); font-weight: 700; }
+
+/* Prev / next buttons and footer from the artifact */
+.lesson .btns { display: flex; flex-wrap: wrap; gap: 8px; justify-content: space-between; margin: 24px 0 8px; }
+.lesson .btn {
+  display: inline-block; padding: 6px 12px; border: 1px solid var(--l-line); border-radius: 6px;
+  background: var(--l-card); color: var(--l-ink); text-decoration: none; font-size: .92em;
+}
+.lesson .btn:hover { border-color: var(--l-accent); }
+.lesson .btn.primary { background: var(--l-accent); border-color: var(--l-accent); color: var(--l-on-accent); }
+.lesson footer { margin-top: 28px; padding-top: 10px; border-top: 1px solid var(--l-line); color: var(--l-muted); font-size: .86em; }
+
+/* Figures (inline SVG diagrams). Shapes and text get their colours from these classes, so they follow the theme. */
+.lesson .fig { margin: 14px 0 16px; }
+.lesson .fig .sc { overflow-x: auto; }
+.lesson .fig svg, .lesson svg { display: block; width: 100%; max-width: 100%; height: auto; }
+.lesson .fig figcaption { color: var(--l-muted); font-size: .86em; margin-top: 6px; text-align: center; }
+.lesson .fig text { font-family: inherit; }
+.lesson .fig .t { font-size: 11.5px; fill: var(--l-ink); }
+.lesson .fig .ts { font-size: 10px; fill: var(--l-muted); }
+.lesson .fig .tb { font-weight: 700; }
+.lesson .fig .tm { font: 10px var(--l-mono); fill: var(--l-ink); }
+.lesson .fig .tmm { font: 10px var(--l-mono); fill: var(--l-muted); }
+.lesson .fig .tw-good { font-size: 11px; font-weight: 700; fill: var(--l-good); }
+.lesson .fig .tw-warn { font-size: 11px; font-weight: 700; fill: var(--l-bad); }
+.lesson .fig .tw-acc { font-size: 11px; font-weight: 700; fill: var(--l-accent); }
+.lesson .fig .lbl-bg { flood-color: var(--l-bg); }
+.lesson .fig .lane { fill: var(--l-soft); }
+.lesson .fig .lane2 { fill: var(--l-bg); }
+.lesson .fig .lane-lb { font-size: 11px; font-weight: 700; fill: var(--l-accent); }
+.lesson .fig .b-step { fill: var(--l-card); stroke: var(--l-accent); }
+.lesson .fig .b-sys { fill: var(--l-accent-soft); stroke: var(--l-accent); }
+.lesson .fig .b-opt { fill: var(--l-card); stroke: var(--l-muted); stroke-dasharray: 5 3; }
+.lesson .fig .b-done { fill: var(--l-good-soft); stroke: var(--l-good); }
+.lesson .fig .b-next { fill: var(--l-accent-soft); stroke: var(--l-accent); }
+.lesson .fig .b-code { fill: var(--l-soft); stroke: var(--l-muted); stroke-dasharray: 5 3; }
+.lesson .fig .b-warn { fill: var(--l-bad-soft); stroke: var(--l-bad); }
+.lesson .fig .b-hot { fill: var(--l-todo-soft); stroke: var(--l-todo); }
+.lesson .fig .hl { fill: none; stroke: var(--l-todo); stroke-width: 2.4; }
+.lesson .fig .halo { paint-order: stroke; stroke: var(--l-bg); stroke-width: 4px; stroke-linejoin: round; }
+.lesson .fig .ln { stroke: var(--l-muted); stroke-width: 1.3; fill: none; }
+.lesson .fig .ln-dash { stroke: var(--l-muted); stroke-width: 1.2; fill: none; stroke-dasharray: 4 3; }
+.lesson .fig .ln-warn { stroke: var(--l-bad); stroke-width: 1.3; fill: none; stroke-dasharray: 4 3; }
+.lesson .fig .ln-good { stroke: var(--l-good); stroke-width: 1.5; fill: none; }
+.lesson .fig .ln-acc { stroke: var(--l-accent); stroke-width: 1.6; fill: none; }
+.lesson .fig .ln-warn-solid { stroke: var(--l-bad); stroke-width: 1.6; fill: none; }
+.lesson .fig .ah { fill: var(--l-muted); }
+.lesson .fig .ah-warn { fill: var(--l-bad); }
+.lesson .fig .ah-acc { fill: var(--l-accent); }
+.lesson .fig .ah-good { fill: var(--l-good); }
+.lesson .fig .f-good { fill: var(--l-good); }
+.lesson .fig .tok { fill: var(--l-accent); stroke: var(--l-card); stroke-width: 1.5; }
+.lesson .fig .tok-warn { fill: var(--l-bad); stroke: var(--l-card); stroke-width: 1.5; }
+.lesson .fig .tok-good { fill: var(--l-good); stroke: var(--l-card); stroke-width: 1.5; }
+
+/* Step captions of the (formerly animated) figures: a plain numbered list, everything shown */
+.lesson .anim-steps { margin: 8px auto 0; padding: 0; max-width: 640px; list-style: none; counter-reset: las; font-size: .92em; }
+.lesson .anim-steps li { counter-increment: las; position: relative; padding: 3px 8px 3px 30px; margin: 2px 0; }
+.lesson .anim-steps li::before {
+  content: counter(las); position: absolute; left: 6px; top: 4px; width: 18px; height: 18px; border-radius: 50%;
+  background: var(--l-soft); color: var(--l-muted); border: 1px solid var(--l-line);
+  font-size: .76em; font-weight: 700; display: flex; align-items: center; justify-content: center;
+}
+
+/* Phones (≥ 360 px) */
+@media (max-width: 640px) {
+  .lesson h1 { font-size: 1.55em; }
+  .lesson h2 { font-size: 1.25em; }
+  .lesson .split, .lesson .kpis { grid-template-columns: 1fr; }
+  .lesson .meta, .lesson .gloss dl { grid-template-columns: 1fr; }
+  .lesson .meta dt { margin-top: 4px; }
+  .lesson .gloss dd { margin-bottom: 4px; }
+  /* Wide tables scroll inside .tw instead of being squeezed into 40–80 px columns. */
+  .lesson .tw > table:not(.fixed):has(> thead > tr > th:nth-child(4)) { min-width: 560px; }
+  .lesson .tw > table:not(.fixed):has(> thead > tr > th:nth-child(6)) { min-width: 840px; }
+  .lesson table.fixed { min-width: 1000px; }
+  .lesson td.nw, .lesson th.nw { white-space: normal; }
+  .lesson td code { overflow-wrap: anywhere; }
+  .lesson .btns { flex-direction: column; }
+}
+
+@media print {
+  .lesson details.toc, .lesson .btns, .lesson .lesson-practice { display: none; }
+  .lesson pre { white-space: pre-wrap; overflow-wrap: anywhere; overflow: visible; }
+  .lesson .pb { break-before: page; }
+  .lesson .fig, .lesson .gloss, .lesson .box, .lesson .kpi { break-inside: avoid; }
+}
+
+/* Phones: diagrams keep a readable size and scroll inside their own box (the page never scrolls sideways). */
+@media (max-width: 640px) {
+  .lesson .fig .sc { overflow-x: auto; }
+  .lesson .fig .sc svg { min-width: 600px; max-width: none; }
+}

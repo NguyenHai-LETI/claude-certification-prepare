@@ -1,0 +1,397 @@
+<p class="lesson-source">Nguồn: tài liệu ôn tập công khai <a href="https://claude.ai/artifact/3NhHr42CxTHGEs33N1ntFf" target="_blank" rel="noopener">artifact 3NhHr42…</a> (bài 21). Không thuộc và không được Anthropic xác nhận.</p>
+<header class="cover">
+  <div class="eyebrow">Luyện thi chứng chỉ Claude · Bài 21</div>
+  <h1>Thực hành và tổng ôn CCAR-F <span class="ja">CCAR-F · Preparation Exercises · Scope · Sample lessons</span></h1>
+  <p class="lead">Bốn bài lab theo exam guide: agent hỗ trợ khách hàng có cổng chặn và escalation, cấu hình Claude Code cho cả đội, pipeline trích xuất có validate, retry và Batches, hệ nghiên cứu nhiều agent giữ nguồn. Phạm vi có ra và không ra, bảng exam guide so với tài liệu hiện hành, 12 bài học từ câu mẫu.</p>
+  <dl class="meta">
+    <dt>Kỳ thi</dt><dd>CCAR-F D1–D5 (cả 6 tình huống)</dd>
+    <dt>Phục vụ</dt><dd><span class="tag xt3">CCAR-F</span> 7 mục · <a href="#xsum">bảng nhãn từng mục</a></dd>
+
+    <dt>Nguồn</dt><dd>Exam guide CCAR-F v1.0 mục 8 Preparation Exercises, mục 9 Sample Questions, mục 17 Appendix; ghi chú «Đề cương chi tiết CCAR-F», «Câu hỏi mẫu và chiến thuật CCAR-F»</dd>
+    <dt>Cập nhật</dt><dd><span class="status">v0.22 · 2026-11-18</span> · theo exam guide v1.0</dd>
+  </dl>
+</header>
+
+<details class="toc">
+<summary>Mục lục</summary>
+
+    <ol>
+      <li><a href="#lab-ex1"><span class="n">1</span><span class="tx">Lab Ex1: agent hỗ trợ khách hàng có escalation</span><span class="xds" aria-hidden="true"><i class="xd xt3" title="CCAR-F"></i></span></a></li>
+      <li><a href="#lab-ex2"><span class="n">2</span><span class="tx">Lab Ex2: cấu hình Claude Code cho cả đội</span><span class="xds" aria-hidden="true"><i class="xd xt3" title="CCAR-F"></i></span></a></li>
+      <li><a href="#lab-ex3"><span class="n">3</span><span class="tx">Lab Ex3: pipeline trích xuất có cấu trúc</span><span class="xds" aria-hidden="true"><i class="xd xt3" title="CCAR-F"></i></span></a></li>
+      <li><a href="#lab-ex4"><span class="n">4</span><span class="tx">Lab Ex4: hệ nghiên cứu nhiều agent</span><span class="xds" aria-hidden="true"><i class="xd xt3" title="CCAR-F"></i></span></a></li>
+      <li><a href="#pham-vi"><span class="n">5</span><span class="tx">Phạm vi đề CCAR-F</span><span class="xds" aria-hidden="true"><i class="xd xt3" title="CCAR-F"></i></span></a></li>
+      <li><a href="#exam-thuc-te"><span class="n">6</span><span class="tx">Exam guide và tài liệu hiện hành</span><span class="xds" aria-hidden="true"><i class="xd xt3" title="CCAR-F"></i></span></a></li>
+      <li><a href="#cau-mau"><span class="n">7</span><span class="tx">Mười hai bài học từ câu mẫu CCAR-F</span><span class="xds" aria-hidden="true"><i class="xd xt3" title="CCAR-F"></i></span></a></li>
+    </ol>
+
+</details>
+
+<details class="xsum" id="xsum">
+<summary>Mục nào phục vụ bài thi nào</summary>
+<p class="xnote">Mã đầu là bài thi chính của mục. <b>Nền</b>: cần để hiểu các mục sau. <b>Nâng cao</b>: ngoài phạm vi các exam guide. Ôn cho một bài thi thì đọc các mục có mã của bài đó trước.</p>
+<div class="tw"><table>
+<thead><tr><th>Mục</th><th>Bài thi</th><th>Ghi chú</th></tr></thead>
+<tbody>
+<tr><td><a href="#lab-ex1">1. Lab Ex1: agent hỗ trợ khách hàng có escalation</a></td><td><span class="tag xt3">CCAR-F D1</span> <span class="tag xt3">CCAR-F D2</span> <span class="tag xt3">CCAR-F D5</span></td><td></td></tr>
+<tr><td><a href="#lab-ex2">2. Lab Ex2: cấu hình Claude Code cho cả đội</a></td><td><span class="tag xt3">CCAR-F D3</span> <span class="tag xt3">CCAR-F D2</span></td><td></td></tr>
+<tr><td><a href="#lab-ex3">3. Lab Ex3: pipeline trích xuất có cấu trúc</a></td><td><span class="tag xt3">CCAR-F D4</span> <span class="tag xt3">CCAR-F D5</span></td><td></td></tr>
+<tr><td><a href="#lab-ex4">4. Lab Ex4: hệ nghiên cứu nhiều agent</a></td><td><span class="tag xt3">CCAR-F D1</span> <span class="tag xt3">CCAR-F D5</span></td><td></td></tr>
+<tr><td><a href="#pham-vi">5. Phạm vi đề CCAR-F</a></td><td><span class="tag xt3">CCAR-F D5</span> <span class="tag xt3">CCAR-F</span></td><td></td></tr>
+<tr><td><a href="#exam-thuc-te">6. Exam guide và tài liệu hiện hành</a></td><td><span class="tag xt3">CCAR-F D3</span> <span class="tag xt3">CCAR-F</span></td><td></td></tr>
+<tr><td><a href="#cau-mau">7. Mười hai bài học từ câu mẫu CCAR-F</a></td><td><span class="tag xt3">CCAR-F</span></td><td></td></tr>
+</tbody></table></div>
+</details>
+
+<h2 id="lab-ex1">1. Lab Ex1: agent hỗ trợ khách hàng có escalation</h2>
+<p class="xtags"><span class="tag xt3">CCAR-F D1</span> <span class="tag xt3">CCAR-F D2</span> <span class="tag xt3">CCAR-F D5</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Một nhân viên quầy được giao bốn việc: tra khách, tra đơn, hoàn tiền, chuyển cấp trên. Quầy có một quy định cứng: hoàn tiền trên $500 phải có quản lý ký. Quy định đó không nằm trong lời dặn miệng, mà nằm ở máy tính tiền: máy không cho in phiếu hoàn trên $500.
+</div>
+<p><strong>Mục tiêu</strong>: tự dựng một vòng lặp agent có tool, lỗi có cấu trúc, cổng chặn bằng code và escalation. Không cần gọi API thật; viết code và tự kiểm theo tiêu chí ở cuối mục. Domain: D1, D2, D5. Lý thuyết ở <a href="/notes/lessons/03-agent.html">bài 03</a>, <a href="/notes/lessons/04-tool-mcp.html">bài 04</a>, <a href="/notes/lessons/07-context.html#escalation">bài 07</a>.</p>
+<h3>Bước 1: bốn tool, hai tool dễ nhầm</h3>
+<pre><code>tools = [
+  {"name": "get_customer",
+   "description": "Look up a customer by email or phone and return a verified customer_id. "
+                  "Use FIRST, before any order or refund action. Does not return orders.",
+   "input_schema": {"type": "object", "properties": {
+       "email": {"type": "string"}, "phone": {"type": "string"}}}},
+  {"name": "lookup_order",
+   "description": "Return one order's status and amount. Requires a verified customer_id "
+                  "from get_customer and an order_id. Use for 'where is my order' questions.",
+   "input_schema": {"type": "object", "properties": {
+       "customer_id": {"type": "string"}, "order_id": {"type": "string"}},
+       "required": ["customer_id", "order_id"]}},
+  {"name": "process_refund", "description": "...", "input_schema": {...}},
+  {"name": "escalate_to_human", "description": "...", "input_schema": {...}}
+]</code></pre>
+<p><code>get_customer</code> và <code>lookup_order</code> là cặp dễ nhầm. Mô tả nói rõ mỗi tool trả gì, dùng khi nào, cần gì đầu vào, và ranh giới "không trả đơn hàng".</p>
+<h3>Bước 2: vòng lặp dựa trên <code>stop_reason</code></h3>
+<pre><code>messages = [{"role": "user", "content": user_text}]
+while True:
+    resp = client.messages.create(model=MODEL, max_tokens=4096,
+                                  system=SYSTEM, tools=tools, messages=messages)
+    messages.append({"role": "assistant", "content": resp.content})
+    if resp.stop_reason != "tool_use":          # end_turn: trả lời xong
+        break
+    results = [run_tool_with_gate(b) for b in resp.content if b.type == "tool_use"]
+    messages.append({"role": "user", "content": results})   # mọi tool_result trong MỘT message</code></pre>
+<h3>Bước 3: lỗi có cấu trúc</h3>
+<pre><code>{"type": "tool_result", "tool_use_id": block.id, "is_error": true,
+ "content": json.dumps({"errorCategory": "business",        # transient | validation | business | permission
+                        "isRetryable": false,
+                        "message": "Refunds above $500 need manager approval."})}</code></pre>
+<h3>Bước 4: cổng chặn bằng code</h3>
+<pre><code>def run_tool_with_gate(block):
+    if block.name in ("lookup_order", "process_refund") and not session.verified_customer_id:
+        return error(block, "validation", False, "Call get_customer first to verify the customer.")
+    if block.name == "process_refund" and block.input["amount"] &gt; 500:
+        ticket = escalate_to_human(summary_for_human(block))       # chuyển luồng
+        return error(block, "business", False, f"Escalated to a manager: ticket {ticket}.")
+    return execute(block)</code></pre>
+<p>Trong Agent SDK, cùng logic này đặt ở hook <code>PreToolUse</code> (chặn hoặc chuyển hướng trước khi tool chạy). Hook là cơ chế tất định; dặn trong system prompt chỉ là xác suất.</p>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 220" role="img" aria-label="Cổng chặn hoàn tiền: Claude gọi process_refund, code kiểm tra đã xác minh khách và số tiền, dưới 500 thì chạy, trên 500 thì chuyển cho người và trả lỗi nghiệp vụ cho Claude">
+    <defs><marker id="m2101" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker></defs>
+    <rect x="10" y="80" width="140" height="56" rx="6" class="b-sys"/>
+    <text x="80" y="104" class="t tb" text-anchor="middle">1 Claude gọi</text>
+    <text x="80" y="120" class="ts" text-anchor="middle">process_refund($720)</text>
+    <rect x="200" y="70" width="170" height="76" rx="6" class="b-hot"/>
+    <text x="285" y="94" class="t tb" text-anchor="middle">2 Cổng bằng code</text>
+    <text x="285" y="112" class="ts" text-anchor="middle">đã có customer_id xác minh?</text>
+    <text x="285" y="126" class="ts" text-anchor="middle">số tiền &gt; $500?</text>
+    <path class="ln-acc flow" d="M150,108 H198" marker-end="url(#m2101)"/>
+    <rect x="430" y="14" width="200" height="56" rx="6" class="b-done"/>
+    <text x="530" y="38" class="t tb" text-anchor="middle">3a ≤ $500: chạy tool</text>
+    <text x="530" y="54" class="ts" text-anchor="middle">trả tool_result bình thường</text>
+    <path class="ln-acc flow" d="M370,90 L428,48" marker-end="url(#m2101)"/>
+    <rect x="430" y="146" width="200" height="66" rx="6" class="b-warn"/>
+    <text x="530" y="168" class="t tb" text-anchor="middle">3b &gt; $500: escalate</text>
+    <text x="530" y="184" class="ts" text-anchor="middle">tóm tắt có cấu trúc cho người;</text>
+    <text x="530" y="198" class="ts" text-anchor="middle">trả lỗi business, isRetryable false</text>
+    <path class="ln-acc flow" d="M370,126 L428,176" marker-end="url(#m2101)"/>
+    <circle class="tok" r="7" style="transform:translate(530px,138px)"/>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Claude quyết định gọi <code>process_refund</code> với $720.</li>
+    <li>Code chặn trước khi tool chạy: kiểm xác minh khách và ngưỡng tiền.</li>
+    <li>Trong ngưỡng: tool chạy như bình thường.</li>
+    <li>Vượt ngưỡng: chuyển cho người kèm tóm tắt, trả lỗi nghiệp vụ để Claude giải thích với khách.</li>
+  </ol>
+  <figcaption>Hình 1. Quy tắc nghiệp vụ bắt buộc nằm ở code, không nằm ở lời dặn.</figcaption>
+</figure>
+<h3>Bước 5: tin nhắn nhiều vấn đề</h3>
+<p>Thử: "Đơn #123 chưa tới, đơn #456 bị trừ tiền hai lần, và tôi muốn đổi email." Agent nên tách ba việc, xử lý từng việc (tra đơn, kiểm tra trùng tiền, đổi thông tin), rồi trả <strong>một</strong> câu trả lời tổng hợp.</p>
+<div class="tw"><table>
+  <thead><tr><th>Tiêu chí tự kiểm</th><th>Đạt khi</th></tr></thead>
+  <tbody>
+    <tr><td>Chọn tool</td><td>Câu "đơn của tôi đâu" luôn đi <code>get_customer</code> rồi <code>lookup_order</code></td></tr>
+    <tr><td>Dừng vòng lặp</td><td>Dừng theo <code>stop_reason</code>, không theo chữ "xong" trong câu trả lời</td></tr>
+    <tr><td>Lỗi</td><td>Timeout thì thử lại; lỗi nghiệp vụ thì giải thích cho khách, không thử lại</td></tr>
+    <tr><td>Cổng</td><td>Không có đường nào để hoàn tiền trên $500 hoặc khi chưa xác minh khách</td></tr>
+    <tr><td>Bàn giao</td><td>Người nhận ca thấy customer_id, nguyên nhân, số tiền, đề xuất, không cần đọc transcript</td></tr>
+  </tbody>
+</table></div>
+<div class="insight"><strong>Cốt lõi.</strong> Mô tả tool tốt cho việc chọn tool; <code>stop_reason</code> cho việc dừng; lỗi có cấu trúc cho việc phục hồi; code cho quy tắc bắt buộc.</div>
+
+<h2 id="lab-ex2">2. Lab Ex2: cấu hình Claude Code cho cả đội</h2>
+<p class="xtags"><span class="tag xt3">CCAR-F D3</span> <span class="tag xt3">CCAR-F D2</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Một văn phòng có nội quy chung dán ở sảnh, quy định riêng dán ở cửa từng phòng, sổ tay quy trình để trên kệ, và tủ khoá cá nhân của từng người. Ai mới vào cũng thấy nội quy sảnh; tủ khoá cá nhân thì không ai khác thấy.
+</div>
+<p><strong>Mục tiêu</strong>: dựng cấu hình Claude Code mà mọi người clone repo đều nhận được đúng chuẩn. Domain: D3, D2. Lý thuyết ở <a href="/notes/lessons/05-claude-code.html">bài 05</a>.</p>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 238" role="img" aria-label="Cây cấu hình Claude Code: phần commit vào repo gồm CLAUDE.md, .claude/rules, .claude/skills, .mcp.json; phần cá nhân gồm ~/.claude/CLAUDE.md và ~/.claude.json">
+    <rect x="10" y="10" width="390" height="218" rx="6" class="b-step"/>
+    <text x="24" y="32" class="t tb">Trong repo (commit, cả đội dùng)</text>
+    <text x="24" y="56" class="t">CLAUDE.md</text><text x="222" y="56" class="ts">chuẩn code, lệnh test: luôn nạp</text>
+    <text x="24" y="80" class="t">.claude/rules/api.md</text><text x="222" y="80" class="ts">paths: ["src/api/**/*"]</text>
+    <text x="24" y="104" class="t">.claude/rules/testing.md</text><text x="222" y="104" class="ts">paths: ["**/*.test.*"]</text>
+    <text x="24" y="128" class="t">.claude/skills/deps/SKILL.md</text><text x="222" y="128" class="ts">context: fork, allowed-tools</text>
+    <text x="24" y="152" class="t">.claude/commands/review.md</text><text x="222" y="152" class="ts">lệnh /review cho mọi người</text>
+    <text x="24" y="176" class="t">.mcp.json</text><text x="222" y="176" class="ts">GitHub MCP, ${GITHUB_TOKEN}</text>
+    <text x="24" y="200" class="t">.claude/settings.json</text><text x="222" y="200" class="ts">allow, deny cho cả đội</text>
+    <rect x="420" y="10" width="210" height="218" rx="6" class="b-done"/>
+    <text x="434" y="32" class="t tb">Máy cá nhân (không commit)</text>
+    <text x="434" y="56" class="t">~/.claude/CLAUDE.md</text>
+    <text x="434" y="72" class="ts">thói quen riêng</text>
+    <text x="434" y="100" class="t">~/.claude.json</text>
+    <text x="434" y="116" class="ts">MCP server thử nghiệm</text>
+    <text x="434" y="144" class="t">~/.claude/skills/</text>
+    <text x="434" y="160" class="ts">skill riêng, đặt tên khác</text>
+    <text x="434" y="188" class="t">.claude/settings.local.json</text>
+    <text x="434" y="204" class="ts">tự gitignore</text>
+  </svg></div>
+  <figcaption>Hình 2. Thứ cả đội cần nằm trong repo; thứ cá nhân nằm ở thư mục nhà.</figcaption>
+</figure>
+<pre><code># .claude/rules/testing.md
+---
+paths: ["**/*.test.*"]
+---
+Use the shared fixtures in tests/fixtures. One behavior per test.
+
+# .claude/skills/deps/SKILL.md
+---
+name: analyze-deps
+description: Analyze dependency graph and report outdated or risky packages.
+context: fork
+allowed-tools: Read, Grep, Glob
+argument-hint: "[package-dir]"
+---
+
+// .mcp.json
+{ "mcpServers": { "github": { "command": "github-mcp",
+    "env": { "GITHUB_TOKEN": "${GITHUB_TOKEN}" } } } }</code></pre>
+<div class="tw"><table>
+  <thead><tr><th>Thử</th><th>Kết quả mong đợi</th></tr></thead>
+  <tbody>
+    <tr><td>Thành viên mới clone repo</td><td>Có chuẩn code, lệnh <code>/review</code>, MCP GitHub (với token của chính họ)</td></tr>
+    <tr><td>Sửa <code>src/api/users.ts</code></td><td>Chỉ rule API được nạp; sửa file test thì rule test được nạp</td></tr>
+    <tr><td>Chạy <code>/analyze-deps</code></td><td>Kết quả dài nằm trong context riêng, hội thoại chính chỉ nhận tóm tắt</td></tr>
+    <tr><td>MCP cá nhân trong <code>~/.claude.json</code></td><td>Dùng được cùng lúc với server của project</td></tr>
+    <tr><td>Sửa một bug một file có stack trace</td><td>Làm trực tiếp</td></tr>
+    <tr><td>Migration thư viện qua nhiều file, nhiều cách làm hợp lệ</td><td>Plan mode trước</td></tr>
+  </tbody>
+</table></div>
+<div class="insight"><strong>Cốt lõi.</strong> "Cả đội", "khi clone repo" thì đặt ở project và commit. "Cá nhân", "thử nghiệm" thì đặt ở thư mục nhà. Quy ước theo loại file rải khắp repo thì dùng rule có <code>paths</code>.</div>
+
+<h2 id="lab-ex3">3. Lab Ex3: pipeline trích xuất có cấu trúc</h2>
+<p class="xtags"><span class="tag xt3">CCAR-F D4</span> <span class="tag xt3">CCAR-F D5</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Nhập hoá đơn vào phần mềm kế toán: ô nào hoá đơn không có thì để trống, không tự bịa. Nhập sai định dạng ngày thì phần mềm báo lỗi và bạn sửa đúng ô đó. Hoá đơn nào mờ thì để riêng cho kế toán trưởng xem.
+</div>
+<p><strong>Mục tiêu</strong>: trích xuất bằng tool_use với JSON schema, validate và retry, xử lý theo lô, chuyển ca khó cho người. Domain: D4, D5. Lý thuyết ở <a href="/notes/lessons/06-prompt-output.html">bài 06</a>, <a href="/notes/lessons/07-context.html#human-review">bài 07 §5</a>.</p>
+<pre><code>{"name": "extract_invoice", "input_schema": {"type": "object",
+  "properties": {
+    "invoice_number": {"type": "string"},
+    "due_date":       {"type": ["string", "null"]},       # có thể không có: nullable
+    "category":       {"enum": ["goods", "services", "other", "unclear"]},
+    "category_detail":{"type": ["string", "null"]},       # mô tả khi category = other
+    "stated_total":   {"type": "number"},
+    "calculated_total": {"type": "number"},
+    "conflict_detected": {"type": "boolean"},
+    "field_confidence": {"type": "object"}},
+  "required": ["invoice_number", "category", "stated_total"]}}</code></pre>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 214" role="img" aria-label="Vòng validate và retry: trích xuất, validate, lỗi định dạng thì gửi lại kèm tài liệu, kết quả lỗi và thông báo lỗi; thiếu thông tin trong tài liệu thì không retry mà để null hoặc chuyển người">
+    <defs><marker id="m2102" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker></defs>
+    <rect x="10" y="70" width="130" height="56" rx="6" class="b-sys"/>
+    <text x="75" y="94" class="t tb" text-anchor="middle">1 Trích xuất</text>
+    <text x="75" y="110" class="ts" text-anchor="middle">tool_use + schema</text>
+    <rect x="190" y="70" width="130" height="56" rx="6" class="b-hot"/>
+    <text x="255" y="94" class="t tb" text-anchor="middle">2 Validate</text>
+    <text x="255" y="110" class="ts" text-anchor="middle">Pydantic, quy tắc</text>
+    <path class="ln-acc flow" d="M140,98 H188" marker-end="url(#m2102)"/>
+    <rect x="380" y="8" width="250" height="62" rx="6" class="b-step"/>
+    <text x="505" y="30" class="t tb" text-anchor="middle">3a Lỗi định dạng, cấu trúc: retry</text>
+    <text x="505" y="46" class="ts" text-anchor="middle">gửi tài liệu gốc + kết quả lỗi</text>
+    <text x="505" y="60" class="ts" text-anchor="middle">+ lỗi validate cụ thể</text>
+    <path class="ln-acc flow" d="M320,84 L378,48" marker-end="url(#m2102)"/>
+    <rect x="380" y="132" width="250" height="74" rx="6" class="b-warn"/>
+    <text x="505" y="154" class="t tb" text-anchor="middle">3b Tài liệu không có thông tin</text>
+    <text x="505" y="170" class="ts" text-anchor="middle">retry vô ích: để null;</text>
+    <text x="505" y="184" class="ts" text-anchor="middle">tin cậy thấp hoặc mâu thuẫn tổng:</text>
+    <text x="505" y="198" class="ts" text-anchor="middle">chuyển người xem</text>
+    <path class="ln-acc flow" d="M320,112 L378,160" marker-end="url(#m2102)"/>
+    <circle class="tok" r="7" style="transform:translate(505px,124px)"/>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Claude trích xuất qua tool có schema: hết lỗi cú pháp JSON.</li>
+    <li>Code validate ngữ nghĩa: tổng có khớp không, ngày có hợp lệ không.</li>
+    <li>Sai định dạng hoặc cấu trúc: retry kèm tài liệu, kết quả lỗi, thông báo lỗi cụ thể.</li>
+    <li>Thông tin không có trong tài liệu: retry không giúp được; để null hoặc chuyển người.</li>
+  </ol>
+  <figcaption>Hình 3. Biết lúc nào retry có ích, lúc nào không.</figcaption>
+</figure>
+<h3>Theo lô và SLA</h3>
+<p>100 tài liệu qua Message Batches, mỗi request có <code>custom_id</code>. Kết quả về không theo thứ tự: ghép bằng <code>custom_id</code>. Mục lỗi: chỉ gửi lại mục đó, có điều chỉnh (chia nhỏ tài liệu quá dài). Tính thời gian: chờ tới lần gửi lô + tối đa 24 giờ xử lý phải nằm trong SLA. Ví dụ SLA 30 giờ thì gửi lô ít nhất mỗi 6 giờ.</p>
+<div class="tw"><table>
+  <thead><tr><th>Tiêu chí tự kiểm</th><th>Đạt khi</th></tr></thead>
+  <tbody>
+    <tr><td>Trường không có trong tài liệu</td><td>Trả <code>null</code>, không bịa</td></tr>
+    <tr><td>Loại ngoài danh sách</td><td><code>other</code> kèm <code>category_detail</code></td></tr>
+    <tr><td>Retry</td><td>Ghi lại lỗi nào sửa được qua retry, lỗi nào không</td></tr>
+    <tr><td>Few-shot</td><td>2–4 ví dụ cho tài liệu cấu trúc khác nhau (trích dẫn nội dòng và thư mục, bảng và văn xuôi)</td></tr>
+    <tr><td>Người duyệt</td><td>Độ chính xác đo theo loại tài liệu và theo trường, lấy mẫu phân tầng, trước khi giảm duyệt tay</td></tr>
+  </tbody>
+</table></div>
+<div class="insight"><strong>Cốt lõi.</strong> Schema loại lỗi cú pháp, không loại lỗi ngữ nghĩa. Nullable chống bịa. Retry chỉ có ích khi thông tin có trong tài liệu.</div>
+
+<h2 id="lab-ex4">4. Lab Ex4: hệ nghiên cứu nhiều agent</h2>
+<p class="xtags"><span class="tag xt3">CCAR-F D1</span> <span class="tag xt3">CCAR-F D5</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Trưởng nhóm nghiên cứu giao hai trợ lý cùng lúc: một người tìm tài liệu trên mạng, một người đọc báo cáo nội bộ. Mỗi người nộp phiếu ghi chép có cột "nhận định, trích đoạn, nguồn, ngày". Ai không truy cập được nguồn thì ghi rõ đã thử gì và còn thiếu gì.
+</div>
+<p><strong>Mục tiêu</strong>: coordinator giao việc song song, truyền context rõ, giữ nguồn gốc, lan truyền lỗi có cấu trúc. Domain: D1, D2, D5. Lý thuyết ở <a href="/notes/lessons/03-agent.html#coordinator">bài 03</a>, <a href="/notes/lessons/07-context.html#nguon-goc">bài 07 §6</a>.</p>
+<pre><code># Coordinator: allowedTools phải có "Task" để tạo subagent
+options = ClaudeAgentOptions(allowed_tools=["Task"], agents={
+    "web-search": AgentDefinition(description="Search the web for sources...",
+                                  prompt="...", tools=["WebSearch", "WebFetch"]),
+    "doc-analysis": AgentDefinition(description="Analyze internal reports...",
+                                    prompt="...", tools=["Read", "Grep"])})
+# Song song: coordinator phát HAI lời gọi Task trong CÙNG một response.
+# Prompt cho subagent ghi rõ mọi thứ nó cần: câu hỏi, phạm vi, định dạng kết quả.</code></pre>
+<pre><code># Mỗi phát hiện của subagent
+{"claim": "...", "evidence": "trích đoạn nguyên văn", "source": "URL hoặc tên tài liệu",
+ "published": "2026-09-14"}
+# Khi lỗi
+{"status": "partial", "errorType": "timeout", "attemptedQuery": "...",
+ "partialResults": [...], "alternatives": ["thử nguồn X"]}</code></pre>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 214" role="img" aria-label="Hệ nghiên cứu nhiều agent: coordinator giao song song cho subagent tìm web và subagent phân tích tài liệu, mỗi subagent trả phát hiện có nguồn hoặc lỗi có cấu trúc, subagent tổng hợp giữ nguồn và ghi chỗ thiếu">
+    <defs><marker id="m2103" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah"/></marker></defs>
+    <rect x="230" y="8" width="180" height="44" rx="6" class="b-sys"/>
+    <text x="320" y="27" class="t tb" text-anchor="middle">Coordinator</text>
+    <text x="320" y="43" class="ts" text-anchor="middle">2 lời gọi Task, 1 response</text>
+    <rect x="30" y="86" width="200" height="56" rx="6" class="b-step"/>
+    <text x="130" y="108" class="t tb" text-anchor="middle">Subagent tìm web</text>
+    <text x="130" y="125" class="ts" text-anchor="middle">claim, evidence, source, date</text>
+    <rect x="410" y="86" width="200" height="56" rx="6" class="b-warn"/>
+    <text x="510" y="108" class="t tb" text-anchor="middle">Subagent phân tích</text>
+    <text x="510" y="125" class="ts" text-anchor="middle">timeout: lỗi + kết quả một phần</text>
+    <path d="M280,52 L150,84" class="ln" marker-end="url(#m2103)"/>
+    <path d="M360,52 L490,84" class="ln" marker-end="url(#m2103)"/>
+    <rect x="170" y="164" width="300" height="44" rx="6" class="b-done"/>
+    <text x="320" y="183" class="t tb" text-anchor="middle">Tổng hợp</text>
+    <text x="320" y="199" class="ts" text-anchor="middle">giữ nguồn; số liệu mâu thuẫn ghi cả hai; ghi chỗ thiếu</text>
+    <path d="M130,142 L250,162" class="ln" marker-end="url(#m2103)"/>
+    <path d="M510,142 L390,162" class="ln-dash" marker-end="url(#m2103)"/>
+  </svg></div>
+  <figcaption>Hình 4. Giao song song, nhận về dữ liệu có cấu trúc, tổng hợp có nguồn và có chú thích độ phủ.</figcaption>
+</figure>
+<div class="tw"><table>
+  <thead><tr><th>Tiêu chí tự kiểm</th><th>Đạt khi</th></tr></thead>
+  <tbody>
+    <tr><td>Song song</td><td>Hai Task trong một response; thời gian giảm so với gọi lần lượt</td></tr>
+    <tr><td>Context</td><td>Subagent nhận đủ thông tin trong prompt, không dựa vào việc "thừa hưởng" hội thoại</td></tr>
+    <tr><td>Nguồn gốc</td><td>Báo cáo cuối giữ cặp nhận định và nguồn</td></tr>
+    <tr><td>Lỗi</td><td>Coordinator nhận lỗi có cấu trúc, đi tiếp với kết quả một phần, ghi rõ phần thiếu</td></tr>
+    <tr><td>Mâu thuẫn</td><td>Hai nguồn uy tín khác số liệu: giữ cả hai kèm nguồn, tách phần đã xác lập và phần còn tranh cãi</td></tr>
+  </tbody>
+</table></div>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Trong Agent SDK hiện hành, tool tạo subagent có thể mang tên <code>Agent</code>; exam guide v1.0 dùng <code>Task</code>. Làm bài thi theo <code>Task</code>.</div>
+
+<h2 id="pham-vi">5. Phạm vi đề CCAR-F</h2>
+<p class="xtags"><span class="tag xt3">CCAR-F D5</span> <span class="tag xt3">CCAR-F</span></p>
+<p>Exam guide liệt kê rõ chủ đề có ra và không ra. Dùng danh sách "không ra" để không học thừa và để loại nhanh phương án nói về các chủ đề đó.</p>
+<div class="split">
+  <div class="box"><div class="hd">Có ra</div>
+    <ul>
+      <li>Vòng lặp agent theo <code>stop_reason</code>; điều kiện dừng</li>
+      <li>Coordinator, subagent, phân rã, chạy song song, lặp tinh chỉnh</li>
+      <li>Truyền context cho subagent, lưu trạng thái, khôi phục bằng manifest</li>
+      <li>Thiết kế tool, tách hay gộp, đặt tên; resource và tool của MCP</li>
+      <li>Cấu hình MCP project và user, biến môi trường</li>
+      <li>Lỗi có cấu trúc, phục hồi tại chỗ trước khi đẩy lên</li>
+      <li>Escalation theo tiêu chí, tôn trọng yêu cầu khách, chính sách có khoảng trống</li>
+      <li>CLAUDE.md, <code>@import</code>, rules có glob, command, skill</li>
+      <li>Plan mode hay làm trực tiếp; tinh chỉnh lặp</li>
+      <li>Output qua tool_use, nullable, <code>tool_choice</code>; few-shot</li>
+      <li>Batches; tối ưu context; human review; nguồn gốc thông tin</li>
+    </ul></div>
+  <div class="box"><div class="hd">Không ra</div>
+    <ul>
+      <li>Fine-tuning, huấn luyện model riêng</li>
+      <li>Xác thực API, billing, quản lý tài khoản</li>
+      <li>Chi tiết ngôn ngữ lập trình, framework</li>
+      <li>Triển khai, host MCP server</li>
+      <li>Kiến trúc nội bộ, quá trình huấn luyện, Constitutional AI, RLHF</li>
+      <li>Embedding, vector database</li>
+      <li>Computer use, vision</li>
+      <li>Streaming, SSE</li>
+      <li>Rate limit, quota, tính giá</li>
+      <li>OAuth, xoay vòng key</li>
+      <li>Cấu hình AWS, GCP, Azure; benchmark</li>
+      <li>Chi tiết prompt caching (chỉ cần biết có); thuật toán tokenization</li>
+    </ul></div>
+</div>
+<div class="alert"><strong>Bẫy.</strong> Phương án "dùng vector database", "chuyển sang streaming", "tăng rate limit" trong một câu CCAR-F hiếm khi là đáp án, vì chủ đề nằm ngoài phạm vi. Nhiều mục trong cột phải lại có trong CCDV-F (streaming, caching, rate limit): đừng mang suy luận CCAR-F sang CCDV-F.</div>
+
+<h2 id="exam-thuc-te">6. Exam guide và tài liệu hiện hành</h2>
+<p class="xtags"><span class="tag xt3">CCAR-F D3</span> <span class="tag xt3">CCAR-F</span></p>
+<p>CCAR-F không đổi đề, nhưng sản phẩm thì đổi. Khi hai bên khác nhau, <strong>trả lời theo exam guide</strong>. Bảng gom các khác biệt đã ghi rải rác ở các bài:</p>
+<div class="tw"><table>
+  <thead><tr><th>Chủ đề</th><th>Exam guide v1.0</th><th>Tài liệu 11/2026</th><th>Bài</th></tr></thead>
+  <tbody>
+    <tr><td>Tool tạo subagent</td><td><code>Task</code>, <code>allowedTools</code> có <code>"Task"</code></td><td>Có thể tên <code>Agent</code></td><td><a href="/notes/lessons/03-agent.html#task">03 §4</a></td></tr>
+    <tr><td><code>tool_choice</code> ép buộc</td><td><code>"any"</code> và tool cụ thể là cách đảm bảo có output</td><td>Một số model mới trả 400; dùng <code>strict</code> hoặc structured outputs</td><td><a href="/notes/lessons/04-tool-mcp.html#tool-choice">04 §4</a></td></tr>
+    <tr><td>Extended thinking</td><td><code>budget_tokens</code></td><td>Adaptive thinking và effort; model mới bỏ <code>budget_tokens</code></td><td><a href="/notes/lessons/02-model-toi-uu.html#thinking">02 §4</a></td></tr>
+    <tr><td>Sampling</td><td><code>temperature</code></td><td>Phiên bản API 2026-10-21 bỏ <code>temperature</code>, <code>top_p</code>, <code>top_k</code></td><td><a href="/notes/lessons/19-api-nang-cao.html#rest-sdk">19 §1</a></td></tr>
+    <tr><td>Context dài</td><td>Case facts, cắt trường, tóm tắt ở đầu, <code>/compact</code></td><td>Có thêm compaction phía server, context editing</td><td><a href="/notes/lessons/07-context.html#case-facts">07 §1</a></td></tr>
+    <tr><td>MCP transport</td><td>stdio, HTTP</td><td>Streamable HTTP thay HTTP+SSE cũ</td><td><a href="/notes/lessons/04-tool-mcp.html#mcp">04 §6</a></td></tr>
+    <tr><td>Claude Code headless</td><td><code>-p</code>, <code>--output-format json</code>, <code>--json-schema</code></td><td>Thêm <code>--bare</code> cho script; chế độ này nằm trong Agent SDK</td><td><a href="/notes/lessons/05-claude-code.html#ci-cd">05 §6</a></td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="cau-mau">7. Mười hai bài học từ câu mẫu CCAR-F</h2>
+<p class="xtags"><span class="tag xt3">CCAR-F</span></p>
+<p>Tóm tắt bài học từ 12 câu mẫu của exam guide, xếp theo tình huống (không chép đề):</p>
+<div class="tw"><table>
+  <thead><tr><th>Tình huống</th><th>Vấn đề</th><th>Hướng đúng</th><th>Nguyên tắc</th></tr></thead>
+  <tbody>
+    <tr><td rowspan="3">Hỗ trợ khách hàng</td><td>Agent bỏ qua bước xác minh khách</td><td>Chặn bằng code trước <code>lookup_order</code>, <code>process_refund</code></td><td>Hậu quả tài chính cần tất định</td></tr>
+    <tr><td>Gọi nhầm hai tool có mô tả sơ sài</td><td>Viết lại mô tả tool</td><td>Sửa gốc bằng cách nhẹ nhất</td></tr>
+    <tr><td>Escalate sai chỗ</td><td>Tiêu chí escalation rõ kèm few-shot</td><td>Điểm tự tin, sentiment không đáng tin</td></tr>
+    <tr><td rowspan="3">Claude Code</td><td>Lệnh dùng chung cho đội</td><td><code>.claude/commands/</code> trong repo</td><td>Chia sẻ qua git là project scope</td></tr>
+    <tr><td>Tách monolith</td><td>Plan mode trước</td><td>Phức tạp đã rõ thì không "làm rồi tính"</td></tr>
+    <tr><td>Quy ước cho file test rải khắp repo</td><td>Rule có glob <code>paths</code></td><td>CLAUDE.md thư mục con gắn với thư mục</td></tr>
+    <tr><td rowspan="3">Nghiên cứu nhiều agent</td><td>Báo cáo phủ quá hẹp</td><td>Lỗi ở cách coordinator phân rã</td><td>Subagent làm đúng việc thì lỗi ở người giao</td></tr>
+    <tr><td>Subagent timeout</td><td>Lỗi có cấu trúc, kết quả một phần</td><td>Không nuốt lỗi, không dừng cả hệ</td></tr>
+    <tr><td>Agent tổng hợp cần kiểm tra nhanh</td><td>Một tool hẹp <code>verify_fact</code></td><td>Quyền tối thiểu</td></tr>
+    <tr><td rowspan="3">CI/CD</td><td>Claude Code treo trong pipeline</td><td><code>claude -p</code></td><td>Nhiễu là tính năng không có thật</td></tr>
+    <tr><td>Chuyển mọi việc sang Batches</td><td>Chỉ việc qua đêm dùng Batches</td><td>Việc chặn merge cần đồng bộ</td></tr>
+    <tr><td>PR lớn review không đều</td><td>Mỗi file một lượt, thêm lượt tích hợp</td><td>Context lớn hơn không chữa loãng chú ý</td></tr>
+  </tbody>
+</table></div>
+<div class="insight"><strong>Cốt lõi.</strong> Tìm nguyên nhân gốc; chọn cách nhẹ và tương xứng; ngoại lệ là khi có hậu quả tài chính, bảo mật, tuân thủ thì chọn cơ chế tất định. Chiến thuật đầy đủ ở <a href="/notes/00-tong-quan.md">trang tổng quan §6</a>.</div>
+
+<p class="lesson-practice">Luyện câu hỏi của bài này trong <a href="/bank?lesson=21">🗂️ Ngân hàng</a>.</p>
+
+<div class="btns pager">
+  <a class="btn" href="/notes/lessons/20-san-pham-du-lieu.html">← Bài 20 · Sản phẩm, dữ liệu và chính sách</a>
+  <a class="btn primary" href="/notes/lessons/22-thiet-ke-giai-phap.html">Bài 22 · Thiết kế giải pháp và model →</a>
+</div>
+
+<footer>
+  Luyện thi chứng chỉ Claude · Bài 21 · Thực hành và tổng ôn CCAR-F · v0.22 · 2026-11-18. Tổng quan: <a href="/notes/00-tong-quan.md">00</a> · Luyện đề: <a href="/new">30</a>.
+</footer>

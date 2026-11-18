@@ -1,0 +1,580 @@
+<p class="lesson-source">Nguồn: tài liệu ôn tập công khai <a href="https://claude.ai/artifact/3NhHr42CxTHGEs33N1ntFf" target="_blank" rel="noopener">artifact 3NhHr42…</a> (bài 16). Không thuộc và không được Anthropic xác nhận.</p>
+<header class="cover">
+  <div class="eyebrow">Luyện thi chứng chỉ Claude · Bài 16</div>
+  <h1>AI Capabilities, Human-Agent Teams &amp; Enterprise <span class="ja">AI Capabilities and Limitations · Building Effective Human-Agent Teams · Deploying Claude Enterprise</span></h1>
+  <p class="lead">Next-token prediction, 4 knowledge limitations, reasoning drift, specificity concentration; multiplayer AI 3 components, 4 principles, 5 readiness questions; 5 Enterprise decisions theo thứ tự, RBAC union rule, 3 connector gates, spend caps, Compliance API.</p>
+  <dl class="meta">
+    <dt>Kỳ thi</dt><dd>CCAO-F D2 (21%) · CCAO-F D6 (15%) · CCAR-F D5 (15%)</dd>
+    <dt>Phục vụ</dt><dd><span class="tag xt2">CCAO-F</span> 3 mục · <span class="tag xt4">CCAR-P</span> 1 mục · <a href="#xsum">bảng nhãn từng mục</a></dd>
+
+    <dt>Nguồn</dt><dd>academy.claude.com · AI capabilities and limitations, Building effective human-agent teams, Deploying Claude Enterprise · Crawl 2026-11-17</dd>
+    <dt>Cập nhật</dt><dd><span class="status">v0.22 · 2026-11-18</span> · theo exam guide v1.0</dd>
+  </dl>
+</header>
+
+<details class="toc">
+<summary>Mục lục</summary>
+
+    <ol>
+      <li><a href="#tong-quan"><span class="n">1</span><span class="tx">Tổng quan</span></a></li>
+      <li><a href="#ai-capabilities"><span class="n">2</span><span class="tx">AI Capabilities and Limitations — 13 bài</span><span class="xds" aria-hidden="true"><i class="xd xt2" title="CCAO-F"></i></span></a></li>
+      <li><a href="#human-agent-teams"><span class="n">3</span><span class="tx">Building Effective Human-Agent Teams — 5 bài</span><span class="xds" aria-hidden="true"><i class="xd xt2" title="CCAO-F"></i></span></a></li>
+      <li><a href="#enterprise"><span class="n">4</span><span class="tx">Deploying Claude Enterprise — 14 bài</span><span class="xds" aria-hidden="true"><i class="xd xt2" title="CCAO-F"></i><i class="xd xt4" title="CCAR-P"></i></span></a></li>
+      <li><a href="#exam-tips"><span class="n">5</span><span class="tx">Lưu ý ôn thi</span></a></li>
+    </ol>
+
+</details>
+
+<details class="xsum" id="xsum">
+<summary>Mục nào phục vụ bài thi nào</summary>
+<p class="xnote">Mã đầu là bài thi chính của mục. <b>Nền</b>: cần để hiểu các mục sau. <b>Nâng cao</b>: ngoài phạm vi các exam guide. Ôn cho một bài thi thì đọc các mục có mã của bài đó trước.</p>
+<div class="tw"><table>
+<thead><tr><th>Mục</th><th>Bài thi</th><th>Ghi chú</th></tr></thead>
+<tbody>
+<tr><td><a href="#ai-capabilities">2. AI Capabilities and Limitations — 13 bài</a></td><td><span class="tag xt2">CCAO-F D2</span> <span class="tag xt2">CCAO-F D6</span> <span class="tag xt2">CCAO-F D3</span></td><td></td></tr>
+<tr><td><a href="#human-agent-teams">3. Building Effective Human-Agent Teams — 5 bài</a></td><td><span class="tag xt2">CCAO-F D4</span></td><td></td></tr>
+<tr><td><a href="#enterprise">4. Deploying Claude Enterprise — 14 bài</a></td><td><span class="tag xt2">CCAO-F D4</span> <span class="tag xt2">CCAO-F D5</span> <span class="tag xt2">CCAO-F D6</span> <span class="tag xt4">CCAR-P D5</span></td><td></td></tr>
+</tbody></table></div>
+</details>
+
+<h2 id="tong-quan">1. Tổng quan</h2>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Công ty bạn tuyển một nhân viên mới rất giỏi và làm việc cực nhanh. Trước khi giao việc, bạn cần biết ba điều. Một: nhân viên này giỏi gì, hay sai ở đâu (khóa thứ nhất). Hai: nhân viên này làm chung với cả phòng thì phân vai ra sao (khóa thứ hai). Ba: IT phải cấp tài khoản, quyền, ngân sách và theo dõi thế nào cho an toàn (khóa thứ ba).
+</div>
+<p>Bài này tổng hợp ba khóa: <strong>AI Capabilities and Limitations</strong> (13 bài), <strong>Building Effective Human-Agent Teams</strong> (5 bài), và <strong>Deploying Claude Enterprise</strong> (14 bài). Nội dung cốt lõi cho CCAO-F D2, D6 và phần Enterprise deployment.</p>
+<p>CCAO-F là kỳ thi dành cho <strong>người dùng nghiệp vụ</strong> (không phải lập trình viên), nên bài này dùng ví dụ văn phòng và gần như không có code.</p>
+<div class="tw"><table>
+  <thead><tr><th>Phần</th><th>Câu hỏi trả lời</th><th>Dùng cho</th></tr></thead>
+  <tbody>
+    <tr><td>Mục 2</td><td>AI làm tốt gì, sai ở đâu?</td><td>CCAO-F D2 (đánh giá kết quả)</td></tr>
+    <tr><td>Mục 3</td><td>Người và agent làm chung thế nào?</td><td>Human-Agent Teams</td></tr>
+    <tr><td>Mục 4</td><td>IT triển khai Claude cho cả công ty ra sao?</td><td>CCAO-F D6 (governance)</td></tr>
+  </tbody>
+</table></div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>CCAO-F</dt><dd>Kỳ thi chứng chỉ Claude dành cho người dùng nghiệp vụ. D2, D6 là các domain (nhóm kiến thức) của kỳ thi.</dd>
+  <dt>Agent</dt><dd>AI không chỉ trả lời một câu mà tự làm nhiều bước để hoàn thành việc được giao.</dd>
+  <dt>Enterprise</dt><dd>Gói Claude dành cho doanh nghiệp lớn, có quản trị tập trung (đăng nhập một lần, phân quyền, kiểm toán).</dd>
+</dl></div>
+
+<h2 id="ai-capabilities">2. AI Capabilities and Limitations — 13 bài</h2>
+<p class="xtags"><span class="tag xt2">CCAO-F D2</span> <span class="tag xt2">CCAO-F D6</span> <span class="tag xt2">CCAO-F D3</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Bạn gõ tin nhắn trên điện thoại và máy gợi ý từ tiếp theo. Gõ “Chúc mừng năm” thì máy gợi ý “mới” rất chắc. Gõ “Mật khẩu wifi nhà hàng xóm là” thì máy chỉ đoán bừa. Claude hoạt động giống bộ gợi ý đó nhưng mạnh hơn rất nhiều. Hiểu cơ chế này giúp bạn biết lúc nào tin, lúc nào kiểm tra lại.
+</div>
+
+<h3>2.1 Next-Token Prediction (Bài 1–3)</h3>
+<p>Claude hoạt động bằng cách predict token tiếp theo dựa trên training data. Hiểu cơ chế này giúp dự đoán khi nào AI hoạt động tốt và khi nào không.</p>
+<p>Một <strong>token</strong> là một mẩu chữ (một từ ngắn, một phần của từ, hoặc dấu câu). <strong>Next-token prediction</strong> (đoán token kế tiếp) nghĩa là: model chấm điểm mọi token có thể đứng tiếp theo, chọn một token, nối nó vào văn bản, rồi lặp lại. Một câu trả lời dài chỉ là vòng lặp này chạy nhiều lần.</p>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 236" role="img" aria-label="Next-token prediction: từ đầu vào Thủ đô của Việt Nam là, model chấm điểm các token ứng viên, chọn Hà, rồi lặp lại để chọn Nội và dấu chấm">
+    <defs><marker id="m1601" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah"/></marker></defs>
+    <text x="10" y="18" class="lane-lb">văn bản đang có</text>
+    <g><rect x="10" y="28" width="190" height="34" rx="5" class="b-sys"/><text x="105" y="50" class="t" text-anchor="middle">Thủ đô của Việt Nam là</text></g>
+    <g><rect x="212" y="28" width="46" height="34" rx="5" class="b-done"/><text x="235" y="50" class="t tb" text-anchor="middle">Hà</text></g>
+    <g><rect x="266" y="28" width="56" height="34" rx="5" class="b-done"/><text x="294" y="50" class="t tb" text-anchor="middle">Nội</text></g>
+    <g><rect x="330" y="28" width="36" height="34" rx="5" class="b-done"/><text x="348" y="50" class="t tb" text-anchor="middle">.</text>
+      <text x="380" y="50" class="ts">dừng khi gặp token kết thúc</text></g>
+    <g>
+      <rect x="10" y="84" width="330" height="140" rx="8" class="lane"/>
+      <text x="22" y="104" class="lane-lb">vòng 1: điểm số của từng token ứng viên</text>
+      <text x="22" y="132" class="t">Hà</text><rect x="70" y="120" width="230" height="16" rx="3" class="b-done"/><text x="308" y="132" class="ts">92%</text>
+      <text x="22" y="160" class="t">Sài</text><rect x="70" y="148" width="12" height="16" rx="3" class="b-step"/><text x="90" y="160" class="ts">4%</text>
+      <text x="22" y="188" class="t">Huế</text><rect x="70" y="176" width="8" height="16" rx="3" class="b-step"/><text x="86" y="188" class="ts">2%</text>
+      <text x="22" y="212" class="ts">…hàng nghìn token khác, mỗi token một điểm số nhỏ</text>
+    </g>
+    <g><path d="M300,128 C330,100 290,80 250,66" class="ln-good flow" marker-end="url(#m1601)"/>
+      <text x="360" y="112" class="ts">chọn token có điểm cao</text><text x="360" y="126" class="ts">rồi nối vào văn bản</text></g>
+    <g><text x="360" y="160" class="ts">vòng 2: đầu vào mới là cả câu</text><text x="360" y="174" class="ts">đã có thêm “Hà”, đoán tiếp “Nội”</text></g>
+    <g><text x="360" y="204" class="ts">vòng 3: đoán “.”, rồi kết thúc</text></g>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Đầu vào: một đoạn văn bản.</li>
+    <li>Model chấm điểm mọi token có thể đứng tiếp theo. “Hà” cao nhất vì dữ liệu học có rất nhiều câu như vậy.</li>
+    <li>Token “Hà” được chọn và nối vào văn bản.</li>
+    <li>Vòng lặp chạy lại với văn bản dài hơn, chọn “Nội”.</li>
+    <li>Chọn dấu chấm, gặp token kết thúc thì dừng.</li>
+  </ol>
+  <figcaption>Hình 1. Claude sinh câu trả lời từng token một.</figcaption>
+</figure>
+<p><strong>Capability zone</strong> (vùng làm tốt) — những gì AI làm tốt:</p>
+<ul>
+  <li>Patterns có nhiều trong training data (code, text thông thường, math)</li>
+  <li>Tasks có cấu trúc rõ ràng (translation, summarization, classification)</li>
+  <li>Interpolation trong distribution của training data</li>
+</ul>
+<p><strong>Limitation zone</strong> (vùng làm kém) — những gì AI làm kém:</p>
+<ul>
+  <li>Events sau training cutoff</li>
+  <li>Thông tin rất cụ thể/hyperlocal (giá tại cửa hàng X ở địa chỉ Y)</li>
+  <li>Tasks yêu cầu real-world verification</li>
+  <li>Multi-step arithmetic thuần túy (count ký tự, tính toán chính xác)</li>
+</ul>
+<p><strong>Specificity concentration:</strong> Khi query ngày càng cụ thể, AI ngày càng dễ sai. "Explain TCP/IP" (dễ) → "What was the exact latency of AWS us-east-1 on 2024-03-15?" (rất dễ sai).</p>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 214" role="img" aria-label="Thang độ cụ thể: câu hỏi càng cụ thể thì AI càng dễ sai, từ giải thích TCP/IP đến số đo latency của một ngày cụ thể">
+    <text x="10" y="18" class="lane-lb">CÂU HỎI CÀNG CỤ THỂ</text><text x="350" y="18" class="lane-lb">ĐỘ TIN CẬY CỦA CÂU TRẢ LỜI</text>
+    <rect x="10" y="28" width="330" height="36" rx="5" class="b-done"/><text x="22" y="50" class="ts">Giải thích TCP/IP cho người mới</text>
+    <rect x="350" y="28" width="280" height="36" rx="5" class="b-done"/><text x="362" y="50" class="tw-good">Thường đúng: có nhiều trong dữ liệu</text>
+    <rect x="10" y="72" width="330" height="36" rx="5" class="b-step"/><text x="22" y="94" class="ts">Tóm tắt báo cáo mà bạn vừa dán vào</text>
+    <rect x="350" y="72" width="280" height="36" rx="5" class="b-step"/><text x="362" y="94" class="ts">Khá tốt: thông tin nằm ngay trong đầu vào</text>
+    <rect x="10" y="116" width="330" height="36" rx="5" class="b-hot"/><text x="22" y="138" class="ts">Doanh thu quý 3 của một công ty nhỏ</text>
+    <rect x="350" y="116" width="280" height="36" rx="5" class="b-hot"/><text x="362" y="138" class="ts">Dễ bịa: số cụ thể, ít trong dữ liệu</text>
+    <rect x="10" y="160" width="330" height="46" rx="5" class="b-warn"/><text x="22" y="178" class="ts">Latency chính xác của AWS us-east-1</text><text x="22" y="194" class="ts">vào ngày 2024-03-15</text>
+    <rect x="350" y="160" width="280" height="46" rx="5" class="b-warn"/><text x="362" y="180" class="tw-warn">Rất dễ sai: cần tra nguồn gốc</text>
+  </svg></div>
+  <figcaption>Hình 2. Càng cụ thể, càng phải kiểm tra lại.</figcaption>
+</figure>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div><ul>
+    <li>“AI trả lời trôi chảy nghĩa là đúng”</li>
+    <li>Nhờ AI đếm chính xác số chữ cái trong một đoạn dài rồi dùng luôn kết quả</li>
+    <li>Hỏi giá bán tại một cửa hàng cụ thể và tin con số</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đúng</div><ul>
+    <li>Giọng văn tự tin không chứng minh sự thật; việc nào cần chính xác thì kiểm tra nguồn</li>
+    <li>Việc cần đếm, tính toán chính xác thì dùng công cụ tính (bảng tính, code)</li>
+    <li>Dữ liệu hyperlocal thì tra trực tiếp nguồn của cửa hàng</li>
+  </ul></div>
+</div>
+<div class="insight"><strong>Cốt lõi.</strong> AI giỏi ở chỗ dữ liệu học có nhiều ví dụ và đề bài có cấu trúc rõ. AI kém ở chỗ cần sự kiện mới, chi tiết rất cụ thể, hoặc phép tính chính xác từng bước.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Token</dt><dd>Đơn vị chữ nhỏ mà model đọc và sinh ra, thường ngắn hơn một từ.</dd>
+  <dt>Training data</dt><dd>Kho văn bản mà model đã học từ đó.</dd>
+  <dt>Training cutoff</dt><dd>Mốc thời gian dữ liệu học dừng lại. Sau mốc này model không biết gì.</dd>
+  <dt>Interpolation</dt><dd>Suy ra điều nằm “giữa” những gì đã thấy trong dữ liệu học, thay vì điều hoàn toàn mới.</dd>
+</dl></div>
+
+<h3>2.2 Knowledge Limitations (Bài 4–6)</h3>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Một người đọc rất nhiều sách nhưng đã đóng cửa thư viện từ năm ngoái. Anh ta quên mất cuốn nào nói điều gì, đọc nhiều sách tiếng Anh hơn sách tiếng hiếm, và chịu ảnh hưởng quan điểm của những cuốn đã đọc. Đó là bốn giới hạn dưới đây.
+</div>
+<div class="tw"><table>
+  <thead><tr><th>Limitation</th><th>Mô tả</th><th>Workaround</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Training cutoff</strong></td><td>Không biết events sau cutoff date</td><td>Dùng web search / Research mode</td></tr>
+    <tr><td><strong>Uneven coverage</strong></td><td>Tiếng Anh tốt hơn tiếng hiếm; popular topics tốt hơn niche</td><td>Verify facts quan trọng qua nguồn gốc</td></tr>
+    <tr><td><strong>Inherited bias</strong></td><td>Bias trong training data → bias trong output</td><td>Ask for multiple perspectives; critically review</td></tr>
+    <tr><td><strong>Source amnesia</strong></td><td>Không nhớ nó học fact đó từ đâu</td><td>Luôn ask for citations khi facts quan trọng</td></tr>
+  </tbody>
+</table></div>
+<p>Ví dụ văn phòng: bạn nhờ Claude soạn tóm tắt quy định thuế mới nhất. Nếu quy định ban hành sau training cutoff, Claude có thể viết rất trôi chảy nhưng dựa trên quy định cũ. Cách xử lý đúng là bật web search hoặc dán văn bản quy định vào cuộc trò chuyện.</p>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Uneven coverage</dt><dd>Độ phủ không đều: chủ đề phổ biến và ngôn ngữ phổ biến được học nhiều hơn.</dd>
+  <dt>Inherited bias</dt><dd>Thiên kiến thừa hưởng: định kiến có trong dữ liệu học xuất hiện lại trong câu trả lời.</dd>
+  <dt>Source amnesia</dt><dd>Quên nguồn: model biết một điều nhưng không nhớ nó đến từ đâu, nên tự đưa nguồn có thể là bịa.</dd>
+  <dt>Research mode</dt><dd>Chế độ để Claude tra cứu nhiều nguồn trên web rồi tổng hợp.</dd>
+</dl></div>
+<div class="alert"><strong>Bẫy.</strong> Hỏi “nguồn của bạn là gì?” rồi tin luôn tên nguồn Claude đưa ra. Vì source amnesia, tên bài báo và đường dẫn có thể là bịa. Hãy mở nguồn kiểm tra, hoặc dùng chế độ có tra cứu thật.</div>
+
+<h3>2.3 Steerability và Reasoning Limitations (Bài 7–9)</h3>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Bạn dặn nhân viên mới: “Làm sao cho báo cáo hết lỗi đỏ”. Cậu ta xóa luôn các ô bị lỗi. Báo cáo hết đỏ thật, nhưng không đúng ý bạn. Đây là chuyện làm đúng chữ, sai ý.
+</div>
+<p><strong>Steerability:</strong> AI có thể follow instructions rất tốt, nhưng có hai failure modes:</p>
+<ul>
+  <li><strong>Reasoning drift:</strong> Trong long chain of reasoning, early errors compound — kết luận cuối sai dù từng bước nhỏ có vẻ đúng</li>
+  <li><strong>Letter-over-spirit:</strong> AI thực hiện đúng literal instruction nhưng miss intent. "Make the tests pass" → AI xóa tests thay vì fix code</li>
+</ul>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 214" role="img" aria-label="Reasoning drift: một lỗi nhỏ ở bước đầu được mang sang các bước sau và khuếch đại, đến kết luận cuối sai">
+    <defs><marker id="m1602" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah"/></marker></defs>
+    <g><rect x="8" y="40" width="108" height="54" rx="6" class="b-done"/><text x="62" y="62" class="t tb" text-anchor="middle">Bước 1</text><text x="62" y="80" class="ts" text-anchor="middle">đúng</text></g>
+    <g><path d="M116,67 H138" class="ln" marker-end="url(#m1602)"/><rect x="142" y="40" width="108" height="54" rx="6" class="b-hot"/><text x="196" y="62" class="t tb" text-anchor="middle">Bước 2</text><text x="196" y="80" class="ts" text-anchor="middle">lệch rất nhỏ</text></g>
+    <g><path d="M250,67 H272" class="ln" marker-end="url(#m1602)"/><rect x="276" y="40" width="108" height="54" rx="6" class="b-hot"/><text x="330" y="62" class="t tb" text-anchor="middle">Bước 3</text><text x="330" y="80" class="ts" text-anchor="middle">lệch lớn hơn</text></g>
+    <g><path d="M384,67 H406" class="ln" marker-end="url(#m1602)"/><rect x="410" y="40" width="108" height="54" rx="6" class="b-warn"/><text x="464" y="62" class="t tb" text-anchor="middle">Bước 4</text><text x="464" y="80" class="ts" text-anchor="middle">lệch nhiều</text></g>
+    <g><path d="M518,67 H536" class="ln-warn-solid" marker-end="url(#m1602)"/><rect x="540" y="40" width="92" height="54" rx="6" class="b-warn"/><text x="586" y="62" class="t tb" text-anchor="middle">Kết luận</text><text x="586" y="80" class="ts" text-anchor="middle">sai hẳn</text></g>
+    <g><text x="320" y="132" class="tw-warn" text-anchor="middle">Mỗi bước nhìn riêng đều có vẻ hợp lý</text>
+      <text x="320" y="156" class="ts" text-anchor="middle">Cách đỡ: chia việc thành chặng ngắn, kiểm tra kết quả từng chặng, hỏi lại lập luận</text></g>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Bước đầu tiên đúng.</li>
+    <li>Bước 2 lệch một chút, khó nhận ra.</li>
+    <li>Bước 3 dùng kết quả bước 2 làm nền nên lệch thêm.</li>
+    <li>Sai số cộng dồn qua mỗi bước.</li>
+    <li>Kết luận cuối sai dù từng bước nhỏ nhìn đều có vẻ đúng.</li>
+  </ol>
+  <figcaption>Hình 3. Reasoning drift: lỗi sớm cộng dồn thành kết luận sai.</figcaption>
+</figure>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div><ul>
+    <li>“Làm cho báo cáo hết lỗi” (AI có thể xóa dữ liệu lỗi cho xong)</li>
+    <li>Giao một phân tích 15 bước rồi chỉ đọc kết luận cuối</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đúng</div><ul>
+    <li>“Sửa nguyên nhân lỗi, không xóa dữ liệu, và nói rõ chỗ nào bạn không chắc”</li>
+    <li>Yêu cầu AI trình bày từng bước, kiểm tra các bước then chốt, chia việc dài thành các chặng</li>
+  </ul></div>
+</div>
+<p><strong>When properties collide:</strong> Khi nhiều instructions mâu thuẫn nhau, AI phải chọn — và không phải lúc nào cũng chọn đúng:</p>
+<ul>
+  <li>Helpful vs Harmless: "Help me write this but it could be used for spam"</li>
+  <li>Concise vs Complete: "Brief answer" về topic cần nhiều nuance</li>
+  <li>Formal vs Friendly: "Professional email to close friend"</li>
+</ul>
+<div class="insight"><strong>Giải pháp:</strong> Khi constraints mâu thuẫn, nói rõ priority: "Be concise, but don't skip critical safety warnings."</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Steerability</dt><dd>Khả năng điều hướng: AI làm theo chỉ dẫn của bạn tốt đến đâu.</dd>
+  <dt>Reasoning drift</dt><dd>Trôi lập luận: lỗi nhỏ ở đầu chuỗi suy luận lan và lớn dần.</dd>
+  <dt>Letter-over-spirit</dt><dd>Làm đúng câu chữ nhưng trật ý định thật.</dd>
+</dl></div>
+
+<h3>2.4 Practical Implications (Bài 10–13)</h3>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Một người trò chuyện lưu loát nhưng không bao giờ nói “tôi không biết”. Khi hỏi đến tên người, ngày tháng, con số cụ thể, anh ta vẫn đáp ngay và rất tự tin, kể cả khi đang bịa. Đây là hallucination (ảo giác): câu trả lời nghe hợp lý nhưng không có thật.
+</div>
+<p><strong>Hallucination patterns:</strong> AI hay hallucinate nhất với: specific names/dates/numbers, citations và URLs, niche technical details, claims về người thực. Giảm thiểu: ask "are you certain?", dùng Research mode, verify facts quan trọng.</p>
+<p><strong>Khi nào dùng AI, khi nào không:</strong></p>
+<div class="tw"><table>
+  <thead><tr><th>Dùng AI</th><th>Không/Cẩn thận khi dùng AI</th></tr></thead>
+  <tbody>
+    <tr><td>Draft, brainstorm, explain</td><td>Quyết định đạo đức/pháp lý quan trọng</td></tr>
+    <tr><td>Summarize, translate, format</td><td>Medical/legal/financial advice cuối cùng</td></tr>
+    <tr><td>Debug, review, suggest</td><td>Facts cần độ chính xác tuyệt đối</td></tr>
+    <tr><td>Generate options/alternatives</td><td>Tasks cần real-world verification</td></tr>
+  </tbody>
+</table></div>
+<p>Ví dụ văn phòng: nhờ Claude soạn bản nháp email gửi khách hàng thì phù hợp (bạn đọc lại trước khi gửi). Nhờ Claude đưa ra con số pháp lý cuối cùng để ký hợp đồng thì không phù hợp nếu chưa có người có chuyên môn kiểm tra.</p>
+<div class="alert"><strong>Bẫy.</strong> Hỏi lại “bạn có chắc không?” rồi coi như đã kiểm tra xong. Câu hỏi này chỉ giúp giảm rủi ro, không thay được việc đối chiếu nguồn gốc với các thông tin quan trọng.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Hallucination</dt><dd>Ảo giác: AI tạo ra thông tin nghe hợp lý nhưng sai hoặc không tồn tại, nhất là tên, ngày, số, trích dẫn, đường dẫn.</dd>
+  <dt>Citation</dt><dd>Trích dẫn nguồn (tên bài, tác giả, đường dẫn).</dd>
+</dl></div>
+
+<h2 id="human-agent-teams">3. Building Effective Human-Agent Teams — 5 bài</h2>
+<p class="xtags"><span class="tag xt2">CCAO-F D4</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Một mình bạn nhờ trợ lý riêng thì chỉ cần nói chuyện hai người. Khi cả phòng 10 người cùng dùng nhiều trợ lý, bạn phải trả lời: ai phụ trách phần nào, mọi người xem chung tài liệu nào, và mục tiêu chung là gì. Nếu không, trợ lý này làm trùng việc của trợ lý kia và mỗi người hiểu mục tiêu một kiểu.
+</div>
+<h3>3.1 Từ Single-player sang Multiplayer AI (Bài 1)</h3>
+<p><strong>Single-player AI:</strong> Một người, một conversation, AI là tool cá nhân.</p>
+<p><strong>Multiplayer AI:</strong> Nhiều người, nhiều agent, AI là team member. Cần ba thành phần mới:</p>
+<ol>
+  <li><strong>Identity:</strong> Mỗi agent có role rõ ràng — ai làm gì?</li>
+  <li><strong>Memory:</strong> Shared context — tất cả biết những gì đã xảy ra</li>
+  <li><strong>Shared context:</strong> Consensus về goal và constraints của team</li>
+</ol>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 224" role="img" aria-label="So sánh single-player AI với multiplayer AI cần thêm ba thành phần identity, memory và shared context">
+    <defs><marker id="m1603" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah"/></marker></defs>
+    <rect x="4" y="4" width="220" height="216" rx="8" class="lane"/>
+    <rect x="236" y="4" width="400" height="216" rx="8" class="lane"/>
+    <text x="114" y="24" class="lane-lb" text-anchor="middle">SINGLE-PLAYER</text>
+    <text x="436" y="24" class="lane-lb" text-anchor="middle">MULTIPLAYER</text>
+    <rect x="20" y="60" width="84" height="40" rx="6" class="b-sys"/><text x="62" y="84" class="t" text-anchor="middle">1 người</text>
+    <rect x="130" y="60" width="84" height="40" rx="6" class="b-step"/><text x="172" y="84" class="t" text-anchor="middle">1 AI</text>
+    <path d="M104,80 H128" class="ln" marker-end="url(#m1603)"/>
+    <text x="114" y="130" class="ts" text-anchor="middle">Một cuộc trò chuyện</text><text x="114" y="146" class="ts" text-anchor="middle">AI là công cụ cá nhân</text>
+    <rect x="252" y="40" width="112" height="30" rx="5" class="b-sys"/><text x="308" y="60" class="t" text-anchor="middle">Người A</text>
+    <rect x="252" y="76" width="112" height="30" rx="5" class="b-sys"/><text x="308" y="96" class="t" text-anchor="middle">Người B</text>
+    <rect x="252" y="112" width="112" height="30" rx="5" class="b-step"/><text x="308" y="132" class="t" text-anchor="middle">Agent 1</text>
+    <rect x="252" y="148" width="112" height="30" rx="5" class="b-step"/><text x="308" y="168" class="t" text-anchor="middle">Agent 2</text>
+    <text x="308" y="204" class="ts" text-anchor="middle">AI là thành viên của team</text>
+    <rect x="392" y="40" width="232" height="44" rx="6" class="b-done"/><text x="404" y="58" class="t tb">1. Identity</text><text x="404" y="74" class="ts">mỗi agent có vai trò rõ ràng</text>
+    <rect x="392" y="92" width="232" height="44" rx="6" class="b-done"/><text x="404" y="110" class="t tb">2. Memory</text><text x="404" y="126" class="ts">ai cũng biết điều đã xảy ra</text>
+    <rect x="392" y="144" width="232" height="44" rx="6" class="b-done"/><text x="404" y="162" class="t tb">3. Shared context</text><text x="404" y="178" class="ts">chung mục tiêu và ràng buộc</text>
+  </svg></div>
+  <figcaption>Hình 4. Từ single-player sang multiplayer cần thêm ba thành phần.</figcaption>
+</figure>
+
+<h3>3.2 Bốn Nguyên Tắc (Bài 2–3)</h3>
+<div class="tw"><table>
+  <thead><tr><th>Nguyên tắc</th><th>Nghĩa là</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Clear roles</strong></td><td>Mỗi agent/người có responsibility rõ ràng, không overlap</td></tr>
+    <tr><td><strong>North star</strong></td><td>Tất cả biết goal cuối cùng là gì (shared intent.md)</td></tr>
+    <tr><td><strong>Gradual release</strong></td><td>Bắt đầu với human-heavy, dần dần trao quyền cho AI khi trust được xây dựng</td></tr>
+    <tr><td><strong>Right access</strong></td><td>Mỗi agent/người chỉ có access những gì cần — principle of least privilege</td></tr>
+  </tbody>
+</table></div>
+<p>Ví dụ: phòng chăm sóc khách hàng dùng agent soạn thư trả lời. Vai trò rõ ràng: agent soạn nháp, nhân viên duyệt và gửi. North star: “khách được trả lời đúng trong 4 giờ”. Gradual release: ban đầu duyệt mọi thư, sau vài tuần chỉ duyệt thư về hoàn tiền. Right access: agent đọc được hồ sơ đơn hàng nhưng không xem được dữ liệu thanh toán.</p>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>North star</dt><dd>“Ngôi sao dẫn đường”: mục tiêu cuối cùng mà cả team cùng hướng tới, thường viết ra một file chung (intent.md).</dd>
+  <dt>Gradual release</dt><dd>Trao quyền dần: bắt đầu giám sát nhiều, giảm dần khi AI chứng tỏ đáng tin.</dd>
+  <dt>Least privilege</dt><dd>Quyền tối thiểu: chỉ cấp đúng những quyền cần để làm việc.</dd>
+</dl></div>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div><ul>
+    <li>Cho agent toàn quyền ngay ngày đầu “cho nhanh”</li>
+    <li>Hai agent cùng được giao một việc, không ai chịu trách nhiệm</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đúng</div><ul>
+    <li>Bắt đầu giám sát nhiều, tăng quyền khi có kết quả tốt</li>
+    <li>Mỗi việc một người hoặc một agent chịu trách nhiệm</li>
+  </ul></div>
+</div>
+
+<h3>3.3 Năm Câu Hỏi Sẵn Sàng (Bài 4)</h3>
+<p>Trước khi triển khai human-agent team, hỏi:</p>
+<ol>
+  <li>Chúng ta có thể <strong>define success rõ ràng</strong> không? (nếu không → cần làm việc với human trước)</li>
+  <li>Hậu quả của <strong>AI mistake</strong> là gì? (high-stakes → cần human oversight nhiều hơn)</li>
+  <li>Chúng ta có <strong>data để train/eval</strong> không?</li>
+  <li>Quy trình có đủ <strong>structure cho AI</strong> follow không?</li>
+  <li>Team có đủ <strong>AI literacy</strong> để work với agent không?</li>
+</ol>
+<p><strong>AI literacy</strong> là hiểu biết đủ để dùng AI đúng cách: biết nó mạnh và yếu ở đâu (mục 2) và biết kiểm tra kết quả.</p>
+
+<h3>3.4 10-Step Getting-Started Checklist (Bài 5)</h3>
+<p>Quy trình triển khai team AI:</p>
+<ol>
+  <li>Chọn pilot task (bounded, measurable, reversible)</li>
+  <li>Define success metrics rõ ràng</li>
+  <li>Assign human và AI roles</li>
+  <li>Setup shared context (project, knowledge base)</li>
+  <li>Run với human oversight cao</li>
+  <li>Collect feedback và failure cases</li>
+  <li>Improve prompts/instructions dựa trên failures</li>
+  <li>Gradually reduce oversight cho tasks AI làm tốt</li>
+  <li>Document patterns cho team (CLAUDE.md style)</li>
+  <li>Expand scope khi trust được xây dựng</li>
+</ol>
+<p><strong>Pilot task</strong> là việc thử nghiệm nhỏ, nên có ba tính chất: <em>bounded</em> (giới hạn rõ), <em>measurable</em> (đo được kết quả), <em>reversible</em> (làm sai thì quay lại được). Ví dụ tốt: “tóm tắt biên bản họp tuần của một phòng”. Ví dụ không tốt: “tự động trả lời mọi khiếu nại của khách hàng”.</p>
+<div class="insight"><strong>Cốt lõi.</strong> Triển khai AI cho team là quá trình tăng dần: việc nhỏ, đo được, giám sát nhiều, rút kinh nghiệm, rồi mới mở rộng.</div>
+
+<h2 id="enterprise">4. Deploying Claude Enterprise — 14 bài</h2>
+<p class="xtags"><span class="tag xt2">CCAO-F D4</span> <span class="tag xt2">CCAO-F D5</span> <span class="tag xt2">CCAO-F D6</span> <span class="tag xt4">CCAR-P D5</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Mở một văn phòng mới cho 5.000 nhân viên. Bạn không phát chìa khóa ngay. Trước hết bạn xác định tòa nhà thuộc công ty nào, rồi mới làm thẻ ra vào, rồi quy định ai được vào phòng nào, rồi đặt ngân sách chi tiêu, cuối cùng bật camera và sổ ghi chép. Đảo thứ tự thì sẽ phải làm lại.
+</div>
+
+<h3>4.1 Năm Quyết Định Triển Khai (theo thứ tự) (Bài 1–2)</h3>
+<p>Enterprise deploy Claude.ai theo 5 bước này <strong>theo đúng thứ tự</strong> — mỗi bước ảnh hưởng đến bước sau:</p>
+<div class="tw"><table>
+  <thead><tr><th>#</th><th>Quyết định</th><th>Key setup</th></tr></thead>
+  <tbody>
+    <tr><td>1</td><td><strong>Structure &amp; Identity</strong></td><td>Org topology, domain claiming, display names</td></tr>
+    <tr><td>2</td><td><strong>Access</strong></td><td>SSO, SCIM/JIT provisioning, group mapping</td></tr>
+    <tr><td>3</td><td><strong>Governance</strong></td><td>Who can build what, connector permissions</td></tr>
+    <tr><td>4</td><td><strong>Spend</strong></td><td>Spend caps per workspace/group/user</td></tr>
+    <tr><td>5</td><td><strong>Visibility</strong></td><td>Audit logs, Compliance API, retention windows</td></tr>
+  </tbody>
+</table></div>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 214" role="img" aria-label="Năm quyết định triển khai Claude Enterprise theo thứ tự: Structure và Identity, Access, Governance, Spend, Visibility">
+    <defs><marker id="m1604" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah"/></marker></defs>
+    <g><rect x="6" y="30" width="116" height="92" rx="6" class="b-hot"/><text x="64" y="52" class="t tb" text-anchor="middle">1. Structure</text><text x="64" y="68" class="ts" text-anchor="middle">Identity</text>
+      <text x="64" y="90" class="ts" text-anchor="middle">org topology</text><text x="64" y="104" class="ts" text-anchor="middle">domain claiming</text></g>
+    <g><path d="M122,76 H132" class="ln" marker-end="url(#m1604)"/><rect x="134" y="30" width="116" height="92" rx="6" class="b-step"/><text x="192" y="52" class="t tb" text-anchor="middle">2. Access</text>
+      <text x="192" y="80" class="ts" text-anchor="middle">SSO</text><text x="192" y="94" class="ts" text-anchor="middle">SCIM hoặc JIT</text><text x="192" y="108" class="ts" text-anchor="middle">group mapping</text></g>
+    <g><path d="M250,76 H260" class="ln" marker-end="url(#m1604)"/><rect x="262" y="30" width="116" height="92" rx="6" class="b-step"/><text x="320" y="52" class="t tb" text-anchor="middle">3. Governance</text>
+      <text x="320" y="80" class="ts" text-anchor="middle">ai build được gì</text><text x="320" y="94" class="ts" text-anchor="middle">quyền connector</text></g>
+    <g><path d="M378,76 H388" class="ln" marker-end="url(#m1604)"/><rect x="390" y="30" width="116" height="92" rx="6" class="b-step"/><text x="448" y="52" class="t tb" text-anchor="middle">4. Spend</text>
+      <text x="448" y="80" class="ts" text-anchor="middle">spend cap</text><text x="448" y="94" class="ts" text-anchor="middle">workspace, nhóm,</text><text x="448" y="108" class="ts" text-anchor="middle">người dùng</text></g>
+    <g><path d="M506,76 H516" class="ln" marker-end="url(#m1604)"/><rect x="518" y="30" width="116" height="92" rx="6" class="b-done"/><text x="576" y="52" class="t tb" text-anchor="middle">5. Visibility</text>
+      <text x="576" y="80" class="ts" text-anchor="middle">audit logs</text><text x="576" y="94" class="ts" text-anchor="middle">Compliance API</text><text x="576" y="108" class="ts" text-anchor="middle">retention</text></g>
+    <g><path d="M64,150 H576" class="ln-dash"/><text x="320" y="154" class="ts halo" text-anchor="middle">mỗi bước dựa trên bước trước</text>
+      <text x="320" y="190" class="tw-acc" text-anchor="middle">Structure → Access → Governance → Spend → Visibility</text></g>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Bước 1: xác định tổ chức là ai (domain, cấu trúc org).</li>
+    <li>Bước 2: cho người vào (SSO, cấp tài khoản, nhóm).</li>
+    <li>Bước 3: quy định ai được tạo gì và nối với dịch vụ nào.</li>
+    <li>Bước 4: đặt trần chi tiêu.</li>
+    <li>Bước 5: bật ghi nhận và báo cáo để theo dõi.</li>
+    <li>Thứ tự này cố định: quyết định sau dựa trên quyết định trước.</li>
+  </ol>
+  <figcaption>Hình 5. Năm quyết định triển khai theo đúng thứ tự.</figcaption>
+</figure>
+<div class="insight"><strong>Cốt lõi.</strong> Nhớ thứ tự bằng câu: Structure → Access → Governance → Spend → Visibility. Câu hỏi thi hay hỏi “bước nào phải làm trước” hoặc “thiết lập nào khó hoàn tác”.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>SSO</dt><dd>Single Sign-On: đăng nhập một lần bằng tài khoản công ty cho nhiều dịch vụ.</dd>
+  <dt>Provisioning</dt><dd>Cấp phát tài khoản cho người dùng.</dd>
+  <dt>Audit log</dt><dd>Nhật ký ghi lại ai đã làm gì, lúc nào.</dd>
+</dl></div>
+
+<h3>4.2 Structure &amp; Identity (Bài 3)</h3>
+<p><strong>Bốn hard-to-undo settings</strong> (thiết lập khó hoàn tác) — cần quyết định đúng từ đầu:</p>
+<ol>
+  <li><strong>Domain claiming:</strong> Claim email domain → tất cả user với domain đó join org. Không thể unclaim nếu đã có users.</li>
+  <li><strong>Org topology:</strong> Flat (single org) vs Federated (parent + child orgs). Chọn federated nếu cần isolated business units.</li>
+  <li><strong>Group mapping:</strong> Cách map SCIM groups → Claude groups. Thay đổi sau có thể mất permissions.</li>
+  <li><strong>Retention policy:</strong> Conversation retention window. Giảm không thể recover dữ liệu cũ.</li>
+</ol>
+<p>Ví dụ: công ty có hai công ty con cần tách biệt dữ liệu hoàn toàn. Chọn <em>federated</em> ngay từ đầu (công ty mẹ và các org con). Nếu chọn <em>flat</em> rồi mới muốn tách, việc chuyển đổi sẽ khó và dễ làm mất cấu hình.</p>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Domain claiming</dt><dd>Xác nhận công ty sở hữu một tên miền email (ví dụ congty.com), để mọi tài khoản có đuôi đó thuộc về tổ chức.</dd>
+  <dt>Org topology</dt><dd>Hình dạng tổ chức: một org duy nhất (flat) hay org mẹ kèm các org con (federated).</dd>
+  <dt>Retention</dt><dd>Thời gian giữ lại cuộc trò chuyện trước khi tự xóa.</dd>
+</dl></div>
+<div class="alert"><strong>Bẫy.</strong> Coi bốn thiết lập này như tùy chọn có thể chỉnh sau. Domain claiming, org topology, group mapping và retention đều khó hoặc không thể quay lại, nên phải chốt đúng trước khi mời người dùng.</div>
+
+<h3>4.3 Access: Organizations và Groups (Bài 4–6)</h3>
+<p><strong>Provisioning:</strong></p>
+<ul>
+  <li><strong>JIT (Just-In-Time):</strong> User join org khi first login với SSO. Đơn giản hơn, nhưng admin không biết trước ai có access.</li>
+  <li><strong>SCIM:</strong> Sync trực tiếp từ directory (Okta, Azure AD). Full control, nhưng cần setup và maintain.</li>
+</ul>
+<p><strong>Groups:</strong> RBAC (Role-Based Access Control). <strong>RBAC Union Rule:</strong> User thuộc nhiều groups → nhận <em>union</em> của tất cả permissions, không phải intersection.</p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Bạn có một chùm chìa khóa. Thẻ của phòng Marketing mở được kho tài liệu quảng cáo. Thẻ của phòng Pháp chế mở được tủ hợp đồng. Nếu bạn thuộc cả hai phòng, bạn dùng cả hai thẻ và mở được cả hai nơi. Bạn không bị “giới hạn ở nơi mà cả hai thẻ đều mở được”.
+</div>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 226" role="img" aria-label="RBAC union rule: người dùng thuộc hai nhóm Marketing và Legal nhận hợp của quyền hai nhóm, không phải phần giao">
+    <defs><marker id="m1605" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah"/></marker></defs>
+    <g><rect x="8" y="14" width="214" height="62" rx="6" class="b-step"/><text x="20" y="34" class="t tb">Nhóm Marketing</text><text x="20" y="52" class="ts">quyền: Projects, Web search</text></g>
+    <g><rect x="8" y="94" width="214" height="62" rx="6" class="b-step"/><text x="20" y="114" class="t tb">Nhóm Legal</text><text x="20" y="132" class="ts">quyền: Web search, Slack connector</text></g>
+    <g><path d="M222,45 L262,86" class="ln" marker-end="url(#m1605)"/><path d="M222,125 L262,98" class="ln" marker-end="url(#m1605)"/>
+      <rect x="264" y="64" width="110" height="56" rx="6" class="b-sys"/><text x="319" y="88" class="t tb" text-anchor="middle">Chị Lan</text><text x="319" y="106" class="ts" text-anchor="middle">thuộc cả hai nhóm</text></g>
+    <g><path d="M374,92 H410" class="ln-good" marker-end="url(#m1605)"/>
+      <rect x="414" y="30" width="218" height="124" rx="6" class="b-done"/><text x="426" y="52" class="t tb">Quyền thực tế = UNION</text>
+      <text x="426" y="76" class="ts">• Projects</text><text x="426" y="92" class="ts">• Web search</text><text x="426" y="108" class="ts">• Slack connector</text><text x="426" y="134" class="tw-good">Tất cả quyền của mọi nhóm</text></g>
+    <g><text x="320" y="190" class="tw-warn" text-anchor="middle">Không phải intersection (phần giao): chỉ còn Web search</text>
+      <text x="320" y="208" class="ts" text-anchor="middle">Quy tắc giao không tồn tại trong RBAC union rule</text></g>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Nhóm Marketing có hai quyền.</li>
+    <li>Nhóm Legal có hai quyền, trùng một quyền với Marketing.</li>
+    <li>Một người thuộc cả hai nhóm.</li>
+    <li>Quyền của người đó là hợp (union) của mọi nhóm.</li>
+    <li>Không phải phần giao: nếu là phần giao, chị Lan chỉ còn Web search.</li>
+  </ol>
+  <figcaption>Hình 6. RBAC union rule: thuộc nhiều nhóm thì cộng quyền.</figcaption>
+</figure>
+<p><strong>Ba pattern phổ biến:</strong></p>
+<div class="tw"><table>
+  <thead><tr><th>Pattern</th><th>Cấu trúc</th><th>Khi nào dùng</th></tr></thead>
+  <tbody>
+    <tr><td>Org-chart</td><td>Groups = departments (Engineering, Marketing, Legal)</td><td>Permissions theo function</td></tr>
+    <tr><td>Risk-tier</td><td>Groups = risk levels (Read-only, Standard, Power-user)</td><td>Data sensitivity khác nhau</td></tr>
+    <tr><td>Hybrid</td><td>Kết hợp cả hai</td><td>Large enterprises với cả hai dimensions</td></tr>
+  </tbody>
+</table></div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>JIT</dt><dd>Just-In-Time: tài khoản được tạo vào lần đăng nhập SSO đầu tiên của người dùng.</dd>
+  <dt>SCIM</dt><dd>Chuẩn đồng bộ người dùng từ thư mục nhân sự (Okta, Azure AD): thêm, sửa, xóa tự động.</dd>
+  <dt>RBAC</dt><dd>Role-Based Access Control: phân quyền theo vai trò hoặc nhóm.</dd>
+  <dt>Union và intersection</dt><dd>Union là gộp tất cả. Intersection là chỉ giữ phần chung của mọi nhóm.</dd>
+</dl></div>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Trang hướng dẫn của Anthropic nêu JIT dùng được cho gói Team, Enterprise và tổ chức Console, còn SCIM chỉ cho tổ chức Enterprise và Console. Nguồn: <a href="https://support.claude.com/en/articles/13133195-set-up-jit-or-scim-provisioning" target="_blank" rel="noopener">Set up JIT or SCIM provisioning</a>. Đề thi vẫn theo nội dung khóa: biết JIT đơn giản hơn, SCIM kiểm soát đầy đủ hơn.</div>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div><ul>
+    <li>“Người thuộc hai nhóm chỉ có quyền chung của hai nhóm”</li>
+    <li>“JIT cho admin biết trước ai sẽ có tài khoản”</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đúng</div><ul>
+    <li>Người thuộc nhiều nhóm nhận hợp (union) quyền của tất cả nhóm</li>
+    <li>JIT tạo tài khoản khi đăng nhập lần đầu nên admin không biết trước; SCIM đồng bộ trực tiếp từ directory</li>
+  </ul></div>
+</div>
+
+<h3>4.4 Governance: Connectors và Postures (Bài 7–9)</h3>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Muốn lấy hồ sơ từ kho lưu trữ của công ty khác, bạn cần ba chữ ký: công ty cho phép dùng kho đó (admin), chủ hồ sơ đồng ý cho bạn xem hồ sơ của mình (user), và quy định cho phép nhân viên AI được đọc hồ sơ đó trong lúc làm việc (EMA). Thiếu một chữ ký thì bị chặn.
+</div>
+<p><strong>Connectors</strong> (Google Drive, Slack, etc.) cần pass 3 gates:</p>
+<ol>
+  <li><strong>Admin enable:</strong> Admin cho phép connector loại này</li>
+  <li><strong>User authorize:</strong> User authorize Claude access account của họ</li>
+  <li><strong>EMA (External Model Access):</strong> Cho phép model access data từ connector trong conversation</li>
+</ol>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 226" role="img" aria-label="Ba cổng của connector: admin enable, user authorize, EMA; qua đủ ba cổng thì Claude mới đọc được dữ liệu connector">
+    <defs><marker id="m1606" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah"/></marker>
+      <marker id="m1607" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-good"/></marker></defs>
+    <g><rect x="10" y="30" width="180" height="84" rx="6" class="b-hot"/><text x="22" y="52" class="t tb">Cổng 1: Admin enable</text>
+      <text x="22" y="74" class="ts">Admin cho phép loại</text><text x="22" y="88" class="ts">connector này (vd Drive)</text></g>
+    <g><path d="M190,72 H230" class="ln" marker-end="url(#m1606)"/><rect x="232" y="30" width="180" height="84" rx="6" class="b-step"/><text x="244" y="52" class="t tb">Cổng 2: User authorize</text>
+      <text x="244" y="74" class="ts">Người dùng cho Claude</text><text x="244" y="88" class="ts">truy cập tài khoản của họ</text></g>
+    <g><path d="M412,72 H450" class="ln" marker-end="url(#m1606)"/><rect x="452" y="30" width="180" height="84" rx="6" class="b-step"/><text x="464" y="52" class="t tb">Cổng 3: EMA</text>
+      <text x="464" y="74" class="ts">External Model Access:</text><text x="464" y="88" class="ts">model được đọc dữ liệu</text><text x="464" y="102" class="ts">trong cuộc trò chuyện</text></g>
+    <g><path d="M542,114 V150" class="ln-good" marker-end="url(#m1607)"/>
+      <rect x="400" y="152" width="232" height="34" rx="6" class="b-done"/><text x="516" y="174" class="t tb" text-anchor="middle">Claude đọc được dữ liệu</text></g>
+    <g><text x="200" y="170" class="tw-warn" text-anchor="middle">Thiếu một cổng = bị chặn</text>
+      <text x="200" y="188" class="ts" text-anchor="middle">cả ba cổng đều phải mở</text></g>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Cổng 1: admin bật loại connector đó cho tổ chức.</li>
+    <li>Cổng 2: từng người dùng tự cấp quyền cho Claude vào tài khoản của mình.</li>
+    <li>Cổng 3: EMA cho phép model đọc dữ liệu connector trong cuộc trò chuyện.</li>
+    <li>Qua cả ba cổng thì Claude đọc được dữ liệu.</li>
+    <li>Thiếu bất kỳ cổng nào thì bị chặn.</li>
+  </ol>
+  <figcaption>Hình 7. Ba cổng của connector.</figcaption>
+</figure>
+<p><strong>Governance postures:</strong></p>
+<div class="tw"><table>
+  <thead><tr><th>Posture</th><th>Mô tả</th><th>Khi nào dùng</th></tr></thead>
+  <tbody>
+    <tr><td>Open build</td><td>Mọi user đều có thể tạo Projects, connectors</td><td>Innovation-first, low-risk sectors</td></tr>
+    <tr><td>Centralized</td><td>Chỉ admin hoặc approved teams mới có thể tạo</td><td>Regulated industries, high security</td></tr>
+    <tr><td>Fully open</td><td>Minimal restrictions, trust users</td><td>Small teams, startups</td></tr>
+  </tbody>
+</table></div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Connector</dt><dd>Mối nối cho Claude đọc dữ liệu từ dịch vụ khác như Google Drive hay Slack.</dd>
+  <dt>EMA</dt><dd>External Model Access: cổng cho phép model truy cập dữ liệu từ connector trong cuộc trò chuyện.</dd>
+  <dt>Posture</dt><dd>Lập trường quản trị: chặt hay mở, ai được tạo gì.</dd>
+</dl></div>
+<div class="alert"><strong>Bẫy.</strong> Admin đã bật connector là xong. Thực tế còn cần người dùng authorize và cổng EMA; thiếu một trong ba thì Claude không đọc được dữ liệu.</div>
+
+<h3>4.5 Spend và Visibility (Bài 10–14)</h3>
+<p><strong>Spend caps — 3 levels:</strong></p>
+<ol>
+  <li>Org-level cap: tổng toàn tổ chức</li>
+  <li>Workspace-level cap: per department/team</li>
+  <li>User-level cap: per individual user</li>
+</ol>
+<p>Khi cap bị hit: user nhận notification → request increase → manager approve (approval flow có thể customize).</p>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 230" role="img" aria-label="Ba cấp spend cap lồng nhau (org, workspace, user) và luồng khi chạm cap: thông báo, xin tăng, quản lý duyệt">
+    <defs><marker id="m1608" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah"/></marker></defs>
+    <rect x="8" y="8" width="320" height="214" rx="8" class="lane"/>
+    <text x="20" y="26" class="lane-lb">1. ORG-LEVEL CAP: cả tổ chức</text>
+    <rect x="24" y="40" width="288" height="170" rx="8" class="b-sys"/>
+    <text x="36" y="58" class="lane-lb">2. WORKSPACE-LEVEL CAP: mỗi phòng ban</text>
+    <rect x="40" y="72" width="256" height="126" rx="8" class="b-step"/>
+    <text x="52" y="90" class="lane-lb">3. USER-LEVEL CAP: từng người</text>
+    <rect x="56" y="104" width="100" height="30" rx="5" class="b-done"/><text x="106" y="124" class="ts" text-anchor="middle">Người dùng 1</text>
+    <rect x="168" y="104" width="100" height="30" rx="5" class="b-done"/><text x="218" y="124" class="ts" text-anchor="middle">Người dùng 2</text>
+    <text x="168" y="168" class="ts" text-anchor="middle">Cap nhỏ nằm trong cap lớn</text>
+    <text x="456" y="26" class="lane-lb" text-anchor="middle">KHI CHẠM CAP</text>
+    <rect x="352" y="40" width="270" height="44" rx="6" class="b-warn"/><text x="364" y="66" class="t">Người dùng nhận thông báo</text>
+    <path d="M487,84 V104" class="ln" marker-end="url(#m1608)"/>
+    <rect x="352" y="106" width="270" height="44" rx="6" class="b-step"/><text x="364" y="132" class="t">Người dùng gửi yêu cầu tăng</text>
+    <path d="M487,150 V170" class="ln" marker-end="url(#m1608)"/>
+    <rect x="352" y="172" width="270" height="44" rx="6" class="b-done"/><text x="364" y="198" class="t">Quản lý duyệt (flow tùy chỉnh)</text>
+  </svg></div>
+  <figcaption>Hình 8. Ba cấp spend cap và quy trình khi chạm cap.</figcaption>
+</figure>
+<p><strong>Visibility tools:</strong></p>
+<ul>
+  <li><strong>Compliance API:</strong> Export audit logs, conversation metadata (không phải content) cho legal/compliance</li>
+  <li><strong>OpenTelemetry integration:</strong> Đẩy usage metrics vào observability stack của bạn</li>
+  <li><strong>Retention windows:</strong> 30/90/365 days. Sau window, conversations xóa tự động</li>
+</ul>
+<p>Ví dụ: bộ phận pháp chế cần chứng minh “ai đã dùng Claude với dữ liệu khách hàng”. Họ xuất audit log qua Compliance API. Phòng IT muốn xem tổng lượng dùng theo tuần thì đẩy số liệu OpenTelemetry vào hệ thống giám sát có sẵn.</p>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Spend cap</dt><dd>Trần chi tiêu: mức tối đa được dùng trong một kỳ.</dd>
+  <dt>Compliance API</dt><dd>API để xuất nhật ký và siêu dữ liệu phục vụ tuân thủ.</dd>
+  <dt>OpenTelemetry</dt><dd>Chuẩn gửi số liệu vận hành (usage, hiệu năng) vào hệ thống giám sát.</dd>
+  <dt>Metadata</dt><dd>Dữ liệu mô tả (ai, lúc nào), khác với nội dung cuộc trò chuyện.</dd>
+</dl></div>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div><ul>
+    <li>“Compliance API xuất toàn bộ nội dung chat”</li>
+    <li>“Giảm retention window thì vẫn khôi phục được dữ liệu cũ”</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đúng</div><ul>
+    <li>Compliance API xuất audit log và metadata, không phải nội dung</li>
+    <li>Giảm retention là không thể khôi phục dữ liệu đã xóa</li>
+  </ul></div>
+</div>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Anthropic có hướng dẫn riêng cho admin Enterprise về giới hạn chi tiêu và các cách kiểm soát lượng token dùng. Xem <a href="https://support.claude.com/en/articles/14782391-claude-enterprise-consumption-guide" target="_blank" rel="noopener">Claude Enterprise consumption guide</a>. Tên và vị trí menu cài đặt có thể thay đổi, nên đề thi chỉ hỏi khái niệm ba cấp cap như trên.</div>
+
+<h2 id="exam-tips">5. Lưu ý ôn thi</h2>
+<div class="insight"><strong>CCAO-F D2 (21%) – Output Evaluation:</strong> Discernment loop, hallucination patterns (khi nào AI sai nhất), cách verify facts. Biết limitation types: training cutoff, specificity, inherited bias, source amnesia.</div>
+<div class="insight"><strong>CCAO-F D6 (15%) – Governance:</strong> 5 deployment decisions theo đúng thứ tự (Structure → Access → Governance → Spend → Visibility). 4 hard-to-undo settings. RBAC union rule. 3 connector gates (admin enable + user authorize + EMA).</div>
+<div class="insight"><strong>Human-Agent Teams:</strong> 4 principles (clear roles, north star, gradual release, right access). 5 readiness questions. Single-player → multiplayer shift cần thêm 3 components (identity, memory, shared context).</div>
+<div class="alert"><strong>Bẫy hay gặp:</strong> nhầm union với intersection ở RBAC; quên cổng EMA ở connector; xếp sai thứ tự năm quyết định; nghĩ rằng hỏi lại “bạn chắc không?” là đủ để xác minh thông tin quan trọng.</div>
+
+<p class="lesson-practice">Luyện câu hỏi của bài này trong <a href="/bank?lesson=16">🗂️ Ngân hàng</a>.</p>
+
+<div class="btns pager">
+  <a class="btn" href="/notes/lessons/15-claude-101-fluency.html">← Bài 15 · Claude 101 &amp; AI Fluency Framework</a>
+  <a class="btn primary" href="/notes/lessons/17-building-api.html">Bài 17 · Building with the Claude API →</a>
+</div>
+
+<footer>
+  Luyện thi chứng chỉ Claude · Bài 16 · AI Capabilities, Human-Agent Teams &amp; Enterprise · v0.22 · 2026-11-18. Tổng quan: <a href="/notes/00-tong-quan.md">00</a> · Luyện đề: <a href="/new">30</a>.
+</footer>

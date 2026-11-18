@@ -1,0 +1,441 @@
+<p class="lesson-source">Nguồn: tài liệu ôn tập công khai <a href="https://claude.ai/artifact/3NhHr42CxTHGEs33N1ntFf" target="_blank" rel="noopener">artifact 3NhHr42…</a> (bài 25). Không thuộc và không được Anthropic xác nhận.</p>
+<header class="cover">
+  <div class="eyebrow">Luyện thi chứng chỉ Claude · Bài 25</div>
+  <h1>Bên liên quan, vòng đời, năng suất đội <span class="ja">CCAR-P · D6 Stakeholder Communication &amp; Lifecycle · D7 Developer Productivity</span></h1>
+  <p class="lead">Discovery có cấu trúc, truyền đạt quyết định bằng ADR, SLA và kỳ vọng, tài liệu bàn giao, vòng đời và ngừng hỗ trợ model, cấu hình Claude Code cho đội, quy trình developer với AI, xử lý sự cố vận hành, câu mẫu CCAR-P.</p>
+  <dl class="meta">
+    <dt>Kỳ thi</dt><dd>CCAR-P D6 (14%) · D7 (7%)</dd>
+    <dt>Phục vụ</dt><dd><span class="tag xt1">CCDV-F</span> 1 mục · <span class="tag xt3">CCAR-F</span> 1 mục · <span class="tag xt4">CCAR-P</span> 9 mục · <a href="#xsum">bảng nhãn từng mục</a></dd>
+
+    <dt>Nguồn</dt><dd>Exam guide CCAR-P v1.0; bài kỹ thuật Anthropic, MCP security và authorization, tài liệu platform.claude.com, code.claude.com (tra 17/11/2026)</dd>
+    <dt>Cập nhật</dt><dd><span class="status">v0.22 · 2026-11-18</span> · theo exam guide v1.0</dd>
+  </dl>
+</header>
+
+<details class="toc">
+<summary>Mục lục</summary>
+
+    <ol>
+      <li><a href="#discovery"><span class="n">1</span><span class="tx">Discovery có cấu trúc và thu thập yêu cầu</span><span class="xds" aria-hidden="true"><i class="xd xt4" title="CCAR-P"></i></span></a></li>
+      <li><a href="#truyen-dat"><span class="n">2</span><span class="tx">Truyền đạt quyết định kiến trúc và đánh đổi</span><span class="xds" aria-hidden="true"><i class="xd xt4" title="CCAR-P"></i></span></a></li>
+      <li><a href="#ky-vong"><span class="n">3</span><span class="tx">Quản lý kỳ vọng, SLA và vòng phản hồi</span><span class="xds" aria-hidden="true"><i class="xd xt4" title="CCAR-P"></i></span></a></li>
+      <li><a href="#tai-lieu"><span class="n">4</span><span class="tx">Tài liệu kiến trúc và hướng dẫn triển khai</span><span class="xds" aria-hidden="true"><i class="xd xt4" title="CCAR-P"></i></span></a></li>
+      <li><a href="#vong-doi"><span class="n">5</span><span class="tx">Vòng đời: từ discovery tới cải tiến</span><span class="xds" aria-hidden="true"><i class="xd xt4" title="CCAR-P"></i><i class="xd xt1" title="CCDV-F"></i></span></a></li>
+      <li><a href="#claude-code-doi"><span class="n">6</span><span class="tx">Cấu hình Claude Code cho đội</span><span class="xds" aria-hidden="true"><i class="xd xt4" title="CCAR-P"></i><i class="xd xt3" title="CCAR-F"></i></span></a></li>
+      <li><a href="#quy-trinh-dev"><span class="n">7</span><span class="tx">Cải thiện quy trình developer bằng AI</span><span class="xds" aria-hidden="true"><i class="xd xt4" title="CCAR-P"></i></span></a></li>
+      <li><a href="#van-hanh"><span class="n">8</span><span class="tx">Hỗ trợ debug và sự cố vận hành</span><span class="xds" aria-hidden="true"><i class="xd xt4" title="CCAR-P"></i></span></a></li>
+      <li><a href="#cau-mau"><span class="n">9</span><span class="tx">Câu mẫu và chiến thuật CCAR-P</span><span class="xds" aria-hidden="true"><i class="xd xt4" title="CCAR-P"></i></span></a></li>
+    </ol>
+
+</details>
+
+<details class="xsum" id="xsum">
+<summary>Mục nào phục vụ bài thi nào</summary>
+<p class="xnote">Mã đầu là bài thi chính của mục. <b>Nền</b>: cần để hiểu các mục sau. <b>Nâng cao</b>: ngoài phạm vi các exam guide. Ôn cho một bài thi thì đọc các mục có mã của bài đó trước.</p>
+<div class="tw"><table>
+<thead><tr><th>Mục</th><th>Bài thi</th><th>Ghi chú</th></tr></thead>
+<tbody>
+<tr><td><a href="#discovery">1. Discovery có cấu trúc và thu thập yêu cầu</a></td><td><span class="tag xt4">CCAR-P D6</span></td><td></td></tr>
+<tr><td><a href="#truyen-dat">2. Truyền đạt quyết định kiến trúc và đánh đổi</a></td><td><span class="tag xt4">CCAR-P D6</span></td><td></td></tr>
+<tr><td><a href="#ky-vong">3. Quản lý kỳ vọng, SLA và vòng phản hồi</a></td><td><span class="tag xt4">CCAR-P D6</span></td><td></td></tr>
+<tr><td><a href="#tai-lieu">4. Tài liệu kiến trúc và hướng dẫn triển khai</a></td><td><span class="tag xt4">CCAR-P D6</span></td><td></td></tr>
+<tr><td><a href="#vong-doi">5. Vòng đời: từ discovery tới cải tiến</a></td><td><span class="tag xt4">CCAR-P D6</span> <span class="tag xt1">CCDV-F D2</span></td><td></td></tr>
+<tr><td><a href="#claude-code-doi">6. Cấu hình Claude Code cho đội</a></td><td><span class="tag xt4">CCAR-P D7</span> <span class="tag xt3">CCAR-F D3</span></td><td></td></tr>
+<tr><td><a href="#quy-trinh-dev">7. Cải thiện quy trình developer bằng AI</a></td><td><span class="tag xt4">CCAR-P D7</span></td><td></td></tr>
+<tr><td><a href="#van-hanh">8. Hỗ trợ debug và sự cố vận hành</a></td><td><span class="tag xt4">CCAR-P D7</span></td><td></td></tr>
+<tr><td><a href="#cau-mau">9. Câu mẫu và chiến thuật CCAR-P</a></td><td><span class="tag xt4">CCAR-P</span></td><td></td></tr>
+</tbody></table></div>
+</details>
+
+<h2 id="discovery">1. Discovery có cấu trúc và thu thập yêu cầu</h2>
+<p class="xtags"><span class="tag xt4">CCAR-P D6</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Bác sĩ giỏi không kê đơn ngay khi bệnh nhân nói "tôi mệt". Họ hỏi theo trình tự: triệu chứng, từ bao giờ, tiền sử, thuốc đang dùng, rồi mới chẩn đoán. Discovery là buổi khám đó cho một dự án AI.
+</div>
+<div class="tw"><table>
+  <thead><tr><th>Nhóm câu hỏi</th><th>Ví dụ</th></tr></thead>
+  <tbody>
+    <tr><td>Quy trình hiện tại</td><td>Ai làm, mỗi ca mất bao lâu, lỗi hay gặp ở đâu, khối lượng mỗi ngày</td></tr>
+    <tr><td>Chỉ số thành công</td><td>Giảm thời gian xử lý bao nhiêu, độ chính xác tối thiểu, ai đo</td></tr>
+    <tr><td>Bên liên quan</td><td>Người dùng cuối, chủ quy trình, IT, bảo mật, pháp chế, tài chính; ai có quyền phê duyệt</td></tr>
+    <tr><td>Dữ liệu</td><td>Nằm ở đâu, định dạng, chất lượng, có PII hay dữ liệu quy định không</td></tr>
+    <tr><td>Ràng buộc</td><td>Ngân sách, SLA, vùng dữ liệu, khung tuân thủ, hệ thống phải tích hợp</td></tr>
+    <tr><td>Rủi ro</td><td>Sai thì hậu quả gì, ai phải duyệt, cách rollback</td></tr>
+  </tbody>
+</table></div>
+<p>Đầu ra của discovery: tài liệu yêu cầu gồm yêu cầu chức năng, phi chức năng (SLA, bảo mật, tuân thủ), chỉ số thành công, phạm vi và ngoài phạm vi, danh sách rủi ro, kế hoạch thí điểm. Claude hỗ trợ được ở bước này: tóm tắt phỏng vấn, gom chủ đề, soạn nháp tài liệu yêu cầu để các bên sửa.</p>
+<div class="alert"><strong>Bẫy.</strong> Bỏ qua pháp chế, bảo mật trong discovery rồi bị chặn ở giai đoạn triển khai; hoặc đi thẳng vào chọn model trước khi có chỉ số thành công.</div>
+<p><strong>Ví dụ chạy từng bước: discovery cho trợ lý xử lý yêu cầu bồi thường.</strong></p>
+<ol>
+  <li>Lập danh sách bên liên quan trước buổi đầu: trưởng phòng bồi thường, nhân viên xử lý, IT, bảo mật, pháp chế, tài chính.</li>
+  <li>Phỏng vấn theo bảng câu hỏi: mỗi ngày 300 yêu cầu, mỗi yêu cầu mất 25 phút, lỗi hay gặp là thiếu giấy tờ.</li>
+  <li>Thống nhất chỉ số: giảm thời gian xử lý xuống 10 phút, tỷ lệ sai không tăng, đo trên mẫu 200 hồ sơ.</li>
+  <li>Ghi ràng buộc: dữ liệu có thông tin sức khoẻ, phải lưu trong nước, quyết định chi trả do người duyệt.</li>
+  <li>Dùng Claude tóm tắt các buổi phỏng vấn và soạn nháp tài liệu yêu cầu; các bên sửa và ký.</li>
+</ol>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div>Buổi đầu thảo luận nên dùng model nào, framework nào, bao nhiêu agent.</div>
+  <div class="box right"><div class="hd">Đúng</div>Buổi đầu hỏi quy trình hiện tại, khối lượng, chỉ số thành công, dữ liệu, ràng buộc, giá của lỗi và ai phê duyệt.</div>
+</div>
+<div class="insight"><strong>Cốt lõi.</strong> Discovery trả lời "vấn đề gì, đo thế nào, ai liên quan, ràng buộc gì" trước khi bàn giải pháp. Thiếu bên liên quan nào ở bước này thì sẽ bị chặn ở bước sau.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Discovery</dt><dd>Giai đoạn tìm hiểu vấn đề, yêu cầu và ràng buộc trước khi thiết kế.</dd>
+  <dt>Ngoài phạm vi</dt><dd>Những gì dự án đã thống nhất là không làm, ghi rõ để tránh kỳ vọng lệch.</dd>
+</dl></div>
+
+<h2 id="truyen-dat">2. Truyền đạt quyết định kiến trúc và đánh đổi</h2>
+<p class="xtags"><span class="tag xt4">CCAR-P D6</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Kiến trúc sư trình bày với chủ nhà: phương án A rẻ nhưng hẹp, phương án B rộng nhưng đắt, tôi đề xuất A vì gia đình bạn ưu tiên ngân sách. Chủ nhà không cần biết cách tính tải trọng, nhưng cần hiểu mình đang đánh đổi gì.
+</div>
+<p><strong>ADR</strong> (Architecture Decision Record) ghi mỗi quyết định quan trọng: bối cảnh, các phương án, tiêu chí, quyết định, hệ quả, ngày và người quyết. Nhờ đó khi model hay yêu cầu đổi, đội biết quyết định cũ dựa trên giả định nào.</p>
+<div class="tw"><table>
+  <thead><tr><th>Người nghe</th><th>Nói gì</th><th>Tránh</th></tr></thead>
+  <tbody>
+    <tr><td>Lãnh đạo</td><td>Giá trị, chi phí, rủi ro, mốc thời gian, chỉ số thành công</td><td>Chi tiết kỹ thuật, hứa độ chính xác tuyệt đối</td></tr>
+    <tr><td>Kỹ sư</td><td>Kiến trúc, giao diện, giới hạn, kế hoạch eval, vận hành</td><td>Khẩu hiệu chung chung</td></tr>
+    <tr><td>Pháp chế, bảo mật</td><td>Luồng dữ liệu, nơi lưu, thời hạn, quyền truy cập, kiểm soát, nhật ký</td><td>"AI an toàn vì model tốt"</td></tr>
+    <tr><td>Người dùng nghiệp vụ</td><td>Việc gì thay đổi, khi nào cần kiểm tra, khi nào báo lỗi</td><td>Thuật ngữ kỹ thuật</td></tr>
+  </tbody>
+</table></div>
+<div class="insight"><strong>Cốt lõi.</strong> Trình bày đánh đổi bằng ngôn ngữ của người nghe, có phương án thay thế và lý do chọn, ghi lại thành ADR.</div>
+<p>Một ADR ngắn gọn thường chỉ cần một trang:</p>
+<pre><code>ADR-007: Dùng RAG thay vì fine-tune cho trợ lý chính sách
+Bối cảnh: 2.000 trang chính sách, đổi hằng tháng; cần trích nguồn.
+Phương án: (A) RAG + citations; (B) fine-tune; (C) nạp hết vào prompt.
+Tiêu chí: cập nhật nhanh, trích được nguồn, chi phí, độ chính xác eval.
+Quyết định: A. Eval 91% (B: 88%, cập nhật mỗi lần phải huấn luyện lại).
+Hệ quả: cần pipeline index và theo dõi chất lượng truy xuất.
+Xem lại khi: kho dưới 200K token, hoặc độ chính xác dưới 88%.
+Ngày, người quyết: 18/11/2026, kiến trúc sư giải pháp, trưởng nhóm sản phẩm.</code></pre>
+<p><strong>Ví dụ chạy từng bước: giải thích cho ban lãnh đạo vì sao chọn model tầm trung.</strong></p>
+<ol>
+  <li>Bắt đầu bằng mục tiêu họ quan tâm: "giải quyết 60% ticket, chi phí mỗi ticket dưới mức X".</li>
+  <li>Đưa hai phương án bằng số: model lớn nhất đạt 93%, chi phí gấp 3 lần; model tầm trung đạt 91%, trong ngân sách.</li>
+  <li>Nói rõ đánh đổi: 2 điểm chính xác, bù bằng chuyển người cho ca khó.</li>
+  <li>Nêu điều kiện xem lại: nếu ca khó vượt 15% lưu lượng, thử routing ca khó sang model lớn.</li>
+</ol>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div>Trình bày với lãnh đạo bằng sơ đồ kiến trúc chi tiết và tên các thư viện, không nói chi phí hay rủi ro.</div>
+  <div class="box right"><div class="hd">Đúng</div>Nói bằng mục tiêu, chi phí, rủi ro của họ, có phương án thay thế và điều kiện xem lại; chi tiết kỹ thuật nằm trong ADR cho kỹ sư.</div>
+</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>ADR</dt><dd>Architecture Decision Record: bản ghi một quyết định kiến trúc kèm bối cảnh, phương án, lý do và hệ quả.</dd>
+</dl></div>
+
+<h2 id="ky-vong">3. Quản lý kỳ vọng, SLA và vòng phản hồi</h2>
+<p class="xtags"><span class="tag xt4">CCAR-P D6</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Dự báo thời tiết không hứa "mai chắc chắn không mưa". Họ nói "70% khả năng mưa", và người nghe hiểu cần mang ô. Đài khí tượng uy tín còn công bố họ đã dự báo đúng bao nhiêu phần trăm năm qua. Cam kết theo xác suất, kèm số liệu, khiến người nghe tin lâu dài hơn lời hứa tuyệt đối.
+</div>
+<p>Hệ AI thất bại về mặt dự án thường không phải vì model kém mà vì <strong>kỳ vọng lệch</strong>: lãnh đạo nghĩ "AI không sai", người dùng nghĩ "AI biết mọi thứ của công ty". Kiến trúc sư phải đặt kỳ vọng đúng từ đầu và giữ nó đúng bằng số liệu.</p>
+<ul>
+  <li><strong>Không tất định</strong>: cùng đầu vào có thể ra kết quả khác; cam kết theo tỷ lệ (độ chính xác từ 92% trên bộ eval), không cam kết "luôn đúng".</li>
+  <li><strong>SLA</strong> gồm độ trễ (p95), độ sẵn sàng (phụ thuộc cả nhà cung cấp và hệ thống của bạn), độ chính xác, thời gian xử lý lô; ghi rõ cách đo.</li>
+  <li><strong>Thí điểm</strong> có phạm vi và chỉ số trước khi mở rộng; báo cáo định kỳ theo chỉ số đã thống nhất.</li>
+  <li><strong>Vòng phản hồi</strong>: kênh cho người dùng báo sai, quy trình phân loại phản hồi, đưa ca lỗi vào bộ eval.</li>
+</ul>
+<div class="tw"><table>
+  <thead><tr><th>Mục SLA</th><th>Viết tốt</th><th>Viết dở</th></tr></thead>
+  <tbody>
+    <tr><td>Độ trễ</td><td>p95 dưới 4 giây cho tóm tắt tài liệu dưới 20 trang, đo tại API gateway</td><td>"Phản hồi nhanh"</td></tr>
+    <tr><td>Độ chính xác</td><td>Từ 90% trên bộ eval 500 ca đã thống nhất, đo lại mỗi tháng</td><td>"Chính xác 100%"</td></tr>
+    <tr><td>Độ sẵn sàng</td><td>99,5% theo tháng, có hàng đợi và retry khi nhà cung cấp quá tải</td><td>Hứa bằng mức của nhà cung cấp mà không tính hệ thống của mình</td></tr>
+    <tr><td>Xử lý lô</td><td>Kết quả trước 7 giờ sáng cho lô nộp trước nửa đêm</td><td>"Xử lý trong ngày"</td></tr>
+  </tbody>
+</table></div>
+<p><strong>Ví dụ chạy từng bước.</strong> Nhà tài trợ dự án đòi "100% chính xác" trước khi cho ra mắt trợ lý trả lời khách.</p>
+<ol>
+  <li>Đưa số liệu nền: nhân viên hiện trả lời đúng khoảng 93% trên cùng bộ câu hỏi; bản thí điểm của Claude đạt 91%.</li>
+  <li>Đề xuất thiết kế giảm rủi ro thay vì hứa tuyệt đối: câu hỏi về tiền và hợp đồng chuyển người; câu trả lời có trích nguồn; khách bấm "chưa đúng" thì chuyển người.</li>
+  <li>Thống nhất ngưỡng ra mắt: từ 92% trên bộ eval, tỷ lệ khiếu nại không cao hơn hiện nay, báo cáo hằng tuần.</li>
+  <li>Sau ra mắt: phản hồi "chưa đúng" được phân loại mỗi tuần, ca lỗi thêm vào bộ eval, kết quả báo lại cho nhà tài trợ.</li>
+</ol>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div>Hứa với ban giám đốc "AI sẽ xử lý 100% ticket, cắt giảm đội hỗ trợ ngay quý sau" để dự án được duyệt.</div>
+  <div class="box right"><div class="hd">Đúng</div>Cam kết thí điểm 8 tuần trên một loại ticket, mục tiêu tự giải quyết 60% với độ hài lòng không giảm, báo cáo hằng tuần, quyết định mở rộng theo số liệu.</div>
+</div>
+<div class="alert"><strong>Bẫy.</strong> Phản hồi người dùng đi qua tin nhắn riêng, email lẻ thì mất. Vòng phản hồi phải có kênh chính thức trong sản phẩm, người phụ trách phân loại, và đích đến rõ ràng (bộ eval, backlog).</div>
+<div class="insight"><strong>Cốt lõi.</strong> Cam kết bằng tỷ lệ đo được trên bộ eval đã thống nhất, so với mức nền hiện tại; thiết kế giảm rủi ro thay cho lời hứa tuyệt đối; vòng phản hồi biến lỗi thật thành ca eval.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Mức nền (baseline)</dt><dd>Kết quả của cách làm hiện tại (thường là con người), dùng để so với hệ AI.</dd>
+  <dt>Nhà tài trợ dự án</dt><dd>Người có thẩm quyền duyệt ngân sách và quyết định ra mắt.</dd>
+</dl></div>
+
+<h2 id="tai-lieu">4. Tài liệu kiến trúc và hướng dẫn triển khai</h2>
+<p class="xtags"><span class="tag xt4">CCAR-P D6</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Bác sĩ trực đêm bàn giao ca cho bác sĩ sáng. Họ không đưa cả chồng bệnh án rồi về. Họ nói ngắn gọn từng bệnh nhân: đang bị gì, đã làm gì, vì sao chọn thuốc này, cần theo dõi chỉ số nào, nếu xấu đi thì làm gì và gọi ai. Người nhận ca phải tự xử lý được đêm sau mà không cần gọi người cũ.
+</div>
+<p>Một hệ thống Claude chỉ thật sự được bàn giao khi đội nhận <strong>vận hành được mà không cần đội xây</strong>. Ngoài code, đội nhận cần biết: vì sao hệ thống như vậy, nó đang được đo thế nào, và khi hỏng thì làm gì. Mỗi tài liệu dưới đây trả lời một câu hỏi cho một nhóm người đọc.</p>
+<div class="tw"><table>
+  <thead><tr><th>Tài liệu</th><th>Nội dung</th><th>Ai đọc, để làm gì</th></tr></thead>
+  <tbody>
+    <tr><td>Sơ đồ kiến trúc, luồng dữ liệu</td><td>Thành phần, nơi dữ liệu đi qua và lưu, ranh giới tin cậy</td><td>Kỹ sư, bảo mật: hiểu hệ thống, rà soát rủi ro</td></tr>
+    <tr><td>ADR</td><td>Quyết định, phương án, lý do</td><td>Kỹ sư sau này: hiểu vì sao, tránh lật lại quyết định cũ</td></tr>
+    <tr><td>Prompt, cấu hình có phiên bản</td><td>System prompt, tool definition, model ID, tham số; trong git</td><td>Kỹ sư: sửa an toàn, truy lỗi về đúng phiên bản</td></tr>
+    <tr><td>Báo cáo eval</td><td>Bộ dữ liệu, chỉ số, kết quả theo nhóm, giới hạn đã biết</td><td>Chủ sản phẩm: biết hệ thống tốt tới đâu; kỹ sư: chạy lại khi đổi</td></tr>
+    <tr><td>Runbook vận hành</td><td>Cảnh báo, cách chẩn đoán, rollback, liên hệ, xử lý 429, 529, sự cố an toàn</td><td>Người trực: xử lý sự cố lúc nửa đêm</td></tr>
+    <tr><td>Hướng dẫn người dùng</td><td>Phạm vi, cách kiểm tra kết quả, cách báo lỗi</td><td>Người dùng cuối: dùng đúng, biết khi nào không tin</td></tr>
+  </tbody>
+</table></div>
+<p>Riêng với hệ dùng LLM, báo cáo eval và runbook cần thêm những thứ phần mềm thường không có: <strong>giới hạn đã biết</strong> (loại câu hỏi hay sai, ngôn ngữ chưa test), <strong>model ID đang ghim và ngày retire</strong>, <strong>cách chạy lại bộ eval</strong> (lệnh, dữ liệu, ngưỡng đạt), và <strong>dấu hiệu chất lượng trượt</strong> (tỷ lệ escalation, tỷ lệ người dùng sửa lại).</p>
+<p><strong>Ví dụ chạy từng bước: bàn giao trợ lý tra cứu hợp đồng từ đội tư vấn sang đội vận hành của khách.</strong></p>
+<ol>
+  <li>Hai tuần trước bàn giao: gửi bộ tài liệu, đội nhận đọc và ghi câu hỏi.</li>
+  <li>Buổi đi qua kiến trúc: đội xây trình bày luồng dữ liệu và các ADR quan trọng (chọn RAG thay vì fine-tune, chọn model tầm trung).</li>
+  <li>Đội nhận tự chạy bộ eval trên máy của họ và ra cùng con số với báo cáo.</li>
+  <li>Diễn tập sự cố: giả lập 429 hàng loạt và một lần đổi model làm vỡ JSON; đội nhận xử lý theo runbook, đội xây chỉ quan sát.</li>
+  <li>Chỗ nào runbook thiếu thì sửa runbook ngay, không giải thích miệng. Chỉ ký bàn giao khi đội nhận làm được mọi bước một mình.</li>
+</ol>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div>Bàn giao bằng link repo và một buổi demo; tri thức vận hành nằm trong đầu đội xây.</div>
+  <div class="box right"><div class="hd">Đúng</div>Bộ tài liệu theo người đọc, đội nhận tự chạy lại eval và diễn tập sự cố theo runbook trước khi ký bàn giao.</div>
+</div>
+<div class="alert"><strong>Bẫy.</strong> Tài liệu viết một lần rồi để đó sẽ lệch khỏi hệ thống thật sau vài lần đổi prompt hay model. Prompt, cấu hình và model ID phải nằm trong git cùng code; tài liệu mô tả trỏ vào đó thay vì chép lại giá trị.</div>
+<div class="insight"><strong>Cốt lõi.</strong> Bàn giao là bàn giao khả năng vận hành, không chỉ bàn giao code: đội nhận phải biết vì sao hệ thống như vậy, đo nó thế nào, và làm gì khi hỏng.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Runbook</dt><dd>Tài liệu từng bước cho người vận hành: dấu hiệu, cách chẩn đoán, cách xử lý, ai cần liên hệ.</dd>
+  <dt>Ranh giới tin cậy</dt><dd>Chỗ dữ liệu đi từ vùng ít tin cậy (người dùng, web) sang vùng tin cậy hơn (hệ thống nội bộ), cần kiểm tra.</dd>
+  <dt>Diễn tập sự cố</dt><dd>Giả lập sự cố có chủ đích để kiểm tra runbook và đội vận hành.</dd>
+</dl></div>
+
+<h2 id="vong-doi">5. Vòng đời: từ discovery tới cải tiến</h2>
+<p class="xtags"><span class="tag xt4">CCAR-P D6</span> <span class="tag xt1">CCDV-F D2</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Mua ô tô không phải xong ở ngày nhận xe. Còn bảo dưỡng định kỳ, theo dõi đèn báo lỗi, và một ngày hãng báo sắp ngừng sản xuất phụ tùng cho đời xe này. Chủ xe khôn tính trước: thử xe mới khi còn thời gian, không đợi tới lúc xe hỏng giữa đường mới đi mua.
+</div>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 186" role="img" aria-label="Vòng đời giải pháp: discovery, thiết kế, bàn giao, giám sát, cải tiến, rồi quay lại discovery khi yêu cầu hoặc model thay đổi">
+    <defs><marker id="m2501" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker></defs>
+    <rect x="8" y="30" width="112" height="56" rx="6" class="b-step"/><text x="64" y="54" class="t tb" text-anchor="middle">1 Discovery</text><text x="64" y="70" class="ts" text-anchor="middle">yêu cầu, chỉ số</text>
+    <rect x="136" y="30" width="112" height="56" rx="6" class="b-step"/><text x="192" y="54" class="t tb" text-anchor="middle">2 Thiết kế</text><text x="192" y="70" class="ts" text-anchor="middle">ADR, eval, thí điểm</text>
+    <rect x="264" y="30" width="112" height="56" rx="6" class="b-step"/><text x="320" y="54" class="t tb" text-anchor="middle">3 Bàn giao</text><text x="320" y="70" class="ts" text-anchor="middle">runbook, đào tạo</text>
+    <rect x="392" y="30" width="112" height="56" rx="6" class="b-hot"/><text x="448" y="54" class="t tb" text-anchor="middle">4 Giám sát</text><text x="448" y="70" class="ts" text-anchor="middle">chỉ số, chi phí, lỗi</text>
+    <rect x="520" y="30" width="112" height="56" rx="6" class="b-done"/><text x="576" y="54" class="t tb" text-anchor="middle">5 Cải tiến</text><text x="576" y="70" class="ts" text-anchor="middle">eval, A/B, nâng model</text>
+    <path class="ln-acc flow" d="M120,58 H134" marker-end="url(#m2501)"/>
+    <path class="ln-acc flow" d="M248,58 H262" marker-end="url(#m2501)"/>
+    <path class="ln-acc flow" d="M376,58 H390" marker-end="url(#m2501)"/>
+    <path class="ln-acc flow" d="M504,58 H518" marker-end="url(#m2501)"/>
+    <path class="ln-acc flow" d="M576,86 V140 H64 V88" marker-end="url(#m2501)"/>
+    <text x="320" y="134" class="ts halo" text-anchor="middle">6 Yêu cầu mới, model bị ngừng, chất lượng trượt: quay lại discovery</text>
+    <circle class="tok" r="7" style="transform:translate(320px,150px)"/>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Discovery: yêu cầu, chỉ số, ràng buộc.</li>
+    <li>Thiết kế: kiến trúc, ADR, kế hoạch eval và thí điểm.</li>
+    <li>Bàn giao: tài liệu, runbook, đào tạo người dùng và đội vận hành.</li>
+    <li>Giám sát: chất lượng, chi phí, độ trễ, an toàn.</li>
+    <li>Cải tiến: eval, A/B, nâng model có kiểm soát.</li>
+    <li>Thay đổi lớn đưa vòng đời quay lại từ đầu.</li>
+  </ol>
+  <figcaption>Hình 1. Vòng đời là một vòng, không phải đường thẳng kết thúc ở bàn giao.</figcaption>
+</figure>
+<p><strong>Ngừng hỗ trợ model</strong>: model chuyển trạng thái deprecated rồi retired (request tới model đã retire sẽ lỗi). Khi nhận thông báo: lên kế hoạch, chạy eval trên model thay thế, đọc migration guide (tham số có thể đổi), chuyển có chủ đích trước ngày retire, giữ đường quay lại.</p>
+<div class="alert"><strong>Bẫy.</strong> Đổi model âm thầm qua alias "mới nhất" trong production; hoặc chờ tới ngày retire mới xử lý.</div>
+<p>Mỗi pha có <strong>đầu ra</strong> và <strong>cổng</strong> để qua pha sau:</p>
+<div class="tw"><table>
+  <thead><tr><th>Pha</th><th>Đầu ra</th><th>Cổng qua pha sau</th></tr></thead>
+  <tbody>
+    <tr><td>Discovery</td><td>Bài toán, chỉ số thành công, ràng buộc, danh sách bên liên quan</td><td>Nhà tài trợ đồng ý chỉ số và phạm vi</td></tr>
+    <tr><td>Thiết kế</td><td>Kiến trúc, ADR, kế hoạch eval, kế hoạch thí điểm</td><td>Bảo mật, pháp chế duyệt luồng dữ liệu; eval nền đạt ngưỡng</td></tr>
+    <tr><td>Bàn giao</td><td>Tài liệu, runbook, đào tạo</td><td>Đội nhận tự chạy eval và xử lý sự cố diễn tập</td></tr>
+    <tr><td>Giám sát</td><td>Bảng theo dõi, cảnh báo, báo cáo định kỳ</td><td>Chỉ số giữ trong ngưỡng đã cam kết</td></tr>
+    <tr><td>Cải tiến</td><td>Thay đổi đã qua eval, A/B</td><td>Chỉ số chính tốt hơn, chỉ số bảo vệ không xấu đi</td></tr>
+  </tbody>
+</table></div>
+<p><strong>Ví dụ chạy từng bước: model đang dùng bị thông báo ngừng hỗ trợ.</strong></p>
+<ol>
+  <li>Ngày nhận thông báo: ghi ngày retire vào lịch vận hành, mở việc chuyển model có người phụ trách.</li>
+  <li>Tuần 1–2: đọc migration guide của model thay thế (tham số, hành vi có thể khác), chạy bộ eval năng lực và hồi quy trên model mới.</li>
+  <li>Sửa prompt hay parser cho những ca hồi quy, chạy lại eval tới khi đạt.</li>
+  <li>Canary rồi A/B trên lưu lượng thật, theo dõi chỉ số bảo vệ (định dạng JSON, độ trễ, chi phí).</li>
+  <li>Chuyển hẳn sớm trước ngày retire, giữ cấu hình cũ để quay lại khi cần; cập nhật model ID trong tài liệu và ADR.</li>
+</ol>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div>Coi dự án kết thúc ở bàn giao; khi model bị retire, hệ thống lỗi hàng loạt mới biết.</div>
+  <div class="box right"><div class="hd">Đúng</div>Vòng đời có pha giám sát và cải tiến, có người theo dõi thông báo ngừng hỗ trợ và kế hoạch chuyển model có eval.</div>
+</div>
+<div class="insight"><strong>Cốt lõi.</strong> Vòng đời là một vòng có cổng ở mỗi pha. Thay đổi lớn (yêu cầu mới, model bị ngừng, chất lượng trượt) đưa hệ thống quay lại discovery hoặc thiết kế, có eval đi kèm.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Deprecated</dt><dd>Model đã có thông báo ngừng hỗ trợ, vẫn chạy nhưng sẽ bị retire vào ngày đã công bố.</dd>
+  <dt>Retired</dt><dd>Model không còn phục vụ; request gọi tới sẽ lỗi.</dd>
+</dl></div>
+
+<h2 id="claude-code-doi">6. Cấu hình Claude Code cho đội</h2>
+<p class="xtags"><span class="tag xt4">CCAR-P D7</span> <span class="tag xt3">CCAR-F D3</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Một chuỗi văn phòng có quy định toàn công ty (không ai được tắt camera an ninh), nội quy từng văn phòng (giờ họp, chỗ để xe), bộ dụng cụ chuẩn gửi tới mọi chi nhánh (máy in, phần mềm), và góc bàn riêng mỗi người tự bày. Quy định toàn công ty thắng nội quy văn phòng, nội quy văn phòng thắng thói quen cá nhân.
+</div>
+<p>Nhiệm vụ 7.1 hỏi cách đưa Claude Code cho cả đội dùng nhất quán và an toàn. Mỗi nhu cầu có một chỗ đặt cấu hình phù hợp:</p>
+<div class="tw"><table>
+  <thead><tr><th>Nhu cầu</th><th>Công cụ</th></tr></thead>
+  <tbody>
+    <tr><td>Chính sách bắt buộc cho mọi máy (deny lệnh nguy hiểm, MCP được phép)</td><td>Managed settings do admin triển khai, ưu tiên cao nhất</td></tr>
+    <tr><td>Chuẩn chung của repo</td><td>CLAUDE.md project, <code>.claude/rules/</code>, <code>.claude/settings.json</code> commit vào repo</td></tr>
+    <tr><td>Chia sẻ skill, command, hook, MCP cho nhiều repo</td><td>Plugin và plugin marketplace nội bộ</td></tr>
+    <tr><td>Review, sửa lỗi tự động trong CI</td><td>GitHub Actions, headless <code>-p</code> với quyền khai báo sẵn</td></tr>
+    <tr><td>Theo dõi sử dụng, chi phí</td><td>OpenTelemetry, báo cáo usage theo người dùng, workspace; hạn mức chi tiêu</td></tr>
+    <tr><td>Bảo mật</td><td>Quyền tối thiểu, sandbox, không cho đọc secret, plugin từ nguồn được duyệt</td></tr>
+  </tbody>
+</table></div>
+<p>Thứ tự ưu tiên của settings từ cao xuống thấp: managed, tham số dòng lệnh, <code>settings.local.json</code>, <code>.claude/settings.json</code> của project, settings của user. Với quyền, <code>deny</code> ở bất kỳ cấp nào cũng thắng <code>allow</code> ở cấp khác. Vì vậy chính sách "không ai được chạy lệnh X" đặt ở managed settings với <code>deny</code> là chắc chắn nhất: người dùng không ghi đè được bằng settings cục bộ (chi tiết ở <a href="/notes/lessons/05-claude-code.html#settings">bài 05 §7</a>).</p>
+<p><strong>Ví dụ chạy từng bước: đưa Claude Code cho 60 developer ở 12 repo.</strong></p>
+<ol>
+  <li>Admin triển khai managed settings: deny đọc file <code>.env</code> và thư mục secret, deny lệnh xoá hạ tầng, chỉ cho phép MCP server trong danh sách duyệt.</li>
+  <li>Mỗi repo commit <code>CLAUDE.md</code> (lệnh build, test, quy ước) và <code>.claude/settings.json</code> (allow lệnh test, lint của repo đó).</li>
+  <li>Đội nền tảng đóng gói skill review, command tạo migration, hook format thành một plugin trong marketplace nội bộ; các repo cài plugin thay vì chép file.</li>
+  <li>Bật xuất số liệu qua OpenTelemetry để theo dõi usage, chi phí, tool hay bị từ chối; đặt hạn mức chi tiêu.</li>
+  <li>CI chạy Claude headless review mỗi PR với quyền chỉ đọc và đăng bình luận.</li>
+</ol>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div>Gửi email nhắc mọi người "đừng cho Claude đọc file secret" và chép thủ công bộ skill vào từng repo.</div>
+  <div class="box right"><div class="hd">Đúng</div>Deny trong managed settings cho chính sách bắt buộc; plugin trong marketplace nội bộ cho thứ dùng lại; số liệu qua OpenTelemetry.</div>
+</div>
+<div class="alert"><strong>Bẫy.</strong> Đặt chính sách bắt buộc trong <code>.claude/settings.json</code> của repo là chưa đủ: nó chỉ áp cho repo đó và người dùng có thể thêm cấu hình cục bộ. Chính sách cho toàn tổ chức thuộc về managed settings.</div>
+<div class="insight"><strong>Cốt lõi.</strong> Thứ bắt buộc thì managed settings; thứ chung của repo thì commit; thứ dùng lại nhiều repo thì plugin; thứ cá nhân thì thư mục nhà.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Managed settings</dt><dd>Cấu hình do admin tổ chức triển khai lên máy người dùng, có ưu tiên cao nhất.</dd>
+  <dt>Plugin marketplace</dt><dd>Danh mục plugin (skill, command, hook, MCP) mà đội có thể cài từ một nguồn chung.</dd>
+</dl></div>
+
+<h2 id="quy-trinh-dev">7. Cải thiện quy trình developer bằng AI</h2>
+<p class="xtags"><span class="tag xt4">CCAR-P D7</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Một xưởng mộc mua máy cưa CNC. Nếu chỉ đặt máy vào góc và để ai muốn dùng thì dùng, mỗi người dùng một kiểu, sản phẩm lúc đẹp lúc hỏng. Xưởng làm tốt sẽ viết quy trình: bản vẽ duyệt trước khi cắt, đo kiểm sau mỗi lô, máy có rào chắn an toàn. Máy giúp nhanh hơn, còn quy trình giúp đều tay hơn.
+</div>
+<p>Nhiệm vụ 7.2 hỏi cách dùng công cụ AI như Claude Code để <strong>cả đội</strong> làm tốt hơn, không chỉ một người gõ nhanh hơn. Mỗi mẫu dưới đây giải một vấn đề cụ thể của quy trình phát triển:</p>
+<div class="tw"><table>
+  <thead><tr><th>Mẫu</th><th>Lợi ích</th><th>Dùng khi</th></tr></thead>
+  <tbody>
+    <tr><td>Plan mode trước thay đổi lớn</td><td>Thấy phạm vi và rủi ro trước khi sửa nhiều file</td><td>Thay đổi chạm nhiều module, chưa rõ cách làm</td></tr>
+    <tr><td>Viết test trước, lặp theo lỗi test</td><td>Tiêu chí rõ, kiểm chứng tự động</td><td>Hành vi mong muốn mô tả được bằng test</td></tr>
+    <tr><td>Worktree song song cho nhiều việc độc lập</td><td>Không giẫm chân nhau, tăng thông lượng</td><td>Một người có vài việc không liên quan nhau</td></tr>
+    <tr><td>Subagent kiểm tra độc lập (verifier, reviewer)</td><td>Bắt lỗi mà phiên viết code bỏ qua</td><td>Thay đổi quan trọng, cần góc nhìn không mang giả định của người viết</td></tr>
+    <tr><td>Hook làm cổng (format, lint, chặn lệnh nguy hiểm)</td><td>Chuẩn tất định, không dựa vào lời dặn</td><td>Quy tắc phải đúng 100%, không được "thường đúng"</td></tr>
+    <tr><td>Headless trong CI cho review, sinh test</td><td>Tự động hoá việc lặp lại</td><td>Việc lặp lại ở mọi PR</td></tr>
+  </tbody>
+</table></div>
+<p><strong>Đưa vào đội theo thứ tự.</strong> (1) <code>CLAUDE.md</code> của repo ghi lệnh build, test, quy ước, để mọi phiên bắt đầu từ cùng hiểu biết. (2) <code>.claude/settings.json</code> chung cho quyền và hook, commit vào git. (3) Skills và slash command cho các việc lặp lại của đội (review, viết migration). (4) Tự động hoá trong CI sau khi đội đã quen dùng tay. Các bước này được nói kỹ ở <a href="#claude-code-doi">§6</a>.</p>
+<p><strong>Đo đúng thứ.</strong> Năng suất nên đo bằng kết quả, giống các chỉ số giao hàng phần mềm quen thuộc: thời gian từ yêu cầu tới production, tỷ lệ thay đổi gây lỗi sau phát hành, thời gian chờ review, thời gian khôi phục khi có sự cố. So trước và sau khi đưa AI vào, trên cùng loại việc.</p>
+<p><strong>Ví dụ chạy từng bước.</strong> Đội 8 người dùng Claude Code được ba tháng; code ra nhiều hơn nhưng lỗi sau phát hành tăng và PR chờ review lâu hơn.</p>
+<ol>
+  <li>Đo: PR to gấp đôi, thời gian review tăng 60%, lỗi chủ yếu ở phần thiếu test.</li>
+  <li>Quy ước PR nhỏ: một PR một mục đích; thay đổi lớn phải có plan được duyệt trước.</li>
+  <li>Hook chạy test và lint trước khi Claude kết thúc lượt; CI chặn PR không có test cho code mới.</li>
+  <li>Thêm bước review tự động bằng một phiên Claude riêng (headless trong CI) để người review tập trung vào thiết kế.</li>
+  <li>Sau một tháng đo lại cùng các chỉ số, giữ thay đổi nào cải thiện được.</li>
+</ol>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div>Báo cáo lên lãnh đạo "AI viết 40% số dòng code" như bằng chứng năng suất.</div>
+  <div class="box right"><div class="hd">Đúng</div>Báo cáo thời gian từ yêu cầu tới production, tỷ lệ lỗi sau phát hành, thời gian review, trước và sau.</div>
+</div>
+<div class="alert"><strong>Bẫy.</strong> Bảo chính phiên vừa viết code tự review rồi coi như đã được review. Phiên đó mang cùng giả định và cùng điểm mù; review có giá trị phải đến từ một phiên hoặc subagent độc lập, cộng với test.</div>
+<div class="insight"><strong>Cốt lõi.</strong> AI tăng tốc viết code; quy trình (plan, test, hook, review độc lập, PR nhỏ) giữ chất lượng. Đo bằng kết quả giao hàng, không bằng lượng code.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Lead time</dt><dd>Thời gian từ lúc có yêu cầu (hoặc commit) tới lúc thay đổi chạy trên production.</dd>
+  <dt>Change failure rate</dt><dd>Tỷ lệ lần phát hành gây lỗi phải sửa gấp hoặc rollback.</dd>
+</dl></div>
+
+<h2 id="van-hanh">8. Hỗ trợ debug và sự cố vận hành</h2>
+<p class="xtags"><span class="tag xt4">CCAR-P D7</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Phòng cấp cứu không chữa theo thứ tự đến. Y tá phân loại ngay ở cửa: ai nguy kịch, ai chờ được. Bác sĩ ổn định bệnh nhân trước, tìm nguyên nhân sau. Xong ca khó, cả khoa họp lại xem lần sau làm gì nhanh hơn, mà không đổ lỗi cho ai.
+</div>
+<p>Sự cố với hệ Claude rơi vào ba nhóm, mỗi nhóm có dấu hiệu và hướng xử lý khác nhau: <strong>lỗi gọi API</strong> (mã HTTP), <strong>chất lượng</strong> (không có lỗi nhưng câu trả lời tệ đi), <strong>chi phí</strong> (chạy đúng nhưng đắt bất thường). Phân loại đúng nhóm trước giúp không mất thời gian sửa nhầm chỗ.</p>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 200" role="img" aria-label="Quy trình xử lý sự cố: phát hiện qua cảnh báo, phân loại thành lỗi API, chất lượng hoặc chi phí, giảm thiểu bằng retry, rollback hoặc giới hạn, tìm nguyên nhân bằng log, trace và request-id, rồi rút kinh nghiệm và cập nhật runbook">
+    <defs><marker id="m2502" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker></defs>
+    <rect x="8" y="30" width="112" height="62" rx="6" class="b-step"/><text x="64" y="54" class="t tb" text-anchor="middle">1 Phát hiện</text><text x="64" y="70" class="ts" text-anchor="middle">cảnh báo theo</text><text x="64" y="83" class="ts" text-anchor="middle">route, ngưỡng</text>
+    <rect x="136" y="30" width="112" height="62" rx="6" class="b-warn"/><text x="192" y="54" class="t tb" text-anchor="middle">2 Phân loại</text><text x="192" y="70" class="ts" text-anchor="middle">API, chất lượng</text><text x="192" y="83" class="ts" text-anchor="middle">hay chi phí</text>
+    <rect x="264" y="30" width="112" height="62" rx="6" class="b-hot"/><text x="320" y="54" class="t tb" text-anchor="middle">3 Giảm thiểu</text><text x="320" y="70" class="ts" text-anchor="middle">backoff, rollback,</text><text x="320" y="83" class="ts" text-anchor="middle">giới hạn, tắt route</text>
+    <rect x="392" y="30" width="112" height="62" rx="6" class="b-sys"/><text x="448" y="54" class="t tb" text-anchor="middle">4 Nguyên nhân</text><text x="448" y="70" class="ts" text-anchor="middle">log, trace, usage,</text><text x="448" y="83" class="ts" text-anchor="middle">request-id</text>
+    <rect x="520" y="30" width="112" height="62" rx="6" class="b-done"/><text x="576" y="54" class="t tb" text-anchor="middle">5 Rút kinh nghiệm</text><text x="576" y="70" class="ts" text-anchor="middle">postmortem, sửa</text><text x="576" y="83" class="ts" text-anchor="middle">runbook, thêm eval</text>
+    <path class="ln-acc flow" d="M120,61 H134" marker-end="url(#m2502)"/>
+    <path class="ln-acc flow" d="M248,61 H262" marker-end="url(#m2502)"/>
+    <path class="ln-acc flow" d="M376,61 H390" marker-end="url(#m2502)"/>
+    <path class="ln-acc flow" d="M504,61 H518" marker-end="url(#m2502)"/>
+    <path class="ln-acc flow" d="M576,92 V150 H64 V94" marker-end="url(#m2502)"/>
+    <text x="320" y="144" class="ts halo" text-anchor="middle">cảnh báo và runbook tốt hơn cho lần sau</text>
+    <circle class="tok" r="7" style="transform:translate(64px,20px)"/>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Phát hiện qua cảnh báo theo route: tỷ lệ lỗi, p95, chi phí, chỉ số chất lượng.</li>
+    <li>Phân loại: lỗi gọi API, chất lượng giảm, hay chi phí bất thường.</li>
+    <li>Giảm thiểu trước để người dùng bớt bị ảnh hưởng: backoff, rollback cấu hình, giới hạn đồng thời, tạm tắt route.</li>
+    <li>Tìm nguyên nhân bằng số liệu: log, trace, <code>usage</code>, <code>request-id</code>.</li>
+    <li>Họp rút kinh nghiệm không đổ lỗi; sửa runbook, thêm cảnh báo, thêm ca eval.</li>
+    <li>Lần sau phát hiện sớm hơn và xử lý nhanh hơn.</li>
+  </ol>
+  <figcaption>Hình 2. Ổn định trước, tìm nguyên nhân sau, rồi cải thiện runbook.</figcaption>
+</figure>
+<p>Mã lỗi API cho biết nên retry hay sửa request:</p>
+<div class="tw"><table>
+  <thead><tr><th>Mã</th><th>Loại</th><th>Retry?</th></tr></thead>
+  <tbody>
+    <tr><td>400</td><td><code>invalid_request_error</code> (request sai; cũng dùng khi chạm spend limit tự đặt)</td><td>Không; sửa request hoặc hạn mức</td></tr>
+    <tr><td>401, 403</td><td>Key sai hoặc hết hạn; key không có quyền</td><td>Không; sửa key, quyền</td></tr>
+    <tr><td>413</td><td><code>request_too_large</code></td><td>Không; giảm kích thước</td></tr>
+    <tr><td>429</td><td><code>rate_limit_error</code></td><td>Có, theo <code>retry-after</code>; 429 do chạm trần chi tiêu của tier thì không có <code>retry-after</code> và retry không giúp</td></tr>
+    <tr><td>500, 504</td><td>Lỗi nội bộ, quá thời gian</td><td>Có, backoff; kéo dài thì gửi request-id cho hỗ trợ</td></tr>
+    <tr><td>529</td><td><code>overloaded_error</code></td><td>Có, backoff; route quan trọng có phương án dự phòng</td></tr>
+  </tbody>
+</table></div>
+<div class="tw"><table>
+  <thead><tr><th>Sự cố</th><th>Hướng xử lý</th></tr></thead>
+  <tbody>
+    <tr><td>429 hàng loạt giờ cao điểm</td><td>Đọc <code>retry-after</code>, backoff, giới hạn đồng thời, cache, chuyển việc không gấp sang Batches, xin tier cao hơn khi cần</td></tr>
+    <tr><td>529 quá tải phía nhà cung cấp</td><td>Retry có backoff; cân nhắc model hoặc nền tảng dự phòng cho route quan trọng</td></tr>
+    <tr><td>Chất lượng giảm sau triển khai</td><td>So eval hai phiên bản, đọc transcript lỗi, rollback nếu cần</td></tr>
+    <tr><td>Chi phí tăng đột ngột</td><td>Phân tích usage theo route, model, cache hit; tìm vòng lặp agent không dừng</td></tr>
+    <tr><td>Cần hỗ trợ từ nhà cung cấp</td><td>Gửi <code>request-id</code>, thời điểm, model, mô tả tái hiện</td></tr>
+  </tbody>
+</table></div>
+<p><strong>Ví dụ chạy từng bước.</strong> Sáng thứ Hai, chi phí của route "agent hỗ trợ" tăng gấp ba so với tuần trước, lưu lượng không đổi.</p>
+<ol>
+  <li>Phân loại: không có lỗi HTTP, chất lượng chưa ai phàn nàn, đây là sự cố chi phí.</li>
+  <li>Giảm thiểu: đặt trần số lượt agent mỗi hội thoại; cảnh báo nếu một phiên vượt ngưỡng token.</li>
+  <li>Xem <code>usage</code>: input tăng mạnh, <code>cache_read_input_tokens</code> gần 0 từ thứ Sáu.</li>
+  <li>Đối chiếu lần triển khai thứ Sáu: một tool mới được chèn vào giữa danh sách tool, làm phần đầu prompt thay đổi nên cache không trúng; thêm vào đó vài phiên lặp gọi tool không dừng.</li>
+  <li>Sửa: đặt tool mới ở cuối danh sách; thêm điều kiện dừng và trần số lượt. Postmortem: thêm cảnh báo cho tỷ lệ cache read, thêm kiểm tra cache vào checklist triển khai.</li>
+</ol>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div>Gặp 429 thì cho mọi client retry ngay lập tức, liên tục, cho tới khi được.</div>
+  <div class="box right"><div class="hd">Đúng</div>Tôn trọng <code>retry-after</code>, backoff có jitter, giới hạn số request đồng thời, chuyển việc không gấp sang Batches.</div>
+</div>
+<div class="alert"><strong>Bẫy.</strong> Sự cố chất lượng không hiện lên dưới dạng lỗi HTTP. Hệ thống chỉ giám sát mã lỗi và độ trễ sẽ "xanh" cả tuần trong khi câu trả lời sai dần. Cần cảnh báo cho cả chỉ số chất lượng (eval online, tỷ lệ escalation).</div>
+<div class="insight"><strong>Cốt lõi.</strong> Sự cố vận hành giải bằng số liệu: log, trace, request-id, chỉ số theo route. Runbook viết sẵn trước khi cần.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Postmortem</dt><dd>Buổi rút kinh nghiệm sau sự cố, tập trung vào nguyên nhân hệ thống và cách phòng, không đổ lỗi cá nhân.</dd>
+  <dt>Jitter</dt><dd>Thêm khoảng chờ ngẫu nhiên vào backoff để các client không cùng retry một lúc.</dd>
+</dl></div>
+
+<h2 id="cau-mau">9. Câu mẫu và chiến thuật CCAR-P</h2>
+<p class="xtags"><span class="tag xt4">CCAR-P</span></p>
+<p>Exam guide CCAR-P v1.0 có ba câu mẫu. Tóm tắt bài học, không chép đề:</p>
+<div class="tw"><table>
+  <thead><tr><th>Domain</th><th>Tình huống</th><th>Hướng đúng</th><th>Vì sao phương án khác sai</th></tr></thead>
+  <tbody>
+    <tr><td>D3</td><td>Agent hỗ trợ có tool hoàn tiền và xoá tài khoản, nhân viên chỉ cần đọc ticket và soạn trả lời</td><td>Gỡ hẳn các tool không cần (quyền tối thiểu)</td><td>Log, xác nhận là biện pháp phát hiện, bù trừ; model lớn không liên quan phạm vi quyền</td></tr>
+    <tr><td>D2</td><td>Mỗi request gửi lại 8.000 token system prompt và chính sách, cần giảm cả độ trễ lẫn chi phí</td><td>Phần tĩnh lên đầu, bật prompt caching</td><td>Cắt chính sách mất nội dung; đổi model nhỏ nhất bất chấp chất lượng; chuyển sang few-shot không tạo tiền tố cache</td></tr>
+    <tr><td>D4</td><td>RAG trả lời sai tự tin sau khi làm mới tài liệu, model và độ trễ không đổi</td><td>Kiểm bước truy xuất, index trước</td><td>Trọng số không tự đổi; temperature, context window không bị kích hoạt bởi việc làm mới tài liệu</td></tr>
+  </tbody>
+</table></div>
+<ol class="principles">
+  <li><strong>Nguyên nhân gốc trước</strong>: triệu chứng gắn với sự kiện nào (cập nhật tài liệu, đổi model, tăng tải) thì nghi khâu đó.</li>
+  <li><strong>Loại bỏ hơn bù trừ</strong>: với rủi ro quyền, bỏ năng lực không cần tốt hơn giám sát nó.</li>
+  <li><strong>Miễn phí trước, đánh đổi sau</strong>: cache, sắp xếp prompt, cắt token thừa trước khi hạ model.</li>
+  <li><strong>Đơn giản nhất đạt chỉ số</strong>: agent và nhiều agent chỉ khi bậc thấp hơn không đạt.</li>
+  <li><strong>Đo được</strong>: đáp án tốt thường kèm eval, chỉ số, thí điểm, ADR, runbook.</li>
+</ol>
+
+<p class="lesson-practice">Luyện câu hỏi của bài này trong <a href="/bank?lesson=25">🗂️ Ngân hàng</a>.</p>
+
+<div class="btns pager">
+  <a class="btn" href="/notes/lessons/24-danh-gia-governance.html">← Bài 24 · Đánh giá, tối ưu và governance</a>
+  <a class="btn primary" href="/notes/lessons/26-bo-sung-ccdv-f.html">Bài 26 · Bổ sung CCDV-F theo blueprint →</a>
+</div>
+
+<footer>
+  Luyện thi chứng chỉ Claude · Bài 25 · Bên liên quan, vòng đời, năng suất đội · v0.22 · 2026-11-18. Tổng quan: <a href="/notes/00-tong-quan.md">00</a> · Luyện đề: <a href="/new">30</a>.
+</footer>

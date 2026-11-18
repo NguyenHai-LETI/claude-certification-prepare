@@ -1,0 +1,32 @@
+# Cấu hình app luyện thi chứng chỉ Claude. Sửa xong khởi động lại app.
+server:
+  port: 3004
+  lan: false                  # true = mở cho thiết bị cùng mạng Wi-Fi (cần mã truy cập)
+  # Tên miền công khai (ngrok). Request qua đây = thiết bị ngoài, phải nhập mã truy cập; nhập đúng = toàn quyền như máy local.
+  public_hosts: ["surreal-magnesium-mug.ngrok-free.dev"]
+
+public:
+  ngrok_domain: "surreal-magnesium-mug.ngrok-free.dev"   # scripts/public.ts: ngrok http <port> --url=https://<domain>
+  check_seconds: 60           # watchdog: kiểm tra URL công khai mỗi N giây, hỏng thì khởi động lại ngrok
+
+scoring:
+  pass_pct: 72                # % đúng ước tính tương ứng 720 điểm (Anthropic không công bố cách quy đổi)
+  review_streak: 2            # câu sai rời danh sách ôn khi trả lời đúng N lần liên tiếp
+
+practice:
+  shuffle_options: true
+  default_count: 20
+
+ai:
+  claude_path: ""             # "" = tự tìm `claude` trong PATH
+  model: ""                   # "" = model mặc định của Claude Code
+  ask_model: ""               # model cho "Hỏi AI" ("" = như trên)
+  sync_before: true           # AI Coach: đồng bộ trước khi chạy
+  sync_after: true            # ...và đẩy kết quả lên ngay sau khi chạy xong
+
+sync:
+  enabled: true
+  data_paths: [results, coach, bank]   # tương đối với thư mục app; app nằm trong repo lớn hơn thì tự thêm tiền tố
+  auto: idle                  # idle = tự đồng bộ vài phút sau khi nộp bài · off = chỉ khi bấm ⇅
+  auto_delay_minutes: 3
+  remote: origin

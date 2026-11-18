@@ -1,0 +1,773 @@
+<p class="lesson-source">Nguồn: tài liệu ôn tập công khai <a href="https://claude.ai/artifact/3NhHr42CxTHGEs33N1ntFf" target="_blank" rel="noopener">artifact 3NhHr42…</a> (bài 11). Không thuộc và không được Anthropic xác nhận.</p>
+<header class="cover">
+  <div class="eyebrow">Luyện thi chứng chỉ Claude · Bài 11</div>
+  <h1>Claude Platform, Subagents &amp; Skills <span class="ja">Claude Platform 101 · Introduction to Subagents · Introduction to Agent Skills</span></h1>
+  <p class="lead">Ba lớp Platform (Primitives/Infrastructure/Controls), agent loop, built-in tools, MCP toolset, managed agents (Agent/Environment/Session/Events), subagent YAML frontmatter, output format design, skill SKILL.md structure, scope hierarchy.</p>
+  <dl class="meta">
+    <dt>Kỳ thi</dt><dd>CCAR-F D1 (27%) · CCAR-F D3 (20%) · CCDV-F D1–D8 (nền tảng)</dd>
+    <dt>Phục vụ</dt><dd><span class="tag xt1">CCDV-F</span> 3 mục · <span class="tag xt3">CCAR-F</span> 2 mục · <a href="#xsum">bảng nhãn từng mục</a></dd>
+
+    <dt>Nguồn</dt><dd>academy.claude.com · Claude Platform 101, Introduction to subagents, Introduction to agent skills · Crawl 2026-11-17</dd>
+    <dt>Cập nhật</dt><dd><span class="status">v0.22 · 2026-11-18</span> · theo exam guide v1.0</dd>
+  </dl>
+</header>
+
+<details class="toc">
+<summary>Mục lục</summary>
+
+    <ol>
+      <li><a href="#tong-quan"><span class="n">1</span><span class="tx">Tổng quan</span></a></li>
+      <li><a href="#claude-platform-101"><span class="n">2</span><span class="tx">Claude Platform 101 — 13 bài</span><span class="xds" aria-hidden="true"><i class="xd xt1" title="CCDV-F"></i></span></a></li>
+      <li><a href="#subagents"><span class="n">3</span><span class="tx">Introduction to Subagents — 4 bài</span><span class="xds" aria-hidden="true"><i class="xd xt3" title="CCAR-F"></i><i class="xd xt1" title="CCDV-F"></i></span></a></li>
+      <li><a href="#agent-skills"><span class="n">4</span><span class="tx">Introduction to Agent Skills — 6 bài</span><span class="xds" aria-hidden="true"><i class="xd xt3" title="CCAR-F"></i><i class="xd xt1" title="CCDV-F"></i></span></a></li>
+      <li><a href="#exam-tips"><span class="n">5</span><span class="tx">Lưu ý ôn thi</span></a></li>
+    </ol>
+
+</details>
+
+<details class="xsum" id="xsum">
+<summary>Mục nào phục vụ bài thi nào</summary>
+<p class="xnote">Mã đầu là bài thi chính của mục. <b>Nền</b>: cần để hiểu các mục sau. <b>Nâng cao</b>: ngoài phạm vi các exam guide. Ôn cho một bài thi thì đọc các mục có mã của bài đó trước.</p>
+<div class="tw"><table>
+<thead><tr><th>Mục</th><th>Bài thi</th><th>Ghi chú</th></tr></thead>
+<tbody>
+<tr><td><a href="#claude-platform-101">2. Claude Platform 101 — 13 bài</a></td><td><span class="tag xt1">CCDV-F D1</span></td><td>Chi tiết API của managed agents (Environment, Session, Events) là nâng cao.</td></tr>
+<tr><td><a href="#subagents">3. Introduction to Subagents — 4 bài</a></td><td><span class="tag xt3">CCAR-F D1</span> <span class="tag xt1">CCDV-F D1</span></td><td></td></tr>
+<tr><td><a href="#agent-skills">4. Introduction to Agent Skills — 6 bài</a></td><td><span class="tag xt3">CCAR-F D3</span> <span class="tag xt1">CCDV-F D3</span></td><td></td></tr>
+</tbody></table></div>
+</details>
+
+<h2 id="tong-quan">1. Tổng quan</h2>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Mở một quán ăn cần ba thứ. Một là <strong>bộ đồ nghề của đầu bếp</strong>: dao, bếp, nồi (Platform). Hai là <strong>cách chia việc</strong>: đầu bếp chính giao món phụ cho phụ bếp, phụ bếp chỉ báo lại món đã xong (subagent). Ba là <strong>sổ công thức</strong>: cuốn nào cần thì mở ra, không cần thì để trên kệ (skill). Ba khóa học dưới đây dạy đúng ba thứ đó.
+</div>
+<p>Bài này tổng hợp nội dung ba khóa học từ Claude Academy: <strong>Claude Platform 101</strong> (13 bài, nền tảng API), <strong>Introduction to subagents</strong> (4 bài, thiết kế subagent), và <strong>Introduction to agent skills</strong> (6 bài, viết skill). Cả ba đều liên quan trực tiếp đến CCAR-F D1–D3 và CCDV-F D1–D8.</p>
+<div class="tw"><table>
+  <thead><tr><th>Khóa</th><th>Bài</th><th>Phạm vi exam</th></tr></thead>
+  <tbody>
+    <tr><td>Claude Platform 101</td><td>13</td><td>CCDV-F D1–D8 · CCAR-F D1–D5 (nhập môn toàn diện)</td></tr>
+    <tr><td>Introduction to subagents</td><td>4</td><td>CCAR-F D1 Agentic Architecture</td></tr>
+    <tr><td>Introduction to agent skills</td><td>6</td><td>CCAR-F D3 Claude Code Configuration</td></tr>
+  </tbody>
+</table></div>
+
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 196" role="img" aria-label="Ba khóa Academy và phạm vi exam: Claude Platform 101 phủ CCDV-F D1 đến D8 và CCAR-F D1 đến D5; Introduction to subagents phủ CCAR-F D1; Introduction to agent skills phủ CCAR-F D3">
+    <defs><marker id="m1101" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker></defs>
+    <rect x="10" y="16" width="250" height="48" rx="6" class="b-step"/>
+    <text x="24" y="38" class="t tb">Claude Platform 101</text><text x="24" y="54" class="ts">13 bài · nền tảng API</text>
+    <rect x="10" y="74" width="250" height="48" rx="6" class="b-step"/>
+    <text x="24" y="96" class="t tb">Introduction to subagents</text><text x="24" y="112" class="ts">4 bài · thiết kế subagent</text>
+    <rect x="10" y="132" width="250" height="48" rx="6" class="b-step"/>
+    <text x="24" y="154" class="t tb">Introduction to agent skills</text><text x="24" y="170" class="ts">6 bài · viết skill</text>
+    <rect x="380" y="16" width="250" height="48" rx="6" class="b-done"/>
+    <text x="394" y="38" class="t tb">CCDV-F D1–D8 · CCAR-F D1–D5</text><text x="394" y="54" class="ts">nhập môn toàn diện</text>
+    <rect x="380" y="74" width="250" height="48" rx="6" class="b-done"/>
+    <text x="394" y="96" class="t tb">CCAR-F D1</text><text x="394" y="112" class="ts">Agentic Architecture</text>
+    <rect x="380" y="132" width="250" height="48" rx="6" class="b-done"/>
+    <text x="394" y="154" class="t tb">CCAR-F D3</text><text x="394" y="170" class="ts">Claude Code Configuration</text>
+    <path d="M262,40 H378" class="ln-acc" marker-end="url(#m1101)"/>
+    <path d="M262,98 H378" class="ln-acc" marker-end="url(#m1101)"/>
+    <path d="M262,156 H378" class="ln-acc" marker-end="url(#m1101)"/>
+  </svg></div>
+  <figcaption>Hình 1. Ba khóa của bài này và phần exam mỗi khóa phục vụ.</figcaption>
+</figure>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Claude Academy</dt><dd>Trang học miễn phí của Anthropic (academy.claude.com), gồm bài đọc, quiz và badge hoàn thành.</dd>
+  <dt>Domain (D1, D2…)</dt><dd>Một nhóm kiến thức trong đề thi. Mỗi bài thi chia thành vài domain, mỗi domain có tỷ trọng riêng.</dd>
+  <dt>Subagent</dt><dd>Một agent con do agent chính giao việc, làm việc trong vùng nhớ riêng.</dd>
+  <dt>Skill</dt><dd>Một thư mục chứa hướng dẫn cho một loại việc, Claude chỉ mở ra khi việc đó xuất hiện.</dd>
+</dl></div>
+<div class="insight"><strong>Cốt lõi.</strong> Platform 101 là bản đồ chung. Subagents trả lời “chia việc thế nào”. Skills trả lời “dạy Claude cách làm một loại việc thế nào”.</div>
+
+<h2 id="claude-platform-101">2. Claude Platform 101 — 13 bài</h2>
+<p class="xtags"><span class="tag xt1">CCDV-F D1</span> <span class="xnote">Chi tiết API của managed agents (Environment, Session, Events) là nâng cao.</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Học lái xe có ba giai đoạn. Trước hết là làm quen <strong>vô lăng, côn, phanh</strong> (các bộ phận cơ bản). Sau đó là <strong>đường đi nhiều làn, trạm xăng, bãi đỗ</strong> (hạ tầng để chạy lâu dài). Cuối cùng là <strong>đồng hồ, biển báo, giới hạn tốc độ</strong> (kiểm soát). Claude Platform có đúng ba lớp như vậy, và 13 bài của khóa đi lần lượt từ lớp thấp lên cao.
+</div>
+
+<h3>2.1 What is the Claude Platform? (Bài 1)</h3>
+<p>Claude Platform = REST API + SDK + CLI + Console. Ba lớp:</p>
+<ul>
+  <li><strong>Primitives:</strong> Messages API, tool use, files, web search, code execution, MCP, skills — những gì bạn gọi trực tiếp trong code.</li>
+  <li><strong>Infrastructure:</strong> managed agents, retries, queues, observability, prompt caching, memory — cơ sở hạ tầng để scale lên production.</li>
+  <li><strong>Controls:</strong> dashboards, evaluations, workspaces, spend limits, request logs — điều hành hệ thống thực tế.</li>
+</ul>
+<p>Shorthand: <em>"build with primitives, scale on infrastructure, run with control."</em></p>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 240" role="img" aria-label="Ba lớp của Claude Platform: Primitives để xây, Infrastructure để mở rộng, Controls để vận hành">
+
+    <g><rect x="20" y="20" width="600" height="56" rx="6" class="b-step"/>
+      <text x="36" y="42" class="t tb">Primitives</text><text x="604" y="42" class="ts" text-anchor="end">build with primitives</text>
+      <text x="36" y="62" class="ts">Messages API · tool use · files · web search · code execution · MCP · skills</text>
+      <text x="604" y="62" class="ts" text-anchor="end">Bạn gọi trực tiếp trong code</text></g>
+    <g><rect x="20" y="84" width="600" height="56" rx="6" class="b-sys"/>
+      <text x="36" y="106" class="t tb">Infrastructure</text><text x="604" y="106" class="ts" text-anchor="end">scale on infrastructure</text>
+      <text x="36" y="126" class="ts">managed agents · retries · queues · observability · prompt caching · memory</text>
+      <text x="604" y="126" class="ts" text-anchor="end">Để scale lên production</text></g>
+    <g><rect x="20" y="148" width="600" height="56" rx="6" class="b-done"/>
+      <text x="36" y="170" class="t tb">Controls</text><text x="604" y="170" class="ts" text-anchor="end">run with control</text>
+      <text x="36" y="190" class="ts">dashboards · evaluations · workspaces · spend limits · request logs</text>
+      <text x="604" y="190" class="ts" text-anchor="end">Điều hành hệ thống thực tế</text></g>
+    <text x="320" y="228" class="t tb" text-anchor="middle">build with primitives, scale on infrastructure, run with control</text>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Lớp 1, Primitives: các khối bạn gọi trực tiếp trong code.</li>
+    <li>Lớp 2, Infrastructure: hạ tầng để chạy ở quy mô production.</li>
+    <li>Lớp 3, Controls: công cụ điều hành hệ thống đang chạy thật.</li>
+    <li>Ghi nhớ bằng một câu: xây bằng primitives, mở rộng trên infrastructure, vận hành bằng controls.</li>
+  </ol>
+  <figcaption>Hình 2. Ba lớp Platform, từ thứ bạn gọi trong code đến thứ bạn dùng để điều hành.</figcaption>
+</figure>
+<p>Ví dụ đầu tiên của khóa dùng đúng lớp Primitives: một lời gọi Messages API để soạn nháp trả lời ticket hỗ trợ.</p>
+<pre><code class="language-python">import anthropic
+client = anthropic.Anthropic()
+
+response = client.messages.create(
+    model="claude-haiku-4-5",
+    max_tokens=1024,
+    system=TONE_AND_GUIDELINES,
+    messages=[{"role": "user", "content": ticket_content}],
+)
+draft = "".join(block.text for block in response.content if block.type == "text")</code></pre>
+<ul>
+  <li><code>model</code>: chọn model. Ở đây là Haiku vì việc soạn nháp đơn giản.</li>
+  <li><code>system</code>: lời dặn cố định về giọng văn và quy định, áp dụng cho cả cuộc hội thoại.</li>
+  <li><code>messages</code>: nội dung ticket của khách, với <code>role</code> là user.</li>
+  <li>Dòng cuối ghép mọi khối <code>text</code> trong <code>response.content</code> thành bản nháp (xem 2.2 vì sao phải lặp qua các khối).</li>
+</ul>
+<div class="insight"><strong>Dùng Haiku</strong> cho tác vụ đơn giản như draft reply; Sonnet cho production thông thường; Opus cho reasoning phức tạp.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>REST API</dt><dd>Giao diện web: bạn gửi request HTTP, nhận response. SDK và CLI chỉ là lớp bọc gọn hơn.</dd>
+  <dt>Console</dt><dd>Trang web quản trị tài khoản: API key, workspace, hạn mức chi tiêu, log.</dd>
+  <dt>Production</dt><dd>Môi trường chạy thật cho người dùng thật, khác với chạy thử.</dd>
+</dl></div>
+
+<h3>2.2 Your First API Call (Bài 2)</h3>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Gọi API giống gửi một phiếu yêu cầu vào quầy. Phiếu ghi rõ: nhờ <strong>ai</strong> làm (model), được viết <strong>tối đa bao nhiêu</strong> (max_tokens), và <strong>nội dung nhờ</strong> (messages). Quầy trả về <strong>một xấp giấy</strong>, mỗi tờ một loại: tờ văn bản, tờ yêu cầu dùng công cụ… Bạn phải lật từng tờ xem là loại gì, không thể coi cả xấp là một tờ.
+</div>
+<p>Mỗi request dùng <code>messages.create</code> với <code>model</code>, <code>max_tokens</code>, và <code>messages</code>. Response <code>content</code> là <strong>array of blocks</strong>, không phải plain string — phải loop qua và kiểm tra <code>block.type</code>.</p>
+<pre><code class="language-typescript">import Anthropic from "@anthropic-ai/sdk";
+const client = new Anthropic();
+
+const response = await client.messages.create({
+  model: "claude-sonnet-5",
+  max_tokens: 2048,
+  system: "You are a terse senior code reviewer. Give feedback in one paragraph.",
+  messages: [{ role: "user", content: `Review this code:\n${buggyCode}` }],
+});
+
+for (const block of response.content) {
+  if (block.type === "text") console.log(block.text);
+}</code></pre>
+<ul>
+  <li><code>system</code> đặt vai: người review code ngắn gọn, một đoạn.</li>
+  <li>Vòng <code>for</code> đi qua từng khối. Chỉ khối có <code>type === "text"</code> mới in ra.</li>
+</ul>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div><ul>
+    <li>Coi <code>response.content</code> là một chuỗi và in thẳng</li>
+    <li>Viết key vào source: <code>api_key = "sk-..."</code></li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đúng</div><ul>
+    <li>Lặp qua các khối, kiểm tra <code>block.type</code> rồi mới đọc <code>block.text</code></li>
+    <li>Để key trong <code>.env.local</code> và đọc từ biến môi trường</li>
+  </ul></div>
+</div>
+<div class="alert"><strong>Bảo mật:</strong> Lưu API key trong <code>.env.local</code>, không hardcode vào source code.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>max_tokens</dt><dd>Giới hạn độ dài câu trả lời. Token là đơn vị chữ mà model đếm, tạm hiểu là một mẩu từ.</dd>
+  <dt>block</dt><dd>Một khối trong <code>content</code>, có <code>type</code> như <code>text</code> hoặc <code>tool_use</code>.</dd>
+  <dt>.env.local</dt><dd>File cấu hình cục bộ chứa bí mật, không đưa vào git.</dd>
+</dl></div>
+
+<h3>2.3 Choosing the Right Model (Bài 3)</h3>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Cần chuyển một thùng đồ lặt vặt, bạn đi xe máy chứ không thuê xe tải. Chuyển cả nhà thì mới thuê xe tải. Chọn model cũng vậy: việc nhỏ dùng model nhỏ, rẻ và nhanh; việc nặng mới dùng model lớn.
+</div>
+<p>Bốn tier model (từ mạnh nhất): <strong>Fable</strong> (thử thách cực khó) → <strong>Opus</strong> (reasoning sâu, phân tích phức tạp) → <strong>Sonnet</strong> (cân bằng tốc độ/chi phí, phù hợp production) → <strong>Haiku</strong> (nhanh và rẻ nhất, phân loại/routing/extraction).</p>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 232" role="img" aria-label="Bốn tier model xếp từ Haiku nhanh và rẻ nhất đến Fable mạnh nhất; thử từ tier thấp và chỉ lên khi chất lượng chưa đủ">
+    <defs><marker id="m1103" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah"/></marker></defs>
+    <rect x="20" y="114" width="140" height="76" rx="6" class="b-done"/>
+    <text x="90" y="134" class="t tb" text-anchor="middle">Haiku</text>
+    <text x="90" y="152" class="ts" text-anchor="middle">nhanh và rẻ nhất</text><text x="90" y="166" class="ts" text-anchor="middle">phân loại, routing,</text><text x="90" y="180" class="ts" text-anchor="middle">extraction</text>
+    <rect x="180" y="90" width="140" height="100" rx="6" class="b-step"/>
+    <text x="250" y="110" class="t tb" text-anchor="middle">Sonnet</text>
+    <text x="250" y="128" class="ts" text-anchor="middle">cân bằng tốc độ,</text><text x="250" y="142" class="ts" text-anchor="middle">chi phí</text><text x="250" y="160" class="ts" text-anchor="middle">phù hợp production</text>
+    <rect x="340" y="66" width="140" height="124" rx="6" class="b-sys"/>
+    <text x="410" y="86" class="t tb" text-anchor="middle">Opus</text>
+    <text x="410" y="106" class="ts" text-anchor="middle">reasoning sâu,</text><text x="410" y="120" class="ts" text-anchor="middle">phân tích phức tạp</text>
+    <rect x="500" y="42" width="130" height="148" rx="6" class="b-hot"/>
+    <text x="565" y="62" class="t tb" text-anchor="middle">Fable</text>
+    <text x="565" y="82" class="ts" text-anchor="middle">thử thách cực khó</text>
+    <path d="M20,208 H618" class="ln" marker-end="url(#m1103)"/>
+    <text x="320" y="224" class="ts" text-anchor="middle">Thử Haiku trước, chỉ lên tier trên khi chất lượng chưa đủ</text>
+  </svg></div>
+  <figcaption>Hình 3. Bốn tier model: càng sang phải càng mạnh, và càng đắt.</figcaption>
+</figure>
+<p><strong>Quy tắc:</strong> thử Haiku trước, nếu chất lượng không đủ mới lên Sonnet, chỉ dùng Opus khi thực sự cần. Dùng <code>response.usage</code> theo dõi input/output tokens.</p>
+<pre><code class="language-python">models = ["claude-haiku-4-5", "claude-sonnet-5", "claude-opus-5-5"]
+for model in models:
+    response = client.messages.create(model=model, max_tokens=300,
+        messages=[{"role": "user", "content": prompt}])
+    print(model, response.usage)  # input_tokens, output_tokens</code></pre>
+<p>Đoạn code chạy cùng một prompt qua ba model rồi in số token. Bạn so câu trả lời và so chi phí để chọn model rẻ nhất vẫn đủ tốt.</p>
+<div class="insight"><strong>Cost routing:</strong> Haiku phân loại tệp → Sonnet soạn bản cập nhật → Opus chỉ cho RFP phức tạp.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Tier</dt><dd>Một bậc model trong họ Claude.</dd>
+  <dt>Cost routing</dt><dd>Chia việc theo độ khó: việc dễ cho model rẻ, việc khó mới cho model đắt.</dd>
+  <dt>response.usage</dt><dd>Số token vào và ra của lần gọi, dùng để tính tiền.</dd>
+</dl></div>
+
+<h3>2.4 The Agent Loop Explained (Bài 4)</h3>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Một nhân viên được giao “tìm thời tiết rồi gợi ý trang phục”. Anh ấy xin tra thời tiết, nhận kết quả, rồi tự quyết là đã đủ để trả lời hay cần tra thêm. Không ai đứng giữa để nhắc từng bước. Agent là như vậy: Claude tự đi tiếp cho tới khi thấy xong.
+</div>
+<p>Agent = Claude tự chạy cả hai phía hội thoại, không cần người ở giữa. Vòng lặp:</p>
+<ol>
+  <li>Gửi message + tools → Claude trả về hoặc final answer hoặc <code>tool_use</code></li>
+  <li>Nếu <code>stop_reason == "tool_use"</code>: chạy tool, gửi <code>tool_result</code> lại</li>
+  <li>Nếu <code>stop_reason == "end_turn"</code>: kết thúc</li>
+  <li>Trường hợp khác (max_tokens, refusal): <strong>dừng lại, không loop tiếp</strong></li>
+</ol>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 248" role="img" aria-label="Vòng lặp agent: gửi messages và tools cho Claude, đọc stop_reason; tool_use thì chạy tool rồi quay lại gửi; end_turn thì kết thúc; trường hợp khác thì dừng">
+    <defs>
+      <marker id="m1104" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker>
+      <marker id="m1104g" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-good"/></marker>
+      <marker id="m1104w" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-warn"/></marker>
+    </defs>
+    <rect x="16" y="100" width="140" height="46" rx="6" class="b-step"/><text x="86" y="127" class="t tb" text-anchor="middle">Gửi message + tools</text>
+    <rect x="196" y="100" width="100" height="46" rx="6" class="b-sys"/><text x="246" y="127" class="t tb" text-anchor="middle">Claude</text>
+    <rect x="336" y="100" width="110" height="46" rx="6" class="b-code"/><text x="391" y="127" class="t tb" text-anchor="middle">stop_reason?</text>
+    <rect x="280" y="14" width="200" height="44" rx="6" class="b-next"/><text x="380" y="40" class="t tb" text-anchor="middle">Chạy tool, gửi tool_result</text>
+    <rect x="500" y="70" width="130" height="52" rx="6" class="b-done"/>
+    <text x="565" y="90" class="t tb" text-anchor="middle">end_turn</text><text x="565" y="106" class="ts" text-anchor="middle">Xong: đọc câu trả lời</text>
+    <rect x="500" y="146" width="130" height="52" rx="6" class="b-warn"/>
+    <text x="565" y="164" class="t tb" text-anchor="middle">khác</text><text x="565" y="178" class="ts" text-anchor="middle">max_tokens, refusal</text><text x="565" y="191" class="ts" text-anchor="middle">dừng, không loop tiếp</text>
+
+    <g><path class="ln-acc flow" d="M156,123 H194" marker-end="url(#m1104)"/></g>
+    <g><path class="ln-acc flow" d="M296,123 H334" marker-end="url(#m1104)"/></g>
+    <g><path class="ln-acc flow" d="M391,100 V60" marker-end="url(#m1104)"/><text x="398" y="84" class="ts halo">tool_use</text>
+      <path class="ln-acc flow" d="M280,36 H86 V98" marker-end="url(#m1104)"/><text x="180" y="30" class="ts halo" text-anchor="middle">quay lại, gọi API lần nữa</text></g>
+    <g><path class="ln-good flow" d="M446,118 L498,96" marker-end="url(#m1104g)"/></g>
+    <g><path class="ln-warn-solid flow" d="M446,128 L498,172" marker-end="url(#m1104w)"/></g>
+    <text x="320" y="232" class="ts" text-anchor="middle">Agent = Claude tự chạy cả hai phía hội thoại, không cần người ở giữa</text>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Code gửi message kèm danh sách tools cho Claude.</li>
+    <li>Claude trả về và code đọc <code>stop_reason</code>.</li>
+    <li><code>tool_use</code>: chạy tool, gửi <code>tool_result</code> lại, rồi quay về bước đầu.</li>
+    <li><code>end_turn</code>: Claude đã xong, kết thúc vòng lặp.</li>
+    <li>Giá trị khác (<code>max_tokens</code>, <code>refusal</code>): dừng lại, không loop tiếp.</li>
+  </ol>
+  <figcaption>Hình 4. Vòng lặp agent của Platform 101: ba nhánh theo <code>stop_reason</code>.</figcaption>
+</figure>
+<pre><code class="language-python">tools = [{"name": "get_weather", "description": "Get the current weather for a city.",
+    "input_schema": {"type": "object", "properties": {
+        "city": {"type": "string", "description": "The city to get weather for"}},
+        "required": ["city"]}}]
+
+messages = [{"role": "user", "content": "What should I wear in Austin today?"}]
+while True:
+    response = client.messages.create(model="claude-sonnet-5",
+        max_tokens=1024, tools=tools, messages=messages)
+    if response.stop_reason == "end_turn":
+        for block in response.content:
+            if block.type == "text": print(block.text)
+        break
+    elif response.stop_reason == "tool_use":
+        tool_results = []
+        for block in response.content:
+            if block.type == "tool_use":
+                result = run_tool(block.name, block.input)
+                tool_results.append({"type": "tool_result",
+                    "tool_use_id": block.id, "content": result})
+        messages.append({"role": "assistant", "content": response.content})
+        messages.append({"role": "user", "content": tool_results})
+    else:
+        print(f"Stopped early: {response.stop_reason}")
+        break</code></pre>
+<p><strong>Chạy thử với câu hỏi “What should I wear in Austin today?”</strong></p>
+<div class="tw"><table>
+  <thead><tr><th>Vòng</th><th>Claude trả về</th><th><code>stop_reason</code></th><th>Code làm gì</th></tr></thead>
+  <tbody>
+    <tr><td class="c">1</td><td>Khối <code>tool_use</code>: <code>get_weather {"city": "Austin"}</code></td><td><code>tool_use</code></td><td>Chạy <code>run_tool</code>, nhận kết quả thời tiết (ví dụ minh hoạ: “nắng, nóng”), nối vào <code>messages</code> cả lượt của assistant lẫn <code>tool_result</code></td></tr>
+    <tr><td class="c">2</td><td>Văn bản gợi ý trang phục dựa trên kết quả đó</td><td><code>end_turn</code></td><td>In câu trả lời, <code>break</code></td></tr>
+  </tbody>
+</table></div>
+<ul>
+  <li><code>tool_use_id: block.id</code> ghép kết quả với đúng lời gọi.</li>
+  <li>Nhánh <code>else</code> bắt mọi lý do dừng khác (<code>max_tokens</code>, <code>refusal</code>) và thoát ngay, không lặp tiếp.</li>
+</ul>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div><ul>
+    <li><code>while True</code> chỉ có nhánh <code>tool_use</code>, gặp <code>max_tokens</code> vẫn lặp</li>
+    <li>Quên nối <code>tool_result</code> vào <code>messages</code> rồi gọi lại</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đúng</div><ul>
+    <li>Có đủ ba nhánh: <code>end_turn</code>, <code>tool_use</code> và nhánh dừng cho giá trị khác</li>
+    <li>Nối cả lượt assistant và <code>tool_result</code> (kèm <code>tool_use_id</code>) trước khi gọi lại</li>
+  </ul></div>
+</div>
+<div class="insight"><strong>Cốt lõi.</strong> Claude kiểm soát reasoning; bạn kiểm soát loop và tools. Nhánh “trường hợp khác” là chỗ vòng lặp phải biết dừng.</div>
+
+<h3>2.5 Tool Use, Thinking, Built-in Tools (Bài 5–7)</h3>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Tool giống <strong>dụng cụ trong hộp đồ nghề</strong> kèm nhãn dán. Thợ chọn dụng cụ dựa vào nhãn, nên nhãn mơ hồ thì chọn nhầm. Thinking giống việc thợ <strong>nháp trên giấy trước khi làm</strong>. Built-in tool giống dụng cụ <strong>thuê sẵn ở cửa hàng</strong> (server tool) hoặc <strong>dụng cụ cửa hàng bán kèm hướng dẫn nhưng bạn tự cầm</strong> (client tool).
+</div>
+<p><strong>Tool use:</strong> định nghĩa tool bằng JSON schema (name + description + input_schema). Description phải cụ thể — đây là nguyên nhân số 1 khiến agent chọn sai tool. Tool Runner (beta) tự xử lý toàn bộ vòng lặp.</p>
+<p><strong>Extended thinking (Bài 6):</strong> Trên Opus 5, thinking bật tự động (adaptive). Dùng <code>output_config={"effort": "high"}</code> để kiểm soát độ sâu (low/medium/high/xhigh/max). Hiển thị summary với <code>thinking={"type": "adaptive", "display": "summarized"}</code>.</p>
+<pre><code class="language-python">response = client.messages.create(
+    model="claude-opus-5",
+    max_tokens=16000,
+    thinking={"type": "adaptive", "display": "summarized"},
+    output_config={"effort": "high"},
+    tools=[weather_tool],
+    messages=[{"role": "user", "content": "Plan a road trip..."}]
+)</code></pre>
+<ul>
+  <li><code>thinking</code> kiểu <code>adaptive</code>: model tự quyết có cần nghĩ sâu không. <code>display: "summarized"</code> cho bạn xem bản tóm tắt phần suy nghĩ.</li>
+  <li><code>effort</code> là nút chỉnh độ sâu, từ <code>low</code> đến <code>max</code>. Chọn <code>high</code> cho việc cần cân nhắc kỹ như lên kế hoạch chuyến đi.</li>
+</ul>
+<p><strong>Built-in tools (Bài 7):</strong> Server tools (web_search, code_execution, web_fetch) chạy trên infrastructure của Anthropic — <strong>không cần agent loop</strong>, kết quả trả về trong cùng response với block type <code>server_tool_use</code>. Client tools (memory, bash) chạy ở code bạn, Anthropic đã có schema sẵn.</p>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 226" role="img" aria-label="So sánh server tool và client tool: server tool chạy ở Anthropic và kết quả nằm trong cùng response; client tool cần code của bạn chạy tool rồi gửi tool_result trong agent loop">
+    <defs>
+      <marker id="m1105" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker>
+      <marker id="m1105g" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-good"/></marker>
+    </defs>
+    <rect x="4" y="4" width="312" height="218" rx="8" class="lane"/><rect x="324" y="4" width="312" height="218" rx="8" class="lane"/>
+    <text x="160" y="24" class="lane-lb" text-anchor="middle">SERVER TOOL · chạy ở Anthropic</text>
+    <text x="480" y="24" class="lane-lb" text-anchor="middle">CLIENT TOOL · chạy ở code bạn</text>
+    <rect x="16" y="44" width="84" height="38" rx="6" class="b-step"/><text x="58" y="68" class="t tb" text-anchor="middle">Code bạn</text>
+    <rect x="200" y="44" width="100" height="38" rx="6" class="b-sys"/><text x="250" y="68" class="t tb" text-anchor="middle">Claude API</text>
+    <rect x="200" y="130" width="100" height="38" rx="6" class="b-next"/><text x="250" y="154" class="t tb" text-anchor="middle">Server tool</text>
+    <g><path class="ln-acc flow" d="M100,56 H198" marker-end="url(#m1105)"/><text x="150" y="50" class="ts" text-anchor="middle">request + tool</text></g>
+    <g><path class="ln-acc flow" d="M250,82 V128" marker-end="url(#m1105)"/><text x="244" y="110" class="ts halo" text-anchor="end">chạy ở Anthropic</text></g>
+    <g><path class="ln-good flow" d="M198,72 H102" marker-end="url(#m1105g)"/><text x="150" y="90" class="ts" text-anchor="middle">1 response</text>
+      <text x="160" y="196" class="tw-good" text-anchor="middle">✓ Không cần agent loop</text><text x="160" y="212" class="ts" text-anchor="middle">kết quả có block type server_tool_use</text></g>
+    <rect x="336" y="44" width="84" height="38" rx="6" class="b-step"/><text x="378" y="68" class="t tb" text-anchor="middle">Code bạn</text>
+    <rect x="520" y="44" width="100" height="38" rx="6" class="b-sys"/><text x="570" y="68" class="t tb" text-anchor="middle">Claude API</text>
+    <rect x="336" y="130" width="100" height="38" rx="6" class="b-next"/><text x="386" y="154" class="t tb" text-anchor="middle">Client tool</text>
+    <g><path class="ln-acc flow" d="M518,56 H422" marker-end="url(#m1105)"/><text x="470" y="50" class="ts" text-anchor="middle">tool_use</text></g>
+    <g><path class="ln-acc flow" d="M378,82 V128" marker-end="url(#m1105)"/><text x="386" y="110" class="ts halo">bạn tự chạy</text></g>
+    <g><path class="ln-acc flow" d="M422,72 H518" marker-end="url(#m1105)"/><text x="470" y="90" class="ts" text-anchor="middle">tool_result</text>
+      <text x="480" y="196" class="tw-warn" text-anchor="middle">Cần agent loop</text><text x="480" y="212" class="ts" text-anchor="middle">memory, bash: schema do Anthropic định sẵn</text></g>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Server tool: code gửi request kèm khai báo tool.</li>
+    <li>Anthropic chạy tool (web_search, code_execution, web_fetch) trên infrastructure của họ.</li>
+    <li>Kết quả về trong cùng một response, không cần loop.</li>
+    <li>Client tool: Claude trả <code>tool_use</code>.</li>
+    <li>Code của bạn chạy tool (memory, bash).</li>
+    <li>Code gửi <code>tool_result</code> về, nên cần vòng lặp agent.</li>
+  </ol>
+  <figcaption>Hình 5. Server tool nằm trọn trong một response; client tool đi qua vòng lặp.</figcaption>
+</figure>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>JSON schema</dt><dd>Cách mô tả kiểu dữ liệu đầu vào của tool: tên field, kiểu, field nào bắt buộc.</dd>
+  <dt>Tool Runner</dt><dd>Thành phần của SDK (beta) tự chạy vòng lặp tool thay bạn.</dd>
+  <dt>Extended thinking</dt><dd>Chế độ model “nghĩ” trước khi trả lời. Kiểu <code>adaptive</code> để model tự quyết mức nghĩ.</dd>
+  <dt>effort</dt><dd>Nút chỉnh độ sâu suy nghĩ: low, medium, high, xhigh, max.</dd>
+  <dt>Server tool và client tool</dt><dd>Server tool do Anthropic chạy. Client tool do code của bạn chạy.</dd>
+</dl></div>
+<div class="alert"><strong>Bẫy.</strong> Description tool mơ hồ là nguyên nhân số 1 khiến agent chọn sai tool. Và đừng viết agent loop cho server tool, vì kết quả đã nằm trong cùng response.</div>
+
+<h3>2.6 Skills, MCP, Context Management, Managed Agents (Bài 8–13)</h3>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Bạn thuê một trợ lý. <strong>Skill</strong> là cuốn sổ quy trình trợ lý mở khi gặp đúng loại việc. <strong>MCP</strong> là ổ cắm chuẩn để nối trợ lý với các dịch vụ bên ngoài như Slack hay Linear. <strong>Context management</strong> là cách giữ bàn làm việc gọn khi hồ sơ chất cao. <strong>Managed agents</strong> là thuê luôn văn phòng có sẵn: Anthropic lo chỗ ngồi và vòng làm việc, bạn chỉ giao việc.
+</div>
+<p><strong>Skills (Bài 8):</strong> SKILL.md chứa hướng dẫn thực thi ("how" Claude làm việc, không phải "what"). Upload bằng <code>client.skills.create()</code>, attach qua <code>container.skills</code> cùng code execution tool. Chỉ load name+description ban đầu, full content load on demand.</p>
+<p><strong>MCP (Bài 9):</strong> Dùng cho third-party services (Linear, Slack...). Khai báo <code>mcp_servers</code> + <code>tools</code> với <code>type: "mcp_toolset"</code>. Có thể lọc tool bằng <code>default_config: {enabled: false}</code> rồi enable từng tool cụ thể. Beta header: <code>betas=["mcp-client-2025-11-20"]</code>.</p>
+<pre><code class="language-python">response = client.beta.messages.create(
+    model="claude-opus-5", max_tokens=1024,
+    mcp_servers=[{"type": "url", "url": "https://mcp.linear.app/mcp",
+        "name": "linear", "authorization_token": os.environ["LINEAR_MCP_TOKEN"]}],
+    tools=[{"type": "mcp_toolset", "mcp_server_name": "linear"}],
+    betas=["mcp-client-2025-11-20"],
+    messages=[{"role": "user", "content": "What tools do you have available?"}]
+)</code></pre>
+<ul>
+  <li><code>mcp_servers</code> khai báo máy chủ MCP: địa chỉ, tên, token. Token lấy từ biến môi trường, không viết vào code.</li>
+  <li><code>tools</code> với <code>mcp_toolset</code> bật bộ tool của máy chủ đó cho Claude dùng.</li>
+  <li><code>betas</code> bật tính năng beta. Vì vậy gọi qua <code>client.beta.messages</code>.</li>
+</ul>
+<p><strong>Context Management (Bài 10):</strong> Bốn pattern:</p>
+<div class="tw"><table>
+  <thead><tr><th>Pattern</th><th>Cách dùng</th><th>API</th></tr></thead>
+  <tbody>
+    <tr><td>Just-in-time loading</td><td>Chỉ load context khi cần, qua tool</td><td>Design pattern</td></tr>
+    <tr><td>Server-side compaction</td><td>Tóm tắt lịch sử hội thoại dài</td><td><code>context_management: {edits: [{type: "compact_..."}]}</code></td></tr>
+    <tr><td>Prompt caching</td><td>Cache phần system prompt/tool defs ổn định</td><td><code>cache_control: {type: "ephemeral"}</code></td></tr>
+    <tr><td>Memory tool</td><td>Lưu state qua nhiều session</td><td>Client tool, bạn tự quản lý storage</td></tr>
+  </tbody>
+</table></div>
+<p><strong>Managed Agents (Bài 11–12):</strong> Anthropic host vòng lặp agent. Bốn primitive: <strong>Agent</strong> (model + system prompt + toolset) → <strong>Environment</strong> (sandbox + networking) → <strong>Session</strong> (một lần chạy) → <strong>Events</strong> (stream các message). Mở stream <em>trước</em> khi gửi kickoff message.</p>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 252" role="img" aria-label="Managed Agents: bốn primitive Agent, Environment, Session, Events nối tiếp nhau; sau đó mở stream trước, gửi kickoff message, rồi đọc event tới khi session idle">
+    <defs>
+      <marker id="m1106" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker>
+      <marker id="m1106g" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-good"/></marker>
+    </defs>
+    <g><rect x="16" y="24" width="128" height="62" rx="6" class="b-step"/>
+      <text x="80" y="46" class="t tb" text-anchor="middle">Agent</text><text x="80" y="64" class="ts" text-anchor="middle">model + system prompt</text><text x="80" y="77" class="ts" text-anchor="middle">+ toolset</text></g>
+    <g><path class="ln-acc flow" d="M146,55 H174" marker-end="url(#m1106)"/>
+      <rect x="176" y="24" width="128" height="62" rx="6" class="b-step"/>
+      <text x="240" y="46" class="t tb" text-anchor="middle">Environment</text><text x="240" y="64" class="ts" text-anchor="middle">sandbox + networking</text></g>
+    <g><path class="ln-acc flow" d="M306,55 H334" marker-end="url(#m1106)"/>
+      <rect x="336" y="24" width="128" height="62" rx="6" class="b-sys"/>
+      <text x="400" y="46" class="t tb" text-anchor="middle">Session</text><text x="400" y="64" class="ts" text-anchor="middle">một lần chạy</text></g>
+    <g><path class="ln-acc flow" d="M466,55 H494" marker-end="url(#m1106)"/>
+      <rect x="496" y="24" width="128" height="62" rx="6" class="b-step"/>
+      <text x="560" y="46" class="t tb" text-anchor="middle">Events</text><text x="560" y="64" class="ts" text-anchor="middle">stream các message</text></g>
+    <text x="16" y="136" class="ts">Anthropic host vòng lặp agent,</text><text x="16" y="150" class="ts">bạn không tự viết loop.</text>
+    <g><path class="ln-acc flow" d="M400,86 V138" marker-end="url(#m1106)"/>
+      <rect x="250" y="140" width="170" height="40" rx="6" class="b-hot"/>
+      <text x="335" y="158" class="t tb" text-anchor="middle">Mở stream trước</text><text x="335" y="172" class="ts" text-anchor="middle">events.stream(...)</text></g>
+    <g><path class="ln-acc flow" d="M420,160 H438" marker-end="url(#m1106)"/>
+      <rect x="440" y="140" width="184" height="40" rx="6" class="b-step"/>
+      <text x="532" y="158" class="t tb" text-anchor="middle">Gửi kickoff message</text><text x="532" y="172" class="ts" text-anchor="middle">events.send: user.message</text></g>
+    <g><path class="ln-good flow" d="M532,180 V204" marker-end="url(#m1106g)"/>
+      <rect x="250" y="206" width="374" height="40" rx="6" class="b-done"/>
+      <text x="437" y="224" class="t tb" text-anchor="middle">Đọc event: agent.message</text><text x="437" y="238" class="ts" text-anchor="middle">dừng khi nhận session.status_idle</text></g>
+  </svg></div>
+  <ol class="anim-steps">
+    <li><strong>Agent</strong>: model, system prompt và toolset.</li>
+    <li><strong>Environment</strong>: sandbox và cấu hình mạng.</li>
+    <li><strong>Session</strong>: một lần chạy, dùng agent và environment ở trên.</li>
+    <li><strong>Events</strong>: các message chảy qua stream.</li>
+    <li>Mở stream <em>trước</em>, để không lỡ event nào.</li>
+    <li>Sau đó mới gửi kickoff message (<code>user.message</code>).</li>
+    <li>Đọc <code>agent.message</code> cho tới khi session báo idle thì dừng.</li>
+  </ol>
+  <figcaption>Hình 6. Bốn primitive của Managed Agents và thứ tự mở stream, gửi việc, đọc kết quả.</figcaption>
+</figure>
+<pre><code class="language-python">agent = client.beta.agents.create(name="Line Counter", model="claude-opus-5",
+    system="You are a helpful agent that completes small file tasks.",
+    tools=[{"type": "agent_toolset_20260401", "default_config": {"enabled": True}}])
+environment = client.beta.environments.create(name="env",
+    config={"type": "cloud", "networking": {"type": "limited"}})
+session = client.beta.sessions.create(agent=agent.id, environment_id=environment.id)
+
+with client.beta.sessions.events.stream(session_id=session.id) as stream:
+    client.beta.sessions.events.send(session_id=session.id, events=[{
+        "type": "user.message",
+        "content": [{"type": "text", "text": "Create a file, count its lines, report back."}]}])
+    for event in stream:
+        if event.type == "agent.message":
+            for block in event.content:
+                if block.type == "text": print(block.text, end="")
+        elif event.type == "session.status_idle":
+            break</code></pre>
+<p>Đọc code theo thứ tự: tạo <code>agent</code>, tạo <code>environment</code> (<code>networking</code> kiểu <code>limited</code> để hạn chế ra mạng), tạo <code>session</code> từ hai ID đó, mở <code>stream</code>, gửi <code>user.message</code> trong khối <code>with</code>, rồi lặp qua event cho tới <code>session.status_idle</code>.</p>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Tài liệu hiện hành của Managed Agents (đang beta, header <code>managed-agents-2026-04-01</code>) nói rõ thêm: agent là tài nguyên có phiên bản; truyền <code>agent</code> dạng chuỗi ID thì session dùng phiên bản mới nhất, truyền object thì ghim được một phiên bản cụ thể. Có thể gộp hai bước (tạo session, gửi event đầu) thành một lệnh bằng <code>initial_events</code>. Nguồn: <a href="https://platform.claude.com/docs/en/managed-agents/sessions" target="_blank" rel="noopener">platform.claude.com, Start a session</a>.</div>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div><ul>
+    <li>Gửi kickoff message rồi mới mở stream, có thể lỡ các event đầu</li>
+    <li>Tự viết lại vòng lặp agent khi đã dùng managed agents</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đúng</div><ul>
+    <li>Mở stream <em>trước</em>, gửi kickoff sau</li>
+    <li>Để Anthropic chạy vòng lặp. Bạn khai báo Agent, Environment và đọc Events</li>
+  </ul></div>
+</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Compaction</dt><dd>Tóm tắt phần hội thoại cũ thành bản ngắn để tiết kiệm context.</dd>
+  <dt>Prompt caching</dt><dd>Lưu phần prompt lặp lại (system prompt, định nghĩa tool) để lần sau đọc rẻ và nhanh hơn.</dd>
+  <dt>Beta header</dt><dd>Cờ bật tính năng thử nghiệm trong request.</dd>
+  <dt>Sandbox</dt><dd>Môi trường cô lập để agent chạy lệnh mà không chạm vào máy thật.</dd>
+  <dt>Kickoff message</dt><dd>Tin nhắn đầu tiên giao việc cho session.</dd>
+</dl></div>
+<div class="insight"><strong>Cốt lõi.</strong> Bốn pattern context: load khi cần, tóm tắt, cache phần ổn định, ghi nhớ qua session. Với managed agents, nhớ chuỗi Agent → Environment → Session → Events.</div>
+
+<h2 id="subagents">3. Introduction to Subagents — 4 bài</h2>
+<p class="xtags"><span class="tag xt3">CCAR-F D1</span> <span class="tag xt1">CCDV-F D1</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Bạn nhờ một đồng nghiệp “đọc giúp 30 file rồi báo lại chỗ nào xử lý đăng nhập”. Đồng nghiệp lật hết 30 file, bạn không phải xem từng file. Bạn nhận <strong>một đoạn tóm tắt</strong> và bàn làm việc của bạn vẫn gọn. Subagent làm đúng như vậy.
+</div>
+<h3>3.1 What Are Subagents? (Bài 1)</h3>
+<p>Subagent chạy trong <strong>context window riêng</strong>. Toàn bộ intermediate work (file reads, searches, tool calls) không ảnh hưởng context chính. Chỉ có summary trả về. Claude Code lưu full transcript của subagent ra file riêng. Ba built-in subagents: <strong>General purpose</strong>, <strong>Explore</strong> (đọc/tìm codebase), <strong>Plan</strong> (phân tích trước khi plan mode).</p>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 258" role="img" aria-label="Subagent chạy trong context riêng: agent chính giao việc, subagent đọc file, tìm kiếm, gọi tool trong context của nó, chỉ trả về summary; context chính không chứa công việc trung gian">
+    <defs>
+      <marker id="m1107" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker>
+      <marker id="m1107g" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-good"/></marker>
+    </defs>
+    <rect x="4" y="4" width="266" height="250" rx="8" class="lane"/><rect x="370" y="4" width="266" height="250" rx="8" class="lane"/>
+    <text x="137" y="24" class="lane-lb" text-anchor="middle">CONTEXT CHÍNH</text>
+    <text x="503" y="24" class="lane-lb" text-anchor="middle">CONTEXT RIÊNG CỦA SUBAGENT</text>
+    <g><rect x="30" y="44" width="214" height="40" rx="6" class="b-step"/><text x="137" y="69" class="t tb" text-anchor="middle">Yêu cầu của bạn</text></g>
+    <g><path class="ln-acc flow" d="M246,64 H392" marker-end="url(#m1107)"/><text x="320" y="58" class="ts halo" text-anchor="middle">giao việc</text></g>
+    <g>
+      <rect x="394" y="44" width="214" height="30" rx="6" class="b-step"/><text x="501" y="64" class="t" text-anchor="middle">Đọc file</text>
+      <rect x="394" y="82" width="214" height="30" rx="6" class="b-step"/><text x="501" y="102" class="t" text-anchor="middle">Tìm kiếm</text>
+      <rect x="394" y="120" width="214" height="30" rx="6" class="b-step"/><text x="501" y="140" class="t" text-anchor="middle">Gọi tool</text>
+      <text x="137" y="124" class="tw-warn" text-anchor="middle">✕ không thấy bước trung gian</text></g>
+    <g><rect x="394" y="170" width="214" height="48" rx="6" class="b-sys"/>
+      <text x="501" y="190" class="t tb" text-anchor="middle">Summary</text><text x="501" y="206" class="ts" text-anchor="middle">kết quả cuối cùng</text>
+      <path class="ln-good flow" d="M392,194 H248" marker-end="url(#m1107g)"/><text x="320" y="188" class="ts halo" text-anchor="middle">summary</text>
+      <text x="503" y="238" class="ts" text-anchor="middle">Full transcript lưu ra file riêng</text></g>
+    <g><rect x="30" y="170" width="214" height="48" rx="6" class="b-done"/>
+      <text x="137" y="190" class="t tb" text-anchor="middle">Chỉ nhận summary</text><text x="137" y="206" class="ts" text-anchor="middle">context chính vẫn gọn</text></g>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Bạn đưa yêu cầu cho agent chính.</li>
+    <li>Agent chính giao việc cho subagent.</li>
+    <li>Subagent đọc file, tìm kiếm, gọi tool trong context riêng. Agent chính không thấy những bước này.</li>
+    <li>Subagent trả về summary. Full transcript được Claude Code lưu ra file riêng.</li>
+    <li>Context chính chỉ thêm summary, không phình lên vì công việc trung gian.</li>
+  </ol>
+  <figcaption>Hình 7. Subagent giữ công việc trung gian trong context riêng và chỉ trả summary.</figcaption>
+</figure>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Context window</dt><dd>“Bàn làm việc” của model: lượng nội dung nó nhìn thấy cùng lúc.</dd>
+  <dt>Intermediate work</dt><dd>Công việc trung gian như đọc file, tìm kiếm, gọi tool.</dd>
+  <dt>Transcript</dt><dd>Bản ghi đầy đủ những gì subagent đã làm.</dd>
+  <dt>General purpose · Explore · Plan</dt><dd>Ba subagent có sẵn: đa dụng, đọc và tìm codebase, phân tích trước khi plan mode.</dd>
+</dl></div>
+
+<h3>3.2 Creating a Subagent (Bài 2)</h3>
+<p>File markdown với YAML frontmatter tại <code>.claude/agents/</code> (project scope) hoặc <code>~/.claude/agents/</code> (user scope). Các field:</p>
+<pre><code class="language-yaml">---
+name: code-quality-reviewer
+description: Use this agent when you need to review recently written or modified code for quality, security, and best practice compliance.
+tools: Bash, Glob, Grep, Read, WebFetch, WebSearch
+model: sonnet   # haiku | sonnet | opus | fable | inherit
+color: purple
+---</code></pre>
+<ul>
+  <li><code>name</code>: tên định danh subagent.</li>
+  <li><code>description</code>: khi nào nên dùng. Claude đọc dòng này để quyết định có giao việc hay không.</li>
+  <li><code>tools</code>: các tool subagent được dùng.</li>
+  <li><code>model</code>: model riêng cho subagent. <code>inherit</code> nghĩa là dùng model của agent chính.</li>
+  <li><code>color</code>: màu hiển thị trong giao diện.</li>
+</ul>
+<p>Body dưới frontmatter là system prompt. Thêm "proactively" vào description để Claude tự động delegate không cần hỏi. Restart Claude Code nếu folder <code>agents/</code> mới tạo trong session hiện tại.</p>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Từ Claude Code v2.1.63, tool tạo subagent được đổi tên từ <code>Task</code> thành <code>Agent</code> (<a href="https://github.com/anthropics/claude-code/issues/29677" target="_blank" rel="noopener">issue #29677</a>). Tài liệu thi vẫn dùng tên <code>Task</code>; biết ý nghĩa là đủ.</div>
+
+<h3>3.3 Designing Effective Subagents (Bài 3)</h3>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Nhờ một người “kiểm tra giúp” mà không nói kiểm tra gì và báo lại thế nào thì kết quả sẽ lan man. Đưa họ <strong>một mẫu phiếu có sẵn các mục</strong> thì họ biết điền xong là hết việc.
+</div>
+<p>Bốn yếu tố quan trọng:</p>
+<ol>
+  <li><strong>Description cụ thể:</strong> description quyết định cả <em>khi nào</em> delegate lẫn <em>nội dung</em> task được giao. Nếu description yêu cầu main agent cung cấp danh sách file cụ thể, main agent sẽ truyền thông tin đó.</li>
+  <li><strong>Output format rõ ràng:</strong> đây là thay đổi quan trọng nhất. Định nghĩa format trong system prompt tạo "điểm dừng tự nhiên" — subagent biết khi nào xong. Ví dụ: Summary / Critical Issues / Major Issues / Minor Issues / Recommendations / Approval Status.</li>
+  <li><strong>Báo cáo obstacles:</strong> thêm section "Obstacles Encountered" để main thread không phải tự phát hiện lại workaround.</li>
+  <li><strong>Giới hạn tool:</strong> research subagent chỉ cần Glob/Grep/Read; code reviewer cần Bash nhưng không cần Edit/Write.</li>
+</ol>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div><ul>
+    <li>Description chung chung: “Reviews code”</li>
+    <li>Không quy định định dạng đầu ra, subagent không biết khi nào dừng</li>
+    <li>Cho research subagent đủ mọi tool, kể cả Edit và Write</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đúng</div><ul>
+    <li>Description nêu rõ khi nào dùng và cần main agent đưa gì (ví dụ danh sách file)</li>
+    <li>Định nghĩa các mục: Summary, Critical Issues, Major Issues, Minor Issues, Recommendations, Approval Status, kèm Obstacles Encountered</li>
+    <li>Research chỉ có Glob, Grep, Read; reviewer có Bash nhưng không có Edit, Write</li>
+  </ul></div>
+</div>
+<div class="insight"><strong>Cốt lõi.</strong> Output format là thay đổi có tác dụng lớn nhất: nó cho subagent một điểm dừng tự nhiên.</div>
+
+<h3>3.4 Using Subagents Effectively (Bài 4)</h3>
+<p><strong>Câu hỏi quyết định:</strong> "Intermediate work có quan trọng với main thread không?"</p>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 242" role="img" aria-label="Cây quyết định: nếu công việc trung gian không quan trọng với main thread thì dùng subagent, nếu quan trọng thì không dùng">
+    <rect x="170" y="8" width="300" height="44" rx="6" class="b-sys"/>
+    <text x="320" y="27" class="t tb" text-anchor="middle">Công việc trung gian có quan trọng</text><text x="320" y="43" class="t tb" text-anchor="middle">với main thread không?</text>
+    <path d="M320,52 V72 M165,72 H475 M165,72 V108 M475,72 V108" class="ln"/>
+    <text x="240" y="66" class="ts halo" text-anchor="middle">Không, chỉ cần kết quả</text>
+    <text x="400" y="66" class="ts halo" text-anchor="middle">Có, cần xem từng bước</text>
+    <rect x="20" y="108" width="290" height="124" rx="6" class="b-done"/>
+    <text x="165" y="130" class="t tb" text-anchor="middle">Dùng subagent</text>
+    <text x="34" y="152" class="ts">Research, exploration (chỉ cần kết quả)</text>
+    <text x="34" y="172" class="ts">Code review (cần fresh perspective)</text>
+    <text x="34" y="192" class="ts">Task cần custom system prompt khác</text>
+    <rect x="330" y="108" width="290" height="124" rx="6" class="b-warn"/>
+    <text x="475" y="130" class="t tb" text-anchor="middle">KHÔNG dùng subagent</text>
+    <text x="344" y="152" class="ts">Pipeline tuần tự (bước sau cần bước trước)</text>
+    <text x="344" y="172" class="ts">Test runner (cần xem full output để debug)</text>
+    <text x="344" y="192" class="ts">Persona “Python expert”: không thêm giá trị</text>
+  </svg></div>
+  <figcaption>Hình 8. Cây quyết định dùng hay không dùng subagent.</figcaption>
+</figure>
+<div class="tw"><table>
+  <thead><tr><th>Dùng subagent</th><th>KHÔNG dùng subagent</th></tr></thead>
+  <tbody>
+    <tr><td>Research/exploration (chỉ cần kết quả)</td><td>Pipeline tuần tự (mỗi bước phụ thuộc bước trước)</td></tr>
+    <tr><td>Code review (cần fresh perspective)</td><td>Test runner (cần xem full output để debug)</td></tr>
+    <tr><td>Task cần custom system prompt khác</td><td>Expert persona ("Python expert") — không thêm giá trị</td></tr>
+  </tbody>
+</table></div>
+<div class="alert"><strong>Bẫy.</strong> Dùng subagent cho test runner làm mất output đầy đủ mà bạn cần để debug, vì main thread chỉ nhận summary. Tạo subagent chỉ để đóng vai “Python expert” cũng không thêm giá trị.</div>
+
+<h2 id="agent-skills">4. Introduction to Agent Skills — 6 bài</h2>
+<p class="xtags"><span class="tag xt3">CCAR-F D3</span> <span class="tag xt1">CCDV-F D3</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Thư viện có hàng nghìn cuốn, nhưng thủ thư chỉ đọc <strong>nhãn trên gáy sách</strong> khi bạn bước vào. Chỉ khi bạn hỏi về nấu ăn, thủ thư mới rút cuốn sách nấu ăn ra và mở nội dung. Skill cũng vậy: Claude chỉ nạp tên và mô tả, nội dung đầy đủ nạp khi việc khớp.
+</div>
+<h3>4.1–4.2 What Are Skills + Creating Your First Skill</h3>
+<p>Skill = thư mục chứa <code>SKILL.md</code> + (tùy chọn) scripts, references, assets. File SKILL.md có frontmatter (name + description) và phần hướng dẫn bên dưới. Claude chỉ load name+description lúc khởi động; full content chỉ load khi match request.</p>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 270" role="img" aria-label="Skill được nạp theo tầng: lúc khởi động chỉ nạp name và description vào context; khi yêu cầu khớp thì nạp nội dung SKILL.md; file trong references chỉ đọc khi cần; script chạy mà chỉ output vào context">
+    <defs><marker id="m1109" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker></defs>
+    <rect x="4" y="4" width="292" height="262" rx="8" class="lane"/><rect x="344" y="4" width="292" height="262" rx="8" class="lane"/>
+    <text x="150" y="22" class="lane-lb" text-anchor="middle">CONTEXT CỦA CLAUDE</text>
+    <text x="490" y="22" class="lane-lb" text-anchor="middle">THƯ MỤC SKILL</text>
+
+    <rect x="360" y="36" width="264" height="44" rx="6" class="b-step"/><text x="374" y="54" class="t tb">Frontmatter</text><text x="374" y="70" class="ts">name + description</text>
+    <rect x="360" y="86" width="264" height="44" rx="6" class="b-step"/><text x="374" y="104" class="t tb">Phần hướng dẫn</text><text x="374" y="120" class="ts">nội dung bên dưới frontmatter</text>
+    <rect x="360" y="136" width="264" height="44" rx="6" class="b-step"/><text x="374" y="154" class="t tb">references/</text><text x="374" y="170" class="ts">tài liệu chi tiết</text>
+    <rect x="360" y="186" width="264" height="44" rx="6" class="b-step"/><text x="374" y="204" class="t tb">scripts/</text><text x="374" y="220" class="ts">mã chạy được</text>
+
+    <g><rect x="16" y="36" width="268" height="44" rx="6" class="b-done"/><text x="30" y="54" class="t tb">name + description</text><text x="30" y="70" class="ts">nạp lúc khởi động</text>
+      <path class="ln-acc flow" d="M358,58 H288" marker-end="url(#m1109)"/></g>
+    <g><text x="272" y="54" class="tw-good" text-anchor="end">✓ khớp yêu cầu</text></g>
+    <g><rect x="16" y="86" width="268" height="44" rx="6" class="b-done"/><text x="30" y="104" class="t tb">Nội dung SKILL.md</text><text x="30" y="120" class="ts">nạp khi khớp yêu cầu</text>
+      <path class="ln-acc flow" d="M358,108 H288" marker-end="url(#m1109)"/></g>
+    <g><rect x="16" y="136" width="268" height="44" rx="6" class="b-done"/><text x="30" y="154" class="t tb">File trong references/</text><text x="30" y="170" class="ts">chỉ đọc khi cần</text>
+      <path class="ln-acc flow" d="M358,158 H288" marker-end="url(#m1109)"/></g>
+    <g><rect x="16" y="186" width="268" height="44" rx="6" class="b-done"/><text x="30" y="204" class="t tb">Output của script</text><text x="30" y="220" class="ts">chạy script, mã không vào context</text>
+      <path class="ln-acc flow" d="M358,208 H288" marker-end="url(#m1109)"/>
+      <text x="150" y="254" class="ts" text-anchor="middle">SKILL.md dưới 500 dòng, chi tiết để ở references/</text></g>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Lúc khởi động, Claude chỉ nạp name và description của skill vào context.</li>
+    <li>Người dùng gửi yêu cầu. Claude so với description và thấy khớp.</li>
+    <li>Chỉ lúc này nội dung SKILL.md mới được nạp.</li>
+    <li>File trong <code>references/</code> chỉ được đọc khi nội dung SKILL.md chỉ tới và việc cần.</li>
+    <li>Script chạy mà không nạp mã vào context. Chỉ output của nó tốn token.</li>
+  </ol>
+  <figcaption>Hình 9. Skill được nạp theo tầng (progressive disclosure): nhãn trước, nội dung sau, chi tiết cuối cùng.</figcaption>
+</figure>
+<div class="tw"><table>
+  <thead><tr><th>Vị trí</th><th>Phạm vi</th><th>Use case</th></tr></thead>
+  <tbody>
+    <tr><td><code>~/.claude/skills/</code></td><td>Personal — toàn bộ projects</td><td>Commit style, code explanation style cá nhân</td></tr>
+    <tr><td><code>.claude/skills/</code></td><td>Project — chia sẻ qua git</td><td>PR checklist, brand guidelines của team</td></tr>
+    <tr><td>Enterprise managed settings</td><td>Org-wide, ưu tiên cao nhất</td><td>Compliance workflows bắt buộc</td></tr>
+  </tbody>
+</table></div>
+<p>Ưu tiên name conflict: <strong>Enterprise > Personal > Project</strong>. Plugin skills được namespace (<code>/plugin-name:skill-name</code>) nên không xung đột.</p>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 232" role="img" aria-label="Ba phạm vi skill xếp theo ưu tiên khi trùng tên: Enterprise cao nhất, rồi Personal, rồi Project">
+    <defs><marker id="m1110" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah"/></marker></defs>
+    <rect x="16" y="16" width="190" height="128" rx="6" class="b-hot"/>
+    <text x="111" y="38" class="t tb" text-anchor="middle">Enterprise</text>
+    <text x="111" y="58" class="ts" text-anchor="middle">managed settings</text><text x="111" y="76" class="ts" text-anchor="middle">Org-wide</text><text x="111" y="94" class="ts" text-anchor="middle">Compliance workflows</text><text x="111" y="108" class="ts" text-anchor="middle">bắt buộc</text>
+    <rect x="225" y="16" width="190" height="128" rx="6" class="b-sys"/>
+    <text x="320" y="38" class="t tb" text-anchor="middle">Personal</text>
+    <text x="320" y="58" class="ts" text-anchor="middle">~/.claude/skills/</text><text x="320" y="76" class="ts" text-anchor="middle">toàn bộ projects</text><text x="320" y="94" class="ts" text-anchor="middle">commit style,</text><text x="320" y="108" class="ts" text-anchor="middle">code explanation cá nhân</text>
+    <rect x="434" y="16" width="190" height="128" rx="6" class="b-step"/>
+    <text x="529" y="38" class="t tb" text-anchor="middle">Project</text>
+    <text x="529" y="58" class="ts" text-anchor="middle">.claude/skills/</text><text x="529" y="76" class="ts" text-anchor="middle">chia sẻ qua git</text><text x="529" y="94" class="ts" text-anchor="middle">PR checklist,</text><text x="529" y="108" class="ts" text-anchor="middle">brand guidelines của team</text>
+    <path d="M16,176 H618" class="ln" marker-end="url(#m1110)"/>
+    <text x="320" y="170" class="ts halo" text-anchor="middle">Ưu tiên khi trùng tên: Enterprise > Personal > Project</text>
+    <text x="320" y="204" class="ts" text-anchor="middle">Plugin skills có namespace /plugin-name:skill-name nên không xung đột</text>
+  </svg></div>
+  <figcaption>Hình 10. Ba phạm vi skill và thứ tự ưu tiên khi trùng tên.</figcaption>
+</figure>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Academy ghi rõ hơn: trong Claude Code mọi field frontmatter đều tùy chọn và chỉ <code>description</code> được khuyến nghị; <code>name</code> mặc định là tên thư mục. Khi upload lên Claude.ai hoặc Claude API thì <code>name</code> (chữ thường, số, gạch ngang, tối đa 64 ký tự) và <code>description</code> (tối đa 1.024 ký tự) là bắt buộc. Nguồn: <a href="https://academy.claude.com/courses/introduction-to-agent-skills/configuration-and-multi-file-skills" target="_blank" rel="noopener">Academy, Configuration and multi-file skills</a>.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Frontmatter</dt><dd>Khối YAML ở đầu file, giữa hai dòng <code>---</code>, chứa thông tin mô tả file.</dd>
+  <dt>Progressive disclosure</dt><dd>Nạp thông tin theo tầng: nhãn trước, nội dung khi cần, chi tiết sau cùng.</dd>
+  <dt>Scope</dt><dd>Phạm vi áp dụng của skill: cá nhân, dự án hay toàn tổ chức.</dd>
+  <dt>Namespace</dt><dd>Tiền tố tên (như <code>/plugin-name:skill-name</code>) để hai skill khác nguồn không trùng nhau.</dd>
+</dl></div>
+
+<h3>Viết name và description cho đúng</h3>
+<p>Lúc khởi động Claude chỉ thấy <code>name</code> và <code>description</code> của mọi skill, nên hai trường này quyết định skill có được dùng đúng lúc không.</p>
+<div class="tw"><table>
+  <thead><tr><th>Phần</th><th>Quy tắc</th><th>Ví dụ</th></tr></thead>
+  <tbody>
+    <tr><td><code>name</code></td><td>kebab-case, không dấu cách, không chứa từ "claude"</td><td><code>weekly-sales-report</code></td></tr>
+    <tr><td><code>description</code></td><td>Làm gì + khi nào dùng, kèm những cách người dùng hay nói, kể cả khi họ không gọi tên skill</td><td>"Builds the weekly sales report from the CRM export. Use when someone asks for the weekly numbers, a sales recap, or 'the Friday report'."</td></tr>
+    <tr><td>Các bước</td><td>Đánh số, mỗi bước kèm lý do, để Claude xử lý được trường hợp ngoài kịch bản</td><td>"2. Group by region, because managers review by region."</td></tr>
+    <tr><td>Luôn luôn, Không bao giờ</td><td>Ít và cụ thể; quá nhiều quy tắc tuyệt đối làm skill cứng nhắc</td><td>"Never send the report; produce a draft only."</td></tr>
+    <tr><td>Ví dụ</td><td>Một ví dụ tốt và một ví dụ kém kèm lý do</td><td>Bảng mẫu đúng định dạng</td></tr>
+    <tr><td>Khi không chắc</td><td>Hỏi trước khi đoán, liệt kê câu hỏi</td><td>"If the date range is unclear, ask."</td></tr>
+  </tbody>
+</table></div>
+<div class="alert"><strong>Bẫy.</strong> Skill không bao giờ được gọi thường do <code>description</code> chỉ nói "làm gì" mà không nói "khi nào". Sửa description trước khi nghĩ tới việc chuyển nội dung sang CLAUDE.md.</div>
+<h3>4.3 Configuration and Multi-File Skills</h3>
+<p><strong>Frontmatter fields:</strong></p>
+<pre><code class="language-yaml">---
+name: codebase-onboarding
+description: Helps new developers understand how the system works.
+allowed-tools: Read, Grep, Glob, Bash   # pre-approve (không giới hạn tool)
+model: sonnet
+---</code></pre>
+<p><code>allowed-tools</code>: pre-approve các tool trong scope của skill (clear khi user gửi message tiếp theo). <code>disallowed-tools</code>: chặn tool cụ thể. Progressive disclosure: giữ SKILL.md dưới 500 dòng, đặt nội dung chi tiết vào <code>references/</code>. Scripts trong skill chạy mà không load nội dung vào context — chỉ output được tính token.</p>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div><ul>
+    <li>Nghĩ <code>allowed-tools</code> giới hạn Claude chỉ dùng các tool đó</li>
+    <li>Nhồi mọi thứ vào một SKILL.md hàng nghìn dòng</li>
+    <li>Bảo Claude “đọc” script lớn vào context</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đúng</div><ul>
+    <li><code>allowed-tools</code> chỉ pre-approve; muốn chặn dùng <code>disallowed-tools</code></li>
+    <li>SKILL.md dưới 500 dòng, chi tiết để ở <code>references/</code></li>
+    <li>Cho Claude chạy script: chỉ output tốn token</li>
+  </ul></div>
+</div>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Academy nhấn mạnh <code>allowed-tools</code> chỉ pre-approve, không hạn chế Claude dùng tool khác; quyền cho các tool còn lại vẫn theo thiết lập thường. Ghi <code>Bash</code> đơn lẻ là pre-approve lệnh shell nói chung, nên chỉ dùng với skill đáng tin hoặc thu hẹp theo mẫu, ví dụ <code>Bash(git status *)</code>. Nguồn: <a href="https://academy.claude.com/courses/introduction-to-agent-skills/configuration-and-multi-file-skills" target="_blank" rel="noopener">Academy, Configuration and multi-file skills</a>.</div>
+
+<h3>4.4 Skills vs Other Claude Code Features</h3>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Trong công ty: <strong>nội quy</strong> ai cũng phải theo mỗi ngày (CLAUDE.md). <strong>Sổ tay nghiệp vụ</strong> mở khi gặp đúng việc (skill). <strong>Cổng từ</strong> chặn tự động, không phụ thuộc ai nhớ (hook). <strong>Phòng ban riêng</strong> nhận việc và báo lại (subagent). <strong>Đối tác bên ngoài</strong> nối qua hợp đồng chuẩn (MCP).
+</div>
+<div class="tw"><table>
+  <thead><tr><th>Feature</th><th>Khi nào dùng</th></tr></thead>
+  <tbody>
+    <tr><td><strong>CLAUDE.md</strong></td><td>Always-on conventions (TypeScript strict mode, naming rules)</td></tr>
+    <tr><td><strong>Skills</strong></td><td>Task-specific expertise, load on demand khi match request</td></tr>
+    <tr><td><strong>Hooks</strong></td><td>Event-driven (trước/sau tool call), enforcement thực sự</td></tr>
+    <tr><td><strong>Subagents</strong></td><td>Isolated context, delegated work với tool access riêng</td></tr>
+    <tr><td><strong>MCP servers</strong></td><td>External tools và integrations từ third-party</td></tr>
+  </tbody>
+</table></div>
+<div class="alert"><strong>Bẫy.</strong> Quy tắc luôn đúng thì để CLAUDE.md, đừng viết thành skill (skill chỉ nạp khi khớp). Việc phải được ép chặt thì dùng hook, vì lời dặn trong skill không phải enforcement.</div>
+
+<h3>4.5–4.6 Sharing Skills + Troubleshooting</h3>
+<p><strong>Chia sẻ:</strong> commit vào <code>.claude/skills</code> → tự động qua git. Plugin → marketplace. Enterprise managed settings → <code>/etc/claude-code/.claude/skills/</code> trên Linux. Subagent custom có thể preload skill qua field <code>skills:</code> trong frontmatter agent file.</p>
+<p><strong>Troubleshoot (theo thứ tự):</strong></p>
+<div class="tw"><table>
+  <thead><tr><th>Triệu chứng</th><th>Hành động</th></tr></thead>
+  <tbody>
+    <tr><td>Skill không trigger</td><td>Cải thiện description, thêm trigger phrases thực tế</td></tr>
+    <tr><td>Skill không load</td><td>Kiểm tra path/tên file (<code>SKILL.md</code>), dùng <code>claude --debug</code></td></tr>
+    <tr><td>Sai skill được dùng</td><td>Làm description rõ ràng và khác biệt hơn</td></tr>
+    <tr><td>Skill bị override</td><td>Kiểm tra priority hierarchy, đổi tên skill</td></tr>
+  </tbody>
+</table></div>
+<p>Validate trước khi share: <code>claude plugin validate ~/.claude/skills</code> hoặc <code>claude plugin validate .claude/skills</code> (cần Claude Code v2.1.233+).</p>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Trigger</dt><dd>Việc Claude quyết định dùng skill vì yêu cầu khớp description.</dd>
+  <dt>Preload</dt><dd>Nạp sẵn skill cho subagent ngay từ đầu, qua field <code>skills:</code>.</dd>
+  <dt>Plugin và marketplace</dt><dd>Gói đóng sẵn để cài và chia sẻ, đăng ở một “chợ” plugin.</dd>
+</dl></div>
+<div class="insight"><strong>Cốt lõi.</strong> Description là thứ quyết định skill có chạy không. Hầu hết lỗi “skill không chạy” sửa bằng việc viết description rõ và có cụm từ người dùng thật sự gõ.</div>
+
+<h2 id="exam-tips">5. Lưu ý ôn thi</h2>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Trước giờ thi, bạn chỉ cần tờ ghi chú một trang: cái nào hay ra, cái nào hay nhầm. Phần này là tờ ghi chú đó.
+</div>
+<div class="insight"><strong>CCAR-F D1 (27%):</strong> Hiểu rõ sự khác biệt agent vs workflow, khi nào dùng subagent, cấu trúc vòng lặp tool-use (stop_reason check), managed agents (4 primitive). Claude kiểm soát reasoning; bạn kiểm soát loop và tools.</div>
+<div class="insight"><strong>CCAR-F D3 (20%):</strong> SKILL.md structure (frontmatter + body), 3 scope (personal/project/enterprise), allowed-tools pre-approval, skills vs CLAUDE.md vs hooks vs subagents, /reload-skills khi folder mới tạo.</div>
+<div class="insight"><strong>CCDV-F D1–D8:</strong> Platform 101 phủ nhẹ toàn bộ 8 domain: D1 (agent loop), D2 (messages.create), D5 (model selection), D6 (system prompt/thinking), D8 (MCP toolset).</div>
+<div class="alert"><strong>Bẫy hay gặp.</strong> Dừng vòng lặp theo chữ trong câu trả lời thay vì <code>stop_reason</code>; quên rằng <code>allowed-tools</code> chỉ pre-approve; dùng subagent cho việc cần xem output đầy đủ; gửi kickoff message trước khi mở stream.</div>
+
+<p class="lesson-practice">Luyện câu hỏi của bài này trong <a href="/bank?lesson=11">🗂️ Ngân hàng</a>.</p>
+
+<div class="btns pager">
+  <a class="btn" href="/notes/lessons/10-academy-courses.html">← Bài 10 · Khóa học Claude Academy</a>
+  <a class="btn primary" href="/notes/lessons/12-mcp.html">Bài 12 · Model Context Protocol (MCP) →</a>
+</div>
+
+<footer>
+  Luyện thi chứng chỉ Claude · Bài 11 · Claude Platform, Subagents &amp; Skills · v0.22 · 2026-11-18. Tổng quan: <a href="/notes/00-tong-quan.md">00</a> · Luyện đề: <a href="/new">30</a>.
+</footer>

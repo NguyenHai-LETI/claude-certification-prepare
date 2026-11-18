@@ -1,0 +1,732 @@
+id: ai-20261118-ccaof-ccdvf
+title: "AI sinh: CCAO-F (D1/D2/D3/D4/D5/D7) và CCDV-F (D1/D2/D5/D6)"
+origin: ai
+generatedBy: claude-opus-5-5
+created: 2026-11-18
+description: "Yêu cầu: 30 câu CCAO-F (D1 8, D2 10, D3 3, D4 3, D5 3, D7 3) và 15 câu CCDV-F (D1 4, D2 4, D5 4, D6 3), Exam Guide v1.0. Nguồn: support.claude.com (Projects/RAG, Artifacts, Research, web search, effort/thinking, memory, connectors, skills, usage limits), platform.claude.com (prompting best practices, reduce hallucinations, reduce latency, choosing a model), anthropic.com/engineering/building-effective-agents."
+questions:
+  - id: AI-CCAOF-001
+    exams: { CCAO-F: D1 }
+    stem: "An operations coordinator uses Claude to draft phone-menu scripts that a text-to-speech system reads aloud to callers. Her prompt says “NEVER use abbreviations or symbols,” but Claude still slips in “approx.” and “&” now and then. Which revision of the instruction is MOST likely to help Claude apply the rule consistently?"
+    options:
+      - "Explain that a speech engine reads the script aloud and cannot pronounce abbreviations or symbols."
+      - "Repeat “NEVER use abbreviations” three times in capital letters at the start and end of the prompt."
+      - "Ask Claude to keep every sentence under ten words so that fewer abbreviations have room to appear."
+      - "Switch to the most capable model, which follows negative rules without needing any more detail."
+    answer: [A]
+    explanation: "Hướng dẫn prompting của Anthropic khuyên nêu lý do (context/motivation) đằng sau chỉ dẫn: khi biết script được text-to-speech đọc to và engine không phát âm được ký hiệu, Claude tự khái quát ra mọi trường hợp tương tự (ví dụ chính thức: “never use ellipses” vì TTS không đọc được). Nhắc lại bằng chữ in hoa chỉ tăng nhấn mạnh, không cho Claude hiểu mục tiêu. Giới hạn số từ mỗi câu giải bài toán khác và không ngăn được “&”. Đổi sang model mạnh hơn không thay thế được việc cung cấp ngữ cảnh còn thiếu. Nguồn: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+    ref: lessons/09-ccao-f.html#prompting
+    status: active
+    difficulty: medium
+    tags: [prompting, context]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCAOF-002
+    exams: { CCAO-F: D1 }
+    stem: "A communications lead writes her prompt as a long list of markdown bullets and ends it with “Do not use bullet points.” Claude's newsletter draft still comes back full of headings and bullets, while she wants flowing paragraphs. Which TWO changes are MOST likely to fix this? (Choose TWO.)"
+    options:
+      - "Add “Do not use bullet points” a second time at the very end of the prompt as an extra reminder."
+      - "State the desired form positively, for example “write in smoothly flowing prose paragraphs.”"
+      - "Turn on extended thinking so that Claude reasons for longer about the formatting rule."
+      - "Rewrite the prompt itself in plain prose paragraphs instead of a list of markdown bullets."
+      - "Ask for the newsletter as a PDF file so that any markdown formatting is removed automatically."
+    answer: [B, D]
+    explanation: "Hai kỹ thuật kiểm soát định dạng trong tài liệu Anthropic: (1) nói Claude cần làm gì thay vì cấm điều gì (“smoothly flowing prose paragraphs” thay cho “do not use markdown”); (2) viết prompt theo đúng phong cách output mong muốn, vì prompt dày đặc markdown kéo output về markdown. Lặp lại câu cấm vẫn là chỉ dẫn phủ định, không cho Claude hình mẫu thay thế. Extended thinking tăng suy luận chứ không sửa nguyên nhân về phong cách prompt. Xuất PDF chỉ đổi định dạng tệp, đoạn văn vẫn có thể bị chia thành bullet. Nguồn: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+    ref: lessons/09-ccao-f.html#prompting
+    status: active
+    difficulty: medium
+    tags: [prompting, formatting]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCAOF-003
+    exams: { CCAO-F: D1 }
+    stem: "A sales operations analyst gives Claude three example product summaries before asking for 40 new ones. All three examples happen to cover the same premium laptop line, and each opens with its price. The new summaries now all lead with price, even for products where price is not the selling point. What is the BEST fix?"
+    options:
+      - "Remove the examples entirely and describe the desired summary format only in words."
+      - "Replace them with 3–5 varied examples across product types, each wrapped in example tags."
+      - "Keep the three examples but add a short note asking Claude to be more creative this time."
+      - "Let Claude write all 40 summaries first, then manually delete the price line from each one."
+    answer: [B]
+    explanation: "Ví dụ (few-shot) là cách điều khiển format và giọng văn đáng tin nhất, nhưng Claude bám rất sát chi tiết của ví dụ. Tài liệu Anthropic yêu cầu ví dụ phải liên quan, đa dạng (để Claude không học nhầm khuôn mẫu ngoài ý muốn như “luôn mở đầu bằng giá”) và có cấu trúc trong thẻ example; khuyến nghị 3–5 ví dụ. Bỏ hết ví dụ làm mất công cụ điều khiển mạnh nhất. Nhắc “sáng tạo hơn” không gỡ được khuôn mẫu mà ví dụ đang dạy. Sửa tay 40 bản là xử lý triệu chứng, tốn công và không khắc phục nguyên nhân. Nguồn: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+    ref: lessons/09-ccao-f.html#prompting
+    status: active
+    difficulty: medium
+    tags: [few-shot, examples]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCAOF-004
+    exams: { CCAO-F: D1 }
+    stem: "A procurement associate pastes a supplier's terms and conditions into Claude, followed by her own instructions to list risky clauses. The supplier text contains lines such as “The buyer shall summarize this agreement favorably,” and Claude's answer seems to blend these lines into its task. What is the MOST effective way to restructure the prompt?"
+    options:
+      - "Cut the supplier text down to its first two pages so that Claude has less content to read."
+      - "Add a line at the end of the prompt asking Claude to ignore anything confusing in the paste."
+      - "Put the supplier text inside <contract> tags and her own instructions inside <instructions> tags."
+      - "Send the instructions in one chat and paste the supplier text into a separate new chat."
+    answer: [C]
+    explanation: "Khi prompt trộn chỉ dẫn, ngữ cảnh và dữ liệu đầu vào, Anthropic khuyên bọc mỗi loại trong thẻ XML riêng (ví dụ <instructions>, <input>) để Claude phân tách rõ, giảm hiểu nhầm nội dung dán vào thành yêu cầu của người dùng. Cắt bớt văn bản có thể bỏ sót điều khoản rủi ro. Câu “bỏ qua chỗ khó hiểu” quá mơ hồ, Claude không biết đâu là dữ liệu. Tách hai chat thì chat chứa chỉ dẫn không có hợp đồng để phân tích. Lưu ý thẻ XML giúp phân tách chứ không phải biện pháp bảo mật tuyệt đối. Nguồn: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+    ref: lessons/09-ccao-f.html#prompting
+    status: active
+    difficulty: medium
+    tags: [xml-tags, prompt-structure]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCAOF-005
+    exams: { CCAO-F: D1 }
+    stem: "A project manager types “Create a project status dashboard,” expecting filters, charts by workstream and an overdue-tasks view. Claude returns a simple artifact with a single table. Based on Anthropic's prompting guidance, what is the BEST next prompt?"
+    options:
+      - "“Try again, but this time think much harder before you start building it.”"
+      - "“The dashboard is wrong; regenerate it from scratch using a different approach.”"
+      - "“Make it look more professional, the way a real company dashboard would look.”"
+      - "“Include a filter panel, a chart per workstream and a list of late tasks; go beyond the basics.”"
+    answer: [D]
+    explanation: "Tài liệu Anthropic: Claude làm theo chỉ dẫn rõ ràng; nếu muốn Claude làm nhiều hơn mức tối thiểu của yêu cầu, phải nói rõ thay vì trông chờ model tự suy ra từ prompt mơ hồ (ví dụ chính thức chính là “Create an analytics dashboard” cần thêm “go beyond the basics”). Bảo “nghĩ kỹ hơn” không bổ sung yêu cầu còn thiếu. Làm lại từ đầu với “cách khác” vẫn không nói rõ cần gì. “Trông chuyên nghiệp hơn” chỉ đổi hình thức, không nêu tính năng cụ thể. Nguồn: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+    ref: lessons/09-ccao-f.html#prompting
+    status: active
+    difficulty: easy
+    tags: [prompting, explicit-instructions, artifacts]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCAOF-006
+    exams: { CCAO-F: D1 }
+    stem: "An HR coordinator gives Claude one long paragraph of instructions for processing new-hire forms: check the start date, flag missing tax forms, draft a welcome email, then log the record. Claude sometimes drafts the email before flagging missing forms and occasionally skips the logging step. Which change BEST addresses this?"
+    options:
+      - "Rewrite the paragraph so it is longer, with more detailed wording overall."
+      - "Give the instructions as a numbered list of steps in the required order."
+      - "Ask Claude to respond faster so that it does not lose track of the steps."
+      - "Split each form into its own chat and paste the same paragraph into each."
+    answer: [B]
+    explanation: "Anthropic khuyên trình bày chỉ dẫn thành các bước tuần tự bằng danh sách đánh số hoặc gạch đầu dòng khi thứ tự hoặc tính đầy đủ của các bước là quan trọng. Ở đây lỗi chính là sai thứ tự và bỏ sót bước, nên danh sách đánh số xử lý đúng gốc. Viết đoạn văn dài hơn làm thứ tự càng khó theo dõi. Yêu cầu trả lời nhanh không liên quan tới việc tuân thủ thứ tự. Tách mỗi biểu mẫu ra chat riêng vẫn giữ nguyên đoạn chỉ dẫn mơ hồ nên lỗi lặp lại, lại tốn công hơn. Nguồn: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+    ref: lessons/09-ccao-f.html#prompting
+    status: active
+    difficulty: easy
+    tags: [prompting, sequential-steps]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCAOF-007
+    exams: { CCAO-F: D1 }
+    stem: "A finance associate wants Claude to review a draft vendor agreement the way an experienced procurement specialist would, focusing on payment terms and penalties rather than general writing quality. Which addition to the prompt is MOST likely to focus Claude's review appropriately?"
+    options:
+      - "Ask Claude to rate the overall quality of the agreement on a scale of 1 to 10."
+      - "Upload several unrelated agreements so Claude has more legal text to compare."
+      - "Request the shortest possible answer so that Claude mentions only key issues."
+      - "Tell Claude to act as a senior procurement specialist reviewing for the buyer."
+    answer: [D]
+    explanation: "Gán vai trò (role) cho Claude giúp tập trung hành vi và giọng điệu vào đúng góc nhìn của công việc; tài liệu Anthropic nói chỉ một câu vai trò cũng tạo khác biệt. Vai “chuyên viên mua hàng, đứng về phía bên mua” hướng Claude vào điều khoản thanh toán và phạt thay vì chất lượng câu chữ. Chấm điểm 1–10 cho ra đánh giá chung chung, không chỉ rõ rủi ro. Thêm hợp đồng không liên quan làm loãng ngữ cảnh. Đòi câu trả lời ngắn nhất không định hướng nội dung review, còn có thể bỏ sót vấn đề. Nguồn: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+    ref: lessons/09-ccao-f.html#prompting
+    status: active
+    difficulty: easy
+    tags: [prompting, role]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCAOF-008
+    exams: { CCAO-F: D1 }
+    stem: "A marketing associate asks Claude about a competitor's pricing change announced last week. Web search is available in her chat, but Claude answers from general knowledge and notes that it may not have recent information. What should she do to get a current, sourced answer?"
+    options:
+      - "Ask the same question again in a new chat and compare the two separate answers."
+      - "Raise the effort level to Max so that Claude reasons more deeply about pricing."
+      - "Include “Use web search” in her prompt so that Claude looks up current sources."
+      - "Upload last year's competitor brochure so that Claude can estimate the change."
+    answer: [C]
+    explanation: "Trang hỗ trợ về web search gợi ý ghi rõ “Use web search” trong prompt để chắc chắn Claude tìm kiếm; câu trả lời có web search luôn kèm citation để tự kiểm chứng. Hỏi lại trong chat mới vẫn dựa trên kiến thức huấn luyện nên không có tin tuần trước. Tăng effort chỉ làm suy luận kỹ hơn trên cùng dữ liệu cũ, không thêm thông tin mới. Tài liệu năm ngoái không chứa thay đổi giá vừa công bố, chỉ dẫn Claude tới ước đoán. Nguồn: https://support.claude.com/en/articles/10684626-enabling-and-using-web-search"
+    ref: lessons/20-san-pham-du-lieu.html#che-do
+    status: active
+    difficulty: easy
+    tags: [web-search, prompting]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCAOF-009
+    exams: { CCAO-F: D2 }
+    stem: "A product marketer asks Claude to draft a press release using only three attached product briefs. The release will be published, so every claim must be traceable to the briefs. Which instruction BEST makes the draft auditable before her review?"
+    options:
+      - "After drafting, find a supporting quote in the briefs for each claim and remove claims that lack one."
+      - "Write the release in a confident, persuasive tone so that readers trust each statement it makes."
+      - "Add a disclaimer at the end of the release saying that some details may not be fully accurate."
+      - "Generate five different versions of the release and publish the one that reads most fluently."
+    answer: [A]
+    explanation: "Kỹ thuật “verify with citations” của Anthropic: yêu cầu Claude tìm trích dẫn nguyên văn hỗ trợ từng khẳng định; khẳng định nào không có trích dẫn phải rút lại (ví dụ chính thức chính là thông cáo báo chí từ product brief). Cách này khiến bản nháp kiểm toán được trước khi người duyệt. Giọng tự tin làm lỗi khó phát hiện hơn. Disclaimer không sửa được nội dung sai trong tài liệu sẽ công bố. Chọn bản trôi chảy nhất đánh giá văn phong chứ không đánh giá độ chính xác. Nguồn: https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations"
+    ref: lessons/09-ccao-f.html#danh-gia
+    status: active
+    difficulty: medium
+    tags: [citations, verification]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCAOF-010
+    exams: { CCAO-F: D2 }
+    stem: "An analyst asks Claude to assess integration risks in an acquisition report. Several sections the analyst cares about, such as IT systems, are missing from the report, and Claude's first answer fills those gaps with plausible-sounding details. Which prompt change BEST reduces this behavior?"
+    options:
+      - "Ask Claude to make the analysis longer and cover every risk category in full depth."
+      - "Instruct Claude to use general industry knowledge to complete the missing sections."
+      - "Ask Claude to present every finding as a firm conclusion rather than a possibility."
+      - "Tell Claude to say “I don't have enough information” wherever the report is silent."
+    answer: [D]
+    explanation: "Chiến lược cơ bản đầu tiên trong tài liệu giảm hallucination: cho phép Claude nói “I don't know” một cách rõ ràng; ví dụ chính thức là phân tích báo cáo M&A với câu “I don't have enough information to confidently assess this.” Kỹ thuật này giảm mạnh thông tin bịa. Bắt viết dài và phủ mọi hạng mục càng thúc Claude lấp chỗ trống. Dùng kiến thức chung để hoàn thiện phần thiếu chính là nguồn gốc của chi tiết bịa. Ép mọi phát hiện thành kết luận chắc chắn che mất mức độ không chắc chắn mà người phân tích cần thấy. Nguồn: https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations"
+    ref: lessons/09-ccao-f.html#danh-gia
+    status: active
+    difficulty: medium
+    tags: [hallucination, uncertainty]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCAOF-011
+    exams: { CCAO-F: D2 }
+    stem: "A compliance officer uploads a 90-page privacy policy and asks Claude whether it meets several regulatory requirements. Earlier answers mixed up sections and cited wording that does not appear in the policy. Which approach BEST grounds Claude's analysis in the actual text?"
+    options:
+      - "Ask Claude to first extract exact relevant quotes, then base the analysis only on those quotes."
+      - "Ask Claude to answer from its memory of similar policies, then compare that with this one."
+      - "Ask Claude to summarize the whole policy in one paragraph, then analyze the short summary."
+      - "Ask Claude to skip the policy text and list the typical requirements of each regulation."
+    answer: [A]
+    explanation: "Với tài liệu dài, Anthropic khuyên yêu cầu Claude trích nguyên văn các đoạn liên quan trước, rồi chỉ phân tích dựa trên các trích dẫn đó (và nói “No relevant quotes found” nếu không có); ví dụ chính thức là rà soát privacy policy theo GDPR/CCPA. Cách này neo câu trả lời vào văn bản thật. Dựa vào “trí nhớ” về chính sách tương tự mở đường cho nội dung bịa. Tóm tắt một đoạn làm mất chi tiết cần cho đánh giá tuân thủ. Bỏ qua văn bản thì không còn đánh giá chính sách này nữa. Nguồn: https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations"
+    ref: lessons/09-ccao-f.html#danh-gia
+    status: active
+    difficulty: medium
+    tags: [grounding, long-documents]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCAOF-012
+    exams: { CCAO-F: D2 }
+    stem: "Claude recommends a pricing tier for a new service, but the recommended price looks far too low to the product owner. Thinking was on for this response in claude.ai. What is the MOST efficient way to find where the reasoning went wrong?"
+    options:
+      - "Delete the chat and ask the same question again with thinking turned off."
+      - "Expand the Thinking section and check the assumptions behind the price."
+      - "Switch to another model and accept whichever price appears most often."
+      - "Ask Claude to confirm that its recommendation is correct before using it."
+    answer: [B]
+    explanation: "Khi bật thinking, claude.ai hiển thị phần “Thinking” mở rộng được, tóm tắt cách Claude tiếp cận, giúp kiểm tra Claude đi tới kết luận ra sao; tài liệu giảm hallucination cũng gợi ý xem lại suy luận tóm tắt khi đáp án có vẻ sai để lộ ra giả định hay logic lỗi. Xoá chat và hỏi lại không có thinking làm mất chính dấu vết cần xem. Lấy giá xuất hiện nhiều nhất giữa các model không cho biết giả định nào sai. Bảo Claude tự xác nhận “đúng chưa” không phải là kiểm chứng. Nguồn: https://support.claude.com/en/articles/10574485-using-extended-thinking ; https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations"
+    ref: lessons/09-ccao-f.html#danh-gia
+    status: active
+    difficulty: medium
+    tags: [extended-thinking, verification]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCAOF-013
+    exams: { CCAO-F: D2 }
+    stem: "Using web search, Claude tells a compliance associate that a new reporting deadline takes effect on March 1, citing a vendor's blog post. The date will go into a filing plan for the legal team. What should the associate do?"
+    options:
+      - "Accept the date, because web search answers always include a citation per claim."
+      - "Ask Claude whether it is confident in the date and accept it if it says it is."
+      - "Open the citation and confirm the date in the regulator's official publication."
+      - "Remove the citation from the plan so the legal team relies on the date alone."
+    answer: [C]
+    explanation: "Web search trong Claude kèm citation để người dùng tự kiểm chứng nguồn; trang hỗ trợ khuyên kiểm tra citation và dùng nguồn có thẩm quyền cho quyết định quan trọng. Blog của nhà cung cấp không phải nguồn gốc, nên phải đối chiếu với văn bản chính thức của cơ quan quản lý trước khi đưa vào kế hoạch pháp lý. Có citation không có nghĩa là nguồn đáng tin hay được trích đúng. Mức tự tin Claude tự báo không phải bằng chứng. Xoá citation làm mất khả năng truy vết cho nhóm pháp lý. Nguồn: https://support.claude.com/en/articles/10684626-enabling-and-using-web-search"
+    ref: lessons/09-ccao-f.html#danh-gia
+    status: active
+    difficulty: easy
+    tags: [web-search, citations, verification]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCAOF-014
+    exams: { CCAO-F: D2 }
+    stem: "A support lead uses Claude to draft a customer FAQ from the official refund policy. Before her own final review, she wants Claude to catch its own mistakes in a structured way. Which approach BEST reflects Anthropic's recommended self-correction pattern?"
+    options:
+      - "Get a draft, then a review of it against set criteria such as policy accuracy, then a revision."
+      - "Ask Claude to write the draft slowly and carefully so that it makes no mistakes at all."
+      - "Ask for ten drafts in one message and keep the longest, since it will hold the most detail."
+      - "Ask Claude to score its own draft out of ten and publish it if the score is above eight."
+    answer: [A]
+    explanation: "Mẫu chaining phổ biến nhất theo Anthropic là self-correction: tạo bản nháp → cho Claude review bản nháp theo tiêu chí rõ ràng → cho Claude sửa dựa trên review; mỗi bước tách riêng để kiểm tra kết quả trung gian. Người duyệt vẫn giữ bước kiểm tra cuối. Yêu cầu “viết cẩn thận” không tạo bước kiểm tra nào. Bản dài nhất không đồng nghĩa với chính xác nhất. Điểm tự chấm không có tiêu chí cụ thể là thước đo tuỳ tiện, và đăng ngay bỏ qua bước người duyệt. Nguồn: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+    ref: lessons/09-ccao-f.html#danh-gia
+    status: active
+    difficulty: medium
+    tags: [self-correction, review]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCAOF-015
+    exams: { CCAO-F: D2 }
+    stem: "A Team-plan Project holds over 200 HR documents, and Claude now retrieves project knowledge with its search tool instead of reading everything. An answer about parental leave sounds generic, and the HR partner is unsure which document it came from. What should she do FIRST?"
+    options:
+      - "Delete half of the Project files so that Claude can go back to reading all of the content at once."
+      - "Ask Claude which file and section it relied on, check it, and name the leave policy file in her question."
+      - "Accept the answer, because retrieval mode guarantees the same quality as reading every document."
+      - "Copy the whole leave policy into a new chat outside the Project and ask the question once more."
+    answer: [B]
+    explanation: "Khi kiến thức Project vượt ngưỡng context, Claude tự bật RAG và dùng project knowledge search tool để lấy thông tin liên quan thay vì đọc toàn bộ. Bước đầu hợp lý là truy nguồn: hỏi Claude dựa vào tệp/mục nào rồi kiểm tra; trang hỗ trợ cũng gợi ý gọi tên tài liệu để tập trung tìm kiếm. Xoá bớt tệp là thay đổi cấu hình lớn, có thể mất tài liệu cần thiết. Tài liệu nói RAG giữ chất lượng ổn định nhưng không có gì “bảo đảm” câu trả lời đúng. Chuyển sang chat ngoài Project bỏ mất instructions và ngữ cảnh của Project. Nguồn: https://support.claude.com/en/articles/11473015-retrieval-augmented-generation-rag-for-projects"
+    ref: lessons/09-ccao-f.html#danh-gia
+    status: active
+    difficulty: hard
+    tags: [projects, rag, verification]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCAOF-016
+    exams: { CCAO-F: D2 }
+    stem: "A business development manager runs Research with Gmail and Google Drive connectors enabled to prepare a briefing for an external partner. The report will be emailed to the partner as is. Which check is MOST important before sending it?"
+    options:
+      - "Confirm that Research asked for approval before each connector search it carried out."
+      - "Turn off web search and rerun Research so that only internal sources appear in it."
+      - "Review it for internal details pulled from email or Drive that the partner should not see."
+      - "Shorten the report to one page, because Research reports are too long to share."
+    answer: [C]
+    explanation: "Research dùng web search và các connector đang bật (Gmail, Drive…), và trong lúc research Claude có thể dùng công cụ của connector tự động, không hỏi duyệt từng lần. Vì vậy báo cáo có thể chứa thông tin nội bộ lấy từ email hay tài liệu; trước khi gửi ra ngoài phải rà soát mức phù hợp của nội dung. Giả định Research đã hỏi duyệt từng lần là sai với tài liệu. Chạy lại chỉ với nguồn nội bộ còn làm tăng rủi ro lộ thông tin. Cắt ngắn không phải là bước kiểm tra nội dung. Nguồn: https://support.claude.com/en/articles/11088861-using-research-on-claude"
+    ref: lessons/09-ccao-f.html#danh-gia
+    status: active
+    difficulty: hard
+    tags: [research, connectors, confidentiality]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCAOF-017
+    exams: { CCAO-F: D2 }
+    stem: "A strategy associate asks Claude to compile a competitive landscape brief from many web sources for an executive offsite. She needs to know which findings are solid and which are shaky before presenting them. Which instruction BEST supports her evaluation of the output?"
+    options:
+      - "Ask Claude to rely on the single most popular source so the brief stays fully consistent."
+      - "Ask Claude to drop all citations so the executives can read the brief more quickly."
+      - "Ask Claude to phrase every finding with equal certainty so the brief reads smoothly."
+      - "Ask Claude to cross-check key facts across several sources and state its confidence in each."
+    answer: [D]
+    explanation: "Hướng dẫn của Anthropic cho tác vụ nghiên cứu: khuyến khích Claude kiểm chứng thông tin qua nhiều nguồn, và theo dõi mức độ tin cậy (confidence) của từng giả thuyết. Hai yếu tố này cho người dùng tín hiệu phân biệt phát hiện vững với phát hiện yếu. Dựa vào một nguồn duy nhất bỏ mất kiểm chứng chéo. Xoá citation khiến không thể truy vết khi trình bày. Viết mọi phát hiện với cùng mức chắc chắn che giấu đúng thông tin cô ấy cần để đánh giá. Nguồn: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+    ref: lessons/09-ccao-f.html#danh-gia
+    status: active
+    difficulty: medium
+    tags: [research, source-verification]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCAOF-018
+    exams: { CCAO-F: D2 }
+    stem: "A team lead is writing guidance for her department on reviewing Claude's outputs. Which TWO statements about reducing hallucinations are accurate? (Choose TWO.)"
+    options:
+      - "These techniques reduce hallucinations but do not eliminate them, so critical facts still need validation."
+      - "A response that includes citations is guaranteed to be accurate, so it needs no further checking."
+      - "If the same prompt run several times gives inconsistent answers, that can signal a hallucination."
+      - "Asking Claude to sound confident lowers the chance that it states something that is false."
+      - "Longer, more detailed answers are less likely to contain errors than short, direct answers."
+    answer: [A, C]
+    explanation: "Tài liệu Anthropic ghi rõ: các kỹ thuật giảm hallucination làm giảm đáng kể nhưng không loại bỏ hoàn toàn, nên luôn phải kiểm chứng thông tin quan trọng, nhất là với quyết định rủi ro cao. Kỹ thuật best-of-N verification: chạy cùng prompt nhiều lần và so sánh, sự không nhất quán có thể là dấu hiệu hallucination. Citation giúp kiểm toán được chứ không bảo đảm đúng. Giọng tự tin không làm nội dung chính xác hơn, chỉ khiến lỗi khó nhận ra. Độ dài câu trả lời không tỉ lệ nghịch với lỗi; nội dung dài còn có thêm chỗ cho chi tiết bịa. Nguồn: https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations"
+    ref: lessons/09-ccao-f.html#danh-gia
+    status: active
+    difficulty: medium
+    tags: [hallucination, verification]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCAOF-019
+    exams: { CCAO-F: D3 }
+    stem: "A sales rep on a Pro plan needs one quick fact before a call in ten minutes: the name of a prospect's newly appointed CEO. She also wants to conserve her usage limits. Which option fits BEST?"
+    options:
+      - "Research, which runs many searches over several minutes and writes a cited report"
+      - "Web search, which handles simple current-fact questions with one or two searches"
+      - "Extended thinking, which reasons longer about the question without looking it up"
+      - "A new Project, with the prospect's annual report uploaded as project knowledge"
+    answer: [B]
+    explanation: "Theo hướng dẫn chọn chế độ, web search hợp với câu hỏi thực tế đơn giản trả lời được bằng một hai lần gọi công cụ (tin mới, thông tin công ty). Research dành cho thu thập toàn diện cần từ năm lần gọi công cụ trở lên trong 1–3 phút, và tốn giới hạn sử dụng nhanh hơn, thừa với một dữ kiện. Extended thinking không tra cứu web nên không biết CEO vừa được bổ nhiệm. Báo cáo thường niên có thể đã cũ hơn quyết định bổ nhiệm, và lập Project là thừa cho một câu hỏi. Nguồn: https://support.claude.com/en/articles/11095361-when-should-i-use-web-search-extended-thinking-and-research ; https://support.claude.com/en/articles/11088861-using-research-on-claude"
+    ref: lessons/20-san-pham-du-lieu.html#che-do
+    status: active
+    difficulty: easy
+    tags: [web-search, research, usage-limits]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCAOF-020
+    exams: { CCAO-F: D3 }
+    stem: "A strategy director wants Claude to evaluate several emerging technologies for a business proposal. The work needs a carefully planned approach and broad information gathering across web sources, ending in a long cited report. Which combination fits BEST?"
+    options:
+      - "Extended thinking with Research, so Claude plans and then gathers widely"
+      - "Web search alone, asking Claude for one quick lookup per technology"
+      - "Extended thinking alone, so Claude reasons without looking up sources"
+      - "A standard chat on a fast model, to keep the responses short and quick"
+    answer: [A]
+    explanation: "Trang hỗ trợ của Anthropic nêu: kết hợp extended thinking với Research giúp Claude lập kế hoạch cẩn thận rồi thu thập thông tin rộng; ví dụ chính thức là nghiên cứu công nghệ mới nổi cho đề xuất kinh doanh, ra báo cáo dài có citation. Web search đơn lẻ hợp với câu hỏi một hai lần tra cứu, không đủ độ rộng. Extended thinking một mình không tra cứu nguồn web nên không có citation. Chat thường trên model nhanh tối ưu tốc độ, trái với yêu cầu phân tích sâu và rộng. Nguồn: https://support.claude.com/en/articles/11095361-when-should-i-use-web-search-extended-thinking-and-research"
+    ref: lessons/20-san-pham-du-lieu.html#che-do
+    status: active
+    difficulty: medium
+    tags: [research, extended-thinking]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCAOF-021
+    exams: { CCAO-F: D3 }
+    stem: "A user works in claude.ai with a model whose thinking cannot be turned off. For routine tasks such as reformatting meeting notes, she wants quicker, lighter responses that use less of her plan's usage. What should she change?"
+    options:
+      - "Turn off the thinking toggle in the model menu for those routine chats."
+      - "Start each of those routine chats in incognito mode to reduce the usage."
+      - "Enable Research, which completes routine tasks faster than a normal chat."
+      - "Choose a lower effort level, such as Low or Medium, in the model menu."
+    answer: [D]
+    explanation: "Trong claude.ai, effort và thinking là hai thiết lập riêng. Với model luôn bật thinking, nút thinking không xuất hiện; muốn Claude nghĩ ít hơn thì chọn effort thấp hơn. Low và Medium phù hợp việc thường ngày và giúp dùng giới hạn lâu hơn, còn effort cao tốn token và chạm giới hạn nhanh hơn. Không có nút thinking để tắt trên model này. Incognito chỉ ảnh hưởng lịch sử và memory, không giảm mức dùng. Research chạy nhiều lần tìm kiếm nên tốn giới hạn hơn, không nhanh hơn. Nguồn: https://support.claude.com/en/articles/10574485-using-extended-thinking"
+    ref: lessons/20-san-pham-du-lieu.html#che-do
+    status: active
+    difficulty: hard
+    tags: [effort, extended-thinking, usage-limits]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCAOF-022
+    exams: { CCAO-F: D4 }
+    stem: "An operations lead wants a small internal tool where colleagues paste a customer email and get a suggested category and reply draft generated by Claude. She will share it with 40 colleagues in her Team organization, has no developers, and does not want to manage API keys or pay for everyone's usage. Which approach fits BEST?"
+    options:
+      - "Ask IT for an API key and embed it in a shared spreadsheet with a macro script."
+      - "Write a long prompt template and email it to colleagues to paste into new chats."
+      - "Build an AI-powered artifact; each colleague's use counts against their own plan."
+      - "Create a shared Project and have everyone post their emails into one shared chat."
+    answer: [C]
+    explanation: "Artifact AI-powered gọi Claude trực tiếp, không cần API key và không tốn chi phí cho người tạo; người dùng đăng nhập bằng tài khoản Claude của mình và mức dùng tính vào giới hạn gói của từng người. Trên Team/Enterprise, thành viên dùng artifact được chia sẻ mà không cộng chi phí cho người tạo. Nhúng API key vào bảng tính vừa cần quản lý key, vừa dồn chi phí về một nơi, lại rủi ro lộ key. Gửi prompt mẫu qua email không tạo ra công cụ, kết quả thiếu nhất quán. Dồn email khách hàng của nhiều người vào một chat không phải là công cụ và làm lẫn dữ liệu. Nguồn: https://support.claude.com/en/articles/9487310-what-are-artifacts-and-how-do-i-use-them"
+    ref: lessons/09-ccao-f.html#quy-trinh
+    status: active
+    difficulty: medium
+    tags: [artifacts, ai-powered-artifacts]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCAOF-023
+    exams: { CCAO-F: D4 }
+    stem: "A team lead is building an artifact for weekly shift swaps. Everyone should see the list of open swap requests, but each person's private notes about their availability should stay visible only to them. How should the artifact's data be set up?"
+    options:
+      - "Put swap requests in shared storage and the availability notes in personal storage."
+      - "Put all of the data in personal storage so that each person controls their own copy."
+      - "Put all of the data in shared storage and ask colleagues not to read others' notes."
+      - "Keep the data in a Project's knowledge files and re-upload them after every change."
+    answer: [A]
+    explanation: "Artifact có hai loại lưu trữ: dữ liệu personal chỉ riêng từng người dùng thấy, dữ liệu shared thì mọi người dùng artifact đều thấy, và người xây artifact quyết định phần nào dùng loại nào. Danh sách yêu cầu đổi ca cần mọi người thấy nên để shared; ghi chú cá nhân để personal. Để tất cả ở personal thì không ai thấy yêu cầu của người khác. Để tất cả ở shared rồi dặn “đừng đọc” không bảo vệ được riêng tư. Project knowledge là tài liệu tĩnh, cập nhật bằng tay mỗi lần thay đổi là sai công cụ. Nguồn: https://support.claude.com/en/articles/9487310-what-are-artifacts-and-how-do-i-use-them"
+    ref: lessons/09-ccao-f.html#quy-trinh
+    status: active
+    difficulty: medium
+    tags: [artifacts, storage]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCAOF-024
+    exams: { CCAO-F: D4 }
+    stem: "A team has connected Claude to its project-tracking tool through a connector. Claude can create and update tickets, but it files them inconsistently: wrong labels, missing acceptance criteria, and no link to the related spec. What is the BEST way to improve this workflow?"
+    options:
+      - "Add a second connector to the same tracking tool so Claude has more tools to choose."
+      - "Turn on Research so that Claude investigates the tracking tool before filing tickets."
+      - "Move every team member to a higher plan so that Claude has larger usage limits."
+      - "Create a skill that describes the team's ticket conventions and how to use the tools."
+    answer: [D]
+    explanation: "Theo trang hỗ trợ về skills: connector (MCP) cho Claude quyền truy cập công cụ, còn skill dạy Claude cách dùng công cụ đó hiệu quả bằng kiến thức quy trình. Vấn đề ở đây không phải thiếu quyền mà thiếu quy ước của nhóm (nhãn, tiêu chí chấp nhận, link spec), nên skill là lời giải; skill chỉ được nạp khi liên quan. Thêm connector thứ hai cho cùng công cụ chỉ thêm công cụ, không thêm quy ước. Research dùng để thu thập thông tin, không chuẩn hoá cách tạo ticket. Giới hạn sử dụng không liên quan tới chất lượng ticket. Nguồn: https://support.claude.com/en/articles/12512176-what-are-skills"
+    ref: lessons/20-san-pham-du-lieu.html#connector-skill
+    status: active
+    difficulty: hard
+    tags: [skills, connectors]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCAOF-025
+    exams: { CCAO-F: D5 }
+    stem: "A consultant with memory turned on keeps one Project per client. For a new client with strict confidentiality terms, she wants Claude in that Project to draw on nothing remembered from her chats outside it, while her other Projects keep working as before. Which setting should she change?"
+    options:
+      - "Reset all memory in Settings before opening the Project."
+      - "Use only incognito chats for that client from now on."
+      - "Turn off “Use account memory” on that Project's page."
+      - "Delete her other clients' Projects so their memory is gone."
+    answer: [C]
+    explanation: "Mỗi Project có memory riêng; trong một Project, Claude dùng memory của Project đó cộng với memory ngoài Project, nhưng không dùng memory của Project khác. Muốn Project tách biệt hoàn toàn thì tắt “Use account memory” trên trang Project. Reset memory xoá vĩnh viễn mọi memory, kể cả memory của các Project khác, trái yêu cầu giữ nguyên chúng. Incognito không lưu lịch sử chat, mất các cuộc trò chuyện của khách hàng mới. Xoá Project của khách khác vừa phá hoại vừa không cần thiết, vì memory Project khác vốn không được dùng chéo. Nguồn: https://support.claude.com/en/articles/11817273-using-claude-s-chat-search-and-memory-to-build-on-previous-context"
+    ref: lessons/20-san-pham-du-lieu.html#memory-project
+    status: active
+    difficulty: hard
+    tags: [memory, projects]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCAOF-026
+    exams: { CCAO-F: D5 }
+    stem: "An Enterprise organization lets members use an email connector. The security team wants Claude to read and search mail freely but to ask a person before sending any message, and no member should be able to loosen that rule. What should an Owner configure?"
+    options:
+      - "Ask every member to turn on per-tool confirmations in their own personal settings."
+      - "Set the read tools to Always allow and the send tool to Needs approval for the org."
+      - "Block the email connector entirely and let members request access case by case."
+      - "Give the connector one shared service credential so that it reaches every mailbox."
+    answer: [B]
+    explanation: "Trên Team và Enterprise, Owner đặt quy tắc cho từng công cụ của connector: Always allow, Needs approval hoặc Blocked; quy tắc áp dụng toàn tổ chức và người dùng không thể ghi đè. Vì vậy đọc/tìm mail để Always allow, gửi mail để Needs approval. Dựa vào thiết lập cá nhân thì thành viên có thể tắt, không đáp ứng yêu cầu “không ai nới lỏng”. Chặn hẳn connector làm mất khả năng đọc mail mà nhóm bảo mật cho phép. Credential dùng chung khiến connector truy cập mọi thứ credential đó chạm tới, mở rộng quyền thay vì kiểm soát. Nguồn: https://support.claude.com/en/articles/11176164-use-connectors-to-extend-claude-s-capabilities"
+    ref: lessons/20-san-pham-du-lieu.html#connector-skill
+    status: active
+    difficulty: medium
+    tags: [connectors, admin, permissions]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCAOF-027
+    exams: { CCAO-F: D5 }
+    stem: "During a two-week assignment for a different team, a manager wants Claude to stop using what it remembers about her usual work and to stop creating new memories. Afterward, she wants her existing memories back exactly as they were. What should she do?"
+    options:
+      - "Reset memory, then rebuild it after the assignment is finished."
+      - "Delete each memory topic now and re-enter all of them afterward."
+      - "Ask an Owner to view and archive her memories until she returns."
+      - "Pause memory, then turn it back on when the assignment ends."
+    answer: [D]
+    explanation: "Pause memory giữ nguyên memory hiện có nhưng Claude không dùng memory và không tạo memory mới; bật lại thì memory cũ trở lại (các chat trong thời gian tạm dừng không được thêm vào). Reset xoá vĩnh viễn toàn bộ memory, kể cả memory của Project, không hoàn tác được, nên phải xây lại từ đầu. Xoá từng topic rồi nhập lại tốn công và dễ sai, không giữ “y như cũ”. Owner không thể xem hay sửa memory của từng thành viên. Nguồn: https://support.claude.com/en/articles/11817273-using-claude-s-chat-search-and-memory-to-build-on-previous-context"
+    ref: lessons/20-san-pham-du-lieu.html#memory-project
+    status: active
+    difficulty: medium
+    tags: [memory]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCAOF-028
+    exams: { CCAO-F: D7 }
+    stem: "A sales manager starts Research from the Claude mobile app with her Google Drive connector enabled, asking for a briefing that combines web news with the team's account plans stored in Drive. The report cites only web sources, and no warning appeared. What is the MOST likely fix?"
+    options:
+      - "Reconnect Google Drive, because its authorization expires after mobile use."
+      - "Turn on extended thinking so that Research plans to include internal files."
+      - "Start the same Research request from the web app or Claude Desktop instead."
+      - "Ask an Owner to enable Drive for mobile Research in organization settings."
+    answer: [C]
+    explanation: "Trang hỗ trợ về Research nêu rõ: trên Claude Mobile, Research chỉ tìm trên web và không dùng connector, cũng không báo là đã bỏ qua connector; muốn dùng connector phải bắt đầu Research trên web hoặc Claude Desktop. Tài liệu không nói uỷ quyền Drive hết hạn sau khi dùng mobile; nguyên nhân là Research trên mobile không dùng connector, nên kết nối lại không giải quyết. Extended thinking chỉ giúp lập kế hoạch, không mở được connector trên mobile. Không có thiết lập tổ chức nào bật Drive cho Research trên mobile. Nguồn: https://support.claude.com/en/articles/11088861-using-research-on-claude"
+    ref: lessons/09-ccao-f.html#xu-ly-su-co
+    status: active
+    difficulty: hard
+    tags: [research, connectors, mobile]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCAOF-029
+    exams: { CCAO-F: D7 }
+    stem: "An IT team adds a custom connector in claude.ai that points to an MCP server on an internal host reachable only inside the corporate network. Users see connection errors, although the server responds when tested from an office laptop. What is the MOST likely cause?"
+    options:
+      - "Custom connectors reach the server from Anthropic's cloud, not from the user's device."
+      - "Custom connectors only work after every user installs a desktop extension locally."
+      - "MCP servers must be rebuilt as skills before claude.ai can call any of their tools."
+      - "The server needs a higher usage tier before claude.ai may send it any requests."
+    answer: [A]
+    explanation: "Custom connector dùng remote MCP: Claude kết nối tới MCP server từ hạ tầng cloud của Anthropic, không phải từ máy người dùng. Vì vậy server chỉ truy cập được trong mạng nội bộ sẽ báo lỗi kết nối; server phải truy cập được công khai hoặc dùng các tuỳ chọn private network mà tài liệu mô tả. Desktop extension là cơ chế khác, không phải điều kiện của custom connector. Skill không thay thế MCP server; skill dạy cách dùng công cụ, MCP cung cấp công cụ. Không có “usage tier” nào cho server của bạn. Nguồn: https://support.claude.com/en/articles/11176164-use-connectors-to-extend-claude-s-capabilities"
+    ref: lessons/20-san-pham-du-lieu.html#connector-skill
+    status: active
+    difficulty: hard
+    tags: [connectors, mcp, custom-connector]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCAOF-030
+    exams: { CCAO-F: D7 }
+    stem: "A new member of a Team organization cannot find any way to turn on memory, although a friend on a Pro plan uses it daily. The member asks the Owner to switch memory on just for her account. What is accurate?"
+    options:
+      - "The Owner can enable memory for her account alone while it stays off for everyone else."
+      - "Owners switch memory on or off for the whole org; they cannot enable it for one person."
+      - "She can turn memory on for herself by starting her chats inside a shared Project."
+      - "Memory is not offered on Team plans at all; it exists only on individual paid plans."
+    answer: [B]
+    explanation: "Trên Team và Enterprise, Owner quyết định memory có khả dụng hay không qua Organization settings > Capabilities, áp dụng cho cả tổ chức; khi tắt, thành viên không tự bật lại được, và Owner cũng không thể bật memory cho riêng từng người. Vì vậy yêu cầu bật cho một tài khoản là không làm được. Project có memory riêng nhưng không vượt qua thiết lập cấp tổ chức. Memory vẫn có trên Team plan, chỉ do Owner kiểm soát, nên nói “không có trên Team” là sai. Nguồn: https://support.claude.com/en/articles/11817273-using-claude-s-chat-search-and-memory-to-build-on-previous-context"
+    ref: lessons/20-san-pham-du-lieu.html#memory-project
+    status: active
+    difficulty: medium
+    tags: [memory, admin]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCDVF-001
+    exams: { CCDV-F: D1, CCAR-F: D1 }
+    stem: "A security team wants Claude to review each pull request for vulnerabilities. Worried about missed issues, they plan to run several differently worded review prompts on the same diff at the same time and flag the pull request if any of them finds a problem. Which workflow pattern is this?"
+    options:
+      - "Prompt chaining, where each call processes the output of the previous call"
+      - "Orchestrator-workers, where a central model decides the subtasks for each input"
+      - "Routing, where the input is classified and sent to one specialized follow-up prompt"
+      - "Parallelization by voting, running the same task several times for diverse outputs"
+    answer: [D]
+    explanation: "Trong “Building effective agents”, parallelization có hai biến thể: sectioning (chia việc thành các phần độc lập chạy song song) và voting (chạy cùng một tác vụ nhiều lần để có nhiều output khác nhau). Ví dụ chính thức của voting chính là nhiều prompt cùng review code tìm lỗ hổng và gắn cờ nếu bất kỳ prompt nào phát hiện vấn đề. Prompt chaining là các bước nối tiếp, không chạy song song cùng một việc. Orchestrator-workers để model trung tâm tự quyết định subtask theo input. Routing phân loại input rồi gửi tới một nhánh duy nhất. Nguồn: https://www.anthropic.com/engineering/building-effective-agents"
+    ref: lessons/03-agent.html#workflow-agent
+    status: active
+    difficulty: medium
+    tags: [workflow-patterns, parallelization]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCDVF-002
+    exams: { CCDV-F: D1, CCAR-F: D1 }
+    stem: "A content pipeline calls Claude in three fixed steps: write an outline, write the full document from the outline, then translate it. Sometimes a weak outline leads to a long, unusable document that is translated anyway, wasting tokens. What is the MOST appropriate improvement?"
+    options:
+      - "Merge all three steps into one prompt so the model can repair the outline as it writes."
+      - "Replace the pipeline with an autonomous agent that decides its own steps per document."
+      - "Add a programmatic check after the outline step that stops the chain when criteria fail."
+      - "Run the translation step first so that any problems surface earlier in the process."
+    answer: [C]
+    explanation: "Prompt chaining theo Anthropic: mỗi lần gọi xử lý output của bước trước, và có thể thêm “gate” kiểm tra bằng code ở các bước trung gian để bảo đảm quy trình đi đúng hướng. Một gate sau bước outline chặn outline yếu trước khi tốn token cho viết và dịch. Gộp ba bước vào một prompt mất khả năng kiểm tra kết quả trung gian. Chuyển sang agent tự chủ làm tăng chi phí và độ phức tạp trong khi các bước vốn cố định; Anthropic khuyên giữ giải pháp đơn giản nhất. Dịch trước khi có tài liệu là vô nghĩa. Nguồn: https://www.anthropic.com/engineering/building-effective-agents"
+    ref: lessons/03-agent.html#workflow-agent
+    status: active
+    difficulty: medium
+    tags: [prompt-chaining, gates]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCDVF-003
+    exams: { CCDV-F: D1, CCAR-F: D5 }
+    stem: "A coding agent builds a large feature across many context windows. In later windows it sometimes marks work as done after editing or deleting failing tests, and it wastes time rediscovering how to start the dev server and run the suite. Which setup BEST addresses both problems?"
+    options:
+      - "Give the agent a larger context window so that it never needs to start a fresh window again."
+      - "Track tests in a structured file with a rule never to remove or edit them, plus a setup script."
+      - "Disable the test suite until the feature is complete, then run every test once at the end."
+      - "Rely only on automatic compaction and tell the agent not to write any progress files at all."
+    answer: [B]
+    explanation: "Hướng dẫn của Anthropic cho tác vụ kéo dài nhiều context window: cho Claude ghi test ở định dạng có cấu trúc (ví dụ tests.json) và nhắc rằng xoá hay sửa test là không chấp nhận được; đồng thời tạo script tiện ích (ví dụ init.sh) để khởi động server, chạy test và linter, tránh làm lại khi bắt đầu window mới. Context lớn hơn không loại bỏ nhu cầu chuyển window và không ngăn sửa test. Tắt test làm mất cơ chế kiểm chứng. Chỉ dựa vào compaction mà cấm ghi file bỏ qua lợi thế Claude khôi phục trạng thái từ filesystem và git. Nguồn: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+    ref: lessons/03-agent.html#memory
+    status: active
+    difficulty: hard
+    tags: [long-horizon, state-management]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCDVF-004
+    exams: { CCDV-F: D1 }
+    stem: "A team wants its coding agent to work autonomously on local, reversible steps but to ask before risky actions, following Anthropic's guidance on balancing autonomy and safety. Which TWO actions should the system prompt list as needing the user's confirmation? (Choose TWO.)"
+    options:
+      - "Editing source files in the local working directory"
+      - "Running the unit test suite on the local machine"
+      - "Force-pushing a branch to the shared remote repository"
+      - "Reading log files to diagnose a failing local build"
+      - "Posting a review comment on a teammate's pull request"
+    answer: [C, E]
+    explanation: "Mẫu prompt của Anthropic khuyến khích agent tự làm các hành động cục bộ, đảo ngược được (sửa file, chạy test), nhưng phải hỏi người dùng trước các hành động khó đảo ngược, ảnh hưởng hệ thống dùng chung hoặc có tính phá huỷ. Ví dụ được nêu: git push --force (khó đảo ngược) và các thao tác người khác nhìn thấy như push code, bình luận trên PR/issue, gửi tin nhắn. Sửa file cục bộ, chạy unit test và đọc log là bước cục bộ, đảo ngược được hoặc chỉ đọc, nên bắt hỏi sẽ làm mất tính tự chủ mà nhóm muốn. Nguồn: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+    ref: lessons/08-bao-mat.html#guardrail
+    status: active
+    difficulty: medium
+    tags: [agent-safety, autonomy]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCDVF-005
+    exams: { CCDV-F: D2, CCAR-F: D4 }
+    scenario: S6
+    stem: "An extraction service forces JSON output by prefilling the last assistant turn with an opening brace. After the team moves to a newer Claude model, these requests start returning HTTP 400 errors. What is the recommended replacement?"
+    options:
+      - "Use structured outputs with a JSON schema, or state the format and validate with retries."
+      - "Move the opening brace into the system prompt so the model treats it as its reply prefix."
+      - "Set the temperature to zero so that the model reliably begins its reply with a brace."
+      - "Keep the prefill but send it as an extra assistant message placed before the user turn."
+    answer: [A]
+    explanation: "Từ các model Claude 4.6 trở đi, prefill ở lượt assistant cuối không còn được hỗ trợ và trả lỗi 400. Hướng dẫn chuyển đổi của Anthropic cho trường hợp ép định dạng JSON/YAML: dùng structured outputs để ràng buộc theo schema, hoặc yêu cầu model tuân theo cấu trúc (model mới làm tốt, nhất là khi có retry). Đặt dấu ngoặc trong system prompt không biến nó thành prefix của câu trả lời. Temperature không ràng buộc cấu trúc output. Thêm assistant message ở vị trí khác không ép được định dạng câu trả lời cuối. Nguồn: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+    ref: lessons/06-prompt-output.html#schema
+    status: active
+    difficulty: medium
+    tags: [prefill, structured-outputs, migration]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCDVF-006
+    exams: { CCDV-F: D2 }
+    stem: "Your app used to resume long answers that had been cut off by prefilling the assistant turn with the partial text. On current models that prefill is rejected. How should the app continue an interrupted response?"
+    options:
+      - "Resend the partial text as a system prompt and ask the model to repeat it verbatim."
+      - "Put the continuation request in the user message, quoting where the response ended."
+      - "Raise the temperature so that the model produces a different, shorter version instead."
+      - "Move the request to the Message Batches API, which still accepts prefilled turns."
+    answer: [B]
+    explanation: "Hướng dẫn bỏ prefill của Anthropic cho trường hợp “continuations”: chuyển yêu cầu viết tiếp vào user message và kèm đoạn cuối của câu trả lời bị gián đoạn (“Your previous response was interrupted and ended with … Continue from where you left off.”); nếu đây là xử lý lỗi và không ảnh hưởng trải nghiệm thì có thể retry. Lặp lại nguyên văn trong system prompt không làm model viết tiếp. Tăng temperature chỉ đổi cách diễn đạt, không nối tiếp nội dung. Không có tài liệu nào nói Batches API giữ lại prefill cho model mới; giới hạn nằm ở model. Nguồn: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+    ref: lessons/01-api-tich-hop.html#stop-reason
+    status: active
+    difficulty: hard
+    tags: [prefill, continuation, migration]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCDVF-007
+    exams: { CCDV-F: D2, CCAR-F: D4 }
+    stem: "A ticket classifier must return exactly one of six fixed labels. The old implementation prefilled the assistant turn with the start of the label, which newer models reject. Which approach does Anthropic recommend instead?"
+    options:
+      - "Define a tool whose input has an enum field of the valid labels, or use structured outputs."
+      - "List the six labels in the system prompt and accept any free-text reply that contains one."
+      - "Ask the model to answer with a number from 1 to 6 and map each number to a label in code."
+      - "Raise max_tokens so the model has room to explain its reasoning before naming the label."
+    answer: [A]
+    explanation: "Với tác vụ phân loại, hướng dẫn chuyển đổi khỏi prefill của Anthropic nêu rõ: dùng tool có trường enum chứa các nhãn hợp lệ, hoặc dùng structured outputs. Cả hai ràng buộc output vào đúng tập nhãn. Chấp nhận văn bản tự do “có chứa nhãn” dễ sai khi câu trả lời nhắc nhiều nhãn hoặc diễn đạt khác. Đổi sang số 1–6 vẫn là văn bản tự do không bị ràng buộc, chỉ dời vấn đề. Tăng max_tokens chỉ cho chỗ để giải thích, không bảo đảm định dạng nhãn. Nguồn: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+    ref: lessons/06-prompt-output.html#schema
+    status: active
+    difficulty: medium
+    tags: [classification, tool-use, structured-outputs]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCDVF-008
+    exams: { CCDV-F: D7, CCAR-F: D2 }
+    stem: "A finance team is building an agent on the Claude API that prepares supplier payments from approved invoices. Company policy says the agent must never move money itself; a person releases every payment. Which integration design BEST enforces this policy?"
+    options:
+      - "Give it a payment tool plus a system prompt telling it never to call that tool without approval."
+      - "Give it the payment tool, but allow it to send only payments below a small configurable amount."
+      - "Give it full payment access, and have finance review a report of all payments once a week."
+      - "Give it a tool that queues payment requests for a person to release, and no tool that moves money."
+    answer: [D]
+    explanation: "Tài liệu prompting của Anthropic về thanh toán: nếu agent không bao giờ được trả tiền, hãy cho nó công cụ yêu cầu hoặc xếp hàng lệnh thanh toán để người phê duyệt, và không cấp công cụ nào chuyển được tiền. Tài liệu cũng nhấn mạnh khối chỉ dẫn trong prompt chỉ định hướng chứ không cưỡng chế, nên chỉ dựa vào system prompt là chưa đủ. Cho phép khoản nhỏ vẫn để agent tự chuyển tiền, vi phạm chính sách. Rà soát hằng tuần là phát hiện sau sự việc, không ngăn được giao dịch. Nguồn: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+    ref: lessons/08-bao-mat.html#guardrail
+    status: active
+    difficulty: hard
+    tags: [tool-design, payments, human-in-the-loop]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCDVF-009
+    exams: { CCDV-F: D5 }
+    stem: "A team is starting a new application that analyzes complex scientific papers, where accuracy matters far more than cost. They are building an eval set but have no production data yet. Which approach to choosing a starting model matches Anthropic's guidance?"
+    options:
+      - "Start with the fastest, cheapest model and upgrade only if users complain about quality."
+      - "Start with whichever model has the largest context window and keep it fixed permanently."
+      - "Start with a highly capable model, optimize prompts, then lower effort or downgrade later."
+      - "Start by training a custom small model on the papers before testing any Claude model."
+    answer: [C]
+    explanation: "Trang “Choosing the right model” mô tả hai cách bắt đầu. Capability-first (dùng model mạnh, tối ưu prompt, đánh giá, rồi giảm effort hoặc hạ model khi tối ưu dần) hợp với suy luận phức tạp, ứng dụng khoa học/toán và khi độ chính xác quan trọng hơn chi phí, đúng tình huống này. Efficiency-first hợp cho prototype, yêu cầu độ trễ chặt hoặc tác vụ đơn giản khối lượng lớn; chờ người dùng phàn nàn thay vì dùng eval cũng sai cách. Chọn theo context window bỏ qua năng lực và chi phí, lại không đánh giá lại. Huấn luyện model riêng không nằm trong quy trình được khuyến nghị. Nguồn: https://platform.claude.com/docs/en/about-claude/models/choosing-a-model"
+    ref: lessons/02-model-toi-uu.html#chon-model
+    status: active
+    difficulty: medium
+    tags: [model-selection]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCDVF-010
+    exams: { CCDV-F: D5 }
+    stem: "An internal assistant runs on a frontier Claude model that supports the effort parameter. It passes its evals comfortably, but responses are slower and more expensive than the team would like. What should the team try FIRST?"
+    options:
+      - "Lower the effort setting and re-run the evals to confirm that quality still holds."
+      - "Move straight to the smallest model and skip the evals, since the task passes easily."
+      - "Remove the system prompt entirely so that each request sends fewer input tokens."
+      - "Turn on fast mode, which lowers the price per token while also raising the speed."
+    answer: [A]
+    explanation: "Theo hướng dẫn chọn model, effort đánh đổi trí tuệ lấy độ trễ và chi phí ngay trong một model, và chỉnh effort thường là đòn bẩy tốt hơn đổi model; sau đó chạy lại eval để xác nhận chất lượng. Hạ thẳng xuống model nhỏ nhất mà bỏ eval là đổi model mù quáng. Xoá system prompt có thể phá hành vi đang đạt eval. Fast mode tăng tốc độ output nhưng với giá cao hơn (premium pricing), nên không giảm chi phí. Nguồn: https://platform.claude.com/docs/en/about-claude/models/choosing-a-model"
+    ref: lessons/02-model-toi-uu.html#thinking
+    status: active
+    difficulty: hard
+    tags: [effort, cost, latency]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCDVF-011
+    exams: { CCDV-F: D5 }
+    stem: "A summarization prompt already produces high-quality output, and the team now needs lower latency for a chat feature. Which TWO steps follow Anthropic's guidance on reducing latency? (Choose TWO.)"
+    options:
+      - "Add several long examples to the prompt so that the model writes fewer tokens."
+      - "Ask for a length limit in sentences or paragraphs rather than an exact word count."
+      - "Set max_tokens very low so that long summaries are cut off mid-sentence."
+      - "Raise the effort level so that the model finishes its reasoning more quickly."
+      - "Stream the response so that users see text as soon as it is generated."
+    answer: [B, E]
+    explanation: "Trang “Reducing latency”: tối ưu độ dài prompt và output; vì LLM đếm token chứ không đếm từ, giới hạn theo số câu/đoạn hiệu quả hơn giới hạn số từ. Streaming giúp người dùng thấy output ngay khi được sinh, cải thiện đáng kể cảm nhận phản hồi. Thêm nhiều ví dụ dài làm tăng token đầu vào, trái với lời khuyên giảm token. max_tokens là cách cắt thô, có thể cắt giữa câu, chỉ hợp với câu trả lời ngắn nằm ở đầu. Tăng effort làm model suy luận nhiều hơn, chậm hơn chứ không nhanh hơn. Nguồn: https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-latency"
+    ref: lessons/01-api-tich-hop.html#streaming
+    status: active
+    difficulty: medium
+    tags: [latency, streaming]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCDVF-012
+    exams: { CCDV-F: D5 }
+    stem: "A developer sets a small max_tokens value to keep responses short. For a multiple-choice grading task where the answer letter comes first, it works well, but in an explanation feature many answers stop mid-sentence. What explains this?"
+    options:
+      - "max_tokens applies only to streaming requests, so the explanation feature ignores it."
+      - "max_tokens is a hard cutoff; it suits short answers at the start, not longer prose."
+      - "max_tokens makes the model plan a shorter answer, but long prompts override the plan."
+      - "max_tokens counts words rather than tokens, so long words use up the limit too early."
+    answer: [B]
+    explanation: "Tài liệu giảm độ trễ: max_tokens đặt giới hạn cứng cho độ dài output; khi chạm giới hạn, API cắt câu trả lời, có thể giữa câu hoặc giữa từ. Đây là kỹ thuật thô, phù hợp nhất với câu trả lời trắc nghiệm hoặc ngắn khi đáp án nằm ngay đầu. Muốn câu trả lời ngắn mà trọn vẹn thì yêu cầu ngắn gọn trong prompt. max_tokens áp dụng cho mọi request, không riêng streaming. Nó không khiến model “lập kế hoạch” ngắn hơn. Đơn vị là token chứ không phải từ. Nguồn: https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-latency"
+    ref: lessons/01-api-tich-hop.html#stop-reason
+    status: active
+    difficulty: easy
+    tags: [max-tokens, latency]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCDVF-013
+    exams: { CCDV-F: D6 }
+    stem: "Your API app shows Claude's summary directly in the UI, but responses often begin with “Here is the summary you requested:”. You used to suppress this with a prefilled assistant turn, which your new model no longer supports. Which approach is recommended?"
+    options:
+      - "Lower max_tokens so there is no room left in the response for introductory text."
+      - "Append an assistant message containing the summary title at the end of the request."
+      - "Ask in the user message for a longer summary so the preamble becomes less visible."
+      - "Instruct the model in the system prompt to respond directly without any preamble."
+    answer: [D]
+    explanation: "Hướng dẫn chuyển đổi khỏi prefill của Anthropic cho trường hợp loại bỏ lời mở đầu: dùng chỉ dẫn trực tiếp trong system prompt (“Respond directly without preamble…”), hoặc yêu cầu output trong thẻ XML, dùng structured outputs hay tool calling; nếu thỉnh thoảng vẫn lọt thì loại bỏ ở bước hậu xử lý. Hạ max_tokens cắt cả nội dung tóm tắt. Thêm assistant message ở cuối chính là prefill, model mới trả lỗi 400. Tóm tắt dài hơn không loại bỏ lời mở đầu mà chỉ che lấp nó. Nguồn: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+    ref: lessons/06-prompt-output.html#cau-truc-prompt
+    status: active
+    difficulty: easy
+    tags: [prefill, preamble, system-prompt]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCDVF-014
+    exams: { CCDV-F: D6, CCAR-F: D4 }
+    stem: "Your app sends Claude an annual report, a competitor analysis and a board memo in one long prompt and asks for strategic recommendations. Answers sometimes confuse which fact came from which file. How should the documents be structured in the prompt?"
+    options:
+      - "Concatenate the three files into one block of plain text, with the question before them."
+      - "Send each file in its own API request and merge the three separate answers in code."
+      - "Wrap each in <document> tags with <source> and <document_content>, above the question."
+      - "Turn the files into one bullet list of facts and remove the original file names."
+    answer: [C]
+    explanation: "Hướng dẫn long context prompting của Anthropic: với nhiều tài liệu, bọc mỗi tài liệu trong thẻ <document> có thẻ con <source> và <document_content> (cùng metadata khác), và đặt tài liệu dài ở đầu prompt, câu hỏi ở cuối (cải thiện chất lượng tới 30% trong thử nghiệm). Metadata nguồn giúp Claude biết dữ kiện đến từ tệp nào. Gộp văn bản thô và đặt câu hỏi lên trước làm mất ranh giới nguồn và đi ngược khuyến nghị. Tách ba request làm mất khả năng tổng hợp chéo tài liệu. Bỏ tên tệp xoá chính thông tin nguồn cần giữ. Nguồn: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+    ref: lessons/06-prompt-output.html#cau-truc-prompt
+    status: active
+    difficulty: medium
+    tags: [long-context, xml-tags, documents]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCDVF-015
+    exams: { CCDV-F: D6, CCAR-F: D5 }
+    stem: "An agent harness automatically compacts context as it nears the limit and lets the agent save progress to files. The team notices the agent wrapping up tasks early and leaving them unfinished as its context fills. What prompt change does Anthropic suggest?"
+    options:
+      - "Tell the agent to finish every task within half of its context window to stay on the safe side."
+      - "Tell the agent its context will be compacted automatically, so it should save state and keep working."
+      - "Tell the agent to stop and ask the user for permission whenever its context passes a threshold."
+      - "Tell the agent nothing about context, and reduce max_tokens to force it to pick shorter tasks."
+    answer: [B]
+    explanation: "Một số model Claude có context awareness, theo dõi được ngân sách token còn lại; nếu không được cho biết, Claude có thể tự kết thúc công việc sớm khi gần chạm giới hạn. Anthropic gợi ý khi harness có compaction hoặc cho lưu context ra file, hãy nói rõ trong prompt rằng context sẽ tự compact, đừng dừng sớm vì lo ngân sách token, và lưu tiến độ/trạng thái trước khi context được làm mới. Giới hạn nửa context làm trầm trọng việc dừng sớm. Hỏi người dùng ở mỗi ngưỡng phá vỡ tính tự chủ. Giảm max_tokens không giải quyết hành vi kết thúc sớm. Nguồn: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+    ref: lessons/19-api-nang-cao.html#context-dai
+    status: active
+    difficulty: hard
+    tags: [context-awareness, compaction, agents]
+    created: 2026-11-18
+    reviewed: 2026-11-18

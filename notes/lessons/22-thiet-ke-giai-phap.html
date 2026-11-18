@@ -1,0 +1,409 @@
+<p class="lesson-source">Nguồn: tài liệu ôn tập công khai <a href="https://claude.ai/artifact/3NhHr42CxTHGEs33N1ntFf" target="_blank" rel="noopener">artifact 3NhHr42…</a> (bài 22). Không thuộc và không được Anthropic xác nhận.</p>
+<header class="cover">
+  <div class="eyebrow">Luyện thi chứng chỉ Claude · Bài 22</div>
+  <h1>Thiết kế giải pháp và model <span class="ja">CCAR-P · D1 Solution Design &amp; Architecture · D2 Models, Prompting &amp; Context</span></h1>
+  <p class="lead">Từ bài toán kinh doanh tới giải pháp, kiến trúc đầu cuối có vòng phản hồi, chọn augmented LLM, workflow hay agent, khi nào đáng dùng nhiều agent, kỹ thuật phân rã, chọn model theo đánh đổi, system prompt và guardrail, context và tái sử dụng prompt, chọn hình thức triển khai.</p>
+  <dl class="meta">
+    <dt>Kỳ thi</dt><dd>CCAR-P D1 (17%) · D2 (13%)</dd>
+    <dt>Phục vụ</dt><dd><span class="tag xt1">CCDV-F</span> 2 mục · <span class="tag xt4">CCAR-P</span> 9 mục · <a href="#xsum">bảng nhãn từng mục</a></dd>
+
+    <dt>Nguồn</dt><dd>Exam guide CCAR-P v1.0; bài kỹ thuật Anthropic, MCP security và authorization, tài liệu platform.claude.com, code.claude.com (tra 17/11/2026)</dd>
+    <dt>Cập nhật</dt><dd><span class="status">v0.22 · 2026-11-18</span> · theo exam guide v1.0</dd>
+  </dl>
+</header>
+
+<details class="toc">
+<summary>Mục lục</summary>
+
+    <ol>
+      <li><a href="#bai-toan"><span class="n">1</span><span class="tx">Từ bài toán kinh doanh tới giải pháp Claude</span><span class="xds" aria-hidden="true"><i class="xd xt4" title="CCAR-P"></i></span></a></li>
+      <li><a href="#kien-truc"><span class="n">2</span><span class="tx">Kiến trúc đầu cuối và vòng phản hồi</span><span class="xds" aria-hidden="true"><i class="xd xt4" title="CCAR-P"></i></span></a></li>
+      <li><a href="#chon-mau"><span class="n">3</span><span class="tx">Augmented LLM, workflow hay agent</span><span class="xds" aria-hidden="true"><i class="xd xt4" title="CCAR-P"></i><i class="xd xt1" title="CCDV-F"></i></span></a></li>
+      <li><a href="#multi-agent"><span class="n">4</span><span class="tx">Hệ nhiều agent: khi nào đáng</span><span class="xds" aria-hidden="true"><i class="xd xt4" title="CCAR-P"></i></span></a></li>
+      <li><a href="#phan-ra"><span class="n">5</span><span class="tx">Kỹ thuật phân rã</span><span class="xds" aria-hidden="true"><i class="xd xt4" title="CCAR-P"></i></span></a></li>
+      <li><a href="#chon-model"><span class="n">6</span><span class="tx">Chọn model theo đánh đổi</span><span class="xds" aria-hidden="true"><i class="xd xt4" title="CCAR-P"></i><i class="xd xt1" title="CCDV-F"></i></span></a></li>
+      <li><a href="#prompt-he-thong"><span class="n">7</span><span class="tx">System prompt, template và guardrail trong prompt</span><span class="xds" aria-hidden="true"><i class="xd xt4" title="CCAR-P"></i></span></a></li>
+      <li><a href="#context-token"><span class="n">8</span><span class="tx">Context window, token và tái sử dụng prompt</span><span class="xds" aria-hidden="true"><i class="xd xt4" title="CCAR-P"></i></span></a></li>
+      <li><a href="#trien-khai"><span class="n">9</span><span class="tx">Chọn hình thức triển khai</span><span class="xds" aria-hidden="true"><i class="xd xt4" title="CCAR-P"></i></span></a></li>
+    </ol>
+
+</details>
+
+<details class="xsum" id="xsum">
+<summary>Mục nào phục vụ bài thi nào</summary>
+<p class="xnote">Mã đầu là bài thi chính của mục. <b>Nền</b>: cần để hiểu các mục sau. <b>Nâng cao</b>: ngoài phạm vi các exam guide. Ôn cho một bài thi thì đọc các mục có mã của bài đó trước.</p>
+<div class="tw"><table>
+<thead><tr><th>Mục</th><th>Bài thi</th><th>Ghi chú</th></tr></thead>
+<tbody>
+<tr><td><a href="#bai-toan">1. Từ bài toán kinh doanh tới giải pháp Claude</a></td><td><span class="tag xt4">CCAR-P D1</span></td><td></td></tr>
+<tr><td><a href="#kien-truc">2. Kiến trúc đầu cuối và vòng phản hồi</a></td><td><span class="tag xt4">CCAR-P D1</span></td><td></td></tr>
+<tr><td><a href="#chon-mau">3. Augmented LLM, workflow hay agent</a></td><td><span class="tag xt4">CCAR-P D1</span> <span class="tag xt1">CCDV-F D1</span></td><td></td></tr>
+<tr><td><a href="#multi-agent">4. Hệ nhiều agent: khi nào đáng</a></td><td><span class="tag xt4">CCAR-P D1</span></td><td></td></tr>
+<tr><td><a href="#phan-ra">5. Kỹ thuật phân rã</a></td><td><span class="tag xt4">CCAR-P D1</span></td><td></td></tr>
+<tr><td><a href="#chon-model">6. Chọn model theo đánh đổi</a></td><td><span class="tag xt4">CCAR-P D2</span> <span class="tag xt1">CCDV-F D5</span></td><td></td></tr>
+<tr><td><a href="#prompt-he-thong">7. System prompt, template và guardrail trong prompt</a></td><td><span class="tag xt4">CCAR-P D2</span></td><td></td></tr>
+<tr><td><a href="#context-token">8. Context window, token và tái sử dụng prompt</a></td><td><span class="tag xt4">CCAR-P D2</span></td><td></td></tr>
+<tr><td><a href="#trien-khai">9. Chọn hình thức triển khai</a></td><td><span class="tag xt4">CCAR-P D1</span></td><td></td></tr>
+</tbody></table></div>
+</details>
+
+<h2 id="bai-toan">1. Từ bài toán kinh doanh tới giải pháp Claude</h2>
+<p class="xtags"><span class="tag xt4">CCAR-P D1</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Khách đến tiệm sửa nhà nói "tôi muốn nhà đẹp hơn". Thợ giỏi không đập tường ngay. Họ hỏi: đẹp hơn để làm gì, ở bao lâu, ngân sách bao nhiêu, phòng nào dùng nhiều nhất. Có khi câu trả lời là sơn lại một phòng, không phải xây thêm tầng.
+</div>
+<p>CCAR-P kiểm tra khả năng biến một yêu cầu kinh doanh thành giải pháp có thể vận hành. Bắt đầu bằng bốn câu hỏi trước khi chọn kiến trúc:</p>
+<div class="tw"><table>
+  <thead><tr><th>Câu hỏi</th><th>Nếu trả lời "không"</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Độ phức tạp</strong>: việc có nhiều bước, khó đặc tả hết trước không?</td><td>Một lời gọi hoặc workflow cố định là đủ</td></tr>
+    <tr><td><strong>Giá trị</strong>: kết quả có đáng chi phí và độ trễ của agent không?</td><td>Chọn bậc đơn giản, rẻ hơn</td></tr>
+    <tr><td><strong>Khả thi</strong>: Claude có làm tốt loại việc này không (đã thử trên ca thật)?</td><td>Thu hẹp phạm vi hoặc giữ người làm</td></tr>
+    <tr><td><strong>Giá của lỗi</strong>: lỗi có được phát hiện và sửa (test, duyệt, rollback)?</td><td>Thêm cổng duyệt, hoặc không tự động hoá</td></tr>
+  </tbody>
+</table></div>
+<p>Giải pháp phải gắn với một <strong>trụ giá trị</strong> đo được: hiệu suất (giảm thời gian xử lý), chuyển đổi (làm được việc trước đây không làm được), năng suất (mỗi người làm được nhiều hơn), chi phí (giảm chi phí mỗi ca), hiệu năng theo SLA (độ trễ, độ sẵn sàng, độ chính xác cam kết).</p>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div>"Khách hàng muốn AI" nên đề xuất ngay hệ nhiều agent với 20 tool, chưa có chỉ số thành công.</div>
+  <div class="box right"><div class="hd">Đúng</div>Xác định chỉ số (thời gian trả lời ticket giảm 40%, độ chính xác từ 95%), thử bậc đơn giản nhất trên ca thật, chỉ tăng độ phức tạp khi số liệu cho thấy cần.</div>
+</div>
+<div class="insight"><strong>Cốt lõi.</strong> Kiến trúc tốt nhất là kiến trúc đơn giản nhất đạt chỉ số kinh doanh. Mỗi lớp phức tạp thêm vào phải được biện minh bằng số liệu.</div>
+<p><strong>Ví dụ chạy từng bước.</strong> Giám đốc vận hành nói: "Tôi muốn một AI agent sửa bộ phận chăm sóc khách hàng".</p>
+<ol>
+  <li>Hỏi về vấn đề thật: số liệu cho thấy 40% ticket là hỏi tình trạng đơn hàng, thời gian chờ trung bình 6 giờ.</li>
+  <li>Đặt chỉ số: giảm thời gian trả lời câu hỏi tình trạng đơn xuống dưới 1 phút, không giảm độ hài lòng.</li>
+  <li>Chọn trụ giá trị: hiệu suất (giảm thời gian xử lý) và chi phí (mỗi ticket rẻ hơn).</li>
+  <li>Bậc đơn giản nhất: một lời gọi Claude kèm tool tra đơn hàng (augmented LLM), chưa cần agent nhiều bước.</li>
+  <li>Kiểm giá của lỗi: trả lời sai trạng thái đơn thì khách hỏi lại, không mất tiền; nên tự động hoá được, có kênh chuyển người.</li>
+</ol>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Trụ giá trị</dt><dd>Loại lợi ích kinh doanh mà giải pháp nhắm tới: hiệu suất, chuyển đổi, năng suất, chi phí, hiệu năng theo SLA.</dd>
+  <dt>Giá của lỗi</dt><dd>Thiệt hại khi hệ thống làm sai, và lỗi có được phát hiện, sửa trước khi gây hại không.</dd>
+</dl></div>
+
+<h2 id="kien-truc">2. Kiến trúc đầu cuối và vòng phản hồi</h2>
+<p class="xtags"><span class="tag xt4">CCAR-P D1</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Một bếp nhà hàng không chỉ có bếp nấu. Có khâu nhận nguyên liệu và kiểm tra, khâu nấu, khâu kiểm món trước khi ra, khâu ra món, và sổ góp ý của khách để sửa công thức tuần sau.
+</div>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 230" role="img" aria-label="Kiến trúc đầu cuối: input qua kiểm tra đầu vào, xử lý gồm model, tool và retrieval, kiểm tra đầu ra, giao kết quả, rồi log, eval và phản hồi quay lại cải thiện prompt, dữ liệu và cấu hình">
+    <defs><marker id="m2201" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker></defs>
+    <rect x="8" y="30" width="112" height="62" rx="6" class="b-step"/><text x="64" y="54" class="t tb" text-anchor="middle">1 Input</text><text x="64" y="70" class="ts" text-anchor="middle">người dùng, file,</text><text x="64" y="83" class="ts" text-anchor="middle">sự kiện hệ thống</text>
+    <rect x="136" y="30" width="112" height="62" rx="6" class="b-warn"/><text x="192" y="54" class="t tb" text-anchor="middle">2 Kiểm đầu vào</text><text x="192" y="70" class="ts" text-anchor="middle">xác thực, PII,</text><text x="192" y="83" class="ts" text-anchor="middle">lọc injection</text>
+    <rect x="264" y="30" width="112" height="62" rx="6" class="b-sys"/><text x="320" y="54" class="t tb" text-anchor="middle">3 Xử lý</text><text x="320" y="70" class="ts" text-anchor="middle">model, tool, RAG,</text><text x="320" y="83" class="ts" text-anchor="middle">workflow hay agent</text>
+    <rect x="392" y="30" width="112" height="62" rx="6" class="b-warn"/><text x="448" y="54" class="t tb" text-anchor="middle">4 Kiểm đầu ra</text><text x="448" y="70" class="ts" text-anchor="middle">schema, chính sách,</text><text x="448" y="83" class="ts" text-anchor="middle">người duyệt</text>
+    <rect x="520" y="30" width="112" height="62" rx="6" class="b-done"/><text x="576" y="54" class="t tb" text-anchor="middle">5 Output</text><text x="576" y="70" class="ts" text-anchor="middle">UI, API, hệ thống</text><text x="576" y="83" class="ts" text-anchor="middle">phía sau</text>
+    <path class="ln-acc flow" d="M120,61 H134" marker-end="url(#m2201)"/>
+    <path class="ln-acc flow" d="M248,61 H262" marker-end="url(#m2201)"/>
+    <path class="ln-acc flow" d="M376,61 H390" marker-end="url(#m2201)"/>
+    <path class="ln-acc flow" d="M504,61 H518" marker-end="url(#m2201)"/>
+    <rect x="136" y="140" width="368" height="64" rx="6" class="b-opt"/>
+    <text x="320" y="162" class="t tb" text-anchor="middle">6 Vòng phản hồi</text>
+    <text x="320" y="180" class="ts" text-anchor="middle">log, trace, usage · eval offline và online · phản hồi người dùng</text>
+    <text x="320" y="194" class="ts" text-anchor="middle">→ sửa prompt, dữ liệu, tool, model, chính sách</text>
+    <path class="ln-acc flow" d="M576,92 V172 H506" marker-end="url(#m2201)"/>
+    <path class="ln-acc flow" d="M136,172 H64 V94" marker-end="url(#m2201)"/>
+    <circle class="tok" r="7" style="transform:translate(320px,130px)"/>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Input đến từ người dùng, file hoặc sự kiện hệ thống.</li>
+    <li>Kiểm đầu vào: xác thực, che PII, đánh dấu nội dung không tin cậy.</li>
+    <li>Xử lý: chọn bậc đơn giản nhất (một lời gọi, workflow, agent) kèm tool và retrieval.</li>
+    <li>Kiểm đầu ra: validate schema, chính sách, chuyển người duyệt khi rủi ro cao.</li>
+    <li>Giao kết quả cho người dùng hoặc hệ thống phía sau.</li>
+    <li>Vòng phản hồi: log, eval, phản hồi người dùng quay lại cải thiện từng khâu.</li>
+  </ol>
+  <figcaption>Hình 1. Một giải pháp production có đủ năm khâu và một vòng phản hồi.</figcaption>
+</figure>
+<div class="insight"><strong>Cốt lõi.</strong> Thiếu vòng phản hồi thì hệ thống không tự biết khi chất lượng trượt. Thiết kế log, trace và eval ngay từ đầu, không phải sau sự cố đầu tiên.</div>
+<div class="alert"><strong>Bẫy.</strong> Đáp án chỉ nói về model và prompt mà bỏ khâu kiểm đầu vào, đầu ra, giám sát thường là đáp án chưa đủ cho câu hỏi "thiết kế đầu cuối".</div>
+<p><strong>Ví dụ chạy từng bước: trợ lý xử lý hồ sơ vay.</strong> Bản thiết kế đầu chỉ có: tải hồ sơ lên → Claude trích xuất → ghi vào hệ thống lõi.</p>
+<ol>
+  <li>Kiểm đầu vào: xác thực người tải, che số định danh không cần cho việc trích xuất, đánh dấu nội dung tài liệu là dữ liệu không tin cậy.</li>
+  <li>Xử lý: structured output theo schema các trường hồ sơ.</li>
+  <li>Kiểm đầu ra: validate schema và quy tắc nghiệp vụ bằng code (số tiền, ngày hợp lệ); trường mơ hồ hoặc giá trị lớn chuyển người duyệt.</li>
+  <li>Giao: chỉ ghi vào hệ thống lõi sau khi qua kiểm đầu ra.</li>
+  <li>Vòng phản hồi: mỗi lần người duyệt sửa một trường, bản sửa được log và thêm thành ca eval; báo cáo tỷ lệ sửa theo trường mỗi tuần.</li>
+</ol>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div>Thiết kế chi tiết prompt và model, ghi thẳng kết quả vào hệ thống lõi, không log, không eval.</div>
+  <div class="box right"><div class="hd">Đúng</div>Đủ năm khâu: kiểm đầu vào, xử lý, kiểm đầu ra, giao, và vòng phản hồi biến sửa của người thành ca eval.</div>
+</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Vòng phản hồi</dt><dd>Đường đưa thông tin từ vận hành (log, sửa của người, phản hồi người dùng) quay lại cải thiện hệ thống.</dd>
+</dl></div>
+
+<h2 id="chon-mau">3. Augmented LLM, workflow hay agent</h2>
+<p class="xtags"><span class="tag xt4">CCAR-P D1</span> <span class="tag xt1">CCDV-F D1</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Một nhân viên giỏi có sổ tay và điện thoại (augmented LLM). Một dây chuyền có các trạm cố định (workflow). Một quản lý dự án tự quyết bước tiếp theo (agent). Ba cách tổ chức cho ba loại việc.
+</div>
+<div class="tw"><table>
+  <thead><tr><th>Bậc</th><th>Là gì</th><th>Hợp khi</th><th>Đánh đổi</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Augmented LLM</strong></td><td>Một lời gọi model kèm retrieval, tool, memory</td><td>Hỏi đáp, phân loại, trích xuất, tóm tắt</td><td>Rẻ, nhanh, dễ kiểm; không tự lập kế hoạch nhiều bước</td></tr>
+    <tr><td><strong>Workflow</strong></td><td>Code điều khiển các bước định sẵn: chaining, routing, song song, orchestrator-workers, evaluator-optimizer</td><td>Các bước biết trước, cần dự đoán được, dễ test</td><td>Ổn định; cứng khi gặp ca lạ</td></tr>
+    <tr><td><strong>Agent</strong></td><td>Model tự chọn bước và tool trong vòng lặp tới khi xong</td><td>Việc mở, số bước không biết trước, môi trường cho phản hồi (test, kết quả tool)</td><td>Linh hoạt; tốn token, khó dự đoán, cần guardrail và giới hạn</td></tr>
+  </tbody>
+</table></div>
+<p>Ba nguyên tắc của Anthropic khi làm agent: giữ thiết kế <strong>đơn giản</strong>; <strong>minh bạch</strong> bằng cách hiện bước lập kế hoạch; chăm chút <strong>giao diện agent với máy</strong> (tài liệu tool, kiểm thử tool) như chăm giao diện người dùng.</p>
+<div class="alert"><strong>Bẫy.</strong> Chọn agent cho một quy trình duyệt hoá đơn có năm bước cố định: workflow rẻ hơn, dễ kiểm toán hơn. Chọn workflow cứng cho việc điều tra lỗi không biết trước số bước: agent hợp hơn.</div>
+<p><strong>Ví dụ chạy từng bước: ba yêu cầu trong cùng công ty bảo hiểm.</strong></p>
+<ol>
+  <li>Trợ lý hỏi đáp trên sổ tay chính sách 60 trang ít thay đổi: augmented LLM, nạp sổ tay vào prompt kèm cache. Không cần workflow hay agent.</li>
+  <li>Xử lý bồi thường qua năm bước cố định (trích trường, kiểm hợp đồng, kiểm quy tắc gian lận, tính tiền, soạn thư): workflow chaining có cổng kiểm giữa các bước; dễ kiểm toán.</li>
+  <li>Điều tra sự cố hệ thống mà số bước và loại kiểm tra thay đổi mỗi lần: agent có tool đọc log, truy vấn metric, giới hạn số lượt và quyền chỉ đọc.</li>
+</ol>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div>Dùng agent cho cả ba vì "agent là xu hướng"; chi phí cao, khó kiểm toán quy trình bồi thường.</div>
+  <div class="box right"><div class="hd">Đúng</div>Mỗi việc chọn bậc đơn giản nhất đủ dùng; chỉ nâng bậc khi eval cho thấy bậc thấp không đạt.</div>
+</div>
+<div class="insight"><strong>Cốt lõi.</strong> Bậc đơn giản nhất đạt yêu cầu là bậc đúng. Bước biết trước thì workflow; việc mở, môi trường cho phản hồi thì agent; một lời gọi đủ thì đừng dựng thêm.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Augmented LLM</dt><dd>Một lời gọi model được bổ sung retrieval, tool hoặc memory; khối xây dựng cơ bản của mọi hệ.</dd>
+  <dt>Agent</dt><dd>Model tự quyết bước tiếp theo và tool cần dùng trong vòng lặp, tới khi xong việc.</dd>
+</dl></div>
+
+<h2 id="multi-agent">4. Hệ nhiều agent: khi nào đáng</h2>
+<p class="xtags"><span class="tag xt4">CCAR-P D1</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Một tờ báo cần điều tra mười công ty cùng lúc thì chia cho mười phóng viên, mỗi người một sổ ghi chép, biên tập viên tổng hợp. Nhưng viết một bài xã luận thì giao mười người sẽ thành mười giọng văn.
+</div>
+<p>Theo bài viết của Anthropic về hệ nghiên cứu nhiều agent: hệ có agent dẫn dắt dùng Opus và subagent dùng Sonnet vượt một agent Opus đơn lẻ <strong>90,2%</strong> trên bộ eval nghiên cứu nội bộ. Nhưng agent dùng khoảng <strong>4 lần</strong> token so với chat, hệ nhiều agent khoảng <strong>15 lần</strong>. Lượng token sử dụng giải thích khoảng 80% khác biệt hiệu năng: hệ nhiều agent mạnh chủ yếu vì có nhiều context song song hơn.</p>
+<div class="split">
+  <div class="box"><div class="hd">Hợp với nhiều agent</div><ul>
+    <li>Việc rộng, chia được thành hướng độc lập chạy song song</li>
+    <li>Thông tin vượt sức chứa một context</li>
+    <li>Giá trị việc đủ cao để trả chi phí token</li>
+    <li>Nhiều công cụ phức tạp, cần chuyên môn hoá</li></ul></div>
+  <div class="box"><div class="hd">Không hợp</div><ul>
+    <li>Các agent cần chung một bối cảnh chi tiết</li>
+    <li>Nhiều phụ thuộc chặt giữa các bước</li>
+    <li>Phần lớn việc lập trình (ít phần song song thật)</li>
+    <li>Việc giá trị thấp, khối lượng lớn</li></ul></div>
+</div>
+<p>Khi dùng: agent dẫn dắt giao việc rõ (mục tiêu, định dạng kết quả, công cụ, ranh giới), quy định mức nỗ lực theo độ phức tạp (câu hỏi đơn giản một agent vài lần gọi tool; câu hỏi rộng nhiều subagent), subagent trả kết quả có cấu trúc, ghi trạng thái để khôi phục khi lỗi.</p>
+<div class="insight"><strong>Cốt lõi.</strong> Nhiều agent mua hiệu năng bằng token. Đáng khi việc rộng, song song được và có giá trị cao; không đáng khi các phần phụ thuộc chặt nhau.</div>
+<p><strong>Ví dụ chạy từng bước: thẩm định 40 công ty cho một thương vụ đầu tư.</strong></p>
+<ol>
+  <li>Kiểm điều kiện: 40 công ty độc lập nhau, mỗi công ty cần đọc nhiều nguồn, giá trị thương vụ cao: hợp với nhiều agent.</li>
+  <li>Agent dẫn dắt lập kế hoạch, ghi kế hoạch ra bộ nhớ ngoài để không mất khi context đầy.</li>
+  <li>Mỗi subagent nhận một nhóm công ty với giao việc rõ: câu hỏi cần trả lời, nguồn ưu tiên, định dạng kết quả (bảng có trích nguồn), giới hạn số lần tìm.</li>
+  <li>Câu hỏi đơn giản ("trụ sở công ty X ở đâu") không kích hoạt subagent: agent dẫn dắt tự trả lời, tránh chi phí gấp nhiều lần.</li>
+  <li>Agent dẫn dắt gộp kết quả, kiểm mâu thuẫn giữa các nguồn, giữ nguồn gốc từng dữ kiện.</li>
+</ol>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div>Chia một lần refactor có các phần phụ thuộc chặt cho năm subagent song song; mỗi subagent thiếu bối cảnh của nhau, kết quả không khớp.</div>
+  <div class="box right"><div class="hd">Đúng</div>Dùng nhiều agent cho việc rộng và độc lập; việc phụ thuộc chặt để một agent làm tuần tự, có thể kèm subagent kiểm tra.</div>
+</div>
+<div class="alert"><strong>Bẫy.</strong> Subagent trùng việc nhau hoặc bỏ sót phần chủ đề thường do giao việc mơ hồ ("nghiên cứu về thị trường X"). Giao việc phải có mục tiêu, phạm vi, ranh giới với subagent khác và định dạng kết quả.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Agent dẫn dắt (lead agent)</dt><dd>Agent lập kế hoạch, giao việc cho subagent và tổng hợp kết quả.</dd>
+  <dt>Mức nỗ lực theo độ phức tạp</dt><dd>Quy tắc cho agent dẫn dắt biết câu hỏi nào cần bao nhiêu subagent và lượt gọi tool.</dd>
+</dl></div>
+
+<h2 id="phan-ra">5. Kỹ thuật phân rã</h2>
+<p class="xtags"><span class="tag xt4">CCAR-P D1</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Một nhà hàng có nhiều cách tổ chức bếp. Món cố định thì làm theo dây chuyền: sơ chế, nấu, bày. Thực đơn nhiều loại thì có người nhận order rồi chuyển cho bếp Âu hay bếp Á. Tiệc lớn thì nhiều đầu bếp nấu song song từng món. Món mới thì bếp trưởng nếm, góp ý, đầu bếp nấu lại tới khi đạt. Mỗi cách hợp với một kiểu việc.
+</div>
+<p>Phân rã là chia một việc lớn thành các phần nhỏ mà mỗi phần dễ làm đúng và dễ kiểm hơn. Bài viết "Building effective agents" của Anthropic nêu một bộ mẫu dùng lại được. Điểm chung: <strong>code</strong> quyết định cấu trúc (trừ orchestrator-workers, nơi model quyết định cách chia), nên dễ dự đoán và dễ kiểm hơn một agent tự do.</p>
+<div class="tw"><table>
+  <thead><tr><th>Mẫu</th><th>Cách làm</th><th>Ví dụ</th></tr></thead>
+  <tbody>
+    <tr><td>Prompt chaining</td><td>Chuỗi bước cố định, có cổng kiểm giữa các bước</td><td>Dàn ý → kiểm dàn ý → viết → dịch</td></tr>
+    <tr><td>Routing</td><td>Phân loại rồi chuyển tới nhánh chuyên biệt (có thể khác model)</td><td>Câu hỏi dễ sang Haiku, khó sang Opus</td></tr>
+    <tr><td>Song song: chia phần</td><td>Chia việc thành phần độc lập chạy cùng lúc</td><td>Một lời gọi trả lời, một lời gọi kiểm guardrail</td></tr>
+    <tr><td>Song song: bỏ phiếu</td><td>Chạy cùng việc nhiều lần, gộp kết quả</td><td>Ba lần rà lỗ hổng bảo mật với prompt khác nhau</td></tr>
+    <tr><td>Orchestrator-workers</td><td>Bộ điều phối chia việc động theo đầu vào</td><td>Sửa code cần đổi số file không biết trước</td></tr>
+    <tr><td>Evaluator-optimizer</td><td>Một bên tạo, một bên chấm và góp ý, lặp</td><td>Bản dịch văn học, tìm kiếm cần nhiều vòng</td></tr>
+  </tbody>
+</table></div>
+<p>Ba câu hỏi để chọn mẫu:</p>
+<ol>
+  <li><strong>Các bước có biết trước không?</strong> Biết trước và cố định: chaining. Phụ thuộc vào đầu vào: orchestrator-workers.</li>
+  <li><strong>Đầu vào có chia thành loại rõ rệt không?</strong> Có, và mỗi loại cần prompt hay model riêng: routing.</li>
+  <li><strong>Có tiêu chí chấm rõ, và sửa nhiều vòng thì tốt lên không?</strong> Có: evaluator-optimizer. Nếu vòng sau không tốt hơn vòng trước, vòng lặp chỉ tốn tiền.</li>
+</ol>
+<p>Song song có hai mục đích khác nhau: <strong>chia phần</strong> để nhanh hơn (mỗi lời gọi lo một việc), và <strong>bỏ phiếu</strong> để tin cậy hơn (nhiều góc nhìn cho cùng một việc). Đừng nhầm hai mục đích khi đọc đề.</p>
+<p><strong>Ví dụ chạy từng bước: hệ trả lời câu hỏi bảo hiểm.</strong></p>
+<ol>
+  <li>Routing: một lời gọi Haiku phân loại câu hỏi thành "tra cứu quyền lợi", "tình trạng hồ sơ", "khiếu nại".</li>
+  <li>"Tình trạng hồ sơ" đi theo chuỗi cố định: gọi tool tra hồ sơ → soạn trả lời từ dữ liệu → kiểm câu trả lời không hứa điều gì ngoài dữ liệu.</li>
+  <li>"Tra cứu quyền lợi": song song chia phần: một lời gọi soạn câu trả lời từ điều khoản, một lời gọi kiểm câu hỏi có cần chuyển người không.</li>
+  <li>"Khiếu nại": soạn thư rồi evaluator chấm theo tiêu chí giọng văn và đủ ý, tối đa hai vòng sửa, sau đó chuyển người duyệt.</li>
+  <li>Mỗi nhánh có bộ eval riêng, nên khi chất lượng giảm biết ngay nhánh nào.</li>
+</ol>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div>Dùng một agent tự do cho cả ba loại câu hỏi vì "agent linh hoạt hơn", không biết lỗi nằm ở loại nào.</div>
+  <div class="box right"><div class="hd">Đúng</div>Routing tách loại, mỗi nhánh dùng mẫu đơn giản nhất đủ dùng, có eval riêng; chỉ dùng agent cho phần thật sự không biết trước số bước.</div>
+</div>
+<div class="alert"><strong>Bẫy.</strong> Bỏ phiếu đa số giữa nhiều lần chạy có thể lọc mất phát hiện đúng nhưng hiếm (lỗi thật chỉ một lần chạy thấy). Với việc tìm lỗi, gộp hợp (union) rồi lọc bằng tiêu chí thường tốt hơn lấy đa số.</div>
+<div class="insight"><strong>Cốt lõi.</strong> Chọn mẫu theo hình dạng của việc: bước cố định thì chaining, loại rõ thì routing, độc lập thì song song, không biết trước thì orchestrator, có tiêu chí chấm thì evaluator-optimizer. Mẫu đơn giản hơn thì dễ kiểm hơn.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Cổng kiểm (gate)</dt><dd>Bước kiểm tra bằng code giữa hai lời gọi, chặn lại nếu đầu ra bước trước không đạt.</dd>
+  <dt>Union</dt><dd>Gộp tất cả phát hiện từ mọi lần chạy, thay vì chỉ giữ phát hiện mà đa số đồng ý.</dd>
+</dl></div>
+
+<h2 id="chon-model">6. Chọn model theo đánh đổi</h2>
+<p class="xtags"><span class="tag xt4">CCAR-P D2</span> <span class="tag xt1">CCDV-F D5</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Một công ty luật để thực tập sinh soạn nháp hồ sơ thường, luật sư cấp cao xử lý vụ phức tạp. Giao mọi việc cho luật sư cấp cao thì đúng nhưng phá sản; giao mọi việc cho thực tập sinh thì rẻ nhưng thua kiện.
+</div>
+<div class="tw"><table>
+  <thead><tr><th>Đòn bẩy</th><th>Ảnh hưởng</th><th>Ghi nhớ</th></tr></thead>
+  <tbody>
+    <tr><td>Cỡ model (Haiku, Sonnet, Opus, Fable)</td><td>Chất lượng, độ trễ, giá</td><td>Đo trên eval của chính bài toán; thử model nhỏ trước</td></tr>
+    <tr><td>Effort, thinking</td><td>Độ kỹ so với token và thời gian</td><td>Thử model mạnh ở effort thấp trước khi dựng tầng routing nhiều model</td></tr>
+    <tr><td>Routing nhiều model</td><td>Chi phí trung bình giảm</td><td>Thêm độ phức tạp; cache không dùng chung giữa model</td></tr>
+    <tr><td>Fast mode, streaming</td><td>Độ trễ cảm nhận</td><td>Streaming giảm thời gian thấy chữ đầu; fast mode tăng tốc độ sinh, giá cao hơn</td></tr>
+    <tr><td>Batches</td><td>Giá giảm 50%</td><td>Chỉ cho việc không gấp</td></tr>
+  </tbody>
+</table></div>
+<p>Đo theo <strong>chi phí trên mỗi việc hoàn thành</strong>, không phải chi phí mỗi request: model rẻ cần nhiều lượt sửa có thể đắt hơn. Ghim model ID trong production, chạy lại eval trước khi nâng cấp.</p>
+<div class="insight"><strong>Cốt lõi.</strong> Đặt tiêu chí chất lượng và SLA trước, rồi chọn cấu hình rẻ và nhanh nhất vẫn đạt, đo bằng eval.</div>
+<p><strong>Ví dụ chạy từng bước.</strong> Cần phân loại 2 triệu tin nhắn ngắn mỗi ngày vào 6 nhóm, yêu cầu độ chính xác vừa phải (từ 90%), không ai chờ từng kết quả.</p>
+<ol>
+  <li>Dựng bộ eval 500 tin nhắn có nhãn, gồm cả ca mơ hồ.</li>
+  <li>Thử model nhỏ nhất trước: đạt 92%. Thử model tầm trung: 94%, chi phí gấp vài lần.</li>
+  <li>Yêu cầu là 90%, nên model nhỏ đủ; 2 điểm thêm không đáng gấp vài lần chi phí ở 2 triệu tin mỗi ngày.</li>
+  <li>Không ai chờ từng kết quả: chạy qua Batches để giảm thêm 50%; system prompt cố định nên bật cache.</li>
+  <li>Ghim model ID; khi có model nhỏ mới, chạy lại bộ eval rồi mới đổi.</li>
+</ol>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div>So giá mỗi request rồi chọn model rẻ nhất, dù nó cần ba lượt sửa mới xong việc.</div>
+  <div class="box right"><div class="hd">Đúng</div>So chi phí trên mỗi việc hoàn thành đạt chuẩn, trên bộ eval của chính bài toán.</div>
+</div>
+<div class="alert"><strong>Bẫy.</strong> Dựng ngay một tầng routing nhiều model (model rẻ trước, đắt sau) khi chưa thử phương án đơn giản hơn: một model mạnh ở effort thấp có thể đạt chất lượng tương đương với ít độ phức tạp hơn.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Chi phí trên mỗi việc hoàn thành</dt><dd>Tổng chi phí (mọi lượt gọi, kể cả sửa lại) chia cho số việc đạt chuẩn.</dd>
+  <dt>Effort</dt><dd>Mức độ kỹ của model khi trả lời; effort thấp nhanh và rẻ hơn.</dd>
+</dl></div>
+
+<h2 id="prompt-he-thong">7. System prompt, template và guardrail trong prompt</h2>
+<p class="xtags"><span class="tag xt4">CCAR-P D2</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Công ty giao việc cho nhân viên mới bằng hai thứ. Sổ tay nhân viên ghi vai trò, phạm vi, quy tắc chung, ai cũng dùng và ít khi đổi. Phiếu giao việc ghi việc cụ thể hôm nay, đổi mỗi ngày. Không ai chép lại cả sổ tay vào mỗi phiếu giao việc, và quy tắc an toàn quan trọng thì không chỉ ghi trong sổ tay mà còn có khoá cửa thật.
+</div>
+<p>Ở mức kiến trúc, câu hỏi không chỉ là "viết prompt thế nào" mà là: phần nào cố định, phần nào thay đổi, ai sở hữu, và kiểm soát nào nằm trong prompt hay ngoài prompt.</p>
+<ul>
+  <li><strong>System prompt</strong>: vai trò, phạm vi, quy tắc lâu dài, định dạng; tách chỉ dẫn khỏi dữ liệu bằng thẻ XML; đặt tài liệu dài trước, câu hỏi sau.</li>
+  <li><strong>Template module hoá</strong>: phần cố định (chính sách, định dạng) tách khỏi phần thay đổi (dữ liệu từng request); lưu trong git, gắn phiên bản, chạy eval khi đổi.</li>
+  <li><strong>Kỹ thuật</strong>: zero-shot cho việc rõ; few-shot (2–4 ví dụ, có ca biên) khi định dạng hoặc ranh giới mơ hồ; chain-of-thought hoặc thinking cho suy luận nhiều bước.</li>
+  <li><strong>Guardrail trong prompt</strong>: cho phép trả lời "không biết"; yêu cầu trích dẫn nguồn trước khi kết luận; nói rõ việc ngoài phạm vi. Đây là một lớp, không thay được kiểm tra bằng code cho quy tắc bắt buộc.</li>
+</ul>
+<p>Một template tốt có thứ tự: phần tĩnh nhất ở đầu (vai trò, chính sách chung), rồi phần tĩnh theo nhóm (quy tắc riêng của sản phẩm), cuối cùng là phần đổi theo request (dữ liệu, câu hỏi). Thứ tự này vừa dễ đọc vừa hợp với prompt caching, vì cache dựa trên phần đầu giống hệt nhau.</p>
+<div class="tw"><table>
+  <thead><tr><th>Khi gặp</th><th>Chọn kỹ thuật</th></tr></thead>
+  <tbody>
+    <tr><td>Việc rõ, định nghĩa chính xác, zero-shot đã đạt ngưỡng</td><td>Giữ zero-shot; thêm ví dụ chỉ khi eval cho thấy lỗi ở ca mơ hồ</td></tr>
+    <tr><td>Định dạng đầu ra không đều, ranh giới giữa các nhãn mơ hồ</td><td>Few-shot 2–4 ví dụ, có ca biên, đa dạng để model không bám một mẫu</td></tr>
+    <tr><td>Phải cân nhắc nhiều yếu tố trước khi kết luận</td><td>Chain-of-thought hoặc bật thinking; cân bằng với độ trễ</td></tr>
+    <tr><td>Nhiều đội cùng dùng một prompt</td><td>Module dùng chung có chủ sở hữu, phiên bản, eval; đội chỉ thêm phần riêng</td></tr>
+  </tbody>
+</table></div>
+<p><strong>Ví dụ chạy từng bước.</strong> Năm đội đều chép và sửa cùng một system prompt 3.000 token về chính sách khách hàng; khi chính sách đổi, chỉ hai đội cập nhật.</p>
+<ol>
+  <li>Tách phần chính sách chung thành một module có chủ sở hữu (đội pháp chế và đội nền tảng), lưu trong git, có số phiên bản.</li>
+  <li>Mỗi đội giữ phần riêng (giọng văn, định dạng kênh) ở module của mình, ghép sau phần chung.</li>
+  <li>Đổi module chung thì chạy eval của cả năm đội trước khi phát hành.</li>
+  <li>Log phiên bản module trong mỗi request để truy lỗi.</li>
+</ol>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div>Dán hợp đồng thẳng vào giữa chỉ dẫn; điều khoản trong hợp đồng bị model hiểu nhầm là lệnh.</div>
+  <div class="box right"><div class="hd">Đúng</div>Bọc hợp đồng trong thẻ (ví dụ <code>&lt;contract&gt;</code>), nói rõ đó là dữ liệu để phân tích, chỉ dẫn nằm ngoài thẻ.</div>
+</div>
+<div class="alert"><strong>Bẫy.</strong> Viết system prompt quá chi tiết từng bước cho model mới thường làm chất lượng giảm; nói mục tiêu, tiêu chí và ràng buộc, để model tự lập cách làm.</div>
+<div class="insight"><strong>Cốt lõi.</strong> System prompt là tài sản dùng chung: module hoá, có chủ, có phiên bản, có eval. Kỹ thuật prompt chọn theo lỗi thật đo được. Quy tắc bắt buộc thì kiểm bằng code, prompt chỉ là một lớp.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Template</dt><dd>Khung prompt có chỗ trống để điền dữ liệu từng request.</dd>
+  <dt>Chain-of-thought</dt><dd>Yêu cầu model suy luận từng bước trước khi kết luận; trên Claude có thể dùng thinking.</dd>
+</dl></div>
+
+<h2 id="context-token">8. Context window, token và tái sử dụng prompt</h2>
+<p class="xtags"><span class="tag xt4">CCAR-P D2</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Bàn làm việc rộng không có nghĩa nên chất đầy giấy. Người làm việc tốt để trên bàn đúng thứ cần cho việc đang làm, còn lại cất tủ và biết chỗ lấy.
+</div>
+<p>Nguyên tắc context engineering của Anthropic: tìm <strong>tập token nhỏ nhất mà có tín hiệu cao nhất</strong>. Context lớn vẫn bị loãng chú ý và tốn tiền.</p>
+<div class="tw"><table>
+  <thead><tr><th>Chiến lược</th><th>Cách làm</th></tr></thead>
+  <tbody>
+    <tr><td>Prompt caching</td><td>Đặt phần tĩnh (system prompt, chính sách, định nghĩa tool) trước phần thay đổi rồi bật cache: giảm cả độ trễ lẫn chi phí</td></tr>
+    <tr><td>Prompt module, Skills</td><td>Chia quy trình thành module nạp khi cần (progressive disclosure) thay vì một system prompt khổng lồ</td></tr>
+    <tr><td>Just-in-time</td><td>Giữ định danh nhẹ (đường dẫn, truy vấn, link), agent tự tải nội dung khi cần thay vì nạp sẵn tất cả</td></tr>
+    <tr><td>Agent chạy dài</td><td>Compaction, ghi chú có cấu trúc ra file, subagent cô lập phần dò tìm</td></tr>
+    <tr><td>Cắt kết quả tool</td><td>Chỉ giữ trường cần thiết trước khi đưa vào context</td></tr>
+  </tbody>
+</table></div>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div>Mỗi request gửi 8.000 token chính sách ở cuối, sau câu hỏi; để giảm chi phí thì cắt chính sách còn 1.000 token.</div>
+  <div class="box right"><div class="hd">Đúng</div>Đặt system prompt và chính sách tĩnh lên đầu, câu hỏi thay đổi ở sau, bật prompt caching: giảm thời gian tới token đầu và giá mỗi request mà không mất nội dung.</div>
+</div>
+<p><strong>Ví dụ chạy từng bước: agent rà soát hợp đồng chạy nhiều giờ.</strong></p>
+<ol>
+  <li>System prompt và hướng dẫn rà soát cố định ở đầu, bật cache.</li>
+  <li>Agent không nạp cả 300 hợp đồng; nó giữ danh sách đường dẫn và đọc từng hợp đồng khi tới lượt.</li>
+  <li>Mỗi hợp đồng xong, agent ghi kết quả có cấu trúc ra file ghi chú, không giữ toàn văn trong context.</li>
+  <li>Kết quả tool đọc file được cắt còn các điều khoản liên quan trước khi đưa vào context.</li>
+  <li>Khi context gần đầy, compaction tóm tắt phần cũ; ghi chú trên file giữ tiến độ nên agent không làm lại.</li>
+</ol>
+<div class="insight"><strong>Cốt lõi.</strong> Tìm tập token nhỏ nhất có tín hiệu cao nhất: phần tĩnh đầu và cache; phần lớn nạp khi cần; kết quả trung gian ghi ra ngoài; kết quả tool cắt gọn.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Context engineering</dt><dd>Chọn và sắp xếp những gì đưa vào context ở mỗi bước để model làm tốt nhất với ít token nhất.</dd>
+  <dt>Compaction</dt><dd>Tóm tắt phần hội thoại cũ để giải phóng context khi chạy dài.</dd>
+</dl></div>
+
+<h2 id="trien-khai">9. Chọn hình thức triển khai</h2>
+<p class="xtags"><span class="tag xt4">CCAR-P D1</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Mở quán cà phê có nhiều cách: tự thuê mặt bằng, tự mua máy (toàn quyền, tự lo hết); thuê ki-ốt trong trung tâm thương mại sẵn điện nước, bảo vệ (theo quy định của trung tâm); hoặc nhận nhượng quyền có sẵn công thức và quy trình (ít phải lo, ít được đổi). Không có cách nào tốt nhất cho mọi người; tuỳ vốn, đội ngũ và khách ở đâu.
+</div>
+<p>Cùng một model Claude có thể đến với người dùng qua nhiều con đường. Kiến trúc sư chọn theo <strong>ràng buộc có sẵn</strong> của tổ chức hơn là theo sở thích kỹ thuật.</p>
+<div class="tw"><table>
+  <thead><tr><th>Lựa chọn</th><th>Hợp khi</th><th>Đánh đổi</th></tr></thead>
+  <tbody>
+    <tr><td>Claude API trực tiếp</td><td>Cần tính năng mới nhất, tự kiểm soát vòng lặp</td><td>Tự vận hành mọi thứ quanh model</td></tr>
+    <tr><td>Bedrock, Vertex AI, Foundry</td><td>Đã có hợp đồng, IAM, mạng riêng, yêu cầu dữ liệu trên cloud đó</td><td>Tính năng có thể đến muộn hơn; model ID, xác thực khác</td></tr>
+    <tr><td>Agent SDK tự host</td><td>Agent làm việc với file, lệnh, cần kiểm soát môi trường</td><td>Tự lo hạ tầng, sandbox, bảo mật</td></tr>
+    <tr><td>Managed Agents</td><td>Muốn Anthropic chạy vòng lặp và sandbox, phiên dài, lịch chạy</td><td>Phụ thuộc nền tảng; kiểm tra chính sách lưu dữ liệu (không thuộc ZDR)</td></tr>
+    <tr><td>Claude Enterprise (claude.ai, Cowork, Claude Code)</td><td>Người dùng nghiệp vụ và developer dùng trực tiếp, không cần xây app</td><td>Ít tuỳ biến luồng; quản trị bằng cấu hình tổ chức</td></tr>
+  </tbody>
+</table></div>
+<p>Năm câu hỏi giúp loại nhanh:</p>
+<ol>
+  <li><strong>Ai là người dùng?</strong> Nhân viên dùng trực tiếp thì sản phẩm sẵn có (Enterprise) thường đủ; khách hàng dùng qua app của bạn thì cần API hoặc nền tảng cloud.</li>
+  <li><strong>Hợp đồng, IAM và dữ liệu đang ở đâu?</strong> Đã chuẩn hoá trên một cloud thì nền tảng của cloud đó giảm việc mua sắm và bảo mật.</li>
+  <li><strong>Cần tính năng nào?</strong> Tính năng beta mới thường có trên Claude API trước; kiểm tra bảng hỗ trợ của từng nền tảng.</li>
+  <li><strong>Đội có vận hành được hạ tầng agent không?</strong> Không thì cân nhắc Managed Agents; có và cần kiểm soát chặt thì Agent SDK tự host.</li>
+  <li><strong>Yêu cầu lưu dữ liệu là gì?</strong> Cần ZDR thì kiểm tra tính năng nào đủ điều kiện, vì không phải mọi tính năng đều thuộc ZDR.</li>
+</ol>
+<p><strong>Ví dụ chạy từng bước.</strong> Một ngân hàng muốn (a) trợ lý nội bộ cho nhân viên soạn tài liệu, (b) chatbot cho khách trong app di động, (c) agent đối soát chạy mỗi đêm.</p>
+<ol>
+  <li>(a) Người dùng là nhân viên, không cần xây app: Claude Enterprise với SSO, quản trị tổ chức, connector được duyệt.</li>
+  <li>(b) Khách dùng qua app; ngân hàng đã chuẩn hoá AWS với IAM và mạng riêng: Claude trên Bedrock.</li>
+  <li>(c) Agent đọc file, chạy script, cần sandbox; đội hạ tầng mạnh và yêu cầu dữ liệu không rời mạng nội bộ: Agent SDK tự host trên hạ tầng của ngân hàng.</li>
+  <li>Ghi ba quyết định vào ADR, mỗi cái kèm ràng buộc dẫn tới lựa chọn, để xem lại khi ràng buộc đổi.</li>
+</ol>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div>Chọn một hình thức cho mọi trường hợp trong tổ chức vì "cho thống nhất".</div>
+  <div class="box right"><div class="hd">Đúng</div>Mỗi trường hợp chọn theo người dùng, nơi đặt dữ liệu, tính năng cần và năng lực vận hành; ghi lý do vào ADR.</div>
+</div>
+<div class="alert"><strong>Bẫy.</strong> Đáp án "tự host model mã nguồn mở để kiểm soát dữ liệu" không trả lời câu hỏi về Claude. Yêu cầu dữ liệu ở lại trên cloud của tổ chức thường giải bằng nền tảng cloud có Claude, cộng với các tuỳ chọn lưu và vùng xử lý dữ liệu.</div>
+<div class="insight"><strong>Cốt lõi.</strong> Chọn hình thức theo ràng buộc thật: dữ liệu và hợp đồng nằm ở đâu, đội có vận hành được hạ tầng không, cần tính năng nào, ai là người dùng cuối.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Managed Agents</dt><dd>Dịch vụ để Anthropic chạy vòng lặp agent và sandbox thực thi tool thay cho bạn.</dd>
+  <dt>Agent SDK</dt><dd>Thư viện để tự xây agent trên hạ tầng của mình, cùng nền tảng với Claude Code.</dd>
+</dl></div>
+
+<p class="lesson-practice">Luyện câu hỏi của bài này trong <a href="/bank?lesson=22">🗂️ Ngân hàng</a>.</p>
+
+<div class="btns pager">
+  <a class="btn" href="/notes/lessons/21-lab-ccar-f.html">← Bài 21 · Thực hành và tổng ôn CCAR-F</a>
+  <a class="btn primary" href="/notes/lessons/23-tich-hop.html">Bài 23 · Tích hợp →</a>
+</div>
+
+<footer>
+  Luyện thi chứng chỉ Claude · Bài 22 · Thiết kế giải pháp và model · v0.22 · 2026-11-18. Tổng quan: <a href="/notes/00-tong-quan.md">00</a> · Luyện đề: <a href="/new">30</a>.
+</footer>

@@ -1,0 +1,573 @@
+<p class="lesson-source">Nguồn: tài liệu ôn tập công khai <a href="https://claude.ai/artifact/3NhHr42CxTHGEs33N1ntFf" target="_blank" rel="noopener">artifact 3NhHr42…</a> (bài 06). Không thuộc và không được Anthropic xác nhận.</p>
+<header class="cover">
+  <div class="eyebrow">Luyện thi chứng chỉ Claude · Bài 06</div>
+  <h1>Prompt và output có cấu trúc <span class="ja">Prompt Engineering &amp; Structured Output</span></h1>
+  <p class="lead">Cấu trúc prompt, tiêu chí rõ để giảm false positive, few-shot, JSON schema qua tool_use, validate và retry, xử lý theo lô, review nhiều lượt.</p>
+  <dl class="meta">
+    <dt>Kỳ thi</dt><dd>CCAR-F D4 (20%) · CCDV-F D6 phần Prompt Engineering và Output Handling</dd>
+    <dt>Phục vụ</dt><dd><span class="tag xt1">CCDV-F</span> 5 mục · <span class="tag xt3">CCAR-F</span> 7 mục · <span class="tag xt4">CCAR-P</span> 1 mục · <a href="#xsum">bảng nhãn từng mục</a></dd>
+
+    <dt>Nguồn</dt><dd>Ghi chú «Đề cương chi tiết CCAR-F» Domain 4; «Đề cương CCDV-F và CCAO-F» D6</dd>
+    <dt>Cập nhật</dt><dd><span class="status">v0.22 · 2026-11-18</span> · theo exam guide v1.0</dd>
+  </dl>
+</header>
+
+<details class="toc">
+<summary>Mục lục</summary>
+
+    <ol>
+      <li><a href="#cau-truc-prompt"><span class="n">1</span><span class="tx">Cấu trúc prompt</span><span class="xds" aria-hidden="true"><i class="xd xt1" title="CCDV-F"></i><i class="xd xt3" title="CCAR-F"></i><i class="xd xt4" title="CCAR-P"></i></span></a></li>
+      <li><a href="#tieu-chi"><span class="n">2</span><span class="tx">Tiêu chí rõ ràng để giảm false positive</span><span class="xds" aria-hidden="true"><i class="xd xt3" title="CCAR-F"></i><i class="xd xt1" title="CCDV-F"></i></span></a></li>
+      <li><a href="#few-shot"><span class="n">3</span><span class="tx">Few-shot</span><span class="xds" aria-hidden="true"><i class="xd xt3" title="CCAR-F"></i><i class="xd xt1" title="CCDV-F"></i></span></a></li>
+      <li><a href="#schema"><span class="n">4</span><span class="tx">Output có cấu trúc bằng tool_use và JSON schema</span><span class="xds" aria-hidden="true"><i class="xd xt3" title="CCAR-F"></i><i class="xd xt1" title="CCDV-F"></i></span></a></li>
+      <li><a href="#validate-retry"><span class="n">5</span><span class="tx">Validate, retry và vòng phản hồi</span><span class="xds" aria-hidden="true"><i class="xd xt3" title="CCAR-F"></i><i class="xd xt1" title="CCDV-F"></i></span></a></li>
+      <li><a href="#batch-lo"><span class="n">6</span><span class="tx">Xử lý theo lô</span><span class="xds" aria-hidden="true"><i class="xd xt3" title="CCAR-F"></i></span></a></li>
+      <li><a href="#review"><span class="n">7</span><span class="tx">Review nhiều phiên, nhiều lượt</span><span class="xds" aria-hidden="true"><i class="xd xt3" title="CCAR-F"></i></span></a></li>
+    </ol>
+
+</details>
+
+<details class="xsum" id="xsum">
+<summary>Mục nào phục vụ bài thi nào</summary>
+<p class="xnote">Mã đầu là bài thi chính của mục. <b>Nền</b>: cần để hiểu các mục sau. <b>Nâng cao</b>: ngoài phạm vi các exam guide. Ôn cho một bài thi thì đọc các mục có mã của bài đó trước.</p>
+<div class="tw"><table>
+<thead><tr><th>Mục</th><th>Bài thi</th><th>Ghi chú</th></tr></thead>
+<tbody>
+<tr><td><a href="#cau-truc-prompt">1. Cấu trúc prompt</a></td><td><span class="tag xt1">CCDV-F D6</span> <span class="tag xt1">CCDV-F D2</span> <span class="tag xt3">CCAR-F D4</span> <span class="tag xt4">CCAR-P D2</span></td><td></td></tr>
+<tr><td><a href="#tieu-chi">2. Tiêu chí rõ ràng để giảm false positive</a></td><td><span class="tag xt3">CCAR-F D4</span> <span class="tag xt1">CCDV-F D6</span></td><td></td></tr>
+<tr><td><a href="#few-shot">3. Few-shot</a></td><td><span class="tag xt3">CCAR-F D4</span> <span class="tag xt1">CCDV-F D6</span></td><td></td></tr>
+<tr><td><a href="#schema">4. Output có cấu trúc bằng tool_use và JSON schema</a></td><td><span class="tag xt3">CCAR-F D4</span> <span class="tag xt1">CCDV-F D2</span> <span class="tag xt1">CCDV-F D6</span> <span class="tag xt1">CCDV-F D8</span></td><td></td></tr>
+<tr><td><a href="#validate-retry">5. Validate, retry và vòng phản hồi</a></td><td><span class="tag xt3">CCAR-F D4</span> <span class="tag xt1">CCDV-F D6</span></td><td></td></tr>
+<tr><td><a href="#batch-lo">6. Xử lý theo lô</a></td><td><span class="tag xt3">CCAR-F D4</span></td><td></td></tr>
+<tr><td><a href="#review">7. Review nhiều phiên, nhiều lượt</a></td><td><span class="tag xt3">CCAR-F D4</span></td><td></td></tr>
+</tbody></table></div>
+</details>
+
+<h2 id="cau-truc-prompt">1. Cấu trúc prompt</h2>
+<p class="xtags"><span class="tag xt1">CCDV-F D6</span> <span class="tag xt1">CCDV-F D2</span> <span class="tag xt3">CCAR-F D4</span> <span class="tag xt4">CCAR-P D2</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Bạn giao việc cho một nhân viên mới bằng một tập hồ sơ. Trang đầu là <strong>nội quy</strong> (vai trò của bạn, những điều luôn đúng, trả kết quả theo mẫu nào). Tiếp theo là <strong>tài liệu đính kèm</strong>. Cuối cùng là <strong>tờ yêu cầu</strong> của hôm nay: “đọc xong thì trả lời câu này”. Nếu bạn viết câu hỏi lên trước rồi mới đưa 50 trang tài liệu, người đọc có thể quên mất mình cần tìm gì. Prompt cho Claude cũng sắp theo thứ tự đó.
+</div>
+<p><strong>Prompt</strong> là toàn bộ chữ bạn đưa cho Claude trong một lần gọi. Nó có hai phần chính:</p>
+<ul>
+  <li><strong>System prompt</strong>: phần dặn dò nền, gửi riêng ở tham số <code>system</code>. Nó đặt vai trò và quy tắc cho cả cuộc hội thoại.</li>
+  <li><strong>User message</strong>: phần việc cụ thể của lần gọi này, kèm dữ liệu cần xử lý.</li>
+</ul>
+<p>Khi cần đưa nhiều tài liệu, ta bọc từng phần trong <strong>thẻ XML</strong> (các cặp thẻ tự đặt tên như <code>&lt;document&gt;…&lt;/document&gt;</code>). Thẻ giúp Claude phân biệt đâu là chỉ dẫn, đâu là dữ liệu.</p>
+
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 214" role="img" aria-label="Bố cục prompt: system prompt ở trên cùng, tài liệu dài bọc thẻ XML ở giữa, câu hỏi đặt sau cùng">
+    <defs><marker id="m0601" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah"/></marker></defs>
+    <rect x="14" y="12" width="290" height="50" rx="6" class="b-sys"/>
+    <text x="159" y="34" class="t tb" text-anchor="middle">System prompt</text>
+    <text x="159" y="52" class="ts" text-anchor="middle">vai trò · quy tắc · định dạng đầu ra</text>
+    <rect x="14" y="74" width="290" height="80" rx="6" class="b-step"/>
+    <text x="159" y="96" class="t tb" text-anchor="middle">Tài liệu dài, bọc thẻ XML</text>
+    <text x="159" y="116" class="ts" text-anchor="middle">&lt;document index="1"&gt;</text>
+    <text x="159" y="130" class="ts" text-anchor="middle">&lt;source&gt;…&lt;/source&gt; nội dung …</text>
+    <text x="159" y="144" class="ts" text-anchor="middle">&lt;/document&gt;</text>
+    <rect x="14" y="166" width="290" height="38" rx="6" class="b-done"/>
+    <text x="159" y="190" class="t tb" text-anchor="middle">Câu hỏi đặt SAU CÙNG</text>
+    <path d="M304,37 H334" class="ln" marker-end="url(#m0601)"/>
+    <text x="344" y="34" class="ts">Bền, dùng lại cho mọi lần gọi</text>
+    <text x="344" y="48" class="ts">Nêu lý do (“vì …”), không chỉ lệnh trần</text>
+    <path d="M304,114 H334" class="ln" marker-end="url(#m0601)"/>
+    <text x="344" y="110" class="ts">Đặt trước câu hỏi</text>
+    <text x="344" y="124" class="ts">Mỗi tài liệu một thẻ, kèm nguồn</text>
+    <path d="M304,185 H334" class="ln" marker-end="url(#m0601)"/>
+    <text x="344" y="182" class="ts">Claude vừa đọc xong dữ liệu</text>
+    <text x="344" y="196" class="ts">thì gặp ngay việc cần làm</text>
+  </svg></div>
+  <figcaption>Hình 1. Thứ tự một prompt có tài liệu dài: system, tài liệu trong thẻ XML, câu hỏi cuối.</figcaption>
+</figure>
+
+<div class="tw"><table>
+  <thead><tr><th>Phần</th><th>Đặt gì</th></tr></thead>
+  <tbody>
+    <tr><td>System prompt</td><td>Vai trò, quy tắc chung, ràng buộc lâu dài, định dạng đầu ra</td></tr>
+    <tr><td>User message</td><td>Việc cụ thể và dữ liệu của lần gọi này</td></tr>
+    <tr><td>Tài liệu dài</td><td>Đặt <strong>trước</strong>, bọc trong thẻ XML; câu hỏi đặt <strong>sau cùng</strong></td></tr>
+  </tbody>
+</table></div>
+
+<h3>Ví dụ: prompt cho trợ lý review hợp đồng</h3>
+<pre><code>system: Bạn là trợ lý rà soát hợp đồng cho phòng pháp chế.
+        Chỉ nêu điều khoản có rủi ro tài chính, vì phòng pháp chế đã có người đọc văn phong.
+
+user:   &lt;documents&gt;                                       ← ① tài liệu trước
+          &lt;document index="1"&gt;
+            &lt;source&gt;hop-dong-nha-cung-cap.pdf&lt;/source&gt;
+            &lt;document_content&gt;…&lt;/document_content&gt;
+          &lt;/document&gt;
+        &lt;/documents&gt;
+        Liệt kê các điều khoản phạt vi phạm trong tài liệu trên.   ← ② câu hỏi sau cùng</code></pre>
+<ul>
+  <li>Dòng “vì phòng pháp chế đã có người đọc văn phong” là <strong>lý do</strong>. Có lý do, Claude biết bỏ qua lỗi chính tả trong ca chưa gặp. Chỉ ghi “đừng báo lỗi văn phong” thì nó khó suy ra ca ngoài kịch bản.</li>
+  <li>Thẻ <code>&lt;source&gt;</code> giữ tên tài liệu, để về sau còn trích nguồn (xem mục 6 của <a href="/notes/lessons/07-context.html#nguon-goc">bài 07</a>).</li>
+</ul>
+<ul>
+  <li>Chỉ dẫn rõ ràng, có lý do (“vì …”) giúp model xử lý đúng ca nằm ngoài kịch bản tốt hơn mệnh lệnh trần.</li>
+  <li>Mẹo tìm chỗ mơ hồ: nhờ người ít biết về việc đó đọc prompt. Họ hiểu sai chỗ nào thì Claude cũng dễ hiểu sai chỗ đó.</li>
+  <li>Làm sạch input (input sanitization) trước khi đưa vào prompt; xem <a href="/notes/lessons/08-bao-mat.html#injection">bài 08</a>.</li>
+</ul>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div><ul>
+    <li>“Hãy ngắn gọn.” Ngắn là bao nhiêu? Claude phải đoán.</li>
+    <li>Viết câu hỏi trước, rồi dán 30 trang tài liệu phía sau</li>
+    <li>Trộn chỉ dẫn và dữ liệu trong một đoạn văn không có thẻ</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đúng</div><ul>
+    <li>“Trả lời tối đa 3 câu, vì khách đọc trên điện thoại.”</li>
+    <li>Tài liệu trước, bọc thẻ XML; câu hỏi sau cùng</li>
+    <li>Mỗi loại nội dung một thẻ riêng, tên thẻ nhất quán</li>
+  </ul></div>
+</div>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Hướng dẫn prompt hiện hành của Anthropic cũng khuyên đặt dữ liệu dài ở đầu, câu hỏi ở cuối, và cho biết thử nghiệm của họ thấy chất lượng có thể tăng tới khoảng 30% với đầu vào nhiều tài liệu phức tạp. Nguồn: <a href="https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices" target="_blank" rel="noopener">Prompting best practices</a>.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Prompt</dt><dd>Toàn bộ nội dung chữ gửi cho Claude trong một lần gọi (system, các message, tài liệu).</dd>
+  <dt>Thẻ XML</dt><dd>Cặp thẻ mở và đóng, ví dụ <code>&lt;example&gt;…&lt;/example&gt;</code>, dùng để đóng khung từng loại nội dung.</dd>
+  <dt>Input sanitization</dt><dd>Làm sạch dữ liệu đầu vào trước khi ghép vào prompt, để chữ lạ trong dữ liệu không bị hiểu thành lệnh.</dd>
+</dl></div>
+
+<h2 id="tieu-chi">2. Tiêu chí rõ ràng để giảm false positive</h2>
+<p class="xtags"><span class="tag xt3">CCAR-F D4</span> <span class="tag xt1">CCDV-F D6</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Bạn nhờ một bạn kiểm tra bài văn và dặn “soát lỗi giúp mình nhé”. Bạn đó gạch đỏ cả chỗ đổi cách dùng dấu phẩy và những câu chỉ là phong cách. Sau vài lần, bạn thôi đọc ghi chú của bạn ấy, kể cả khi bạn ấy chỉ ra một lỗi sự kiện nghiêm trọng. Nếu dặn “chỉ gạch khi số liệu trong bài khác số liệu trong nguồn”, bạn ấy sẽ gạch ít hơn và đúng hơn.
+</div>
+<p><strong>False positive</strong> là báo lỗi nhưng thật ra không có lỗi. Với công cụ review code, mỗi false positive làm developer mất thời gian và mất lòng tin. Cách giảm hiệu quả là viết <strong>tiêu chí cụ thể</strong>: loại vấn đề nào cần báo, loại nào bỏ qua.</p>
+<div class="split">
+  <div class="box"><div class="hd">Mơ hồ</div><ul><li>“Kiểm tra comment có đúng không”</li><li>“Hãy thận trọng”, “chỉ báo khi chắc chắn”</li></ul></div>
+  <div class="box"><div class="hd">Cụ thể</div><ul><li>“Chỉ báo khi comment mô tả hành vi trái với code”</li><li>Định nghĩa mức nghiêm trọng kèm ví dụ code cho từng mức</li></ul></div>
+</div>
+<p>Vì sao “hãy thận trọng” thất bại? Claude không có thước đo chung cho “thận trọng” hay “chắc chắn”. Một danh mục cụ thể (“báo bug và lỗ hổng bảo mật; bỏ qua style nhỏ và quy ước cục bộ”) cho nó ranh giới rõ để quyết định.</p>
+
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 214" role="img" aria-label="Vòng mất lòng tin: tiêu chí mơ hồ gây false positive, developer bỏ qua mọi cảnh báo, tạm tắt loại sai, viết lại tiêu chí cụ thể rồi bật lại">
+    <defs><marker id="m0602" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker></defs>
+    <text x="10" y="24" class="lane-lb">Vòng mất lòng tin và cách phá vòng</text>
+    <g><rect x="8" y="44" width="104" height="64" rx="6" class="b-step"/>
+      <text x="60" y="72" class="t tb" text-anchor="middle">Tiêu chí mơ hồ</text>
+      <text x="60" y="90" class="ts" text-anchor="middle">“cho chắc thì báo”</text></g>
+    <g><path class="ln-acc flow" d="M112,76 H128" marker-end="url(#m0602)"/>
+      <rect x="130" y="44" width="104" height="64" rx="6" class="b-warn"/>
+      <text x="182" y="72" class="t tb" text-anchor="middle">Báo sai nhiều</text>
+      <text x="182" y="90" class="ts" text-anchor="middle">false positive cao</text></g>
+    <g><path class="ln-acc flow" d="M234,76 H250" marker-end="url(#m0602)"/>
+      <rect x="252" y="44" width="104" height="64" rx="6" class="b-warn"/>
+      <text x="304" y="72" class="t tb" text-anchor="middle">Dev bỏ qua hết</text>
+      <text x="304" y="90" class="ts" text-anchor="middle">mất tin mọi loại</text></g>
+    <g><path class="ln-acc flow" d="M356,76 H372" marker-end="url(#m0602)"/>
+      <rect x="374" y="44" width="104" height="64" rx="6" class="b-hot"/>
+      <text x="426" y="72" class="t tb" text-anchor="middle">Tắt tạm loại đó</text>
+      <text x="426" y="90" class="ts" text-anchor="middle">trong khi sửa</text></g>
+    <g><path class="ln-acc flow" d="M478,76 H494" marker-end="url(#m0602)"/>
+      <rect x="496" y="44" width="104" height="64" rx="6" class="b-done"/>
+      <text x="548" y="72" class="t tb" text-anchor="middle">Tiêu chí cụ thể</text>
+      <text x="548" y="90" class="ts" text-anchor="middle">+ ví dụ từng mức</text></g>
+
+    <text x="320" y="146" class="ts" text-anchor="middle">Mơ hồ: “Kiểm tra comment có đúng không”</text>
+    <text x="320" y="164" class="ts" text-anchor="middle">Cụ thể: “Chỉ báo khi comment mô tả hành vi trái với code”</text>
+    <text x="320" y="198" class="tw-good" text-anchor="middle">✓ Bật lại loại đã sửa, độ tin cậy phục hồi dần</text>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Prompt chỉ nói “kiểm tra cho chắc”, không nói báo loại vấn đề nào.</li>
+    <li>Claude báo cả những chỗ không phải lỗi: false positive cao.</li>
+    <li>Developer học cách lờ cảnh báo. Họ lờ luôn cả loại báo đúng.</li>
+    <li>Sửa tạm: tắt loại đang sai nhiều, để các loại chính xác giữ được lòng tin.</li>
+    <li>Viết lại tiêu chí cụ thể, thêm ví dụ code cho từng mức nghiêm trọng, rồi bật lại.</li>
+  </ol>
+  <figcaption>Hình 2. False positive cao ở một loại làm hỏng lòng tin vào cả những loại đúng.</figcaption>
+</figure>
+<ul>
+  <li>Loại lỗi có false positive cao làm mất lòng tin vào cả các loại chính xác: có thể <strong>tạm tắt</strong> loại đó trong khi cải thiện prompt.</li>
+  <li>Thêm trường <code>detected_pattern</code> để phân tích mẫu false positive khi developer bỏ qua phát hiện.</li>
+</ul>
+<h3>Mức nghiêm trọng cũng cần ví dụ</h3>
+<p>Nếu chỉ ghi “critical, high, medium, low”, hai lần chạy có thể gán hai mức khác nhau cho cùng một lỗi. Hãy nêu định nghĩa kèm <strong>một đoạn code mẫu cho từng mức</strong>. Ví dụ: <em>critical</em> = SQL ghép chuỗi từ input của người dùng; <em>low</em> = tên biến chưa theo quy ước.</p>
+<div class="alert"><strong>Bẫy.</strong> Đề hay đưa cách chữa “thêm câu <em>hãy thận trọng</em>” hoặc “chỉ báo khi độ tin cậy cao”. Hai cách này không làm Claude chính xác hơn. Cách đúng là <strong>tiêu chí theo loại vấn đề</strong> (báo gì, bỏ qua gì) và ví dụ cho từng mức.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>False positive</dt><dd>Báo có lỗi trong khi thật ra không có.</dd>
+  <dt>Severity</dt><dd>Mức nghiêm trọng của một phát hiện (ví dụ critical, high, medium, low).</dd>
+  <dt><code>detected_pattern</code></dt><dd>Trường ghi “đoạn code kiểu gì đã gây ra phát hiện này”, để sau này đếm xem kiểu nào bị developer bỏ qua nhiều nhất.</dd>
+</dl></div>
+
+<h2 id="few-shot">3. Few-shot</h2>
+<p class="xtags"><span class="tag xt3">CCAR-F D4</span> <span class="tag xt1">CCDV-F D6</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Bạn dạy nhân viên mới phân loại thư khiếu nại. Đọc quy định dài ba trang, họ vẫn hay phân loại lệch. Bạn đưa ba thư mẫu đã xử lý: một thư rõ ràng, một thư “trông giống nhưng thực ra không phải khiếu nại”, một thư khó kèm lời giải thích “tôi chọn nhánh này vì…”. Họ nhìn mẫu và làm theo đúng cách hơn cả khi đọc quy định.
+</div>
+<p><strong>Few-shot prompting</strong> là đặt vài <strong>ví dụ mẫu</strong> (input kèm kết quả mong muốn) vào prompt để Claude bắt chước. Ta dùng nó khi chỉ dẫn bằng lời chi tiết rồi mà kết quả vẫn không đều.</p>
+<div class="insight"><strong>Cốt lõi.</strong> Few-shot hiệu quả nhất khi chỉ dẫn chi tiết vẫn cho kết quả không đều. Dùng <strong>2–4 ví dụ</strong> nhắm vào <strong>trường hợp mơ hồ và edge case</strong>, có lý do vì sao chọn hành động này thay vì phương án khác, để model khái quát hoá.</div>
+
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 246" role="img" aria-label="Few-shot: ba ví dụ gồm lỗi thật, code chấp nhận được và ca mơ hồ được đưa vào prompt; Claude xử lý input mới và trả kết quả đúng định dạng">
+    <defs><marker id="m0603" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker></defs>
+    <text x="14" y="20" class="lane-lb">Trong prompt: 3 ví dụ</text>
+    <g><rect x="14" y="32" width="266" height="44" rx="6" class="b-done"/>
+      <text x="26" y="50" class="t tb">Ví dụ 1 · lỗi thật</text>
+      <text x="26" y="67" class="ts">comment nói null, code throw → báo</text></g>
+    <g><rect x="14" y="84" width="266" height="44" rx="6" class="b-step"/>
+      <text x="26" y="102" class="t tb">Ví dụ 2 · chấp nhận được</text>
+      <text x="26" y="119" class="ts">tên hàm cũ nhưng hành vi đúng → bỏ qua</text></g>
+    <g><rect x="14" y="136" width="266" height="44" rx="6" class="b-hot"/>
+      <text x="26" y="154" class="t tb">Ví dụ 3 · ca mơ hồ</text>
+      <text x="26" y="171" class="ts">TODO cũ chưa rõ đúng sai → báo low, ghi lý do</text></g>
+    <rect x="330" y="86" width="120" height="50" rx="6" class="b-sys"/>
+    <text x="390" y="116" class="t tb" text-anchor="middle">Claude</text>
+    <g><rect x="500" y="86" width="130" height="50" rx="6" class="b-step"/>
+      <text x="565" y="107" class="t tb" text-anchor="middle">Input mới</text>
+      <text x="565" y="124" class="ts" text-anchor="middle">ca chưa có ví dụ</text>
+      <path class="ln-acc flow" d="M498,111 H452" marker-end="url(#m0603)"/></g>
+    <path d="M282,54 L328,98" class="ln-dash"/>
+    <path d="M282,106 L328,110" class="ln-dash"/>
+    <path d="M282,158 L328,124" class="ln-dash"/>
+    <g><path class="ln-good flow" d="M390,136 V170" marker-end="url(#m0603)"/>
+      <rect x="290" y="172" width="340" height="62" rx="6" class="b-done"/>
+      <text x="460" y="194" class="t tb" text-anchor="middle">Đúng định dạng: vị trí · vấn đề · mức · cách sửa</text>
+      <text x="460" y="214" class="ts" text-anchor="middle">khái quát từ ví dụ, không chỉ khớp đúng mẫu</text></g>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Ví dụ 1 cho thấy một lỗi thật và cách báo.</li>
+    <li>Ví dụ 2 cho thấy code trông lạ nhưng chấp nhận được. Nhờ vậy Claude bớt báo sai.</li>
+    <li>Ví dụ 3 là ca mơ hồ, kèm lý do chọn hành động này thay vì hành động khác.</li>
+    <li>Một input mới, khác cả ba ví dụ, đi vào prompt.</li>
+    <li>Claude áp dụng cách suy luận đã thấy và trả kết quả đúng định dạng mẫu.</li>
+  </ol>
+  <figcaption>Hình 3. Ví dụ nhắm vào ca mơ hồ giúp Claude xử lý cả ca mới.</figcaption>
+</figure>
+
+<pre><code>&lt;example&gt;
+Input: "// returns null when not found"  … code luôn throw NotFoundError
+Finding: comment sai hành vi · severity: medium · fix: sửa comment thành "throws NotFoundError"
+Vì: comment mô tả hành vi trái với code, đúng tiêu chí báo lỗi.
+&lt;/example&gt;</code></pre>
+<p>Đọc ví dụ trên: dòng <code>Input</code> là ca thật, dòng <code>Finding</code> là đầu ra mẫu theo đúng định dạng bạn muốn nhận, dòng <code>Vì</code> là <strong>lý do</strong>. Lý do là phần giúp Claude khái quát hoá sang ca khác.</p>
+<p>Dùng để: cố định định dạng (vị trí, vấn đề, mức độ, cách sửa); phân biệt code chấp nhận được với lỗi thật; trích xuất từ tài liệu có cấu trúc khác nhau; giảm bịa và giảm bỏ trống trường bắt buộc.</p>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div><ul>
+    <li>Ba ví dụ lỗi dễ, giống hệt nhau</li>
+    <li>Ví dụ chỉ có kết quả, không có lý do</li>
+    <li>Nhồi 20 ví dụ rồi để Claude khớp chữ theo mẫu</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đúng</div><ul>
+    <li>2 đến 4 ví dụ, trong đó có ca mơ hồ và edge case</li>
+    <li>Mỗi ví dụ nói vì sao chọn hành động này, không chọn hành động kia</li>
+    <li>Có cả ví dụ “code chấp nhận được” để giảm báo sai</li>
+  </ul></div>
+</div>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Hướng dẫn prompt hiện hành đề nghị khoảng 3 đến 5 ví dụ, đa dạng, bọc trong thẻ <code>&lt;example&gt;</code> (nhiều ví dụ thì thêm <code>&lt;examples&gt;</code>). Đề thi dùng “2 đến 4”. Hai con số cùng ý: ít ví dụ nhưng chọn kỹ. Nguồn: <a href="https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices" target="_blank" rel="noopener">Prompting best practices</a>.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Edge case</dt><dd>Ca nằm ở rìa, dễ làm quy tắc chung trả lời sai.</dd>
+  <dt>Khái quát hoá</dt><dd>Áp dụng cách suy luận đã học từ ví dụ sang ca chưa từng thấy.</dd>
+</dl></div>
+
+<h2 id="schema" class="pb">4. Output có cấu trúc bằng tool_use và JSON schema</h2>
+<p class="xtags"><span class="tag xt3">CCAR-F D4</span> <span class="tag xt1">CCDV-F D2</span> <span class="tag xt1">CCDV-F D6</span> <span class="tag xt1">CCDV-F D8</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Bạn gửi một mẫu đơn có ô cố định: họ tên, ngày, số tiền. Người điền không thể viết thêm ô lạ hay quên dấu ngoặc của biểu mẫu. Nhưng mẫu đơn không biết họ điền <em>đúng</em> hay không: họ vẫn có thể ghi số tiền vào ô ngày. Schema là mẫu đơn cho Claude: nó giữ hình dạng, không bảo đảm nội dung đúng.
+</div>
+<p><strong>JSON schema</strong> là bản mô tả hình dạng của dữ liệu JSON: có những trường nào, kiểu gì, bắt buộc hay không. Khi ta khai báo một <strong>tool</strong> với schema đó làm tham số đầu vào, Claude “gọi tool” bằng cách điền dữ liệu đúng khung. Ta lấy dữ liệu từ khối <code>tool_use</code> thay vì phải bóc JSON từ đoạn văn.</p>
+<ul>
+  <li>tool_use kèm JSON schema (hoặc structured outputs) là cách <strong>tin cậy nhất</strong>: hết lỗi cú pháp JSON, nhưng <strong>không</strong> hết lỗi ngữ nghĩa (tổng không khớp, giá trị sai trường).</li>
+  <li>Trường có thể không có trong tài liệu → <strong>optional/nullable</strong>, tránh model bịa cho đủ trường bắt buộc.</li>
+  <li>Enum mở rộng: thêm <code>other</code> kèm trường mô tả; thêm <code>unclear</code> cho ca mơ hồ.</li>
+  <li>Ghi quy tắc chuẩn hoá định dạng (ngày, tiền tệ) trong prompt bên cạnh schema chặt.</li>
+</ul>
+<pre><code>"properties": {
+  "termination_date": {"type": ["string", "null"], "format": "date"},
+  "category": {"enum": ["invoice", "receipt", "purchase_order", "other", "unclear"]},
+  "category_detail": {"type": ["string", "null"]},
+  "stated_total": {"type": "number"}, "calculated_total": {"type": "number"},
+  "conflict_detected": {"type": "boolean"}
+}</code></pre>
+<ul>
+  <li><code>termination_date</code> cho phép <code>null</code>: hợp đồng không ghi ngày chấm dứt thì Claude trả null, không phải bịa một ngày.</li>
+  <li><code>category</code> có <code>other</code> (kèm <code>category_detail</code> để mô tả loại lạ) và <code>unclear</code> (khi tài liệu mơ hồ). Hai giá trị này cho Claude lối thoát thay vì ép vào nhãn sai.</li>
+  <li><code>stated_total</code> (tổng ghi trên tài liệu) và <code>calculated_total</code> (tổng Claude tự cộng) cùng <code>conflict_detected</code> là cách <strong>tự kiểm</strong>: lệch nhau thì cờ bật.</li>
+</ul>
+
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 218" role="img" aria-label="Schema loại lỗi cú pháp nhưng không loại lỗi ngữ nghĩa, nên vẫn cần validate bằng code">
+    <defs><marker id="m0604" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah"/></marker></defs>
+    <rect x="10" y="10" width="300" height="130" rx="8" class="b-done"/>
+    <text x="160" y="34" class="t tb" text-anchor="middle">Schema + tool_use loại được</text>
+    <text x="160" y="62" class="ts" text-anchor="middle">Lỗi cú pháp JSON</text>
+    <text x="160" y="80" class="ts" text-anchor="middle">thiếu ngoặc, thừa dấu phẩy</text>
+    <text x="160" y="104" class="ts" text-anchor="middle">Đầu ra luôn parse được</text>
+    <text x="160" y="124" class="tw-good" text-anchor="middle">✓ không cần bóc JSON từ văn xuôi</text>
+    <rect x="330" y="10" width="300" height="130" rx="8" class="b-warn"/>
+    <text x="480" y="34" class="t tb" text-anchor="middle">Vẫn có thể sai ngữ nghĩa</text>
+    <text x="480" y="60" class="ts" text-anchor="middle">Các dòng hàng cộng lại ≠ tổng hoá đơn</text>
+    <text x="480" y="78" class="ts" text-anchor="middle">Giá trị nằm nhầm trường</text>
+    <text x="480" y="96" class="ts" text-anchor="middle">Bịa giá trị cho trường bắt buộc</text>
+    <text x="480" y="124" class="tw-warn" text-anchor="middle">✕ schema không biết điều này</text>
+    <path d="M480,140 V164" class="ln" marker-end="url(#m0604)"/>
+    <rect x="330" y="166" width="300" height="42" rx="6" class="b-step"/>
+    <text x="480" y="184" class="t tb" text-anchor="middle">Validate bằng code + tự kiểm</text>
+    <text x="480" y="200" class="ts" text-anchor="middle">Pydantic, Zod, calculated_total</text>
+  </svg></div>
+  <figcaption>Hình 4. Schema bảo đảm hình dạng. Tính đúng của nội dung vẫn cần kiểm tra thêm.</figcaption>
+</figure>
+
+<h3><code>tool_choice</code>: ép Claude phải gọi tool</h3>
+<p>Mặc định Claude có thể trả lời bằng văn bản thay vì gọi tool. Tham số <code>tool_choice</code> điều khiển việc này:</p>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 204" role="img" aria-label="Ba giá trị tool_choice: auto cho phép trả văn bản, any bắt buộc gọi một tool tuỳ chọn, tool chỉ định bắt gọi đúng một tool đã nêu tên">
+    <rect x="8" y="8" width="200" height="188" rx="8" class="b-warn"/>
+    <text x="108" y="32" class="t tb" text-anchor="middle">"auto"</text>
+    <text x="108" y="56" class="ts" text-anchor="middle">Claude tự quyết</text>
+    <text x="108" y="74" class="ts" text-anchor="middle">Có thể trả văn bản</text>
+    <text x="108" y="90" class="ts" text-anchor="middle">thay vì gọi tool</text>
+    <text x="108" y="130" class="tw-warn" text-anchor="middle">✕ không bảo đảm có</text>
+    <text x="108" y="146" class="tw-warn" text-anchor="middle">dữ liệu có cấu trúc</text>
+    <rect x="220" y="8" width="200" height="188" rx="8" class="b-step"/>
+    <text x="320" y="32" class="t tb" text-anchor="middle">"any"</text>
+    <text x="320" y="56" class="ts" text-anchor="middle">Bắt buộc gọi một tool</text>
+    <text x="320" y="74" class="ts" text-anchor="middle">Claude chọn tool nào</text>
+    <text x="320" y="106" class="ts" text-anchor="middle">Hợp khi có nhiều schema</text>
+    <text x="320" y="122" class="ts" text-anchor="middle">và chưa biết loại tài liệu</text>
+    <text x="320" y="156" class="tw-good" text-anchor="middle">✓ luôn có output cấu trúc</text>
+    <rect x="432" y="8" width="200" height="188" rx="8" class="b-done"/>
+    <text x="532" y="32" class="t tb" text-anchor="middle">Chỉ định một tool</text>
+    <text x="532" y="56" class="ts" text-anchor="middle">{"type": "tool",</text>
+    <text x="532" y="72" class="ts" text-anchor="middle">"name": "extract_metadata"}</text>
+    <text x="532" y="102" class="ts" text-anchor="middle">Bắt buộc gọi đúng tool này</text>
+    <text x="532" y="120" class="ts" text-anchor="middle">Hợp khi bước trích xuất phải</text>
+    <text x="532" y="136" class="ts" text-anchor="middle">chạy trước bước làm giàu</text>
+    <text x="532" y="170" class="tw-good" text-anchor="middle">✓ thứ tự bước được bảo đảm</text>
+  </svg></div>
+  <figcaption>Hình 5. Ba chế độ <code>tool_choice</code>: auto, any và tool chỉ định.</figcaption>
+</figure>
+<div class="alert"><strong>Bẫy.</strong> “Dùng schema nên dữ liệu đã đúng” là sai. Schema chặn lỗi cú pháp, không chặn lỗi ngữ nghĩa. Cũng sai nếu để mọi trường là bắt buộc rồi hy vọng Claude tự nhận ra thiếu: nó sẽ <strong>bịa</strong> giá trị cho đủ. Trường có thể vắng phải cho phép <code>null</code>.</div>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Tài liệu hiện hành có <strong>structured outputs</strong>: gửi schema ở <code>output_config.format</code> (<code>type: "json_schema"</code>) để buộc câu trả lời vào đúng schema, và <strong>strict tool use</strong> (<code>strict: true</code> trên tool) để kiểm tra tên tool và tham số bằng grammar-constrained sampling. Cả hai chặn lỗi cú pháp và kiểu dữ liệu, nhưng vẫn không kiểm được ý nghĩa nghiệp vụ (tổng có khớp không). Phương pháp “prefill” (điền sẵn đầu câu trả lời để ép JSON) không còn dùng được với các model từ Claude 4.6: yêu cầu có prefill ở lượt assistant cuối trả lỗi 400. Nguồn: <a href="https://platform.claude.com/docs/en/build-with-claude/structured-outputs" target="_blank" rel="noopener">Structured outputs</a>, <a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/strict-tool-use" target="_blank" rel="noopener">Strict tool use</a>, <a href="https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices" target="_blank" rel="noopener">Prompting best practices</a>.</div>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Hai điều nữa trong tài liệu hiện hành, đều nằm ngoài exam guide v1.0. <strong>(1) SDK phân tích sẵn:</strong> trong Python SDK, <code>client.messages.parse(..., output_format=MoHinh)</code> nhận một model Pydantic, gửi schema qua <code>output_config.format</code>, kiểm tra phản hồi rồi trả đối tượng đã phân tích trong <code>parsed_output</code>. Nếu biết khóa của một trường thì khai bằng model lồng nhau, đừng dùng <code>dict</code>, vì SDK gửi <code>dict</code> thành object không có thuộc tính và Claude chỉ trả được <code>{}</code>. <strong>(2) Ép <code>tool_choice</code> không phải lúc nào cũng được:</strong> <code>{"type": "any"}</code> và <code>{"type": "tool", ...}</code> trả lỗi khi bật manual extended thinking, và trả 400 trên một số model mới (danh sách trong docs). Khi đó dùng <code>auto</code> kèm <code>strict: true</code> để tham số tool luôn hợp schema, hoặc <code>output_config.format</code> khi cần câu trả lời có hình dạng JSON cố định. Chế độ <code>{"type": "none"}</code> chặn mọi lời gọi tool và là mặc định khi không truyền tool. Đáp án đề vẫn mô tả ba chế độ <code>auto</code>, <code>any</code>, tool chỉ định. Dù dùng cách nào, schema chỉ đảm bảo hình dạng; kiểm tra nghiệp vụ (tổng có khớp, giá trị nằm đúng trường) vẫn là việc của validator và vòng retry. Nguồn: <a href="https://platform.claude.com/docs/en/build-with-claude/structured-outputs" target="_blank" rel="noopener">Structured outputs</a>, <a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools" target="_blank" rel="noopener">Define tools</a>.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>JSON schema</dt><dd>Mô tả hình dạng JSON: kiểu từng trường, trường bắt buộc, giá trị cho phép.</dd>
+  <dt>Nullable</dt><dd>Trường được phép mang giá trị <code>null</code> (không có dữ liệu).</dd>
+  <dt>Enum</dt><dd>Trường chỉ nhận một trong danh sách giá trị định sẵn.</dd>
+  <dt>Lỗi ngữ nghĩa</dt><dd>JSON đúng hình dạng nhưng nội dung sai: tổng không khớp, giá trị nằm nhầm trường.</dd>
+</dl></div>
+
+<h2 id="validate-retry">5. Validate, retry và vòng phản hồi</h2>
+<p class="xtags"><span class="tag xt3">CCAR-F D4</span> <span class="tag xt1">CCDV-F D6</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Bạn nộp đơn xin visa. Nhân viên trả lại: “ngày sinh ghi sai định dạng, ô số hộ chiếu để trống”. Bạn đối chiếu hồ sơ, sửa và nộp lại, lần này qua. Nhưng nếu nhân viên đòi “giấy xác nhận công việc” mà bạn chưa hề có, thì nộp lại bao nhiêu lần cũng vô ích. Bạn phải đi lấy giấy, hoặc ghi rõ “không có”.
+</div>
+<p><strong>Validate</strong> là kiểm tra kết quả của Claude bằng code (đúng format chưa, tổng có khớp không). <strong>Retry</strong> là gọi lại Claude để sửa. <strong>Retry với phản hồi lỗi</strong> nghĩa là gọi lại kèm ba thứ: tài liệu gốc, kết quả lỗi lần trước và thông báo lỗi validate cụ thể.</p>
+
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 270" role="img" aria-label="Vòng validate và retry: trích xuất, validate bằng code, nếu lỗi định dạng thì gửi lại kèm tài liệu gốc, kết quả lỗi và lỗi cụ thể; nếu thông tin không có trong tài liệu thì retry vô ích">
+    <defs>
+      <marker id="m0605" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker>
+      <marker id="m0605w" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-warn"/></marker>
+      <marker id="m0605g" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-good"/></marker>
+    </defs>
+    <rect x="10" y="30" width="100" height="44" rx="6" class="b-sys"/><text x="60" y="57" class="t tb" text-anchor="middle">Tài liệu</text>
+    <rect x="150" y="30" width="130" height="44" rx="6" class="b-step"/><text x="215" y="57" class="t tb" text-anchor="middle">Claude trích xuất</text>
+    <rect x="330" y="30" width="130" height="44" rx="6" class="b-step"/><text x="395" y="57" class="t tb" text-anchor="middle">Validate (code)</text>
+    <rect x="520" y="30" width="110" height="44" rx="6" class="b-done"/><text x="575" y="57" class="t tb" text-anchor="middle">Lưu kết quả</text>
+    <g><path class="ln-acc flow" d="M110,52 H148" marker-end="url(#m0605)"/></g>
+    <g><path class="ln-acc flow" d="M280,52 H328" marker-end="url(#m0605)"/></g>
+    <g><path class="ln-warn-solid flow" d="M395,74 V138" marker-end="url(#m0605w)"/>
+      <text x="405" y="112" class="ts">lỗi định dạng</text></g>
+    <g><rect x="150" y="140" width="310" height="58" rx="6" class="b-hot"/>
+      <text x="305" y="162" class="t tb" text-anchor="middle">Retry kèm phản hồi lỗi</text>
+      <text x="305" y="182" class="ts" text-anchor="middle">tài liệu gốc · kết quả lỗi · lỗi validate cụ thể</text>
+      <path class="ln-acc flow" d="M215,140 V76" marker-end="url(#m0605)"/></g>
+    <g><path class="ln-good flow" d="M460,52 H518" marker-end="url(#m0605g)"/>
+      <text x="575" y="96" class="tw-good" text-anchor="middle">✓ qua validate</text></g>
+    <g><rect x="150" y="214" width="480" height="48" rx="6" class="b-warn"/>
+      <text x="390" y="234" class="t tb" text-anchor="middle">Thông tin không có trong tài liệu? Retry vô ích</text>
+      <text x="390" y="252" class="ts" text-anchor="middle">Trả null, gắn cờ cho người xem, hoặc bổ sung tài liệu thiếu</text></g>
+
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Tài liệu đi vào Claude để trích xuất dữ liệu.</li>
+    <li>Kết quả đi qua bước validate bằng code, không tin chữ “đã đúng” của model.</li>
+    <li>Validate phát hiện lỗi, ví dụ ngày sai định dạng hoặc tổng không khớp.</li>
+    <li>Gọi lại Claude kèm tài liệu gốc, kết quả lỗi và thông báo lỗi cụ thể, rồi trích xuất lại.</li>
+    <li>Lần này qua validate nên được lưu.</li>
+    <li>Nếu thông tin vốn không có trong tài liệu, lặp lại bao nhiêu lần cũng không ra. Dùng null hoặc bổ sung nguồn.</li>
+  </ol>
+  <figcaption>Hình 6. Retry chữa được lỗi định dạng, không chữa được dữ liệu vắng mặt.</figcaption>
+</figure>
+
+<div class="tw"><table>
+  <thead><tr><th>Tình huống</th><th>Retry?</th></tr></thead>
+  <tbody>
+    <tr><td>Lỗi định dạng, cấu trúc (ngày sai format, thiếu trường có trong tài liệu)</td><td class="yes">Có ích: gửi lại <strong>tài liệu gốc, kết quả lỗi và lỗi validate cụ thể</strong></td></tr>
+    <tr><td>Thông tin không có trong tài liệu (nằm ở tài liệu ngoài chưa cung cấp)</td><td class="no">Vô ích: trả null, gắn cờ, hoặc bổ sung tài liệu</td></tr>
+  </tbody>
+</table></div>
+<ul>
+  <li>Tự kiểm: trích cả <code>calculated_total</code> lẫn <code>stated_total</code>, thêm cờ <code>conflict_detected</code>.</li>
+  <li>Parse phòng thủ: luôn validate bằng schema (Pydantic, Zod); output nói chắc không có nghĩa là đúng.</li>
+</ul>
+<h3>Ví dụ lời nhắn retry</h3>
+<pre><code>&lt;document&gt;…hoá đơn gốc…&lt;/document&gt;
+&lt;previous_extraction&gt;{"invoice_date": "12/31/2026", "total": 540}&lt;/previous_extraction&gt;
+&lt;validation_errors&gt;
+- invoice_date: cần định dạng YYYY-MM-DD, nhận "12/31/2026"
+- total (540) khác tổng các dòng hàng (450)
+&lt;/validation_errors&gt;
+Trích xuất lại, sửa đúng các lỗi trên.</code></pre>
+<p>Ba phần đều cần. Thiếu tài liệu gốc thì Claude không có gì để đối chiếu. Thiếu lỗi cụ thể thì nó chỉ đoán lại. Lỗi ngày sai định dạng sửa được nhờ retry. Còn nếu tài liệu không hề có ngày thì phải để <code>null</code>, không retry.</p>
+<div class="alert"><strong>Bẫy.</strong> Đề hay chọn “retry nhiều lần hơn” cho trường thông tin <em>không có trong nguồn</em>. Đó là retry vô ích. Retry chỉ có ích khi lỗi nằm ở cách Claude trình bày, không phải ở dữ liệu vắng mặt.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Validate</dt><dd>Kiểm tra đầu ra bằng quy tắc trong code (kiểu, định dạng, tổng khớp).</dd>
+  <dt>Retry-with-error-feedback</dt><dd>Gọi lại Claude và đính kèm lỗi cụ thể để nó tự sửa.</dd>
+  <dt>Pydantic, Zod</dt><dd>Thư viện validate dữ liệu theo schema (Python và TypeScript).</dd>
+</dl></div>
+
+<h2 id="batch-lo">6. Xử lý theo lô</h2>
+<p class="xtags"><span class="tag xt3">CCAR-F D4</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Tiệm giặt có hai gói. Gói “lấy ngay” giặt trong một giờ, giá đầy đủ. Gói “gửi đồ cuối ngày, nhận sau 24 giờ” rẻ một nửa. Bạn gửi áo cần mặc đi họp sáng mai bằng gói rẻ thì hỏng việc. Nhưng chăn màn cuối tuần thì gói rẻ rất hợp. <strong>Message Batches API</strong> là gói rẻ của Claude.
+</div>
+<p><strong>Xử lý theo lô (batch)</strong> là gửi nhiều request một lần và nhận kết quả sau. Đổi lại chi phí rẻ hơn 50%, ta không được hứa thời gian trả nhanh. Nhắc lại từ <a href="/notes/lessons/01-api-tich-hop.html#batch">bài 01 §6</a>, ở góc độ CCAR-F 4.5:</p>
+<ul>
+  <li>Hợp với việc không chặn (báo cáo qua đêm, audit tuần, sinh test đêm); không hợp với kiểm tra trước merge.</li>
+  <li>Không hỗ trợ gọi tool nhiều lượt trong một request.</li>
+  <li>Chu kỳ gửi + 24 giờ ≤ SLA. Ví dụ SLA 30 giờ → gửi tối đa mỗi 6 giờ.</li>
+  <li>Lỗi thì chỉ gửi lại mục lỗi theo <code>custom_id</code>, chia nhỏ tài liệu quá dài. Thử prompt trên mẫu nhỏ trước.</li>
+</ul>
+
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 242" role="img" aria-label="Tính tần suất gửi batch: SLA 30 giờ, cửa sổ xử lý 24 giờ, nên gửi tối đa mỗi 6 giờ; tài liệu đến ngay sau một lần gửi chờ 6 giờ rồi xử lý 24 giờ">
+    <defs><marker id="m0606" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah"/></marker></defs>
+    <text x="10" y="22" class="lane-lb">SLA 30 giờ, batch xử lý tối đa 24 giờ → gửi batch mỗi 6 giờ</text>
+    <path d="M30,130 H612" class="ln" marker-end="url(#m0606)"/>
+    <text x="30" y="150" class="ts" text-anchor="middle">0h</text>
+    <text x="144" y="150" class="ts" text-anchor="middle">6h</text>
+    <text x="258" y="150" class="ts" text-anchor="middle">12h</text>
+    <text x="372" y="150" class="ts" text-anchor="middle">18h</text>
+    <text x="486" y="150" class="ts" text-anchor="middle">24h</text>
+    <text x="600" y="150" class="ts" text-anchor="middle">30h</text>
+    <g>
+      <rect x="10" y="46" width="40" height="22" rx="4" class="b-step"/><text x="30" y="61" class="ts" text-anchor="middle">gửi</text>
+      <rect x="124" y="46" width="40" height="22" rx="4" class="b-step"/><text x="144" y="61" class="ts" text-anchor="middle">gửi</text>
+      <rect x="238" y="46" width="40" height="22" rx="4" class="b-step"/><text x="258" y="61" class="ts" text-anchor="middle">gửi</text>
+      <path d="M30,68 V130 M144,68 V130 M258,68 V130" class="ln-dash"/>
+    </g>
+    <g><circle cx="38" cy="130" r="5" class="b-hot"/>
+      <text x="38" y="214" class="tw-warn">▲ tài liệu đến ngay sau lần gửi 0h</text></g>
+    <g><rect x="38" y="164" width="104" height="22" rx="4" class="b-hot"/>
+      <text x="90" y="179" class="ts" text-anchor="middle">chờ ≤ 6h</text></g>
+    <g><rect x="144" y="164" width="456" height="22" rx="4" class="b-next"/>
+      <text x="372" y="179" class="ts" text-anchor="middle">xử lý batch ≤ 24 giờ</text></g>
+    <text x="320" y="234" class="tw-good" text-anchor="middle">✓ 6h chờ + 24h xử lý = 30h, vừa kịp SLA 30 giờ</text>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Cứ mỗi 6 giờ gửi một batch gom các tài liệu mới.</li>
+    <li>Trường hợp xấu nhất: tài liệu đến ngay sau khi lần gửi 0h vừa đóng.</li>
+    <li>Nó phải chờ tới lần gửi 6h, tối đa 6 giờ.</li>
+    <li>Rồi batch xử lý tối đa 24 giờ.</li>
+    <li>Tổng 6 + 24 = 30 giờ, đúng bằng SLA. Gửi thưa hơn 6 giờ sẽ vượt SLA.</li>
+  </ol>
+  <figcaption>Hình 7. Chu kỳ gửi + 24 giờ xử lý ≤ SLA.</figcaption>
+</figure>
+
+<h3>Chọn đồng bộ hay theo lô</h3>
+<div class="tw"><table>
+  <thead><tr><th>Việc</th><th>Chọn</th><th>Vì sao</th></tr></thead>
+  <tbody>
+    <tr><td>Kiểm tra trước khi merge (developer chờ)</td><td>API đồng bộ</td><td>Cần kết quả ngay, batch không hứa thời gian</td></tr>
+    <tr><td>Báo cáo qua đêm, audit tuần, sinh test đêm</td><td>Batch</td><td>Không ai chờ, tiết kiệm 50%</td></tr>
+    <tr><td>Một nhiệm vụ cần Claude gọi tool giữa chừng</td><td>API đồng bộ</td><td>Batch không chạy tool giữa một request rồi trả kết quả lại</td></tr>
+  </tbody>
+</table></div>
+<h3>Xử lý khi có mục lỗi</h3>
+<ol class="principles">
+  <li>Dùng <code>custom_id</code> riêng cho từng request (ví dụ <code>doc-0412</code>). Thứ tự kết quả trả về không được bảo đảm, nên chỉ <code>custom_id</code> cho biết kết quả nào của tài liệu nào.</li>
+  <li>Lọc các mục lỗi theo <code>custom_id</code>, <strong>chỉ gửi lại các mục đó</strong>, đừng chạy lại cả lô.</li>
+  <li>Nếu lỗi do tài liệu quá dài, <strong>chia nhỏ</strong> rồi mới gửi lại.</li>
+  <li>Trước khi chạy hàng chục nghìn tài liệu, <strong>thử prompt trên mẫu nhỏ</strong> để tránh phải gửi lại cả lô.</li>
+</ol>
+<div class="alert"><strong>Bẫy.</strong> “Dùng batch cho kiểm tra trước merge để tiết kiệm” là sai vì batch không bảo đảm độ trễ. Một bẫy khác là chọn chu kỳ gửi dài bằng chính SLA (ví dụ gửi mỗi 24 giờ khi SLA là 30 giờ): tổng có thể lên 48 giờ.</div>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Tài liệu hiện hành cho biết đa số batch xong trong 1 giờ, nhưng kết quả có thể mất tới 24 giờ và batch hết hạn nếu quá 24 giờ. Một batch tối đa 100.000 request hoặc 256 MB. Kết quả tải được trong 29 ngày. Tài liệu còn liệt kê tool use và hội thoại nhiều lượt trong những thứ có thể đưa vào batch, vì mỗi request xử lý độc lập. Điều đề thi muốn nói là code của bạn không thể chạy tool giữa chừng một request rồi trả kết quả lại. Tài liệu phân biệt hai loại tool. <strong>Server tool</strong> (web search, web fetch, code execution, MCP connector, advisor, tool search) chạy vòng lặp phía server trong batch như khi gọi đồng bộ; nếu kết quả trả <code>stop_reason: "pause_turn"</code> thì lượt chưa xong và bạn tiếp tục bằng cách gửi lại nội dung assistant đã tạm dừng trong một request mới. <strong>Client tool</strong> (code của bạn chạy) không thể hoàn tất vòng lặp trong một mục batch: mục đó dừng ở <code>tool_use</code>, bạn chạy tool rồi gửi lượt tiếp theo. Mỗi mục có kết quả riêng: <code>succeeded</code>, <code>errored</code>, <code>canceled</code> hoặc <code>expired</code> (batch hết hạn 24 giờ trước khi mục được gửi tới model); ba loại sau đều không bị tính tiền. Đáp án theo đề: không có vòng lặp tool trong một request batch. Nguồn: <a href="https://platform.claude.com/docs/en/build-with-claude/batch-processing" target="_blank" rel="noopener">Batch processing</a>.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>SLA</dt><dd>Cam kết thời gian hoàn thành mà bạn đưa cho người dùng (ví dụ “trong 30 giờ”).</dd>
+  <dt><code>custom_id</code></dt><dd>Mã bạn tự đặt cho mỗi request trong lô để ghép kết quả về đúng tài liệu.</dd>
+  <dt>Đồng bộ</dt><dd>Gọi API và chờ kết quả ngay trong cùng lần gọi.</dd>
+</dl></div>
+
+<h2 id="review">7. Review nhiều phiên, nhiều lượt</h2>
+<p class="xtags"><span class="tag xt3">CCAR-F D4</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Bạn viết xong báo cáo rồi đọc lại ngay. Bạn hay lướt qua chỗ sai vì bạn vẫn nhớ mình định viết gì. Đưa cho đồng nghiệp chưa từng thấy bản nháp, họ nhìn ra lỗi trong vài phút. Và nếu báo cáo dày 40 trang, đồng nghiệp đọc từng chương trước, rồi mới đọc một lượt xem các chương có khớp nhau không.
+</div>
+<p><strong>Review</strong> ở đây là dùng Claude để kiểm tra code hoặc kết quả đã sinh ra. Hai ý chính:</p>
+<ul>
+  <li>Model tự review trong cùng phiên ít nghi ngờ quyết định của chính nó. Một <strong>phiên độc lập</strong> bắt lỗi tốt hơn chỉ dẫn tự review hay extended thinking. Lý do: trong cùng phiên, model còn giữ nguyên lập luận lúc viết.</li>
+  <li>PR nhiều file: <strong>mỗi file một lượt</strong> cho lỗi cục bộ, thêm <strong>một lượt tích hợp</strong> cho luồng dữ liệu giữa các file.</li>
+  <li>Cho model báo độ tin cậy từng phát hiện để <em>định tuyến</em> review (không dùng làm thước đo đúng sai).</li>
+</ul>
+
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 262" role="img" aria-label="Review nhiều lượt: một pull request ba file đi qua ba lượt review từng file, rồi một lượt tích hợp kiểm tra luồng giữa các file, cho ra báo cáo kèm độ tin cậy">
+    <defs><marker id="m0607" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker></defs>
+    <rect x="10" y="96" width="96" height="50" rx="6" class="b-sys"/>
+    <text x="58" y="118" class="t tb" text-anchor="middle">Pull request</text><text x="58" y="134" class="ts" text-anchor="middle">3 file</text>
+    <rect x="150" y="26" width="170" height="44" rx="6" class="b-step"/>
+    <text x="235" y="46" class="t tb" text-anchor="middle">Lượt file A</text><text x="235" y="62" class="ts" text-anchor="middle">lỗi cục bộ</text>
+    <rect x="150" y="100" width="170" height="44" rx="6" class="b-step"/>
+    <text x="235" y="120" class="t tb" text-anchor="middle">Lượt file B</text><text x="235" y="136" class="ts" text-anchor="middle">lỗi cục bộ</text>
+    <rect x="150" y="174" width="170" height="44" rx="6" class="b-step"/>
+    <text x="235" y="194" class="t tb" text-anchor="middle">Lượt file C</text><text x="235" y="210" class="ts" text-anchor="middle">lỗi cục bộ</text>
+    <rect x="372" y="96" width="140" height="50" rx="6" class="b-hot"/>
+    <text x="442" y="118" class="t tb" text-anchor="middle">Lượt tích hợp</text><text x="442" y="134" class="ts" text-anchor="middle">luồng dữ liệu giữa file</text>
+    <rect x="540" y="96" width="92" height="50" rx="6" class="b-done"/>
+    <text x="586" y="118" class="t tb" text-anchor="middle">Báo cáo</text><text x="586" y="134" class="ts" text-anchor="middle">+ độ tin cậy</text>
+    <g>
+      <path class="ln-acc flow" d="M106,112 L148,52" marker-end="url(#m0607)"/>
+      <path class="ln-acc flow" d="M106,121 H148" marker-end="url(#m0607)"/>
+      <path class="ln-acc flow" d="M106,130 L148,196" marker-end="url(#m0607)"/>
+    </g>
+
+    <g>
+      <path class="ln-acc flow" d="M320,48 L370,110" marker-end="url(#m0607)"/>
+      <path class="ln-acc flow" d="M320,122 H370" marker-end="url(#m0607)"/>
+      <path class="ln-acc flow" d="M320,196 L370,132" marker-end="url(#m0607)"/>
+    </g>
+    <g><path class="ln-acc flow" d="M512,121 H538" marker-end="url(#m0607)"/>
+      <text x="586" y="170" class="ts" text-anchor="middle">định tuyến review</text>
+      <text x="586" y="184" class="ts" text-anchor="middle">theo độ tin cậy</text></g>
+    <text x="320" y="248" class="ts" text-anchor="middle">Mỗi lượt là một phiên độc lập, không mang theo lập luận lúc viết code</text>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Pull request ba file được chia: mỗi file một lượt review.</li>
+    <li>Mỗi lượt chỉ nhìn một file nên chú ý không bị loãng, ít bỏ sót và ít tự mâu thuẫn.</li>
+    <li>Một lượt tích hợp đọc kết quả và theo dõi dữ liệu đi qua nhiều file (ví dụ file A gửi sai kiểu cho file C).</li>
+    <li>Báo cáo kèm độ tin cậy của từng phát hiện, dùng để chọn cái nào cần người xem trước.</li>
+  </ol>
+  <figcaption>Hình 8. Review nhiều lượt: từng file riêng, rồi một lượt tích hợp.</figcaption>
+</figure>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div><ul>
+    <li>Bảo cùng phiên đã viết code: “hãy tự review thật kỹ”</li>
+    <li>Dồn cả PR 15 file vào một lượt review</li>
+    <li>Coi “độ tin cậy cao” là bằng chứng phát hiện đúng</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đúng</div><ul>
+    <li>Mở một phiên Claude mới, không có lập luận của phiên viết code</li>
+    <li>Mỗi file một lượt, thêm một lượt tích hợp</li>
+    <li>Dùng độ tin cậy để quyết định ai xem trước, rồi vẫn đo độ chính xác thật</li>
+  </ul></div>
+</div>
+<div class="alert"><strong>Bẫy.</strong> “Context lớn hơn” để chữa loãng sự chú ý; chạy 3 lần và giữ lỗi được 2/3 đồng thuận (bỏ sót lỗi thật); bắt developer chia nhỏ PR. Cả ba đều sai: cách đúng là chia lượt theo file kèm lượt tích hợp.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Phiên độc lập</dt><dd>Một lần chạy Claude mới, không thấy lập luận của lần chạy trước.</dd>
+  <dt>Lượt tích hợp</dt><dd>Lượt review nhìn vào luồng dữ liệu giữa các file, thay vì từng file riêng.</dd>
+  <dt>Attention dilution</dt><dd>Chú ý bị loãng khi một lượt phải xử lý quá nhiều file cùng lúc.</dd>
+</dl></div>
+
+<p class="lesson-practice">Luyện câu hỏi của bài này trong <a href="/bank?lesson=06">🗂️ Ngân hàng</a>.</p>
+
+<div class="btns pager">
+  <a class="btn" href="/notes/lessons/05-claude-code.html">← Bài 05 · Claude Code</a>
+  <a class="btn primary" href="/notes/lessons/07-context.html">Bài 07 · Context, độ tin cậy, debug →</a>
+</div>
+
+<footer>
+  Luyện thi chứng chỉ Claude · Bài 06 · Prompt và output có cấu trúc · v0.22 · 2026-11-18. Tổng quan: <a href="/notes/00-tong-quan.md">00</a> · Luyện đề: <a href="/new">30</a>.
+</footer>

@@ -1,0 +1,639 @@
+<p class="lesson-source">Nguồn: tài liệu ôn tập công khai <a href="https://claude.ai/artifact/3NhHr42CxTHGEs33N1ntFf" target="_blank" rel="noopener">artifact 3NhHr42…</a> (bài 14). Không thuộc và không được Anthropic xác nhận.</p>
+<header class="cover">
+  <div class="eyebrow">Luyện thi chứng chỉ Claude · Bài 14</div>
+  <h1>Claude Code 101 <span class="ja">Claude Code 101 (12 bài)</span></h1>
+  <p class="lead">Claude Code là coding agent (không chỉ assistant), context window và permissions, EPCC workflow (Explore→Plan→Code→Commit), Shift+Tab cho plan mode, CLAUDE.md structure và /init, subdirectory CLAUDE.md, slash commands hay dùng, IDE integration.</p>
+  <dl class="meta">
+    <dt>Kỳ thi</dt><dd>CCAR-F D3 (20%) · CCDV-F D3 (3,1%)</dd>
+    <dt>Phục vụ</dt><dd><span class="tag xt1">CCDV-F</span> 5 mục · <span class="tag xt3">CCAR-F</span> 4 mục · <span class="tag x-nen">Nền</span> 2 mục · <a href="#xsum">bảng nhãn từng mục</a></dd>
+
+    <dt>Nguồn</dt><dd>academy.claude.com · Claude Code 101 · Crawl 2026-11-17</dd>
+    <dt>Cập nhật</dt><dd><span class="status">v0.22 · 2026-11-18</span> · theo exam guide v1.0</dd>
+  </dl>
+</header>
+
+<details class="toc">
+<summary>Mục lục</summary>
+
+    <ol>
+      <li><a href="#tong-quan"><span class="n">1</span><span class="tx">Tổng quan</span></a></li>
+      <li><a href="#what-is-claude-code"><span class="n">2</span><span class="tx">What Is Claude Code? (Bài 1–2)</span><span class="xds" aria-hidden="true"><i class="xd xt1" title="CCDV-F"></i><i class="xd x-nen" title="Nền"></i></span></a></li>
+      <li><a href="#how-it-works"><span class="n">3</span><span class="tx">How It Works (Bài 3)</span><span class="xds" aria-hidden="true"><i class="xd xt1" title="CCDV-F"></i><i class="xd xt3" title="CCAR-F"></i><i class="xd x-nen" title="Nền"></i></span></a></li>
+      <li><a href="#epcc-workflow"><span class="n">4</span><span class="tx">The EPCC Workflow (Bài 4–6)</span><span class="xds" aria-hidden="true"><i class="xd xt3" title="CCAR-F"></i><i class="xd xt1" title="CCDV-F"></i></span></a></li>
+      <li><a href="#claude-md"><span class="n">5</span><span class="tx">CLAUDE.md — Project Memory (Bài 7–9)</span><span class="xds" aria-hidden="true"><i class="xd xt3" title="CCAR-F"></i><i class="xd xt1" title="CCDV-F"></i></span></a></li>
+      <li><a href="#workflow-tips"><span class="n">6</span><span class="tx">Workflow Tips (Bài 10–12)</span><span class="xds" aria-hidden="true"><i class="xd xt3" title="CCAR-F"></i><i class="xd xt1" title="CCDV-F"></i></span></a></li>
+      <li><a href="#exam-tips"><span class="n">7</span><span class="tx">Lưu ý ôn thi</span></a></li>
+    </ol>
+
+</details>
+
+<details class="xsum" id="xsum">
+<summary>Mục nào phục vụ bài thi nào</summary>
+<p class="xnote">Mã đầu là bài thi chính của mục. <b>Nền</b>: cần để hiểu các mục sau. <b>Nâng cao</b>: ngoài phạm vi các exam guide. Ôn cho một bài thi thì đọc các mục có mã của bài đó trước.</p>
+<div class="tw"><table>
+<thead><tr><th>Mục</th><th>Bài thi</th><th>Ghi chú</th></tr></thead>
+<tbody>
+<tr><td><a href="#what-is-claude-code">2. What Is Claude Code? (Bài 1–2)</a></td><td><span class="tag xt1">CCDV-F D3</span> <span class="tag x-nen">Nền</span></td><td></td></tr>
+<tr><td><a href="#how-it-works">3. How It Works (Bài 3)</a></td><td><span class="tag xt1">CCDV-F D3</span> <span class="tag xt3">CCAR-F D3</span> <span class="tag x-nen">Nền</span></td><td></td></tr>
+<tr><td><a href="#epcc-workflow">4. The EPCC Workflow (Bài 4–6)</a></td><td><span class="tag xt3">CCAR-F D3</span> <span class="tag xt1">CCDV-F D3</span></td><td></td></tr>
+<tr><td><a href="#claude-md">5. CLAUDE.md — Project Memory (Bài 7–9)</a></td><td><span class="tag xt3">CCAR-F D3</span> <span class="tag xt1">CCDV-F D3</span></td><td></td></tr>
+<tr><td><a href="#workflow-tips">6. Workflow Tips (Bài 10–12)</a></td><td><span class="tag xt3">CCAR-F D3</span> <span class="tag xt1">CCDV-F D3</span></td><td></td></tr>
+</tbody></table></div>
+</details>
+
+<h2 id="tong-quan">1. Tổng quan</h2>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Bạn thuê một đồng nghiệp mới ngồi cạnh bàn. Người này đọc được mọi tài liệu trong phòng, mở được máy tính của bạn, tự chạy thử chương trình và báo kết quả. Nhưng trước mỗi việc quan trọng, như xoá file hay cài phần mềm, người đó hỏi bạn một câu: “Tôi làm việc này được không?”. <strong>Claude Code</strong> làm việc đúng như vậy với dự án phần mềm của bạn.
+</div>
+<p>Khóa <strong>Claude Code 101</strong> (12 bài) là tài nguyên nhập môn chính thức dành cho developer mới bắt đầu với Claude Code. Nội dung phủ toàn bộ CCAR-F D3 (20%) và CCDV-F D3 (3,1%).</p>
+<p>Bạn chưa cần biết lập trình giỏi để theo bài này. Chỉ cần nắm bốn từ: <strong>terminal</strong> (cửa sổ gõ lệnh), <strong>IDE</strong> (phần mềm soạn code như VS Code), <strong>codebase</strong> (toàn bộ code của một dự án) và <strong>agent</strong> (AI tự làm nhiều bước thay vì chỉ trả lời một câu).</p>
+
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 164" role="img" aria-label="Bản đồ khóa Claude Code 101: năm nhóm bài tương ứng năm mục của bài này, phục vụ CCAR-F D3 và CCDV-F D3">
+    <rect x="130" y="8" width="380" height="54" rx="6" class="b-sys"/>
+    <text x="320" y="30" class="t tb" text-anchor="middle">Claude Code 101 · 12 bài</text>
+    <text x="320" y="48" class="ts" text-anchor="middle">Phục vụ CCAR-F D3 (20%) và CCDV-F D3 (3,1%)</text>
+    <path d="M320,62 V80 M68,80 H572 M68,80 V98 M194,80 V98 M320,80 V98 M446,80 V98 M572,80 V98" class="ln"/>
+    <rect x="8" y="98" width="120" height="50" rx="6" class="b-step"/>
+    <text x="68" y="116" class="t tb" text-anchor="middle">Bài 1–2</text>
+    <text x="68" y="131" class="ts" text-anchor="middle">What is Claude Code</text>
+    <text x="68" y="143" class="ts" text-anchor="middle">Mục 2</text>
+    <rect x="134" y="98" width="120" height="50" rx="6" class="b-step"/>
+    <text x="194" y="116" class="t tb" text-anchor="middle">Bài 3</text>
+    <text x="194" y="131" class="ts" text-anchor="middle">How it works</text>
+    <text x="194" y="143" class="ts" text-anchor="middle">Mục 3</text>
+    <rect x="260" y="98" width="120" height="50" rx="6" class="b-done"/>
+    <text x="320" y="116" class="t tb" text-anchor="middle">Bài 4–6</text>
+    <text x="320" y="131" class="ts" text-anchor="middle">EPCC workflow</text>
+    <text x="320" y="143" class="ts" text-anchor="middle">Mục 4</text>
+    <rect x="386" y="98" width="120" height="50" rx="6" class="b-done"/>
+    <text x="446" y="116" class="t tb" text-anchor="middle">Bài 7–9</text>
+    <text x="446" y="131" class="ts" text-anchor="middle">CLAUDE.md memory</text>
+    <text x="446" y="143" class="ts" text-anchor="middle">Mục 5</text>
+    <rect x="512" y="98" width="120" height="50" rx="6" class="b-step"/>
+    <text x="572" y="116" class="t tb" text-anchor="middle">Bài 10–12</text>
+    <text x="572" y="131" class="ts" text-anchor="middle">Workflow tips</text>
+    <text x="572" y="143" class="ts" text-anchor="middle">Mục 6</text>
+  </svg></div>
+  <figcaption>Hình 1. Bản đồ khóa học và các mục của bài này. Hai nhóm ở giữa (EPCC, CLAUDE.md) là phần hay gặp nhất trong đề.</figcaption>
+</figure>
+
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Terminal</dt><dd>Cửa sổ nơi bạn gõ lệnh bằng chữ. Claude Code chạy ở đây hoặc trong IDE.</dd>
+  <dt>IDE</dt><dd>Phần mềm soạn và chạy code (VS Code, JetBrains). Claude Code có extension cho hai loại này.</dd>
+  <dt>Codebase</dt><dd>Toàn bộ file code của một dự án.</dd>
+  <dt>Agent</dt><dd>AI tự lặp nhiều bước (đọc, sửa, chạy) cho tới khi xong việc. Xem bài 03 về agent.</dd>
+</dl></div>
+<div class="insight"><strong>Cốt lõi.</strong> Bài này là phần nhập môn. Bài <a href="/notes/lessons/05-claude-code.html">05 Claude Code</a> đi sâu hơn vào thứ bậc CLAUDE.md, skill, settings và CI/CD. Hai bài nói cùng một công cụ, nên cùng một đáp án.</div>
+
+<h2 id="what-is-claude-code">2. What Is Claude Code? (Bài 1–2)</h2>
+<p class="xtags"><span class="tag xt1">CCDV-F D3</span> <span class="tag x-nen">Nền</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Hỏi đường bằng tin nhắn khác với thuê tài xế. Chatbot AI thường giống người nhắn lại “rẽ trái, đi thẳng 500 m”, còn bạn tự lái. <strong>Claude Code</strong> giống tài xế: nhận điểm đến rồi tự lái, đổi làn, dừng đèn đỏ, và hỏi bạn khi cần qua đoạn đường lạ.
+</div>
+<p>Claude Code là <strong>AI coding agent</strong> tích hợp trực tiếp vào terminal và IDE. Khác với AI coding assistants thông thường (chỉ suggest code), Claude Code hành động trong codebase của bạn: đọc file, chạy tests, commit code, tạo PR, toàn bộ từ một hội thoại.</p>
+
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 224" role="img" aria-label="So sánh AI gợi ý code và Claude Code: AI gợi ý chỉ viết đoạn code rồi bạn tự làm tiếp, Claude Code tự đọc, sửa, chạy test rồi báo kết quả để bạn duyệt">
+    <defs><marker id="m1402" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah"/></marker></defs>
+    <rect x="4" y="4" width="312" height="216" rx="8" class="lane"/>
+    <rect x="324" y="4" width="312" height="216" rx="8" class="lane"/>
+    <text x="160" y="24" class="lane-lb" text-anchor="middle">AI GỢI Ý CODE</text>
+    <text x="480" y="24" class="lane-lb" text-anchor="middle">CLAUDE CODE · AGENT</text>
+    <rect x="24" y="40" width="272" height="36" rx="6" class="b-step"/><text x="160" y="63" class="t" text-anchor="middle">1. Bạn hỏi trong khung chat</text>
+    <rect x="24" y="96" width="272" height="36" rx="6" class="b-step"/><text x="160" y="119" class="t" text-anchor="middle">2. AI viết đoạn code gợi ý</text>
+    <rect x="24" y="152" width="272" height="36" rx="6" class="b-warn"/><text x="160" y="175" class="t" text-anchor="middle">3. Bạn tự sao chép, chạy, sửa lỗi</text>
+    <path d="M160,76 V94" class="ln" marker-end="url(#m1402)"/>
+    <path d="M160,132 V150" class="ln" marker-end="url(#m1402)"/>
+    <rect x="344" y="40" width="272" height="36" rx="6" class="b-sys"/><text x="480" y="63" class="t" text-anchor="middle">1. Bạn giao việc bằng một câu</text>
+    <rect x="344" y="96" width="272" height="36" rx="6" class="b-done"/><text x="480" y="119" class="t" text-anchor="middle">2. Claude đọc file, sửa, chạy test</text>
+    <rect x="344" y="152" width="272" height="36" rx="6" class="b-sys"/><text x="480" y="175" class="t" text-anchor="middle">3. Claude báo kết quả, bạn duyệt</text>
+    <path d="M480,76 V94" class="ln-acc" marker-end="url(#m1402)"/>
+    <path d="M480,132 V150" class="ln-acc" marker-end="url(#m1402)"/>
+    <text x="160" y="209" class="ts" text-anchor="middle">Bạn làm phần lớn việc chân tay</text>
+    <text x="480" y="209" class="ts" text-anchor="middle">Claude làm cả vòng, bạn giữ quyền duyệt</text>
+  </svg></div>
+  <figcaption>Hình 2. Gợi ý code và hành động trong codebase là hai việc khác nhau.</figcaption>
+</figure>
+
+<p><strong>Ba điểm khác biệt chính:</strong></p>
+<ul>
+  <li><strong>Context-aware</strong> (biết ngữ cảnh): đọc codebase của bạn, không chỉ dựa vào training data.</li>
+  <li><strong>Action-taking</strong> (biết hành động): thực thi các bước (bash commands, file edits) không chỉ suggest.</li>
+  <li><strong>Persistent context</strong> (nhớ trong phiên): nhớ thông tin qua nhiều turns trong cùng session.</li>
+</ul>
+
+<h3>Context window: bộ nhớ làm việc của một phiên</h3>
+<p><strong>Context window</strong> là vùng chữ Claude “nhìn thấy” trong một phiên. Claude Code giữ toàn bộ hội thoại (câu hỏi, câu trả lời, kết quả tool) trong context window. Khi context đầy, dùng <code>/compact</code> để tóm tắt. Context window không persistent qua session: mỗi session mới bắt đầu từ đầu (trừ CLAUDE.md được load tự động).</p>
+
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 248" role="img" aria-label="Context window đầy dần: CLAUDE.md, hội thoại, kết quả tool, log test dài; gần đầy thì chạy /compact, hội thoại được thay bằng bản tóm tắt và còn nhiều chỗ trống">
+    <defs><marker id="m1403" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker></defs>
+    <text x="20" y="22" class="lane-lb">CONTEXT WINDOW · TRƯỚC KHI COMPACT</text>
+    <rect x="20" y="30" width="600" height="44" rx="6" class="lane"/>
+    <g><rect x="20" y="30" width="90" height="44" rx="6" class="b-done"/><text x="65" y="56" class="ts" text-anchor="middle">CLAUDE.md</text></g>
+    <g><rect x="110" y="30" width="120" height="44" rx="0" class="b-step"/><text x="170" y="56" class="ts" text-anchor="middle">Hội thoại</text></g>
+    <g><rect x="230" y="30" width="160" height="44" rx="0" class="b-sys"/><text x="310" y="56" class="ts" text-anchor="middle">Kết quả tool (file đã đọc)</text></g>
+    <g><rect x="390" y="30" width="160" height="44" rx="0" class="b-warn"/><text x="470" y="56" class="ts" text-anchor="middle">Log test rất dài</text></g>
+    <text x="585" y="56" class="ts" text-anchor="middle">còn trống</text>
+
+    <text x="20" y="98" class="tw-warn">Gần đầy: chỉ dẫn đầu phiên dễ bị bỏ sót</text>
+    <path class="ln-acc flow" d="M320,108 V146" marker-end="url(#m1403)"/>
+    <text x="332" y="132" class="t halo">/compact: tóm tắt lịch sử</text>
+    <g>
+      <text x="20" y="162" class="lane-lb">SAU KHI COMPACT</text>
+      <rect x="20" y="170" width="600" height="44" rx="6" class="lane"/>
+      <rect x="20" y="170" width="90" height="44" rx="6" class="b-done"/><text x="65" y="196" class="ts" text-anchor="middle">CLAUDE.md</text>
+      <rect x="110" y="170" width="110" height="44" rx="0" class="b-step"/><text x="165" y="196" class="ts" text-anchor="middle">Bản tóm tắt</text>
+      <text x="420" y="196" class="ts" text-anchor="middle">còn nhiều chỗ trống</text>
+    </g>
+    <text x="320" y="238" class="tw-good" text-anchor="middle">Giải phóng chỗ trong phiên này, vẫn giữ ý chính</text>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Phiên mới bắt đầu bằng CLAUDE.md, nạp tự động.</li>
+    <li>Mỗi câu hỏi và câu trả lời được thêm vào context.</li>
+    <li>Mỗi lần Claude đọc file hoặc chạy tool, kết quả cũng nằm trong context.</li>
+    <li>Một lần chạy test in ra log rất dài chiếm nhiều chỗ.</li>
+    <li>Context gần đầy. Claude khó theo dõi chỉ dẫn từ đầu phiên.</li>
+    <li>Bạn chạy <code>/compact</code>. Hội thoại được thay bằng bản tóm tắt.</li>
+    <li>Còn nhiều chỗ trống để làm tiếp. Sang session mới thì mọi thứ trừ CLAUDE.md bắt đầu lại.</li>
+  </ol>
+  <figcaption>Hình 3. Context window đầy dần, và <code>/compact</code> giải phóng chỗ trong cùng phiên.</figcaption>
+</figure>
+
+<h3>Permissions: Claude xin phép trước khi động vào hệ thống</h3>
+<p><strong>Permissions</strong> (quyền) là cơ chế để Claude Code hỏi bạn trước khi thực hiện các hành động ảnh hưởng tới system (edit file, chạy command). Bạn có thể approve từng lần hoặc approve cho cả session. Trong CI dùng <code>--dangerously-skip-permissions</code> với sandboxed environment. Sandboxed environment là môi trường cô lập, nơi lỡ có sai sót cũng không chạm tới máy hay dữ liệu thật.</p>
+
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div><ul>
+    <li>“Claude Code nhớ mọi thứ từ hôm qua vì nó có context window.”</li>
+    <li>Tắt hỏi quyền trên máy làm việc thường cho nhanh.</li>
+    <li>Coi Claude Code là công cụ chỉ gợi ý code.</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đúng</div><ul>
+    <li>Context window chỉ sống trong một session. Cái tự nạp lại ở session mới là CLAUDE.md.</li>
+    <li>Chỉ bỏ qua hỏi quyền trong môi trường cô lập như CI sandbox.</li>
+    <li>Claude Code là agent: đọc, sửa, chạy lệnh, commit.</li>
+  </ul></div>
+</div>
+
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Theo <a href="https://code.claude.com/docs/en/how-claude-code-works" target="_blank" rel="noopener">How Claude Code works</a> và <a href="https://code.claude.com/docs/en/best-practices" target="_blank" rel="noopener">Best practices</a>:
+<ul>
+  <li>Mỗi session mới bắt đầu với context window trống, đúng như đề thi. Ngoài CLAUDE.md còn có <strong>auto memory</strong>: Claude tự ghi lại những gì học được, và 200 dòng đầu (hoặc 25KB) của <code>MEMORY.md</code> được nạp ở đầu mỗi session.</li>
+  <li>Claude tự compact khi gần đầy. Bạn vẫn có thể chạy <code>/compact</code> kèm trọng tâm, ví dụ <code>/compact focus on the API changes</code>. Lệnh <code>/context</code> cho biết cái gì đang chiếm chỗ.</li>
+  <li>Phần lớn model hiện hành có cửa sổ 1 triệu token, nên hiếm khi hết chỗ. Tài liệu vẫn khuyên <code>/clear</code> giữa các việc không liên quan.</li>
+  <li>Nhấn <kbd>Shift+Tab</kbd> để xoay vòng các chế độ quyền: Auto, Manual, Accept edits, Plan. Từ Claude Code v2.1.283 trở lên, Auto là chế độ khởi động mặc định cho terminal và VS Code. Đề thi chỉ cần biết: Claude hỏi quyền trước hành động ảnh hưởng hệ thống.</li>
+</ul></div>
+<div class="insight"><strong>Cốt lõi.</strong> Claude Code khác chatbot ở chỗ nó <strong>hành động</strong>. Vì vậy hai thứ quan trọng nhất là context (Claude đang biết gì) và permissions (Claude được làm gì).</div>
+
+<h2 id="how-it-works">3. How It Works (Bài 3)</h2>
+<p class="xtags"><span class="tag xt1">CCDV-F D3</span> <span class="tag xt3">CCAR-F D3</span> <span class="tag x-nen">Nền</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Một thợ sửa điện đến nhà bạn. Anh nghe bạn tả sự cố, chọn dụng cụ (bút thử điện, kìm), xin phép bạn trước khi cắt cầu dao, làm xong thì xem kết quả. Chưa sửa xong thì anh chọn dụng cụ khác. Khi hết lỗi, anh báo lại. Đó là một vòng lặp của agent.
+</div>
+<p>Dưới hood, Claude Code chạy <strong>vòng lặp agent</strong> (agent loop):</p>
+<ol>
+  <li>Nhận message của bạn</li>
+  <li>Quyết định tool nào cần dùng (Bash, Read, Edit, Glob, Grep...)</li>
+  <li>Thực thi tool (với permission check)</li>
+  <li>Đưa kết quả tool vào context, lặp lại bước 2–4</li>
+  <li>Trả lời cuối cùng khi đủ thông tin</li>
+</ol>
+
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 230" role="img" aria-label="Vòng lặp agent của Claude Code: nhận message, chọn tool, kiểm tra quyền, chạy tool, đưa kết quả vào context rồi quay lại chọn tool, khi đủ thông tin thì trả lời cuối">
+    <defs><marker id="m1404" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker></defs>
+    <g><rect x="6" y="50" width="118" height="46" rx="6" class="b-step"/><text x="65" y="70" class="t tb" text-anchor="middle">Nhận message</text><text x="65" y="86" class="ts" text-anchor="middle">lời bạn nhắn</text></g>
+    <g><path d="M124,73 H154" class="ln-acc flow" marker-end="url(#m1404)"/><rect x="156" y="50" width="118" height="46" rx="6" class="b-sys"/><text x="215" y="70" class="t tb" text-anchor="middle">Chọn tool</text><text x="215" y="86" class="ts" text-anchor="middle">Bash, Read, Edit…</text></g>
+    <g><path d="M274,73 H304" class="ln-acc flow" marker-end="url(#m1404)"/><rect x="306" y="50" width="150" height="46" rx="6" class="b-warn"/><text x="381" y="70" class="t tb" text-anchor="middle">Kiểm tra quyền</text><text x="381" y="86" class="ts" text-anchor="middle">hỏi bạn nếu cần</text></g>
+    <g><path d="M456,73 H486" class="ln-acc flow" marker-end="url(#m1404)"/><rect x="488" y="50" width="146" height="46" rx="6" class="b-step"/><text x="561" y="70" class="t tb" text-anchor="middle">Chạy tool</text><text x="561" y="86" class="ts" text-anchor="middle">lấy kết quả về</text></g>
+    <g><path d="M561,96 V148" class="ln-acc flow" marker-end="url(#m1404)"/><rect x="488" y="150" width="146" height="46" rx="6" class="b-done"/><text x="561" y="170" class="t tb" text-anchor="middle">Vào context</text><text x="561" y="186" class="ts" text-anchor="middle">kết quả nối vào hội thoại</text></g>
+    <g><path d="M488,173 H215 V98" class="ln-acc flow" marker-end="url(#m1404)"/><text x="350" y="166" class="ts halo" text-anchor="middle">lặp lại cho tới khi đủ</text></g>
+    <g><path d="M170,96 V123 H81 V148" class="ln-good flow" marker-end="url(#m1404)"/><text x="125" y="116" class="ts halo" text-anchor="middle">đủ thông tin</text>
+      <rect x="6" y="150" width="150" height="46" rx="6" class="b-done"/><text x="81" y="170" class="t tb" text-anchor="middle">Trả lời cuối</text><text x="81" y="186" class="ts" text-anchor="middle">khi đủ thông tin</text></g>
+    <text x="320" y="220" class="tw-good" text-anchor="middle">Claude tự quyết số vòng, bạn giữ quyền duyệt</text>
+    <circle class="tok" r="7" style="transform:translate(81px,138px)"/>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Claude Code nhận message của bạn, ví dụ “sửa test đang fail”.</li>
+    <li>Claude quyết định tool nào cần dùng, ví dụ Grep để tìm file.</li>
+    <li>Trước khi chạy tool ảnh hưởng hệ thống (sửa file, chạy lệnh), Claude Code kiểm tra quyền và hỏi bạn nếu cần.</li>
+    <li>Tool được chạy và trả kết quả.</li>
+    <li>Kết quả được đưa vào context, nên lần sau Claude “nhớ” nó.</li>
+    <li>Chưa đủ thông tin thì quay lại bước chọn tool (bước 2–4).</li>
+    <li>Khi đủ thông tin, Claude trả lời cuối cùng.</li>
+  </ol>
+  <figcaption>Hình 4. Vòng lặp agent: chọn tool, kiểm tra quyền, chạy, đưa kết quả vào context, lặp lại.</figcaption>
+</figure>
+
+<p>Tools mà Claude Code có:</p>
+<div class="tw"><table>
+  <thead><tr><th>Tool</th><th>Làm gì</th><th>Ví dụ trong đời thường</th></tr></thead>
+  <tbody>
+    <tr><td><code>Bash</code></td><td>Chạy shell commands</td><td>Bấm nút “chạy thử” hoặc “cài thư viện”</td></tr>
+    <tr><td><code>Read</code></td><td>Đọc file</td><td>Mở một tài liệu để đọc</td></tr>
+    <tr><td><code>Write</code></td><td>Tạo file mới</td><td>Tạo một tài liệu trắng</td></tr>
+    <tr><td><code>Edit</code></td><td>Sửa file</td><td>Sửa một đoạn trong tài liệu có sẵn</td></tr>
+    <tr><td><code>Glob</code></td><td>Tìm file theo pattern</td><td>Tìm mọi file có đuôi <code>.test.ts</code></td></tr>
+    <tr><td><code>Grep</code></td><td>Tìm nội dung trong file</td><td>Dùng Ctrl+F trên cả thư mục</td></tr>
+    <tr><td><code>WebSearch</code>, <code>WebFetch</code></td><td>Tìm trên web, tải một trang web</td><td>Tra cứu tài liệu hướng dẫn</td></tr>
+  </tbody>
+</table></div>
+<p>Ví dụ chạy từng vòng cho yêu cầu “test <code>session.test.ts</code> đang fail, hãy sửa”:</p>
+<div class="tw"><table>
+  <thead><tr><th>Vòng</th><th>Claude chọn</th><th>Quyền</th><th>Kết quả vào context</th></tr></thead>
+  <tbody>
+    <tr><td class="c">1</td><td><code>Grep</code> tìm <code>SessionManager</code></td><td>Đọc, thường không cần hỏi</td><td>Danh sách file chứa từ khoá</td></tr>
+    <tr><td class="c">2</td><td><code>Read</code> file <code>session.ts</code></td><td>Đọc, thường không cần hỏi</td><td>Nội dung file</td></tr>
+    <tr><td class="c">3</td><td><code>Edit</code> sửa điều kiện hết hạn</td><td>Hỏi bạn (sửa file)</td><td>Báo đã sửa</td></tr>
+    <tr><td class="c">4</td><td><code>Bash</code> chạy <code>npm test</code></td><td>Hỏi bạn (chạy lệnh)</td><td>Test pass</td></tr>
+    <tr><td class="c">5</td><td>Không gọi tool nữa</td><td>Không</td><td>Trả lời cuối: “Đã sửa, test pass”</td></tr>
+  </tbody>
+</table></div>
+<div class="alert"><strong>Bẫy.</strong> Đọc file và tìm kiếm là việc “chỉ đọc”, còn sửa file và chạy lệnh mới “ảnh hưởng system”. Đề hay hỏi hành động nào cần xin quyền: câu trả lời đúng là nhóm sửa file và chạy command.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Tool</dt><dd>Một khả năng Claude Code có thể dùng: đọc file, sửa file, chạy lệnh, tìm kiếm.</dd>
+  <dt>Pattern</dt><dd>Mẫu tên file, ví dụ <code>*.ts</code> là mọi file đuôi <code>.ts</code>.</dd>
+  <dt>Turn</dt><dd>Một lượt trao đổi: bạn nói, Claude đáp.</dd>
+  <dt>Permission check</dt><dd>Bước Claude Code dừng lại hỏi bạn trước khi làm việc có thể gây thay đổi.</dd>
+</dl></div>
+
+<h2 id="epcc-workflow">4. The EPCC Workflow (Bài 4–6)</h2>
+<p class="xtags"><span class="tag xt3">CCAR-F D3</span> <span class="tag xt1">CCDV-F D3</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Sửa nhà thì không ai cầm búa đập tường ngay. Thợ đi xem nhà trước (<em>khảo sát</em>), vẽ bản vẽ và báo giá (<em>kế hoạch</em>), rồi mới thi công (<em>làm</em>), cuối cùng nghiệm thu và ghi vào sổ (<em>bàn giao</em>). Bốn bước đó chính là EPCC.
+</div>
+<p>EPCC là workflow tiêu chuẩn cho coding tasks. Tên viết tắt từ bốn giai đoạn:</p>
+<div class="tw"><table>
+  <thead><tr><th>Giai đoạn</th><th>Mô tả</th><th>Tip</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Explore</strong></td><td>Hiểu codebase, context, requirements</td><td>"Read the auth module and explain how sessions work"</td></tr>
+    <tr><td><strong>Plan</strong></td><td>Thiết kế approach trước khi code</td><td>Nhấn Shift+Tab để vào plan mode</td></tr>
+    <tr><td><strong>Code</strong></td><td>Implement với feedback loop ngắn</td><td>Yêu cầu tests cùng lúc với implementation</td></tr>
+    <tr><td><strong>Commit</strong></td><td>Git commit với message rõ ràng</td><td>"Commit with a conventional commit message"</td></tr>
+  </tbody>
+</table></div>
+
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 214" role="img" aria-label="Quy trình EPCC: Explore, Plan, Code, Commit; mỗi giai đoạn kèm một câu lệnh mẫu">
+    <defs><marker id="m1405" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker></defs>
+    <g><rect x="8" y="40" width="132" height="56" rx="6" class="b-step"/><text x="74" y="63" class="t tb" text-anchor="middle">1 · Explore</text><text x="74" y="81" class="ts" text-anchor="middle">hiểu codebase</text>
+      <path d="M74,96 V122" class="ln-dash"/><rect x="8" y="122" width="132" height="50" rx="6" class="b-code"/>
+      <text x="16" y="141" class="tm">Read the auth module</text><text x="16" y="158" class="tm">and explain sessions</text></g>
+    <g><path d="M140,68 H166" class="ln-acc flow" marker-end="url(#m1405)"/><rect x="168" y="40" width="132" height="56" rx="6" class="b-hot"/><text x="234" y="63" class="t tb" text-anchor="middle">2 · Plan</text><text x="234" y="81" class="ts" text-anchor="middle">thiết kế trước khi code</text>
+      <path d="M234,96 V122" class="ln-dash"/><rect x="168" y="122" width="132" height="50" rx="6" class="b-code"/>
+      <text x="176" y="141" class="tm">Shift+Tab: plan mode</text><text x="176" y="158" class="tm">Plan the retry logic</text></g>
+    <g><path d="M300,68 H326" class="ln-acc flow" marker-end="url(#m1405)"/><rect x="328" y="40" width="132" height="56" rx="6" class="b-done"/><text x="394" y="63" class="t tb" text-anchor="middle">3 · Code</text><text x="394" y="81" class="ts" text-anchor="middle">viết kèm test</text>
+      <path d="M394,96 V122" class="ln-dash"/><rect x="328" y="122" width="132" height="50" rx="6" class="b-code"/>
+      <text x="336" y="141" class="tm">Implement that plan</text><text x="336" y="158" class="tm">and write tests</text></g>
+    <g><path d="M460,68 H486" class="ln-acc flow" marker-end="url(#m1405)"/><rect x="488" y="40" width="132" height="56" rx="6" class="b-sys"/><text x="554" y="63" class="t tb" text-anchor="middle">4 · Commit</text><text x="554" y="81" class="ts" text-anchor="middle">git commit rõ ràng</text>
+      <path d="M554,96 V122" class="ln-dash"/><rect x="488" y="122" width="132" height="50" rx="6" class="b-code"/>
+      <text x="496" y="141" class="tm">Commit with a</text><text x="496" y="158" class="tm">conventional message</text></g>
+    <text x="320" y="202" class="tw-good" text-anchor="middle">Mỗi giai đoạn có đầu ra rõ, sai thì sửa sớm</text>
+    <circle class="tok" r="7" style="transform:translate(554px,26px)"/>
+  </svg></div>
+  <ol class="anim-steps">
+    <li><strong>Explore:</strong> cho Claude đọc code liên quan trước, chưa sửa gì.</li>
+    <li><strong>Plan:</strong> bàn cách làm. Nhấn Shift+Tab để vào plan mode.</li>
+    <li><strong>Code:</strong> làm theo kế hoạch, viết test cùng lúc để có phản hồi ngắn.</li>
+    <li><strong>Commit:</strong> lưu thay đổi bằng git, message rõ ràng.</li>
+    <li>Đi đủ bốn bước thì việc sai hướng được phát hiện sớm, lúc sửa còn rẻ.</li>
+  </ol>
+  <figcaption>Hình 5. EPCC: Explore, Plan, Code, Commit, kèm câu lệnh mẫu cho từng bước.</figcaption>
+</figure>
+
+<h3>Plan mode (Shift+Tab)</h3>
+<p><strong>Plan mode</strong> là chế độ chỉ đọc. Khi bật, Claude sẽ chỉ đọc/phân tích, không thực thi hành động nào. Dùng để review kế hoạch trước khi approve. Trả lời "looks good, proceed" để bật lại action mode. Có thể cũng dùng <code>/plan</code> slash command.</p>
+
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 242" role="img" aria-label="Plan mode: từ chế độ thường nhấn Shift+Tab vào plan mode, Claude chỉ đọc và viết kế hoạch, bạn duyệt rồi Claude chuyển sang làm trực tiếp">
+    <defs><marker id="m1406" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker></defs>
+    <g><rect x="10" y="40" width="150" height="60" rx="6" class="b-step"/><text x="85" y="64" class="t tb" text-anchor="middle">Chế độ thường</text><text x="85" y="82" class="ts" text-anchor="middle">hỏi trước khi sửa</text></g>
+    <g><path d="M160,70 H243" class="ln-acc flow" marker-end="url(#m1406)"/><text x="202" y="62" class="t halo" text-anchor="middle">Shift+Tab</text>
+      <rect x="245" y="40" width="150" height="60" rx="6" class="b-hot"/><text x="320" y="64" class="t tb" text-anchor="middle">Plan mode</text><text x="320" y="82" class="ts" text-anchor="middle">chỉ đọc, chưa sửa file</text></g>
+
+    <g><path d="M320,100 V126" class="ln-dash"/><rect x="170" y="128" width="300" height="76" rx="6" class="b-code"/>
+      <text x="182" y="148" class="tm">&gt; Plan retry logic for failed payments</text>
+      <text x="182" y="166" class="ts">Claude đọc code, rồi đưa ra kế hoạch:</text>
+      <text x="182" y="184" class="ts">1 try/catch · 2 retry 3 lần · 3 log · 4 event</text></g>
+
+    <g><path d="M395,70 H478" class="ln-acc flow" marker-end="url(#m1406)"/><text x="437" y="62" class="ts halo" text-anchor="middle">bạn duyệt</text>
+      <rect x="480" y="40" width="150" height="60" rx="6" class="b-done"/><text x="555" y="64" class="t tb" text-anchor="middle">Làm trực tiếp</text><text x="555" y="82" class="ts" text-anchor="middle">sửa file theo kế hoạch</text></g>
+    <text x="320" y="230" class="tw-good" text-anchor="middle">Sai hướng thì sửa ở kế hoạch, chưa tốn công sửa file</text>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Mặc định Claude hỏi quyền trước khi sửa file.</li>
+    <li>Nhấn <kbd>Shift+Tab</kbd> để vào plan mode. Từ đây Claude chỉ đọc.</li>
+    <li>Bạn mô tả việc. Claude đọc code và trình bày kế hoạch, không viết file nào.</li>
+    <li>Bạn đồng ý kế hoạch, Claude thoát plan mode và làm theo.</li>
+    <li>Chi phí sửa sai ở bước kế hoạch rất thấp.</li>
+  </ol>
+  <figcaption>Hình 6. Plan mode: đọc và lập kế hoạch trước, sửa file sau khi duyệt.</figcaption>
+</figure>
+
+<p>Ví dụ trọn một lượt EPCC cho việc “thêm retry khi thanh toán lỗi”:</p>
+<pre><code class="language-text">Ví dụ EPCC flow:
+
+Explore:
+> Read the payment module and understand the current flow
+
+Plan (Shift+Tab on):
+> I need to add retry logic for failed payments. Plan the implementation.
+Claude: [đọc code, không viết gì]
+"I'll add exponential backoff in PaymentService.process():
+1. Wrap the API call in try/catch
+2. Retry up to 3 times with 1s, 2s, 4s delays
+3. Log each retry attempt
+4. After 3 failures, emit PaymentFailed event"
+
+Code (Shift+Tab off):
+> Implement that plan
+
+Commit:
+> Commit the changes with a conventional commit message</code></pre>
+<ul>
+  <li><strong>Exponential backoff</strong>: chờ lâu dần giữa các lần thử lại (1 giây, 2 giây, 4 giây), để không dồn dập vào một dịch vụ đang lỗi.</li>
+  <li><strong>try/catch</strong>: bọc đoạn code dễ lỗi để bắt lỗi thay vì để chương trình dừng.</li>
+  <li><strong>Conventional commit</strong>: cách đặt message có khuôn, như <code>feat: add payment retry</code>.</li>
+</ul>
+
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div><ul>
+    <li>Gõ “add OAuth login” rồi để Claude sửa ngay trong codebase lạ</li>
+    <li>Claude sửa nhầm module, bạn phải dọn lại</li>
+    <li>Tin rằng tăng effort giúp Claude đoán đúng chỗ cần sửa</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đúng</div><ul>
+    <li>Explore: đọc code liên quan trước</li>
+    <li>Plan: thống nhất kế hoạch, rồi mới Code và Commit</li>
+    <li>Sai hướng thì phát hiện ở bước kế hoạch, không phải sau khi đã sửa file</li>
+  </ul></div>
+</div>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Theo <a href="https://code.claude.com/docs/en/permission-modes" target="_blank" rel="noopener">tài liệu permission modes</a>:
+<ul>
+  <li><kbd>Shift+Tab</kbd> xoay vòng các chế độ quyền. Khi plan mode bật, thanh trạng thái hiện <code>plan mode on</code>. Nhấn <kbd>Shift+Tab</kbd> tiếp để thoát khi không có hộp duyệt kế hoạch.</li>
+  <li><code>/plan</code> đặt đầu một prompt để vào plan mode ngay, ví dụ <code>/plan fix the auth bug</code>. Với đề thi, “toggle” vẫn là đáp án gần nhất.</li>
+  <li>Khi kế hoạch xong, Claude hiện hộp lựa chọn: duyệt và dùng auto mode, duyệt và tự duyệt từng lần sửa, hoặc “No, keep planning”. Nhấn <kbd>Ctrl+G</kbd> để mở kế hoạch trong editor và sửa trực tiếp.</li>
+  <li>Đề thi nói “trả lời looks good, proceed”. Thực tế bạn chọn mục duyệt trong hộp trên. Cả hai đều có nghĩa là bạn cho phép Claude bắt đầu sửa file.</li>
+</ul></div>
+<div class="alert"><strong>Bẫy.</strong> Plan mode không phải lúc nào cũng cần. Sửa một lỗi nhỏ có stack trace thì làm thẳng. Dùng plan mode cho việc nhiều file hoặc nhiều hướng làm (so sánh với bài <a href="/notes/lessons/05-claude-code.html">05</a>, mục 4).</div>
+
+<h2 id="claude-md">5. CLAUDE.md — Project Memory (Bài 7–9)</h2>
+<p class="xtags"><span class="tag xt3">CCAR-F D3</span> <span class="tag xt1">CCDV-F D3</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Mỗi sáng nhân viên mới quên sạch mọi thứ của hôm qua. Bạn không dặn lại cả buổi sáng mà dán sẵn một <strong>tờ hướng dẫn</strong> ở cửa: “máy in ở tầng 2, lệnh chạy test là <code>npm test</code>, không sửa thư mục <code>legacy</code>”. Đến nơi, nhân viên đọc tờ này trước tiên. CLAUDE.md chính là tờ hướng dẫn đó.
+</div>
+<p>CLAUDE.md là "memory" của Claude Code về project của bạn. Mỗi lần bắt đầu session, CLAUDE.md được load tự động, nên bạn không cần nhắc lại conventions, commands hay context mỗi lần.</p>
+
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 220" role="img" aria-label="CLAUDE.md qua các phiên: phiên 1 nạp CLAUDE.md rồi tích lũy hội thoại và mất khi đóng phiên; phiên 2 nạp lại CLAUDE.md từ đầu và bắt đầu sạch">
+    <defs><marker id="m1407" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker></defs>
+    <rect x="220" y="6" width="200" height="36" rx="6" class="b-done"/><text x="320" y="29" class="t tb" text-anchor="middle">CLAUDE.md trong repo</text>
+    <rect x="4" y="64" width="312" height="150" rx="8" class="lane"/>
+    <rect x="324" y="64" width="312" height="150" rx="8" class="lane"/>
+    <text x="14" y="82" class="lane-lb">PHIÊN 1</text>
+    <text x="334" y="82" class="lane-lb">PHIÊN 2</text>
+    <g><path d="M260,42 L160,92" class="ln-acc flow" marker-end="url(#m1407)"/>
+      <rect x="24" y="94" width="272" height="28" rx="6" class="b-done"/><text x="160" y="113" class="t" text-anchor="middle">CLAUDE.md nạp tự động</text></g>
+    <g><rect x="24" y="130" width="272" height="28" rx="6" class="b-step"/><text x="160" y="149" class="t" text-anchor="middle">hội thoại, file đã đọc, kết quả tool</text></g>
+    <text x="160" y="190" class="tw-warn" text-anchor="middle">Đóng phiên: hội thoại mất</text>
+    <g><path d="M380,42 L480,92" class="ln-acc flow" marker-end="url(#m1407)"/>
+      <rect x="344" y="94" width="272" height="28" rx="6" class="b-done"/><text x="480" y="113" class="t" text-anchor="middle">CLAUDE.md nạp tự động</text></g>
+    <g><rect x="344" y="130" width="272" height="28" rx="6" class="b-step"/><text x="480" y="149" class="t" text-anchor="middle">Tin nhắn mới của bạn</text>
+      <text x="480" y="190" class="tw-good" text-anchor="middle">Bắt đầu sạch, vẫn có CLAUDE.md</text></g>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Phiên 1 mở ra, Claude Code đọc CLAUDE.md đầu tiên.</li>
+    <li>Trong phiên, hội thoại và kết quả tool tích lũy trong context.</li>
+    <li>Đóng phiên thì toàn bộ hội thoại mất. <code>/compact</code> cũng chỉ tóm tắt trong phiên hiện tại.</li>
+    <li>Hôm sau, phiên 2 vẫn nạp CLAUDE.md.</li>
+    <li>Hội thoại cũ không còn. Điều gì cần nhớ lâu thì phải nằm trong CLAUDE.md.</li>
+  </ol>
+  <figcaption>Hình 7. Chỉ CLAUDE.md sống qua các phiên. Hội thoại thì không.</figcaption>
+</figure>
+
+<h3>Ví dụ: CLAUDE.md của một dự án Next.js</h3>
+<p><strong>Cấu trúc CLAUDE.md ví dụ (Next.js project):</strong></p>
+<pre><code class="language-markdown"># Project: E-commerce Dashboard
+
+## Stack
+- Next.js 15 (App Router), TypeScript strict mode
+- Prisma ORM + PostgreSQL
+- Tailwind CSS + shadcn/ui
+- Vitest for unit tests, Playwright for E2E
+
+## Commands
+- `npm run dev` — start dev server on :3000
+- `npm run test` — run all Vitest tests
+- `npm run test:e2e` — Playwright E2E (needs dev server running)
+- `npm run db:migrate` — run pending Prisma migrations
+
+## Conventions
+- Components in `src/components/`, pages in `src/app/`
+- Use server components by default; add "use client" only when needed
+- All DB queries go through `src/lib/db.ts`, never import Prisma directly
+- Error boundaries required for all route segments
+- Vietnamese comments where logic is non-obvious
+
+## Common Mistakes to Avoid
+- Do NOT use `export default` for components — use named exports
+- Do NOT call `prisma` directly — always go through `src/lib/db.ts`
+- Run `npm run test` before committing</code></pre>
+<ul>
+  <li><strong>Stack</strong>: công nghệ dự án dùng. Claude khỏi phải đoán.</li>
+  <li><strong>Commands</strong>: lệnh build, test, chạy thử. Claude gọi đúng lệnh thay vì thử bừa.</li>
+  <li><strong>Conventions</strong>: quy ước đặt tên, đặt file, cách truy cập database.</li>
+  <li><strong>Common Mistakes</strong>: những lỗi Claude hay mắc ở dự án này. Dùng “Do NOT” cho điều chắc chắn không được làm.</li>
+</ul>
+<p><strong>Tạo CLAUDE.md:</strong> Dùng <code>/init</code> để Claude tự phân tích codebase và tạo CLAUDE.md ban đầu. Sau đó cập nhật thủ công khi học được pattern mới.</p>
+
+<h3>CLAUDE.md theo thư mục</h3>
+<p><strong>Subdirectory CLAUDE.md:</strong> Đặt CLAUDE.md trong <code>src/api/</code> để chỉ áp dụng khi làm việc trong đó. Dùng cho context đặc biệt của từng module.</p>
+
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 256" role="img" aria-label="CLAUDE.md theo thư mục: CLAUDE.md ở gốc repo nạp khi khởi động; sửa file trong src/web không nạp thêm; sửa file trong src/api thì nạp thêm CLAUDE.md của thư mục api">
+    <defs><marker id="m1408" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker></defs>
+    <text x="10" y="20" class="lane-lb">FILE TRÊN Ổ ĐĨA</text>
+    <text x="402" y="20" class="lane-lb">CONTEXT CỦA PHIÊN</text>
+    <rect x="392" y="28" width="240" height="196" rx="8" class="lane"/>
+    <g><rect x="10" y="36" width="300" height="38" rx="6" class="b-done"/><text x="22" y="52" class="tm">CLAUDE.md</text><text x="22" y="67" class="ts">gốc repo, cả đội dùng</text>
+      <path d="M310,55 H398" class="ln-acc flow" marker-end="url(#m1408)"/>
+      <rect x="402" y="36" width="220" height="38" rx="5" class="b-done"/><text x="412" y="52" class="t tb">CLAUDE.md gốc</text><text x="412" y="67" class="ts">nạp lúc khởi động phiên</text></g>
+    <g><rect x="10" y="88" width="300" height="38" rx="6" class="b-step"/><text x="22" y="104" class="tm">src/web/page.tsx</text><text x="22" y="119" class="ts">file code, thư mục không có CLAUDE.md</text>
+      <path d="M310,107 H398" class="ln-dash"/>
+      <text x="512" y="111" class="ts" text-anchor="middle">không nạp thêm gì</text></g>
+
+    <g><rect x="10" y="140" width="300" height="38" rx="6" class="b-done"/><text x="22" y="156" class="tm">src/api/CLAUDE.md</text><text x="22" y="171" class="ts">quy ước riêng cho phần API</text>
+      <path d="M310,159 H398" class="ln-acc flow" marker-end="url(#m1408)"/>
+      <rect x="402" y="140" width="220" height="38" rx="5" class="b-sys"/><text x="412" y="156" class="t tb">src/api/CLAUDE.md</text><text x="412" y="171" class="ts">nạp thêm khi đụng file ở đó</text></g>
+    <g><rect x="10" y="192" width="300" height="38" rx="6" class="b-step"/><text x="22" y="208" class="tm">src/api/users.ts</text><text x="22" y="223" class="ts">Claude đọc hoặc sửa file này</text></g>
+
+    <text x="320" y="248" class="tw-good" text-anchor="middle">Cấp thư mục chỉ nạp khi Claude làm việc trong thư mục đó</text>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>CLAUDE.md ở gốc repo được nạp ngay khi phiên bắt đầu.</li>
+    <li>Claude sửa <code>src/web/page.tsx</code>. Thư mục này không có CLAUDE.md riêng nên không có gì nạp thêm.</li>
+    <li>Claude đọc hoặc sửa <code>src/api/users.ts</code>. Lúc đó <code>src/api/CLAUDE.md</code> được nạp thêm.</li>
+    <li>Quy ước của module chỉ xuất hiện khi cần, nên context gọn.</li>
+  </ol>
+  <figcaption>Hình 8. CLAUDE.md của thư mục con chỉ nạp khi Claude làm việc trong thư mục đó.</figcaption>
+</figure>
+
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div><ul>
+    <li>Nhắc lại stack và lệnh test ở đầu mỗi phiên</li>
+    <li>Nhét quy ước riêng của <code>src/api/</code> vào CLAUDE.md gốc cho mọi module đọc</li>
+    <li>Tin rằng Claude nhớ hội thoại hôm qua</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đúng</div><ul>
+    <li>Ghi stack, lệnh, quy ước vào CLAUDE.md một lần, <code>/init</code> để có bản đầu</li>
+    <li>Đặt CLAUDE.md riêng trong <code>src/api/</code> cho phần chỉ áp dụng ở đó</li>
+    <li>Mọi điều cần nhớ lâu thì ghi vào CLAUDE.md</li>
+  </ul></div>
+</div>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Theo <a href="https://code.claude.com/docs/en/memory" target="_blank" rel="noopener">tài liệu memory</a> (đã tóm tắt ở bài <a href="/notes/lessons/05-claude-code.html">05</a>, mục 1): Claude Code còn nạp CLAUDE.md của mọi thư mục cha, có cấp <code>~/.claude/CLAUDE.md</code> riêng cho bạn, và repo dùng <code>AGENTS.md</code> thì Claude đọc được file đó thay CLAUDE.md. Lệnh <code>/init</code> cũng là lệnh <a href="https://code.claude.com/docs/en/how-claude-code-works" target="_blank" rel="noopener">được tài liệu nhắc</a> để tạo CLAUDE.md khởi đầu. Đề thi chỉ cần bạn nhớ ý: CLAUDE.md nạp tự động mỗi phiên, thư mục con nạp khi làm việc ở đó.</div>
+<div class="alert"><strong>Bẫy.</strong> “Context window nhớ cả hôm qua.” Sai: mỗi session mới bắt đầu với CLAUDE.md cộng tin nhắn mới. <code>/compact</code> chỉ tóm tắt trong session hiện tại, không lưu qua session.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Memory</dt><dd>Thông tin Claude Code mang theo từ phiên này sang phiên sau. Với đề thi, đó là CLAUDE.md.</dd>
+  <dt>Convention</dt><dd>Quy ước làm việc của đội: đặt tên, đặt thư mục, cách viết test.</dd>
+  <dt>Module</dt><dd>Một phần code có nhiệm vụ riêng, thường nằm trong một thư mục (ví dụ phần API).</dd>
+  <dt><code>/init</code></dt><dd>Lệnh để Claude tự quét codebase và viết bản CLAUDE.md đầu tiên.</dd>
+</dl></div>
+
+<h2 id="workflow-tips">6. Workflow Tips (Bài 10–12)</h2>
+<p class="xtags"><span class="tag xt3">CCAR-F D3</span> <span class="tag xt1">CCDV-F D3</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Giao việc cho đồng nghiệp, câu “sửa cái form đi” khiến họ phải hỏi lại ba lần. Câu “thêm kiểm tra email ở form đăng ký, đừng làm hỏng test đang có” thì họ làm được ngay. Làm việc với Claude Code cũng vậy: yêu cầu càng cụ thể, càng ít vòng sửa lại.
+</div>
+<h3>6.1 Phong cách prompting hiệu quả</h3>
+<ul>
+  <li><strong>Specific > vague:</strong> "Add input validation for email field in RegisterForm component" tốt hơn "fix the form"</li>
+  <li><strong>Include constraints:</strong> "without breaking the existing tests" / "matching the existing code style"</li>
+  <li><strong>Ask for tests:</strong> "implement X, write tests first" (TDD) hoặc "write tests for the code you just wrote"</li>
+  <li><strong>Verify before commit:</strong> "run the tests and check for TypeScript errors before committing"</li>
+</ul>
+<ul>
+  <li><strong>Input validation</strong>: kiểm tra dữ liệu người dùng nhập vào có hợp lệ không (ví dụ email phải có dấu <code>@</code>).</li>
+  <li><strong>TDD</strong> (test-driven development): viết test trước, rồi viết code cho đến khi test pass.</li>
+</ul>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div><ul>
+    <li>“fix the form”</li>
+    <li>“add feature X” không nói gì về test hay phong cách code</li>
+    <li>Commit ngay khi Claude báo xong</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đúng</div><ul>
+    <li>“Add input validation for email field in RegisterForm component”</li>
+    <li>Nêu ràng buộc: giữ test hiện có, theo phong cách code hiện có</li>
+    <li>Chạy test và kiểm tra lỗi TypeScript trước khi commit</li>
+  </ul></div>
+</div>
+
+<h3>6.2 Debugging với Claude Code</h3>
+<p><strong>Debugging</strong> là tìm và sửa lỗi. Cách làm tốt: dán nguyên thông báo lỗi, nói rõ file nào cần đọc, và nói rõ điều không được đổi.</p>
+<pre><code class="language-text">> This test is failing:
+  FAIL src/auth/session.test.ts
+  > SessionManager > should expire sessions after timeout
+
+  Error: Expected 401, received 200
+
+  Read the test and the SessionManager code, understand why this is
+  failing, and fix it without changing the test expectations.</code></pre>
+<ul>
+  <li>Dòng <code>Expected 401, received 200</code> cho Claude biết kết quả mong đợi và kết quả thực tế khác nhau ở đâu.</li>
+  <li>“Read the test and the SessionManager code” bắt Claude Explore trước khi sửa.</li>
+  <li>“without changing the test expectations” chặn lối tắt là sửa test cho khớp code sai.</li>
+</ul>
+
+<h3>6.3 Slash commands hay dùng</h3>
+<p><strong>Slash command</strong> là lệnh bắt đầu bằng dấu <code>/</code>, gõ ngay trong khung chat của Claude Code.</p>
+<div class="tw"><table>
+  <thead><tr><th>Command</th><th>Tác dụng</th></tr></thead>
+  <tbody>
+    <tr><td><code>/init</code></td><td>Tạo CLAUDE.md từ codebase analysis</td></tr>
+    <tr><td><code>/compact</code></td><td>Tóm tắt lịch sử hội thoại, giải phóng context</td></tr>
+    <tr><td><code>/plan</code></td><td>Toggle plan mode (chỉ đọc, không action)</td></tr>
+    <tr><td><code>/rewind</code></td><td>Quay về checkpoint trước</td></tr>
+    <tr><td><code>/config</code></td><td>Mở settings UI</td></tr>
+    <tr><td><code>/mcp</code></td><td>Quản lý MCP servers</td></tr>
+    <tr><td><code>/permissions</code></td><td>Xem và thay đổi permissions</td></tr>
+  </tbody>
+</table></div>
+
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 196" role="img" aria-label="Chọn lệnh theo tình huống: dự án mới dùng /init, context gần đầy dùng /compact, Claude làm sai dùng /rewind, muốn xem kế hoạch dùng /plan, cần đổi quyền dùng /permissions">
+    <rect x="200" y="8" width="240" height="34" rx="6" class="b-sys"/><text x="320" y="30" class="t tb" text-anchor="middle">Bạn gặp tình huống nào?</text>
+    <path d="M320,42 V62 M66,62 H574 M66,62 V84 M192,62 V84 M318,62 V84 M444,62 V84 M570,62 V84" class="ln"/>
+    <rect x="8" y="84" width="116" height="100" rx="6" class="b-done"/>
+    <text x="66" y="106" class="t tb" text-anchor="middle">/init</text>
+    <text x="66" y="128" class="ts" text-anchor="middle">Dự án mới, chưa có</text><text x="66" y="142" class="ts" text-anchor="middle">CLAUDE.md: Claude</text><text x="66" y="156" class="ts" text-anchor="middle">tự quét và tạo</text>
+    <rect x="134" y="84" width="116" height="100" rx="6" class="b-step"/>
+    <text x="192" y="106" class="t tb" text-anchor="middle">/compact</text>
+    <text x="192" y="128" class="ts" text-anchor="middle">Context gần đầy:</text><text x="192" y="142" class="ts" text-anchor="middle">tóm tắt hội thoại,</text><text x="192" y="156" class="ts" text-anchor="middle">giải phóng chỗ</text>
+    <rect x="260" y="84" width="116" height="100" rx="6" class="b-warn"/>
+    <text x="318" y="106" class="t tb" text-anchor="middle">/rewind</text>
+    <text x="318" y="128" class="ts" text-anchor="middle">Claude làm sai:</text><text x="318" y="142" class="ts" text-anchor="middle">quay về checkpoint</text><text x="318" y="156" class="ts" text-anchor="middle">trước đó</text>
+    <rect x="386" y="84" width="116" height="100" rx="6" class="b-hot"/>
+    <text x="444" y="106" class="t tb" text-anchor="middle">/plan</text>
+    <text x="444" y="128" class="ts" text-anchor="middle">Muốn xem kế hoạch</text><text x="444" y="142" class="ts" text-anchor="middle">trước khi sửa file:</text><text x="444" y="156" class="ts" text-anchor="middle">vào plan mode</text>
+    <rect x="512" y="84" width="120" height="100" rx="6" class="b-sys"/>
+    <text x="572" y="106" class="t tb" text-anchor="middle">/permissions</text>
+    <text x="572" y="128" class="ts" text-anchor="middle">Xem và đổi quyền</text><text x="572" y="142" class="ts" text-anchor="middle">Claude được tự làm</text><text x="572" y="156" class="ts" text-anchor="middle">những gì</text>
+  </svg></div>
+  <figcaption>Hình 9. Năm lệnh hay dùng nhất và tình huống dùng của chúng. <code>/config</code> và <code>/mcp</code> có trong bảng trên.</figcaption>
+</figure>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Theo <a href="https://code.claude.com/docs/en/commands" target="_blank" rel="noopener">tài liệu commands</a> và <a href="https://code.claude.com/docs/en/best-practices" target="_blank" rel="noopener">best practices</a>:
+<ul>
+  <li><code>/rewind</code> có alias <code>/checkpoint</code> và <code>/undo</code>. Nhấn <kbd>Esc</kbd> hai lần ở ô nhập trống cũng mở menu rewind, cho phép quay lại code, hội thoại hoặc cả hai. Checkpoint chỉ phủ file Claude sửa bằng tool sửa file của nó, không phủ thay đổi do lệnh Bash gây ra, và đi cùng git chứ không thay git.</li>
+  <li><code>/plan</code> vào plan mode, có thể kèm mô tả việc. <code>/memory</code> mở các file CLAUDE.md và auto memory. <code>/clear</code> bắt đầu lại sạch giữa hai việc không liên quan.</li>
+  <li>Quy tắc “two strikes”: nếu đã sửa cùng một lỗi hai lần mà Claude vẫn sai, đừng sửa lần thứ ba. Chạy <code>/clear</code> và viết lại prompt, nêu cả điều bạn đã học được.</li>
+</ul></div>
+
+<h3>6.4 Integration với IDE</h3>
+<p>Claude Code có extension cho VS Code và JetBrains. Lợi ích: file navigation trực tiếp từ chat, diff view cho các thay đổi, error highlighting tích hợp. Mở extension bằng <kbd>Ctrl+Shift+C</kbd> (VS Code). <strong>Diff view</strong> là màn hình hiện các dòng sắp thêm (xanh) và xoá (đỏ), để bạn duyệt trước khi chấp nhận.</p>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> <a href="https://code.claude.com/docs/en/vs-code" target="_blank" rel="noopener">Tài liệu VS Code extension</a> không liệt kê phím <kbd>Ctrl+Shift+C</kbd>. Các phím được ghi là <kbd>Cmd/Ctrl+Esc</kbd> để chuyển focus giữa editor và Claude, <kbd>Option/Alt+K</kbd> để chèn tham chiếu tới file và đoạn đang chọn, và Command Palette (<kbd>Cmd/Ctrl+Shift+P</kbd>, gõ “Claude Code”). Phím của bài giảng gốc có thể đã đổi hoặc là bản ghi cũ. Bài này giữ nguyên để khớp tài liệu thi. Phím <kbd>Ctrl+Shift+C</kbd> chưa được kiểm chứng trên bản hiện hành, nên hãy mở Command Palette khi cần chắc chắn.</div>
+
+<h2 id="exam-tips">7. Lưu ý ôn thi</h2>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Ôn thi lái xe thì không học thuộc cả sách luật. Bạn nhớ vài biển báo hay gặp và vài tình huống hay hỏi. Mục này cũng vậy: chỉ gom những điều đề thi hay hỏi nhất về Claude Code.
+</div>
+<div class="insight"><strong>CCAR-F D3 (20%):</strong> EPCC workflow (Explore→Plan→Code→Commit), plan mode (Shift+Tab), CLAUDE.md hierarchy và /init, two-strikes rule, /compact khi context đầy, /rewind cho undo.</div>
+<div class="insight"><strong>CCDV-F D3 (3,1%):</strong> Nhẹ nhàng: biết Claude Code là coding agent với context window, tools chính (Bash/Read/Edit/Glob/Grep), và cách tích hợp vào developer workflow.</div>
+<div class="insight"><strong>Key distinction:</strong> Claude Code context window không persistent qua sessions (trừ CLAUDE.md). Mỗi session bắt đầu với CLAUDE.md + tin nhắn mới. /compact tóm tắt trong session hiện tại, không lưu qua session.</div>
+
+<div class="tw"><table>
+  <thead><tr><th>Tình huống trong đề</th><th>Đáp án nên nghĩ tới</th></tr></thead>
+  <tbody>
+    <tr><td>Claude sửa nhầm module trong codebase lạ</td><td>EPCC: Explore và Plan trước khi Code</td></tr>
+    <tr><td>Muốn Claude đề xuất mà chưa sửa file</td><td>Plan mode (Shift+Tab)</td></tr>
+    <tr><td>Phải nhắc lại lệnh test và quy ước ở mỗi phiên</td><td>CLAUDE.md, tạo bằng <code>/init</code></td></tr>
+    <tr><td>Quy ước chỉ dành cho một module</td><td>CLAUDE.md đặt trong thư mục của module</td></tr>
+    <tr><td>Hội thoại dài, context sắp đầy</td><td><code>/compact</code></td></tr>
+    <tr><td>Claude sửa sai, muốn quay lại</td><td><code>/rewind</code></td></tr>
+    <tr><td>Cùng một lỗi sửa hai lần vẫn sai</td><td>Two-strikes: bắt đầu lại với prompt tốt hơn</td></tr>
+    <tr><td>Sáng hôm sau Claude “quên” hội thoại hôm qua</td><td>Đúng thiết kế: chỉ CLAUDE.md sống qua session</td></tr>
+  </tbody>
+</table></div>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div><ul>
+    <li>“Context window giữ thông tin qua các session”</li>
+    <li>“<code>/compact</code> lưu hội thoại sang hôm sau”</li>
+    <li>“Plan mode vẫn tự sửa file nhỏ cho nhanh”</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đúng</div><ul>
+    <li>Qua session chỉ có CLAUDE.md</li>
+    <li><code>/compact</code> chỉ tóm tắt trong session hiện tại</li>
+    <li>Plan mode chỉ đọc và phân tích, không thực thi hành động nào</li>
+  </ul></div>
+</div>
+
+<p class="lesson-practice">Luyện câu hỏi của bài này trong <a href="/bank?lesson=14">🗂️ Ngân hàng</a>.</p>
+
+<div class="btns pager">
+  <a class="btn" href="/notes/lessons/13-evals-sdlc.html">← Bài 13 · Evals, Claude Code in Action &amp; SDLC</a>
+  <a class="btn primary" href="/notes/lessons/15-claude-101-fluency.html">Bài 15 · Claude 101 &amp; AI Fluency Framework →</a>
+</div>
+
+<footer>
+  Luyện thi chứng chỉ Claude · Bài 14 · Claude Code 101 · v0.22 · 2026-11-18. Tổng quan: <a href="/notes/00-tong-quan.md">00</a> · Luyện đề: <a href="/new">30</a>.
+</footer>

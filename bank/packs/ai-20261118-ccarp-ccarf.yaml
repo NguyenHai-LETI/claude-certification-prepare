@@ -1,0 +1,902 @@
+id: ai-20261118-ccarp-ccarf
+title: "AI sinh: CCAR-P D1–D7 (45) và CCAR-F D1/D2/D4 (10)"
+origin: ai
+generatedBy: claude-opus-5-5
+created: 2026-11-18
+description: "Yêu cầu: 55 câu — CCAR-P D1 8, D2 7, D3 9, D4 7, D5 5, D6 8, D7 1 (domain mỏng so với trọng số) và CCAR-F D1 8, D2 1, D4 1 kèm scenario. Theo Exam Guide v1.0. Nguồn: bài kỹ thuật Anthropic (building effective agents, multi-agent research system, context engineering, writing tools, demystifying evals, long-running harnesses), platform.claude.com docs (prompting best practices, develop tests, define success, mitigate jailbreaks, reduce prompt leak, memory tool, MCP connector, model deprecations), code.claude.com (Agent SDK agent loop, permissions, subagents; devcontainer), modelcontextprotocol.io security best practices."
+questions:
+  - id: AI-CCARP-001
+    exams: { CCAR-P: D1 }
+    stem: "A platform team is starting its first Claude-based agent: a ticket-triage loop with three tools. One engineer proposes adopting a heavyweight agent framework immediately, although nobody on the team has looked at how that framework builds prompts or handles tool calls. Following Anthropic's guidance on building effective agents, what is the MOST appropriate starting point?"
+    options:
+      - "Start with direct Claude API calls, and adopt a framework only once the team understands its underlying code"
+      - "Adopt the framework now, because frameworks remove the need to design tools and stopping rules"
+      - "Adopt the framework now, and hide its generated prompts so that the abstraction stays easy to maintain"
+      - "Start with a multi-agent design, so that the framework's orchestration features are used from day one"
+    answer: [A]
+    explanation: "Anthropic khuyên bắt đầu bằng gọi LLM API trực tiếp vì nhiều pattern chỉ cần vài dòng code; nếu dùng framework thì phải hiểu code bên dưới, vì framework thường thêm lớp trừu tượng che khuất prompt và response, khiến khó debug. Framework không thay được việc thiết kế tool, prompt và điều kiện dừng. Giấu prompt do framework sinh ra đúng là điều làm hệ thống khó chẩn đoán. Nhảy ngay vào multi-agent đi ngược nguyên tắc giữ thiết kế đơn giản, chỉ thêm phức tạp khi số liệu cho thấy cần. Nguồn: https://www.anthropic.com/engineering/building-effective-agents"
+    ref: lessons/22-thiet-ke-giai-phap.html#chon-mau
+    status: active
+    difficulty: easy
+    tags: [agent-design, frameworks]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCARP-002
+    exams: { CCAR-P: D1 }
+    stem: "A retailer's high-volume consumer chat assistant answers product questions and must also screen every message against a growing list of abuse rules. Today a single prompt does both jobs, and answer quality has dropped as the rule list grew. Which design does Anthropic's guidance on agentic patterns favor?"
+    options:
+      - "Run a separate screening call in parallel with the answering call, and combine the results in code"
+      - "Append the full list of screening rules to the end of the answering prompt so they are read last"
+      - "Run the answering prompt several times, and keep the answer that most of the runs agree on"
+      - "Send every message to a human moderator first, then pass approved messages to the model"
+    answer: [A]
+    explanation: "Đây là pattern parallelization dạng sectioning: một instance model xử lý câu hỏi, một instance khác sàng lọc nội dung; Anthropic ghi nhận cách này thường cho kết quả tốt hơn so với để cùng một lời gọi gánh cả guardrail lẫn câu trả lời chính, vì mỗi lời gọi tập trung vào một việc. Dồn thêm luật vào cuối prompt vẫn để một lời gọi làm hai việc. Chạy nhiều lần rồi bỏ phiếu (voting) dùng để tăng độ tin cậy cho cùng một nhiệm vụ, không tách guardrail ra. Cho người duyệt mọi tin nhắn không khả thi với lưu lượng lớn và độ trễ của chat. Nguồn: https://www.anthropic.com/engineering/building-effective-agents"
+    ref: lessons/22-thiet-ke-giai-phap.html#chon-mau
+    status: active
+    difficulty: medium
+    tags: [parallelization, guardrails]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCARP-003
+    exams: { CCAR-P: D1 }
+    stem: "An operations team will let an agent remediate infrastructure drift overnight without supervision. Run length is unpredictable, and some fixes touch shared production resources. Which TWO design elements does Anthropic recommend for keeping an autonomous agent like this under control? (Choose TWO.)"
+    options:
+      - "Broad production credentials, so that the agent never stalls on missing access"
+      - "A stopping condition, such as a maximum number of iterations per run"
+      - "Hidden tool errors, so that the agent does not loop on failed retry attempts"
+      - "Checkpoints where the agent pauses for human feedback before risky steps"
+      - "A single instruction asking the agent to be careful with production systems"
+    answer: [B, D]
+    explanation: "Bài \"Building effective agents\": agent tự chủ thường có điều kiện dừng (ví dụ số vòng lặp tối đa) để giữ kiểm soát, và có thể dừng lại xin phản hồi của con người tại checkpoint hoặc khi gặp trở ngại; kèm kiểm thử kỹ trong sandbox với guardrail phù hợp. Cấp quyền production rộng làm tăng thiệt hại khi lỗi cộng dồn. Giấu lỗi tool khiến agent mất \"ground truth\" từ môi trường, thứ nó cần ở mỗi bước để tự điều chỉnh. Một câu dặn \"cẩn thận\" chỉ là hướng dẫn, không phải cơ chế kiểm soát. Nguồn: https://www.anthropic.com/engineering/building-effective-agents"
+    ref: lessons/22-thiet-ke-giai-phap.html#chon-mau
+    status: active
+    difficulty: medium
+    tags: [autonomy, human-in-the-loop]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCARP-004
+    exams: { CCAR-P: D1 }
+    stem: "A due-diligence research platform's lead agent launches subagents in waves and waits for each wave to finish before planning the next. Profiling shows the whole run often stalls on one slow subagent, and the lead cannot redirect subagents mid-task. An engineer proposes switching to asynchronous subagent execution. What is the MOST accurate assessment?"
+    options:
+      - "It adds parallelism at no extra cost, because all subagents already share one context window"
+      - "It can add parallelism, but it brings harder result coordination, state consistency and error propagation"
+      - "It is not possible, because the Claude API cannot serve several subagent requests at the same time"
+      - "It mainly lowers token usage, because asynchronous subagents read less context than synchronous ones"
+    answer: [B]
+    explanation: "Anthropic mô tả: lead agent chạy subagent đồng bộ giúp điều phối đơn giản nhưng tạo nút thắt — lead không lái được subagent, subagent không phối hợp được, và cả hệ thống có thể bị chặn khi chờ một subagent. Thực thi bất đồng bộ cho thêm song song nhưng thêm thách thức về điều phối kết quả, nhất quán trạng thái và lan truyền lỗi giữa các subagent, nên đây là đánh đổi phải cân nhắc. Subagent có context riêng chứ không dùng chung; API phục vụ nhiều request song song bình thường; bất đồng bộ không phải kỹ thuật giảm token. Nguồn: https://www.anthropic.com/engineering/multi-agent-research-system"
+    ref: lessons/22-thiet-ke-giai-phap.html#multi-agent
+    status: active
+    difficulty: hard
+    tags: [multi-agent, orchestration]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCARP-005
+    exams: { CCAR-P: D1 }
+    stem: "A bank is redesigning a credit-memo generator. Current Claude models can draft, self-review and revise within one call, but model-risk auditors require the draft, the review against policy criteria and the final revision to each be logged and graded on their own. Which design is MOST appropriate?"
+    options:
+      - "One call with adaptive thinking, because the internal reasoning already covers all three steps"
+      - "Three parallel subagents that each write a complete memo, keeping the one with the best score"
+      - "Explicit prompt chaining, with the draft, policy review and revision as separate logged calls"
+      - "One call with a higher max_tokens value, so the whole reasoning process fits in one response"
+    answer: [C]
+    explanation: "Doc prompting best practices: với adaptive thinking và subagent, Claude tự xử lý phần lớn suy luận nhiều bước, nhưng prompt chaining tường minh vẫn hữu ích khi cần kiểm tra output trung gian hoặc ép một cấu trúc pipeline. Mẫu phổ biến là self-correction: nháp → review theo tiêu chí → sửa, mỗi bước là một lời gọi API riêng để log, chấm điểm hoặc rẽ nhánh. Một lời gọi, dù có thinking hay max_tokens lớn, không tạo ra các artifact trung gian độc lập để kiểm toán. Ba subagent song song giải bài toán khác (chọn bản tốt nhất), tốn gấp ba và không có bước review rồi sửa. Nguồn: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+    ref: lessons/22-thiet-ke-giai-phap.html#phan-ra
+    status: active
+    difficulty: medium
+    tags: [prompt-chaining, auditability]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCARP-006
+    exams: { CCAR-P: D1 }
+    stem: "An agent generates product-feed files that must pass a strict, fully specified schema and a set of formatting rules before upload. The team will add a verification step to the agent's loop and wants the most robust, lowest-latency feedback. Which verification approach should it choose FIRST?"
+    options:
+      - "Rules-based checks, such as a schema validator and linter whose errors are fed back to the agent"
+      - "An LLM-as-judge step that rates each file against the written rules on a scale from one to ten"
+      - "A human reviewer who inspects every generated file before the agent is allowed to continue"
+      - "A self-assessment prompt asking the agent to confirm that the file follows every listed rule"
+    answer: [A]
+    explanation: "Theo bài về Claude Agent SDK, vòng lặp agent là gather context → take action → verify work. Dạng phản hồi tốt nhất là quy tắc được định nghĩa rõ cho output (linting là ví dụ điển hình): lỗi cụ thể, trả lại để agent tự sửa. LLM-as-judge hợp với tiêu chí mơ hồ nhưng thường kém bền và tốn độ trễ, chỉ đáng dùng khi lợi ích bù được chi phí. Người duyệt từng file là chậm và không cần khi luật đã đặc tả đầy đủ. Agent tự xác nhận không phải kiểm tra độc lập. Nguồn: https://claude.com/blog/building-agents-with-the-claude-agent-sdk"
+    ref: lessons/22-thiet-ke-giai-phap.html#kien-truc
+    status: active
+    difficulty: medium
+    tags: [verification, agent-loop]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCARP-007
+    exams: { CCAR-P: D1 }
+    stem: "A wealth-management firm wants its advisor assistant, built on the Claude Messages API, to remember each client's stated preferences across sessions. Compliance requires that remembered data live in the firm's own storage, partitioned per client, with retention periods the firm sets. Which design fits BEST?"
+    options:
+      - "Server-side compaction, which keeps a summary of every past session for later conversations to read"
+      - "A system prompt that pastes the client's complete conversation history into every new request"
+      - "Session transcripts uploaded through the Files API and attached to each later request for that client"
+      - "The memory tool, with a client-side handler that maps memory paths to per-client storage the firm runs"
+    answer: [D]
+    explanation: "Memory tool chạy phía client: Claude chỉ yêu cầu thao tác file, ứng dụng thực thi trên storage do bạn kiểm soát; đường dẫn /memories được ánh xạ tới thư mục theo từng người dùng hoặc khoá trong database. Doc nêu các trách nhiệm của bạn: xoá file lâu không dùng (memory expiration), giới hạn kích thước, chặn path traversal. Compaction chỉ tóm tắt bên trong một hội thoại, không phải kho nhớ theo khách hàng. Dán toàn bộ lịch sử làm phình context và chi phí. Files API có lưu qua nhiều request, nhưng file nằm trong storage của Anthropic và có phạm vi theo workspace chứ không theo từng khách, nên trái yêu cầu dữ liệu nằm trong storage của công ty và phân vùng theo khách; đính kèm cả transcript cũng làm phình context. Nguồn: https://platform.claude.com/docs/en/agents-and-tools/tool-use/memory-tool ; https://platform.claude.com/docs/en/build-with-claude/files"
+    ref: lessons/03-agent.html#memory
+    status: active
+    difficulty: hard
+    tags: [memory, data-control]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCARP-008
+    exams: { CCAR-P: D1 }
+    stem: "Finance staff are piloting an agent that reconciles accounts through many tool calls. They distrust it because it works silently for minutes and shows only a final result, so they cannot see what it intends to do or stop it early. Which design change BEST addresses this, following Anthropic's agent principles?"
+    options:
+      - "Return only the final result, but add a confidence score so users can judge its reliability"
+      - "Remove several tools, so the agent finishes sooner and users have less time to lose patience"
+      - "Log every tool call to a file that the platform team reviews after each monthly close"
+      - "Show the agent's planned steps as a live checklist, and let users intervene at any point"
+    answer: [D]
+    explanation: "Một trong ba nguyên tắc xây agent của Anthropic là minh bạch: hiện rõ các bước lập kế hoạch của agent. Khung phát triển agent an toàn của Anthropic lấy ví dụ Claude Code hiển thị kế hoạch dưới dạng to-do checklist thời gian thực và người dùng có thể can thiệp bất cứ lúc nào, giữ con người trong vòng kiểm soát. Điểm tin cậy không cho thấy agent định làm gì. Bớt tool làm yếu năng lực mà không giải quyết sự mù mờ. Log xem lại sau kỳ đóng sổ là kiểm toán hậu kỳ, không cho người dùng dừng agent kịp thời. Nguồn: https://www.anthropic.com/engineering/building-effective-agents ; https://www.anthropic.com/news/our-framework-for-developing-safe-and-trustworthy-agents"
+    ref: lessons/24-danh-gia-governance.html#hitl
+    status: active
+    difficulty: medium
+    tags: [transparency, agent-design]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCARP-009
+    exams: { CCAR-P: D2 }
+    stem: "Two teams wrote system prompts for similar support agents. Team A's prompt is 4,000 tokens of nested if-then rules for every case, and it breaks whenever a new case appears. Team B's prompt says only “Be helpful and resolve issues,” and outputs vary widely. Which revision follows Anthropic's context-engineering guidance?"
+    options:
+      - "Clear goals, heuristics and constraints, specific enough to guide yet flexible enough to adapt"
+      - "Team A's rules expanded further, so that each newly discovered case gets its own branch"
+      - "Team B's prompt kept as is, with a higher effort setting so that the model fills in the gaps"
+      - "Both prompts merged, so the agent receives Team A's rules together with Team B's guidance"
+    answer: [A]
+    explanation: "Anthropic gọi đây là \"right altitude\": vùng giữa hai lỗi phổ biến — hard-code logic phức tạp, giòn trong prompt để ép hành vi chính xác, hoặc hướng dẫn chung chung, mơ hồ không cho model tín hiệu cụ thể. System prompt nên đủ cụ thể để dẫn hành vi nhưng đủ linh hoạt để cung cấp heuristic mạnh. Mở rộng thêm nhánh làm prompt càng giòn. Tăng effort không bù được thông tin còn thiếu. Ghép hai prompt giữ nguyên cả hai lỗi và còn tạo mâu thuẫn. Nguồn: https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents"
+    ref: lessons/22-thiet-ke-giai-phap.html#prompt-he-thong
+    status: active
+    difficulty: medium
+    tags: [system-prompt, context-engineering]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCARP-010
+    exams: { CCAR-P: D2 }
+    stem: "An insurance intake agent's prompt has grown to 35 examples, one for every edge case anyone has reported. Responses have become inconsistent, and the team keeps adding an example after each new failure. What does Anthropic's context-engineering guidance recommend?"
+    options:
+      - "Keep adding one example per reported failure until every known edge case is covered"
+      - "Remove every example and rely on a long list of rules written in capital letters"
+      - "Curate a small set of diverse, canonical examples that portray the expected behavior"
+      - "Move all 35 examples to the end of the prompt so the model reads them most recently"
+    answer: [C]
+    explanation: "Anthropic vẫn khuyên dùng few-shot nhưng không nên nhồi một \"laundry list\" các edge case vào prompt; hãy chọn bộ ví dụ đa dạng, mang tính chuẩn mực, khắc hoạ đúng hành vi mong muốn. Doc prompting cũng khuyên ví dụ phải liên quan, đa dạng, bọc trong thẻ <example>, khoảng 3–5 ví dụ là tốt nhất. Tiếp tục thêm ví dụ sau mỗi lỗi lặp lại chính nguyên nhân đang gây rối. Bỏ hết ví dụ làm mất công cụ định hướng định dạng và giọng văn đáng tin nhất. Dời vị trí không giải quyết việc quá nhiều ví dụ. Nguồn: https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents ; https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+    ref: lessons/06-prompt-output.html#few-shot
+    status: active
+    difficulty: medium
+    tags: [few-shot, context-engineering]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCARP-011
+    exams: { CCAR-P: D2 }
+    stem: "A due-diligence tool sends Claude five contracts (about 80,000 tokens in total) plus a two-line question, and questions often span several contracts. The current prompt puts the question and instructions first and the contracts after them. Which change is MOST likely to improve answer quality?"
+    options:
+      - "Repeat the question before each contract, so the model rereads it while scanning the documents"
+      - "Place the contracts near the top, each in its own tagged block, and put the question at the end"
+      - "Summarize each contract into one paragraph first, then send only those summaries and the question"
+      - "Send each contract in a separate request, then concatenate the five answers in application code"
+    answer: [B]
+    explanation: "Doc prompting best practices (long context): với input lớn (20k+ token), đặt tài liệu dài gần đầu prompt, phía trên câu hỏi, hướng dẫn và ví dụ; đặt câu hỏi ở cuối có thể cải thiện chất lượng tới khoảng 30% trong thử nghiệm, nhất là với nhiều tài liệu phức tạp. Mỗi tài liệu nên bọc trong <document> với <source> và <document_content>. Lặp câu hỏi trước từng hợp đồng gây nhiễu. Tóm tắt trước làm mất chi tiết điều khoản. Tách thành nhiều request phá vỡ suy luận chéo giữa các hợp đồng mà đề bài cần. Nguồn: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+    ref: lessons/06-prompt-output.html#cau-truc-prompt
+    status: active
+    difficulty: easy
+    tags: [long-context, prompt-structure]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCARP-012
+    exams: { CCAR-P: D2, CCDV-F: D6 }
+    stem: "A knowledge-base assistant's answers are pasted into an email tool that renders raw text, so markdown symbols show up for customers. The prompt says “Do not use markdown,” yet bullet points and headers still appear. Which prompt change does Anthropic's guidance suggest trying first?"
+    options:
+      - "Add “Do not use markdown” a second time, in capital letters, at the very end of the prompt"
+      - "Add more markdown headers to the prompt, so that the instructions themselves are easier to follow"
+      - "Ask for JSON output, and let the email tool strip whatever formatting remains in the text"
+      - "State the desired form instead, such as “Write the answer as smoothly flowing prose paragraphs”"
+    answer: [D]
+    explanation: "Doc prompting best practices (control the format): hãy nói Claude nên làm gì thay vì không được làm gì, ví dụ thay \"Do not use markdown\" bằng yêu cầu viết các đoạn văn xuôi liền mạch; có thể dùng chỉ báo định dạng bằng thẻ XML. Doc cũng lưu ý phong cách của prompt ảnh hưởng tới output: bỏ markdown khỏi prompt giúp giảm markdown trong câu trả lời, nên thêm header markdown vào prompt đi ngược mục tiêu. Viết hoa và lặp lại lệnh phủ định không giải quyết gốc. Chuyển sang JSON đổi bài toán và vẫn phải tự xử lý định dạng. Nguồn: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+    ref: lessons/06-prompt-output.html#cau-truc-prompt
+    status: active
+    difficulty: easy
+    tags: [output-format, prompting]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCARP-013
+    exams: { CCAR-P: D2, CCAR-F: D5 }
+    stem: "A compliance-review agent built on the Claude Agent SDK runs for hours. Its initial prompt includes the rule “Cite the regulation number for every finding,” but after automatic compaction late in long runs, findings start to omit the citations. Where should persistent rules like this live?"
+    options:
+      - "At the very start of the initial prompt, since the earliest instructions survive compaction best"
+      - "In the result of the first tool call, since tool results are never summarized during compaction"
+      - "In the agent's last reply, since compaction always keeps the most recent assistant text intact"
+      - "In CLAUDE.md loaded through setting sources, since its content is re-injected on every request"
+    answer: [D]
+    explanation: "Doc agent loop: khi context gần đầy, SDK tự compact — tóm tắt lịch sử cũ, nên chỉ dẫn cụ thể từ đầu hội thoại có thể không được giữ. Luật lâu dài nên đặt trong CLAUDE.md (nạp qua settingSources), vì nội dung CLAUDE.md được đưa lại vào mỗi request; có thể thêm mục hướng dẫn tóm tắt trong CLAUDE.md hoặc dùng PreCompact hook. Đầu prompt ban đầu chính là phần bị tóm tắt. Kết quả tool cũng là lịch sử hội thoại và cũng bị tóm tắt. Câu trả lời gần nhất không phải nơi đặt luật lâu dài. Nguồn: https://code.claude.com/docs/en/agent-sdk/agent-loop"
+    ref: lessons/22-thiet-ke-giai-phap.html#context-token
+    status: active
+    difficulty: medium
+    tags: [compaction, claude-md]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCARP-014
+    exams: { CCAR-P: D2 }
+    stem: "A code-migration agent runs in a harness that automatically compacts context and lets the agent save progress files. Reviews show the agent often wraps up early with “remaining work left for a later session” as its context fills, even though the harness would let it continue. What is the MOST effective prompt change?"
+    options:
+      - "Tell the agent that context is compacted automatically, so it should save state and keep working"
+      - "Ask the agent to make shorter tool calls, so that the context fills more slowly during migration"
+      - "Remove the progress files from the harness, so the agent cannot see how much work is remaining"
+      - "Lower the maximum output tokens, so each turn uses less space and the context window lasts longer"
+    answer: [A]
+    explanation: "Doc prompting best practices: các model có context awareness theo dõi phần ngân sách token còn lại. Nếu harness tự compact hoặc cho lưu context ra file (như Claude Code), hãy nói điều đó trong prompt; nếu không, Claude đôi khi tự kết thúc công việc khi gần giới hạn. Prompt mẫu của doc: context sẽ được compact tự động nên đừng dừng sớm vì lo ngân sách token; lưu tiến độ và trạng thái trước khi context làm mới. Rút ngắn tool call hay giảm max_tokens không đổi hành vi dừng sớm. Bỏ file tiến độ làm mất cơ chế nối giữa các cửa sổ context. Nguồn: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+    ref: lessons/22-thiet-ke-giai-phap.html#context-token
+    status: active
+    difficulty: hard
+    tags: [context-awareness, long-running]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCARP-015
+    exams: { CCAR-P: D2 }
+    stem: "After moving a coding assistant to a newer Claude model, latency rose sharply. Traces show the model now spawns subagents even for single-file edits and one-line grep lookups, although parallel subagents still help on large multi-repository audits. What is the BEST first change?"
+    options:
+      - "Remove the subagent tool entirely, so that every task runs in the main conversation"
+      - "Add prompt guidance on when subagents are warranted and when to work directly instead"
+      - "Roll back to the previous model, since newer models cannot be steered on delegation"
+      - "Raise the effort level, so the model reasons longer before it decides to delegate"
+    answer: [B]
+    explanation: "Doc prompting best practices: model mới điều phối subagent một cách tự nhiên và có thể dùng quá mức, ví dụ spawn subagent để khám phá code khi một lệnh grep trực tiếp là đủ. Cách xử lý được khuyên là thêm hướng dẫn rõ: dùng subagent khi việc chạy song song được, cần context tách biệt hoặc là luồng độc lập không chia sẻ trạng thái; với việc đơn giản, tuần tự, sửa một file thì làm trực tiếp. Bỏ hẳn tool mất lợi ích ở các đợt audit lớn. Quay về model cũ là bỏ qua cách điều chỉnh bằng prompt. Tăng effort làm chậm thêm. Nguồn: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+    ref: lessons/22-thiet-ke-giai-phap.html#multi-agent
+    status: active
+    difficulty: medium
+    tags: [subagents, model-migration]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCARP-016
+    exams: { CCAR-P: D3 }
+    stem: "A team calls the Messages API and wants Claude to use an internal MCP server that runs locally over stdio and exposes tools, resources and prompts. They hoped the API's MCP connector would let them skip building an MCP client. What should the architect advise?"
+    options:
+      - "Run their own MCP client with the SDK helpers, since the connector cannot reach a local stdio server"
+      - "Use the MCP connector as planned, since it proxies stdio servers and exposes all three MCP primitives"
+      - "Use the MCP connector for tools and resources, and paste the server's prompts into the system prompt"
+      - "Convert the server into a Claude Code plugin, since the Messages API cannot use MCP capabilities"
+    answer: [A]
+    explanation: "MCP connector cho phép gọi MCP server **từ xa** trực tiếp trong Messages API mà không cần tự viết MCP client: server phải được công khai qua HTTP (Streamable HTTP hoặc SSE); server stdio cục bộ không kết nối trực tiếp được. Đây là lý do chính, ổn định theo bản chất của connector. Ngoài ra, ở bản beta hiện tại connector chỉ hỗ trợ tool calls trong các tính năng của đặc tả MCP (giới hạn này có thể thay đổi). Khi cần server cục bộ, prompts, resources hoặc kiểm soát kết nối, doc khuyên tự quản MCP client và dùng helper của SDK để chuyển kiểu MCP sang kiểu Claude API. Connector không proxy stdio, nên dùng nó \"như dự định\" hay chỉ cho tools và resources đều không chạy với server này. Plugin Claude Code không phục vụ ứng dụng gọi API, và Messages API vẫn dùng được MCP. Nguồn: https://platform.claude.com/docs/en/agents-and-tools/mcp-connector"
+    ref: lessons/23-tich-hop.html#giao-thuc
+    status: active
+    difficulty: hard
+    tags: [mcp-connector, mcp]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCARP-017
+    exams: { CCAR-P: D3 }
+    stem: "A company runs a stateful MCP server over Streamable HTTP on several nodes. After the initial OAuth login, the server treats any request carrying a valid session ID as authenticated, and asynchronous events are queued by session ID alone. A security review flags this. Which change follows the MCP security best practices?"
+    options:
+      - "Keep session-based authentication, but issue sequential session IDs so they are easier to audit"
+      - "Verify authorization on every inbound request, and key queued session data to the authenticated user"
+      - "Keep session-based authentication, but extend session lifetimes so users re-authenticate less often"
+      - "Place session IDs in the tool descriptions, so that only the model knows which session is in use"
+    answer: [B]
+    explanation: "MCP security best practices (session hijacking): kẻ tấn công đoán hoặc lấy được session ID có thể mạo danh client hoặc chèn sự kiện độc vào hàng đợi chung. Server có authorization PHẢI xác minh mọi request đến và KHÔNG được dùng session để xác thực; session ID phải ngẫu nhiên an toàn, không đoán được; NÊN gắn session với thông tin riêng của người dùng, ví dụ khoá <user_id>:<session_id> với user ID lấy từ token chứ không do client cung cấp. ID tuần tự dễ đoán; kéo dài phiên mở rộng cửa sổ tấn công; đưa ID vào mô tả tool vừa vô nghĩa vừa làm lộ. Nguồn: https://modelcontextprotocol.io/specification/2025-06-18/basic/security_best_practices"
+    ref: lessons/23-tich-hop.html#xac-thuc
+    status: active
+    difficulty: hard
+    tags: [mcp-security, sessions]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCARP-018
+    exams: { CCAR-P: D3 }
+    stem: "An MCP server for a document platform publishes every scope it supports (`files:*`, `db:*`, `admin:*`), and clients request all of them at first connect so users are never prompted again. Most sessions only search and read documents. What does the MCP security guidance recommend?"
+    options:
+      - "Keep requesting every scope, since one broad consent gives operators the clearest audit trail"
+      - "Replace the separate scopes with one wildcard scope, so that consent screens become shorter"
+      - "Keep requesting every scope, but rotate access tokens hourly so a stolen one expires quickly"
+      - "Start with a minimal read-oriented scope set, and step up through targeted scope challenges"
+    answer: [D]
+    explanation: "MCP security best practices (scope minimization): token mang scope rộng nếu bị lộ cho phép truy cập lan rộng, khó thu hồi và làm audit log mất ý nghĩa. Khuyến nghị mô hình quyền tối thiểu, tăng dần: bộ scope ban đầu chỉ gồm thao tác khám phá, đọc rủi ro thấp; nâng quyền bằng thử thách WWW-Authenticate scope=\"…\" khi thao tác đặc quyền được dùng lần đầu. Lỗi thường gặp được nêu tên: công bố mọi scope trong scopes_supported, dùng scope wildcard hoặc omnibus, gom quyền trước để khỏi hỏi lại. Xoay vòng token không thu hẹp phạm vi thiệt hại khi token còn hiệu lực. Nguồn: https://modelcontextprotocol.io/specification/2025-11-25/basic/security_best_practices"
+    ref: lessons/23-tich-hop.html#xac-thuc
+    status: active
+    difficulty: hard
+    tags: [mcp-security, oauth-scopes]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCARP-019
+    exams: { CCAR-P: D3 }
+    stem: "A company is building an internal AI desktop client that lets employees add local MCP servers through one-click install links. Security wants to reduce the risk that a malicious link runs a harmful startup command. Which TWO measures do the MCP security best practices call for? (Choose TWO.)"
+    options:
+      - "Show the exact command, unabridged, and require explicit user approval before running it"
+      - "Run servers silently after install, so users are not distracted by technical prompts"
+      - "Abbreviate long commands in the consent dialog, so users can read the main part quickly"
+      - "Use an HTTP transport without any token for local servers, so they are easier to reach"
+      - "Launch local servers in a sandbox with minimal default file system and network access"
+    answer: [A, E]
+    explanation: "MCP security best practices (local MCP server compromise): client hỗ trợ cấu hình một chạm PHẢI có cơ chế đồng ý trước khi chạy lệnh — hiển thị đúng lệnh sẽ chạy, đầy đủ không cắt bớt, nêu rõ đây là thao tác có thể nguy hiểm và yêu cầu người dùng chấp thuận; NÊN chạy server trong sandbox với quyền tối thiểu (hạn chế file system, mạng) và cho người dùng cấp thêm quyền khi cần. Chạy âm thầm hay rút gọn lệnh giúp kẻ tấn công che giấu lệnh độc. Server cục bộ nên dùng stdio, hoặc nếu dùng HTTP thì phải yêu cầu token hay IPC có giới hạn. Nguồn: https://modelcontextprotocol.io/specification/2025-11-25/basic/security_best_practices"
+    ref: lessons/23-tich-hop.html#xac-thuc
+    status: active
+    difficulty: medium
+    tags: [mcp-security, local-servers]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCARP-020
+    exams: { CCAR-P: D3 }
+    stem: "A SaaS company runs an MCP client on its own servers so customers can connect any remote MCP server by URL. During OAuth metadata discovery, a malicious server returns a `resource_metadata` URL pointing at `http://169.254.169.254/`. Which mitigation do the MCP security best practices recommend for this client?"
+    options:
+      - "Follow every discovery URL as given, but strip error details from the replies sent back to it"
+      - "Require HTTPS, block private and link-local ranges, and route discovery through an egress proxy"
+      - "Allow the URL only when the MCP server also presents a valid OAuth access token of its own"
+      - "Hand-write a regex that rejects any URL containing the literal text 169.254 before fetching"
+    answer: [B]
+    explanation: "Đây là SSRF: khi khám phá OAuth, client lấy URL do server cung cấp (resource_metadata, authorization_servers, token_endpoint…), và server độc có thể trỏ tới IP nội bộ, endpoint metadata của cloud (169.254.169.254) hay localhost để đánh cắp credential. Khuyến nghị: bắt buộc HTTPS (trừ loopback khi dev), chặn dải private, loopback, link-local, áp kiểm tra tương tự cho đích redirect, dùng egress proxy, lưu ý DNS rebinding. Doc cảnh báo tránh tự viết kiểm tra IP vì kẻ tấn công lách bằng mã hoá octal, hex hay IPv6. Bỏ chi tiết lỗi chỉ giảm rò rỉ một phần; token của server không chứng minh URL an toàn. Nguồn: https://modelcontextprotocol.io/specification/2025-11-25/basic/security_best_practices"
+    ref: lessons/23-tich-hop.html#xac-thuc
+    status: active
+    difficulty: hard
+    tags: [mcp-security, ssrf]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCARP-021
+    exams: { CCAR-P: D3, CCAR-F: D2 }
+    stem: "An enterprise assistant connects to MCP servers for Jira, Confluence and Slack. Each of the three servers exposes a tool named `search`, and the assistant often queries the wrong system. Following Anthropic's guidance on writing tools for agents, which change helps MOST?"
+    options:
+      - "Merge the three tools into one generic `search` tool that silently queries every connected system"
+      - "Namespace the tools by service, such as `jira_search` and `confluence_search`, with clear descriptions"
+      - "Reorder the tool list so that the most frequently used `search` tool always appears first"
+      - "Remove the tool descriptions, so the assistant decides from the tool names and its own knowledge"
+    answer: [B]
+    explanation: "Writing tools for agents: khi agent có nhiều tool từ nhiều nguồn, namespacing — gom tool liên quan dưới tiền tố chung theo dịch vụ hoặc tài nguyên — giúp phân định ranh giới và giảm chọn nhầm; mô tả tool nên rõ như giải thích cho một nhân viên mới. Gộp thành một search truy vấn mọi hệ thống tốn token và trả kết quả lẫn lộn. Thứ tự tool không giải quyết sự mơ hồ về tên. Bỏ mô tả làm mất tín hiệu quan trọng nhất để chọn đúng tool. Nguồn: https://www.anthropic.com/engineering/writing-tools-for-agents"
+    ref: lessons/04-tool-mcp.html#mo-ta-tool
+    status: active
+    difficulty: easy
+    tags: [tool-design, namespacing]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCARP-022
+    exams: { CCAR-P: D3, CCAR-F: D2 }
+    stem: "A support agent builds a customer view by calling `get_customer`, then `list_orders`, then `list_tickets`, then `get_notes`, passing IDs between the calls. The chain is slow, uses many tokens, and the agent often drops a step. What tool redesign does Anthropic's tool-writing guidance suggest?"
+    options:
+      - "Four additional granular tools, so that each call returns a smaller and simpler slice of data"
+      - "A system prompt rule listing the four calls in order, repeated again at the end of the prompt"
+      - "A raw SQL tool, so that the agent can write one query that joins every customer table at once"
+      - "One `get_customer_context` tool that compiles the relevant recent information in a single call"
+    answer: [D]
+    explanation: "Writing tools for agents: tool nên gom các thao tác thường đi cùng nhau thành một tool có ý nghĩa ở mức công việc, ví dụ get_customer_context tổng hợp mọi thông tin gần đây và liên quan của khách thay vì nhiều lời gọi riêng lẻ; làm vậy giảm số bước, token và nguy cơ bỏ sót. Chia nhỏ thêm làm chuỗi dài hơn. Luật trong prompt không bảo đảm thứ tự. SQL thô cấp quyền quá rộng và đẩy gánh nặng hiểu schema sang agent. Nguồn: https://www.anthropic.com/engineering/writing-tools-for-agents"
+    ref: lessons/04-tool-mcp.html#phan-bo-tool
+    status: active
+    difficulty: medium
+    tags: [tool-design, consolidation]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCARP-023
+    exams: { CCAR-P: D3 }
+    stem: "A team is building an internal agent that answers questions about a two-million-line monorepo that changes many times a day. One architect wants to start with an embedding index; another wants the agent to search with grep and file tools. Following Anthropic's Agent SDK guidance, what should they do FIRST?"
+    options:
+      - "Start with agentic search over the files, and add semantic search only if speed demands it"
+      - "Start with an embedding index, since semantic search is more accurate and easier to maintain"
+      - "Start with both at once, since agentic search alone cannot handle a repository of this size"
+      - "Start with an embedding index, then remove file tools so the agent cannot bypass the index"
+    answer: [A]
+    explanation: "Bài về Claude Agent SDK: semantic search thường nhanh hơn agentic search nhưng kém chính xác hơn, khó bảo trì hơn và kém minh bạch hơn; khuyên bắt đầu bằng agentic search (grep, tool đọc file) và chỉ thêm semantic search khi cần tốc độ hoặc độ đa dạng truy vấn. Repo thay đổi liên tục càng làm index khó giữ đồng bộ. Dựng cả hai ngay từ đầu là phức tạp chưa cần thiết. Bỏ tool file làm mất khả năng đọc mã nguồn chính xác. Nguồn: https://claude.com/blog/building-agents-with-the-claude-agent-sdk"
+    ref: lessons/23-tich-hop.html#truy-xuat
+    status: active
+    difficulty: medium
+    tags: [retrieval, agentic-search]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCARP-024
+    exams: { CCAR-P: D3, CCAR-F: D2 }
+    stem: "A coding agent's file-edit tool accepts relative paths. After the agent changes directories during a task, many edits land in the wrong files. The team wants to make this mistake structurally harder rather than rely on reminders. Which change follows Anthropic's agent-computer interface advice?"
+    options:
+      - "Add a system prompt reminder to double-check the current directory before every single edit"
+      - "Keep relative paths, but return a generic error code whenever an edit targets a missing file"
+      - "Accept relative and absolute paths alike, so that the agent has more ways to succeed"
+      - "Change the tool to require absolute file paths, and state that requirement in its description"
+    answer: [D]
+    explanation: "Building effective agents: hãy \"poka-yoke\" tool — đổi tham số để khó mắc lỗi hơn. Ví dụ của chính Anthropic: model nhầm với đường dẫn tương đối sau khi rời thư mục gốc, nên họ đổi tool để luôn yêu cầu đường dẫn tuyệt đối và vấn đề biến mất. Lời nhắc trong prompt không loại bỏ lỗi về mặt cấu trúc. Mã lỗi chung chung không giúp agent tự sửa (thông báo lỗi nên cụ thể, có hướng hành động). Chấp nhận cả hai kiểu đường dẫn giữ nguyên chỗ dễ sai. Nguồn: https://www.anthropic.com/engineering/building-effective-agents"
+    ref: lessons/04-tool-mcp.html#mo-ta-tool
+    status: active
+    difficulty: easy
+    tags: [tool-design, poka-yoke]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCARP-025
+    exams: { CCAR-P: D4 }
+    stem: "A team can afford one of two eval plans for a contract-classification feature: 60 cases graded by senior lawyers each release, or 2,000 cases written as multiple-choice or exact-match checks that are graded automatically. Following Anthropic's eval design principles, which plan should they choose?"
+    options:
+      - "The 60 lawyer-graded cases, since human grading is the gold standard and outweighs any gain in volume"
+      - "The 2,000 automatically graded cases, since more cases with slightly lower signal beat fewer hand-graded ones"
+      - "Neither plan yet, since evals should wait until production traffic reveals the real task distribution"
+      - "The 60 lawyer-graded cases, rerun on every release and then extrapolated to estimate accuracy at scale"
+    answer: [B]
+    explanation: "Doc develop tests nêu ba nguyên tắc thiết kế eval: bám sát nhiệm vụ (mô phỏng phân phối thật, có edge case), tự động hoá khi có thể (multiple-choice, string match, code-graded, LLM-graded), và ưu tiên số lượng hơn chất lượng: nhiều câu với chấm tự động tín hiệu hơi thấp tốt hơn ít câu chấm tay chất lượng cao. Chấm bằng người là chuẩn vàng nhưng chậm và đắt, hợp để hiệu chỉnh grader hơn là thay khối lượng. Chờ dữ liệu production mới làm eval là trì hoãn vòng phản hồi. Nguồn: https://platform.claude.com/docs/en/test-and-evaluate/develop-tests ; https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents"
+    ref: lessons/24-danh-gia-governance.html#bo-du-lieu
+    status: active
+    difficulty: medium
+    tags: [eval-design, grading]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCARP-026
+    exams: { CCAR-P: D4, CCDV-F: D4 }
+    stem: "An eval for a travel-booking agent checks that it calls `search_flights`, then `check_seat_map`, then `book_flight`, in exactly that order. Transcripts show the agent sometimes books the correct seat through a different valid sequence, and those runs are marked as failures. What should the team change?"
+    options:
+      - "Add the alternative sequences to the expected list, and fail any run whose path is not listed"
+      - "Instruct the agent to always follow the graded sequence, so that its scores stop fluctuating"
+      - "Grade the end state, such as whether the correct booking exists, rather than the exact tool sequence"
+      - "Drop the booking checks, and grade only whether the agent's final message sounds confident"
+    answer: [C]
+    explanation: "Demystifying evals for AI agents: thường nên chấm cái agent tạo ra, không phải con đường nó đi; kiểm tra cứng chuỗi bước sẽ phạt những lời giải hợp lệ và sáng tạo. Bài multi-agent research cũng khuyên đánh giá agent có đạt đúng trạng thái cuối hay không. Liệt kê thêm chuỗi vẫn giòn trước lời giải hợp lệ mới. Ép agent đi theo chuỗi để điểm đẹp là tối ưu sai mục tiêu. Chấm giọng tự tin không đo được kết quả thật; với việc nhiều bước có thể cho điểm từng phần. Nguồn: https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents ; https://www.anthropic.com/engineering/multi-agent-research-system"
+    ref: lessons/24-danh-gia-governance.html#bo-du-lieu
+    status: active
+    difficulty: medium
+    tags: [agent-evals, grading]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCARP-027
+    exams: { CCAR-P: D4 }
+    stem: "A team adds web search to its research assistant and builds an eval in which every task requires searching. Scores rise, but after launch the assistant searches even for trivial questions it could answer directly, which adds latency. What was the main flaw in the eval design?"
+    options:
+      - "It used too many tasks, which encouraged the agent to rely on search more than necessary"
+      - "It used code-based graders, which cannot detect whether a search was needed for a task"
+      - "It tested only cases where the behavior should occur, not cases where it should not occur"
+      - "It was run before launch, when real user questions were not yet available for testing"
+    answer: [C]
+    explanation: "Demystifying evals: bộ bài nên cân bằng — kiểm tra cả trường hợp một hành vi nên xảy ra lẫn trường hợp không nên xảy ra. Eval một phía dẫn tới tối ưu một phía; chính bài viết nêu ví dụ agent đi tìm kiếm cho gần như mọi thứ. Số lượng task không phải nguyên nhân. Grader dạng code vẫn chấm được nếu bộ bài có ca \"không cần tìm kiếm\". Chạy eval trước launch là đúng; điều cần là dựng task từ cách dùng thật và các lỗi thật. Nguồn: https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents"
+    ref: lessons/24-danh-gia-governance.html#bo-du-lieu
+    status: active
+    difficulty: medium
+    tags: [agent-evals, balanced-sets]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCARP-028
+    exams: { CCAR-P: D4 }
+    stem: "A coding-agent eval runs 200 trials in one shared container. Pass rates jump unexpectedly, and transcripts show some agents reading git history and files left behind by earlier trials. What should the team do?"
+    options:
+      - "Start each trial from a clean, isolated environment, so that no state carries over between trials"
+      - "Run the trials in a different order each time, and average the scores across several orderings"
+      - "Keep the shared container, but tell the agent in its prompt not to look at any previous work"
+      - "Increase the number of trials, so the effect of leftover files averages out across the whole run"
+    answer: [A]
+    explanation: "Demystifying evals: mỗi trial phải được cô lập, bắt đầu từ môi trường sạch. Trạng thái dùng chung giữa các lần chạy (file còn sót, cache, lịch sử) gây lỗi tương quan hoặc thổi phồng điểm; bài viết nêu đúng trường hợp agent đọc git history của trial trước. Đổi thứ tự hay tăng số trial không loại bỏ rò rỉ trạng thái. Lời dặn trong prompt không thay được cô lập môi trường và vẫn để điểm phụ thuộc vào việc agent có nghe lời hay không. Nguồn: https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents"
+    ref: lessons/24-danh-gia-governance.html#bo-du-lieu
+    status: active
+    difficulty: hard
+    tags: [agent-evals, isolation]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCARP-029
+    exams: { CCAR-P: D4 }
+    stem: "A team's agent now passes 100% of its 150-task capability suite. A candidate model being considered as an upgrade also scores 100%, so leadership concludes the upgrade brings no benefit. What is the BEST interpretation?"
+    options:
+      - "The upgrade brings no benefit, because both models already solve every task in the suite"
+      - "The suite is too hard, so its tasks should be simplified before the models are compared"
+      - "The suite is saturated: keep it for regression testing, and add harder tasks to measure gains"
+      - "The graders are broken, because agents can never reach a perfect score on capability evals"
+    answer: [C]
+    explanation: "Demystifying evals: eval saturation xảy ra khi agent qua hết các task giải được, không còn chỗ thể hiện cải thiện; suite bão hoà vẫn bắt được regression nhưng không phân biệt được model tốt hơn. Capability eval nên bắt đầu ở tỷ lệ đạt thấp; regression eval nên ở gần 100%. Vì vậy chuyển suite hiện có sang vai trò regression và bổ sung task khó hơn. Kết luận \"không có lợi ích\" chỉ phản ánh thước đo đã hết tầm. Điểm tuyệt đối không tự chứng minh grader hỏng, dù vẫn nên đọc transcript để kiểm tra. Nguồn: https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents"
+    ref: lessons/24-danh-gia-governance.html#bo-du-lieu
+    status: active
+    difficulty: hard
+    tags: [eval-saturation, model-upgrade]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCARP-030
+    exams: { CCAR-P: D4 }
+    stem: "A team is writing tasks for a new agent eval, and reviewers often disagree about whether a run passed. Which TWO practices make tasks more trustworthy, according to Anthropic's guidance on agent evals? (Choose TWO.)"
+    options:
+      - "Keep task descriptions vague, so that the agent is also tested on how it handles ambiguity"
+      - "Use only tasks that the current agent already passes, so that the eval suite stays stable"
+      - "Write each task so that two domain experts would independently reach the same verdict"
+      - "Provide a reference solution showing the task is solvable with the graders as configured"
+      - "Let each reviewer apply personal criteria, then average the verdicts across all reviewers"
+    answer: [C, D]
+    explanation: "Demystifying evals: một task tốt là task mà hai chuyên gia trong lĩnh vực sẽ độc lập đưa ra cùng kết luận pass hay fail; lời giải tham chiếu giúp xác nhận task giải được và grader được cấu hình đúng. Mô tả mơ hồ làm điểm số phản ánh nhiễu của đề chứ không phải năng lực agent. Chỉ giữ các task đã qua làm suite bão hoà, mất khả năng đo cải thiện. Mỗi người chấm một kiểu chính là nguồn gốc của bất đồng. Nguồn: https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents"
+    ref: lessons/24-danh-gia-governance.html#bo-du-lieu
+    status: active
+    difficulty: medium
+    tags: [agent-evals, task-design]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCARP-031
+    exams: { CCAR-P: D4 }
+    stem: "A team uses Claude to rewrite its tool descriptions round after round, based on failed eval transcripts. After ten rounds, eval scores are excellent, but production tool-selection accuracy has barely changed. Which practice from Anthropic's tool-writing guidance would have caught this?"
+    options:
+      - "Running more optimization rounds on the same tasks until the scores stop increasing"
+      - "Checking each round of improvements against a held-out test set not used for optimization"
+      - "Removing the transcripts from the analysis and judging descriptions by their length"
+      - "Letting the tool descriptions grow without limit, so that every past failure is covered"
+    answer: [B]
+    explanation: "Writing tools for agents: khi dùng Claude để tối ưu tool dựa trên transcript eval, Anthropic dựa vào held-out test set để bảo đảm không overfit vào bộ eval dùng để \"huấn luyện\". Điểm eval cao mà production không đổi là dấu hiệu overfit. Lặp thêm trên cùng bộ task làm overfit nặng hơn. Bỏ transcript là mất nguồn chẩn đoán chính. Để mô tả phình vô hạn nhằm vá từng lỗi cũ cũng là một dạng overfit. Bài viết còn khuyên theo dõi số lời gọi tool, lỗi, token và thời gian chạy. Nguồn: https://www.anthropic.com/engineering/writing-tools-for-agents"
+    ref: lessons/04-tool-mcp.html#mo-ta-tool
+    status: active
+    difficulty: hard
+    tags: [tool-evals, overfitting]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCARP-032
+    exams: { CCAR-P: D5 }
+    stem: "A fintech assistant's system prompt contains a proprietary scoring rubric. The team proposes adding several layers of anti-leak instructions, decoy answers and refusal rules to the prompt. Following Anthropic's guidance on reducing prompt leak, which TWO steps should the architect recommend first? (Choose TWO.)"
+    options:
+      - "Screen and post-process outputs for signs of the rubric before they reach users"
+      - "Add every proposed anti-leak layer now, since more instructions make leaks impossible"
+      - "Remove proprietary details from the prompt that the task does not actually need"
+      - "Move the rubric into the user turn, since only system prompt content is able to leak"
+      - "Limit every response to one sentence, so the rubric can never fit inside an answer"
+    answer: [A, C]
+    explanation: "Doc reduce prompt leak: chỉ dùng kỹ thuật prompt chống rò rỉ khi thật cần, vì làm nhiệm vụ phức tạp hơn có thể giảm hiệu năng ở phần khác; nên thử giám sát trước như sàng lọc output và hậu xử lý (regex, lọc từ khoá, hoặc một LLM lọc rò rỉ tinh vi), và không đưa vào prompt chi tiết độc quyền mà nhiệm vụ không cần, vì nội dung thừa làm giảm mức tuân thủ lệnh \"không tiết lộ\". Không biện pháp nào chắc chắn tuyệt đối. Đưa rubric sang user turn vẫn là input có thể lộ. Ép câu trả lời một câu làm hỏng chất lượng. Nguồn: https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-prompt-leak"
+    ref: lessons/08-bao-mat.html#guardrail
+    status: active
+    difficulty: medium
+    tags: [prompt-leak, guardrails]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCARP-033
+    exams: { CCAR-P: D5 }
+    stem: "A public writing assistant has layered guardrails. Logs show a small set of accounts triggering the same content-policy refusal dozens of times a day with varied jailbreak attempts. Besides keeping the existing screens, what does Anthropic's guidance suggest?"
+    options:
+      - "Loosen the guardrails for those accounts, so that they stop retrying the same type of request"
+      - "Hide all refusals from those users, so that they cannot tell which of their attempts were blocked"
+      - "Tell those users their actions violate usage policies, and consider throttling or banning them"
+      - "Move those accounts to a larger model, since larger models need no additional guardrails"
+    answer: [C]
+    explanation: "Doc mitigate jailbreaks: với người dùng liên tục tìm cách vượt guardrail (cùng một loại refusal lặp lại nhiều lần), hãy điều chỉnh phản hồi, thông báo rằng hành vi vi phạm chính sách sử dụng và cân nhắc throttle hoặc ban; kết hợp với harmlessness screen bằng model nhẹ, input validation, system prompt nêu rõ ranh giới và giám sát liên tục. Nới guardrail là thưởng cho hành vi xấu. Giấu refusal không làm giảm động cơ tấn công. Model lớn hơn không miễn nhiễm jailbreak. Nguồn: https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/mitigate-jailbreaks"
+    ref: lessons/24-danh-gia-governance.html#guardrail
+    status: active
+    difficulty: easy
+    tags: [jailbreak, abuse-handling]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCARP-034
+    exams: { CCAR-P: D5 }
+    stem: "A procurement agent prepares vendor payments from approved invoices. Policy says the agent must never move money itself; a person must release every payment. The system prompt already says “Never send payments.” Which design does Anthropic's guidance recommend?"
+    options:
+      - "Keep the payment tool, since the system prompt rule reliably stops the agent from using it"
+      - "Keep the payment tool, but let it run once the vendor confirms the invoice by email"
+      - "Give the agent only a tool that queues a payment request for a person to release"
+      - "Keep the payment tool, but cap the amount so that any single payment stays under a limit"
+    answer: [C]
+    explanation: "Doc prompting best practices (payments, account numbers, financial records): khối chỉ dẫn về thanh toán chỉ định hướng Claude chứ không cưỡng chế. Nếu agent không bao giờ được trả tiền, hãy cho nó tool yêu cầu hoặc xếp hàng thanh toán để người giải ngân, và không có tool nào chuyển được tiền; nếu có tool chuyển tiền thì người phải duyệt từng lời gọi. Luật trong prompt không bảo đảm. Email xác nhận từ bên ngoài là nội dung không tin cậy, dễ bị prompt injection. Giới hạn số tiền vẫn để agent tự chuyển tiền, trái chính sách. Nguồn: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+    ref: lessons/24-danh-gia-governance.html#hitl
+    status: active
+    difficulty: medium
+    tags: [payments, human-approval]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCARP-035
+    exams: { CCAR-P: D5 }
+    stem: "An IT agent asked to “clean up the shared drive” deleted folders it judged to be duplicates, including files colleagues still needed. Leadership still wants the agent to work autonomously on routine edits. Which policy BEST fits Anthropic's approach to agent autonomy and safety?"
+    options:
+      - "Require confirmation before every single action, including reading files and listing directories"
+      - "Allow local, reversible actions freely, but require confirmation before destructive or shared-impact ones"
+      - "Allow every action freely, but restore deleted folders from backup whenever someone complains"
+      - "Phrase future requests more precisely, since agents always act exactly as their users intend"
+    answer: [B]
+    explanation: "Khung phát triển agent an toàn của Anthropic dùng đúng ví dụ \"organize my files\": agent có thể xoá thứ nó cho là trùng lặp — agent không phải lúc nào cũng hành động như con người muốn, nên con người cần giữ quyền kiểm soát với quyết định rủi ro cao. Doc prompting gợi ý: khuyến khích hành động cục bộ, đảo ngược được (sửa file, chạy test), nhưng hỏi trước hành động khó đảo ngược, ảnh hưởng hệ thống dùng chung hoặc mang tính phá huỷ (xoá file, force-push, gửi tin). Hỏi cho mọi thao tác làm mất tự chủ. Khôi phục sau khi có khiếu nại là phản ứng muộn. Giả định agent luôn hiểu đúng ý là sai. Nguồn: https://www.anthropic.com/news/our-framework-for-developing-safe-and-trustworthy-agents ; https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+    ref: lessons/24-danh-gia-governance.html#hitl
+    status: active
+    difficulty: medium
+    tags: [autonomy, reversibility]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCARP-036
+    exams: { CCAR-P: D5, CCDV-F: D7 }
+    stem: "A support agent reads inbound emails and attachments through tools before proposing actions. Untrusted content already arrives only in tool results, and the system prompt states that tool content is data, not instructions. The security team wants one more layer that catches injected instructions before Claude acts on them. Which addition fits Anthropic's guidance?"
+    options:
+      - "Move the email bodies from tool results into the system prompt, where Claude weighs content most"
+      - "Append your own safety instructions inside each tool result, so Claude reads them after the email"
+      - "Concatenate the email text into the user message without delimiters, so formatting hides nothing"
+      - "Pass each raw tool output to a small classifier call with structured output, forwarding only clean content"
+    answer: [D]
+    explanation: "Doc mitigate jailbreaks (indirect prompt injection): ngoài việc chỉ đặt nội dung không tin cậy trong tool_result, nêu chính sách trong system prompt, JSON-encode và cấp quyền tối thiểu, nên sàng lọc output của tool: đưa output thô vào một lời gọi phân loại nhỏ (model nhẹ, structured output trả về boolean) và chỉ trả nội dung về dưới dạng tool_result khi không nghi có injection; coi refusal của bộ lọc như kết quả nguy hiểm. Đưa nội dung lạ vào system prompt đảo ngược ranh giới tin cậy. Lệnh của bạn đặt trong tool result có thể bị bỏ qua hoặc bị coi là injection. Nối chuỗi không phân tách làm mờ ranh giới dữ liệu. Nguồn: https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/mitigate-jailbreaks"
+    ref: lessons/08-bao-mat.html#injection
+    status: active
+    difficulty: hard
+    tags: [prompt-injection, tool-results]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCARP-037
+    exams: { CCAR-P: D6 }
+    stem: "A company runs long-lived research agents whose sessions last up to two hours and hold state between tool calls. A prompt and tool update must ship this week without breaking sessions that are already in progress. Which rollout approach fits BEST?"
+    options:
+      - "A single cutover that restarts every running agent on the new version during a quiet hour"
+      - "A rainbow deployment that gradually shifts traffic to the new version while old sessions finish"
+      - "An in-place update that swaps the new prompt into each running session at the same moment"
+      - "A freeze on all agent updates until no sessions are running anywhere in the system at all"
+    answer: [B]
+    explanation: "Bài multi-agent research: agent có trạng thái và có thể đang ở giữa quy trình khi bản cập nhật ra mắt, nên không thể cập nhật tất cả cùng lúc. Anthropic dùng rainbow deployment: chuyển dần traffic từ phiên bản cũ sang mới trong khi cả hai cùng chạy, để không làm gián đoạn agent đang chạy. Restart đồng loạt làm mất tiến độ đang dở. Thay prompt giữa phiên tạo trạng thái lai không nhất quán. Đóng băng chờ tới lúc không còn phiên nào là không thực tế với hệ chạy liên tục. Nguồn: https://www.anthropic.com/engineering/multi-agent-research-system"
+    ref: lessons/25-ben-lien-quan-van-hanh.html#vong-doi
+    status: active
+    difficulty: hard
+    tags: [deployment, stateful-agents]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCARP-038
+    exams: { CCAR-P: D6 }
+    stem: "An enterprise uses the same Claude model through the Claude API for one product and through Amazon Bedrock for another. Its lifecycle plan applies the retirement date shown on Anthropic's model deprecations page to both products. What is the main gap in this plan?"
+    options:
+      - "Bedrock models never retire, so only the Claude API product needs a migration plan at all"
+      - "Retirement dates apply only to prompt formats, so neither product needs to change its model ID"
+      - "Bedrock sets its own retirement schedule, so dates must be checked in that platform's model table"
+      - "The deprecations page lists dates only for Bedrock, so the Claude API date is still unknown"
+    answer: [C]
+    explanation: "Trang model deprecations: các ngày trên trang áp dụng cho nền tảng do Anthropic vận hành (Claude API và các nền tảng Anthropic quản lý); nền tảng do đối tác vận hành, như Amazon Bedrock hay Google Cloud bản do Google quản lý, tự đặt lịch retire, nên trạng thái và ngày của cùng một model có thể khác. Model đã retire thì request thất bại, vì vậy mỗi nền tảng cần lịch chuyển đổi riêng, kiểm theo bảng model của nền tảng đó. Các phương án còn lại đều mô tả sai cách vòng đời model vận hành. Nguồn: https://platform.claude.com/docs/en/about-claude/model-deprecations"
+    ref: lessons/25-ben-lien-quan-van-hanh.html#vong-doi
+    status: active
+    difficulty: medium
+    tags: [model-lifecycle, cloud-platforms]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCARP-039
+    exams: { CCAR-P: D6 }
+    stem: "Anthropic has emailed that a model your organization uses is deprecated, but dozens of services across teams call the Claude API and nobody knows which ones use that model. What is the quickest way to find them, following Anthropic's deprecation guidance?"
+    options:
+      - "Export usage from the Claude Console Usage page and review it by API key and model"
+      - "Wait for the retirement date, then fix whichever services start returning errors"
+      - "Ask Anthropic support to switch the deprecated model ID to its replacement for you"
+      - "Search team chat channels for the model name, then contact the people who mention it"
+    answer: [A]
+    explanation: "Trang model deprecations hướng dẫn audit: vào trang Usage trong Claude Console, bấm Export, xem file CSV phân theo API key và model để tìm nơi còn dùng model deprecated, rồi ưu tiên cập nhật trước ngày retire và test model thay thế sớm. Chờ tới ngày retire là để sự cố xảy ra, vì request tới model đã retire sẽ thất bại. Anthropic không tự đổi model ID trong code của bạn. Tìm trong kênh chat vừa chậm vừa không đầy đủ. Nguồn: https://platform.claude.com/docs/en/about-claude/model-deprecations"
+    ref: lessons/25-ben-lien-quan-van-hanh.html#vong-doi
+    status: active
+    difficulty: easy
+    tags: [model-lifecycle, usage-audit]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCARP-040
+    exams: { CCAR-P: D6 }
+    stem: "During discovery for a social-media sentiment classifier, the sponsor's only stated goal is “the model should classify sentiment well.” The architect must turn this into success criteria that the team can test and the sponsor can sign off. Which statement is BEST?"
+    options:
+      - "The model should classify sentiment well and consistently, as judged by the sponsor during a live demo"
+      - "On a held-out set of 10,000 posts: F1 of at least 0.85, 99.5% non-toxic outputs, 95% of responses under 200 ms"
+      - "The model should reach 100% accuracy on every post, so that no manual review is ever needed again"
+      - "The model should beat every competitor's classifier on public benchmarks before it is allowed to launch"
+    answer: [B]
+    explanation: "Doc define success criteria: tiêu chí tốt phải cụ thể, đo được, khả thi và liên quan; đa số use case cần đánh giá nhiều chiều. Ví dụ \"tốt\" của chính Anthropic: trên tập held-out 10.000 bài đăng, F1 tối thiểu 0,85, 99,5% output không độc hại, 95% thời gian phản hồi dưới 200 ms. \"Phân loại tốt\" theo cảm nhận trong demo là mơ hồ, không đo được. 100% không khả thi với năng lực model hiện tại. Benchmark công khai không gắn với dữ liệu và mục tiêu của chính doanh nghiệp. Nguồn: https://platform.claude.com/docs/en/test-and-evaluate/define-success"
+    ref: lessons/25-ben-lien-quan-van-hanh.html#discovery
+    status: active
+    difficulty: medium
+    tags: [success-criteria, discovery]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCARP-041
+    exams: { CCAR-P: D6 }
+    stem: "Before approving production launch of a customer-facing agent, the privacy office objects to engineers reading individual conversations, while the engineering lead needs to diagnose why the agent fails. Which monitoring approach BEST satisfies both stakeholders?"
+    options:
+      - "Trace agent decision patterns and interaction structure without monitoring conversation contents"
+      - "Give all engineers raw transcript access, with a policy asking them to read only failing ones"
+      - "Disable production tracing, and rely on customer complaints to reveal failures in agent behavior"
+      - "Store full transcripts indefinitely in a separate bucket, opened only after a major incident"
+    answer: [A]
+    explanation: "Bài multi-agent research: Anthropic dùng production tracing đầy đủ để chẩn đoán vì sao agent thất bại, theo dõi mẫu quyết định và cấu trúc tương tác của agent mà không giám sát nội dung từng cuộc hội thoại, nhằm giữ quyền riêng tư của người dùng. Cách này đáp ứng cả nhu cầu debug lẫn yêu cầu của bộ phận privacy. Cấp quyền đọc transcript thô kèm lời dặn không phải kiểm soát thật. Tắt tracing làm mất khả năng chẩn đoán. Lưu transcript vô thời hạn đi ngược nguyên tắc tối thiểu hoá dữ liệu. Nguồn: https://www.anthropic.com/engineering/multi-agent-research-system"
+    ref: lessons/23-tich-hop.html#quan-sat
+    status: active
+    difficulty: medium
+    tags: [observability, privacy]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCARP-042
+    exams: { CCAR-P: D6 }
+    stem: "A CFO asks why the new multi-agent “deep research” feature costs far more per query than the existing chat assistant, and whether it should become the default for every query. What is the BEST response from the architect?"
+    options:
+      - "Multi-agent runs use about the same tokens as chat, so the extra cost must come from a billing error"
+      - "Multi-agent runs always beat chat on quality, so they should become the default for every query"
+      - "Multi-agent runs use many times the tokens of chat, so reserve them for tasks valuable enough to pay for it"
+      - "Multi-agent runs cost more only at launch, since token usage falls once prompt caches have warmed up"
+    answer: [C]
+    explanation: "Theo bài multi-agent research, agent thường dùng khoảng 4 lần token so với chat, còn hệ multi-agent khoảng 15 lần; vì vậy multi-agent chỉ khả thi về kinh tế với nhiệm vụ có giá trị đủ cao để trả cho hiệu năng tăng thêm. Truyền đạt với bên tài chính nên gắn chi phí với giá trị và chọn đúng loại truy vấn, không bật mặc định cho mọi câu hỏi. Đây không phải lỗi hoá đơn. Multi-agent không luôn tốt hơn (kém hợp với việc cần chung context hoặc phụ thuộc chặt). Cache không xoá bỏ hệ số token đó. Nguồn: https://www.anthropic.com/engineering/multi-agent-research-system"
+    ref: lessons/25-ben-lien-quan-van-hanh.html#truyen-dat
+    status: active
+    difficulty: medium
+    tags: [cost, multi-agent]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCARP-043
+    exams: { CCAR-P: D6 }
+    stem: "A quarterly lifecycle review finds that one production model is marked “Legacy” and another “Deprecated” on Anthropic's model deprecations page. How should the architect describe these two states to business stakeholders?"
+    options:
+      - "Legacy gets no further updates and may be deprecated later; Deprecated has a replacement and a retirement date"
+      - "Legacy requests already fail, while Deprecated models keep working indefinitely with full support"
+      - "Both states mean the model is retired, so both systems must switch models before the next request"
+      - "Legacy and Deprecated are the same state, used interchangeably on different documentation pages"
+    answer: [A]
+    explanation: "Vòng đời model theo trang deprecations: Active (hỗ trợ đầy đủ, được khuyến nghị); Legacy (không còn được cập nhật, có thể bị deprecate trong tương lai); Deprecated (vẫn chạy nhưng không còn khuyến nghị, có model thay thế và ngày retire; thường kém tin cậy hơn model active); Retired (không dùng được nữa, request thất bại). Vì vậy hệ dùng model Deprecated cần kế hoạch chuyển trước ngày retire, còn hệ dùng model Legacy cần theo dõi và chuẩn bị đánh giá model thay thế. Anthropic báo trước ít nhất 60 ngày với model công khai. Nguồn: https://platform.claude.com/docs/en/about-claude/model-deprecations"
+    ref: lessons/25-ben-lien-quan-van-hanh.html#vong-doi
+    status: active
+    difficulty: medium
+    tags: [model-lifecycle, stakeholders]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCARP-044
+    exams: { CCAR-P: D6 }
+    stem: "An executive sponsor asks why the architecture review chose a fixed, code-orchestrated workflow instead of a fully autonomous agent for a well-defined invoice-matching process. Which justification is MOST accurate to share?"
+    options:
+      - "Workflows give predictability for well-defined tasks; an agent would add cost and compounding-error risk"
+      - "Agents cannot call tools reliably, so a workflow is the only way to reach the accounting system"
+      - "Workflows always produce more accurate results than agents, however the task happens to be structured"
+      - "Agents are not supported on the Claude API, so the review had no choice except to build a workflow"
+    answer: [A]
+    explanation: "Building effective agents: workflow mang lại tính dự đoán được và nhất quán cho nhiệm vụ đã xác định rõ; agent hợp khi cần linh hoạt và quyết định do model dẫn dắt ở quy mô lớn; tính tự chủ của agent kéo theo chi phí cao hơn và khả năng lỗi cộng dồn. Giải thích quyết định bằng đặc điểm của bài toán và đánh đổi là cách truyền đạt kiến trúc đúng với stakeholder. Các phương án còn lại dựa trên khẳng định sai sự thật hoặc tuyệt đối hoá. Nguồn: https://www.anthropic.com/engineering/building-effective-agents"
+    ref: lessons/25-ben-lien-quan-van-hanh.html#truyen-dat
+    status: active
+    difficulty: easy
+    tags: [architecture-decisions, communication]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCARP-045
+    exams: { CCAR-P: D7, CCAR-F: D3 }
+    stem: "A platform team wants Claude Code to run unattended with `--dangerously-skip-permissions` inside the team's dev container for long refactoring jobs on trusted repositories. Which TWO configuration choices follow Anthropic's dev container guidance? (Choose TWO.)"
+    options:
+      - "Mount the host's `~/.ssh` folder so git works without extra setup"
+      - "Run Claude Code as a non-root `remoteUser` inside the container"
+      - "Mount host cloud credential files so deployment commands can run"
+      - "Run the container as root so every command has the access it needs"
+      - "Restrict the container's network egress to an allowlist of domains"
+    answer: [B, E]
+    explanation: "Doc dev container: vì container chạy Claude Code bằng user không phải root và giới hạn việc thực thi lệnh bên trong container, có thể dùng --dangerously-skip-permissions để chạy không giám sát; CLI từ chối cờ này khi chạy bằng root. Nên kết hợp giới hạn egress (ví dụ firewall allowlist trong container tham chiếu) để hạn chế những gì phiên bỏ qua quyền có thể truy cập. Doc cảnh báo: với cờ này, container không ngăn dự án độc hại lấy cắp mọi thứ có trong container, kể cả credential của Claude Code; vì vậy không mount secret của host như ~/.ssh hay file credential cloud, ưu tiên token ngắn hạn theo repo và chỉ dùng với repo tin cậy. Nguồn: https://code.claude.com/docs/en/devcontainer"
+    ref: lessons/25-ben-lien-quan-van-hanh.html#claude-code-doi
+    status: active
+    difficulty: medium
+    tags: [devcontainer, claude-code]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCARF-001
+    exams: { CCAR-F: D1, CCDV-F: D1 }
+    scenario: S3
+    stem: "In a multi-agent research system built with the Claude Agent SDK, the coordinator's system prompt says “Cite only peer-reviewed sources and include a DOI for each.” The literature-search subagent, defined with its own `AgentDefinition`, keeps returning blog posts without DOIs. What is the MOST likely cause and fix?"
+    options:
+      - "Subagents inherit the parent's system prompt, so restate the rule more forcefully for the coordinator"
+      - "Subagents read the parent's system prompt only after many turns, so raise the subagent's maxTurns"
+      - "Subagents inherit the parent's system prompt with its tools, so give it every tool the coordinator has"
+      - "Subagents do not receive the parent's system prompt, so put the citation rule in the subagent's own prompt"
+    answer: [D]
+    explanation: "Agent SDK: subagent (không phải fork) bắt đầu với context mới — nhận system prompt riêng (AgentDefinition.prompt), chuỗi prompt của Agent tool, CLAUDE.md của dự án và định nghĩa tool; không nhận lịch sử hội thoại, kết quả tool hay system prompt của parent. Vì vậy ràng buộc chất lượng như yêu cầu trích dẫn phải nằm trong prompt của subagent (hoặc trong prompt giao việc). Nhấn mạnh hơn ở coordinator không truyền xuống được. maxTurns chỉ giới hạn số lượt. Tool không mang theo system prompt của parent. Nguồn: https://code.claude.com/docs/en/agent-sdk/subagents"
+    ref: lessons/03-agent.html#task
+    status: active
+    difficulty: medium
+    tags: [subagents, context-passing]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCARF-002
+    exams: { CCAR-F: D1, CCDV-F: D1 }
+    scenario: S4
+    stem: "A developer-productivity agent built with the Claude Agent SDK audits repositories and spawns several subagents per query. A few open-ended prompts recently ran up very large bills. The team wants a hard ceiling on spend per query, subagents included, while keeping subagents available. What should they configure?"
+    options:
+      - "Set max_budget_usd on the query; subagent spend counts toward it, and the run ends at the cap"
+      - "Set max_turns on the main agent, which also bounds every token spent inside its subagents"
+      - "Lower the effort setting, which enforces a fixed dollar ceiling for each query it applies to"
+      - "Remove the Agent tool, so that the agent can no longer start subagents for any of its queries"
+    answer: [A]
+    explanation: "Doc agent loop: max_budget_usd (maxBudgetUsd) dừng vòng lặp khi chi phí ước tính chạm ngưỡng và tính cả chi phí của subagent; khi chạm trần, việc spawn subagent mới bị từ chối và kết quả có subtype error_max_budget_usd (nên chừa headroom vì phản hồi cuối có thể vượt một chút). Doc coi đặt budget là mặc định tốt cho agent production. max_turns chỉ đếm lượt của vòng lặp chính, không phải trần tiền. Effort giảm token mỗi lượt nhưng không phải trần cứng. Bỏ Agent tool làm mất subagent mà đề yêu cầu giữ. Nguồn: https://code.claude.com/docs/en/agent-sdk/agent-loop ; https://code.claude.com/docs/en/agent-sdk/subagents"
+    ref: lessons/03-agent.html#vong-lap
+    status: active
+    difficulty: medium
+    tags: [agent-sdk, cost-control]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCARF-003
+    exams: { CCAR-F: D1, CCDV-F: D1 }
+    scenario: S5
+    stem: "A CI job runs a Claude Agent SDK query with `max_turns=10` to fix failing tests. On large changes the job crashes in post-processing, because the script always reads the `result` field of the final `ResultMessage`. What is the BEST way to handle this?"
+    options:
+      - "Read the result field anyway, because on error subtypes it holds the partial answer produced so far"
+      - "Remove max_turns entirely, because Anthropic advises against loop limits for production agents"
+      - "Rerun the whole task in a new session with the same limit until one attempt happens to finish"
+      - "Check the result subtype first; on error_max_turns, resume the saved session with a higher turn limit"
+    answer: [D]
+    explanation: "Doc agent loop: khi chạm giới hạn, SDK trả ResultMessage có subtype error_max_turns; trường result chỉ có ở subtype success, nên phải kiểm tra subtype trước khi đọc. Mọi subtype vẫn mang session_id, chi phí và num_turns, nên có thể resume phiên với giới hạn cao hơn — đúng như ví dụ trong doc. Bỏ hẳn giới hạn đi ngược khuyến nghị đặt giới hạn cho agent production. Chạy lại từ đầu với cùng giới hạn vừa lãng phí công việc đã làm vừa dễ chạm giới hạn lần nữa. Nguồn: https://code.claude.com/docs/en/agent-sdk/agent-loop"
+    ref: lessons/03-agent.html#vong-lap
+    status: active
+    difficulty: hard
+    tags: [agent-sdk, result-handling]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCARF-004
+    exams: { CCAR-F: D1, CCDV-F: D1 }
+    scenario: S5
+    stem: "A CI pipeline runs the Claude Agent SDK with `permission_mode=\"bypassPermissions\"` and `allowed_tools=[\"Read\", \"Grep\"]`, expecting a read-only review job. Audit logs show the agent also ran Bash commands. What explains this, and what is the correct fix?"
+    options:
+      - "allowed_tools is ignored in CI runs, so the read-only rule must move into the system prompt instead"
+      - "Read implicitly grants shell access in CI, so remove Read and keep only Grep in the allowed list"
+      - "bypassPermissions applies only to listed tools, so the Bash calls must have come from another job"
+      - "allowed_tools only pre-approves tools and does not limit bypass mode; block Bash with disallowed_tools"
+    answer: [D]
+    explanation: "Doc permissions: allowed_tools chỉ tự phê duyệt các tool được liệt kê; tool khác vẫn tồn tại. Ở chế độ bypassPermissions, lời gọi tới tool không liệt kê cũng được duyệt (trừ vài hành động không chế độ nào tự duyệt). Muốn chặn hẳn hãy dùng disallowed_tools (bỏ định nghĩa Bash khỏi request) hoặc deny rule — deny áp dụng cả trong bypass; với job chỉ đọc, doc gợi ý dontAsk kèm allow list tối thiểu. Lời dặn trong prompt không phải cơ chế kiểm soát. Read không cấp quyền shell. Nguồn: https://code.claude.com/docs/en/agent-sdk/permissions"
+    ref: lessons/03-agent.html#hook-sdk
+    status: active
+    difficulty: hard
+    tags: [agent-sdk, permissions]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCARF-005
+    exams: { CCAR-F: D1, CCDV-F: D1 }
+    scenario: S1
+    stem: "A customer-support agent built with the Claude Agent SDK checks refund amounts inside its `canUseTool` callback and denies refunds above $500. To reduce approval prompts, an engineer added `process_refund` to `allowedTools`. Since then, a $900 refund went through without the check. What is the BEST fix?"
+    options:
+      - "Switch to bypassPermissions, so that every refund call is routed through the canUseTool callback"
+      - "Move the amount check into a PreToolUse hook, which also runs for calls that allow rules approve"
+      - "Add the $500 limit to the system prompt, so that the model calls canUseTool itself before refunds"
+      - "Keep the allow rule and raise max_turns, so the callback has enough turns to run before refunds"
+    answer: [B]
+    explanation: "Doc permissions: thứ tự đánh giá là hooks → deny rules → ask rules → permission mode → allow rules → canUseTool. Lời gọi đã được tự phê duyệt ở bước trước (allow rule, acceptEdits hay bypassPermissions) không bao giờ tới canUseTool, nên kiểm tra đặt ở đó bị bỏ qua âm thầm. Doc khuyên dùng PreToolUse hook, vốn chạy cả cho các lời gọi đó, và lệnh deny của hook áp dụng cả ở bypassPermissions (hoặc bỏ process_refund khỏi allowedTools). bypassPermissions càng bỏ qua callback nhiều hơn. Prompt không cưỡng chế được. max_turns không liên quan. Nguồn: https://code.claude.com/docs/en/agent-sdk/permissions"
+    ref: lessons/03-agent.html#hook-sdk
+    status: active
+    difficulty: hard
+    tags: [agent-sdk, hooks]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCARF-006
+    exams: { CCAR-F: D1 }
+    scenario: S3
+    stem: "In a multi-agent research system, each subagent returns its full findings (often 20+ pages) to the coordinator, which rewrites them into a brief for the report-writing subagent. Reports lose details, and the coordinator's context fills quickly. Which redesign does Anthropic's multi-agent research guidance support?"
+    options:
+      - "Ask the coordinator to paraphrase each subagent's findings more carefully before passing them on"
+      - "Fork every subagent from the coordinator's full context, so that no information can be dropped"
+      - "Have subagents store outputs in an external system and pass lightweight references to the coordinator"
+      - "Merge every subagent into the coordinator, so that all search results land in one context window"
+    answer: [C]
+    explanation: "Bài multi-agent research: để tránh \"trò chơi tam sao thất bản\" khi mọi thứ phải đi qua coordinator, subagent gọi tool lưu kết quả vào hệ thống bên ngoài (filesystem, artifact) rồi chỉ trả về tham chiếu nhẹ; agent phía sau đọc trực tiếp, vừa giữ độ trung thực vừa tiết kiệm token. Diễn giải kỹ hơn vẫn làm mất chi tiết. Fork mang toàn bộ context vào mỗi subagent làm phình context. Gộp hết vào coordinator đánh mất lợi ích tách context của subagent. Nguồn: https://www.anthropic.com/engineering/multi-agent-research-system"
+    ref: lessons/03-agent.html#coordinator
+    status: active
+    difficulty: medium
+    tags: [multi-agent, artifacts]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCARF-007
+    exams: { CCAR-F: D1 }
+    scenario: S3
+    stem: "A lead research agent runs for hours. When its context approaches the limit and older turns are summarized, it loses its original research plan and starts re-planning work that subagents have already finished. Which change does Anthropic's multi-agent research guidance support?"
+    options:
+      - "Disable summarization, so that the original plan always stays in the lead agent's context window"
+      - "Restart the whole research task from the beginning whenever the lead agent's context fills up"
+      - "Shorten the research plan to a single sentence, so that summarization is more likely to keep it"
+      - "Have the lead agent save its plan to external memory early, and retrieve it after context resets"
+    answer: [D]
+    explanation: "Bài multi-agent research: lead agent bắt đầu bằng việc lập kế hoạch và lưu kế hoạch vào Memory để giữ lại ngữ cảnh; khi hội thoại kéo dài và gần giới hạn context, agent lấy lại ngữ cảnh đã lưu như kế hoạch nghiên cứu thay vì mất công việc đã làm, và có thể sinh subagent mới với context sạch để bàn giao. Tắt tóm tắt sẽ làm tràn context. Làm lại từ đầu lãng phí kết quả của subagent. Rút kế hoạch còn một câu làm mất chi tiết cần cho điều phối. Nguồn: https://www.anthropic.com/engineering/multi-agent-research-system"
+    ref: lessons/03-agent.html#memory
+    status: active
+    difficulty: medium
+    tags: [multi-agent, memory]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCARF-008
+    exams: { CCAR-F: D1 }
+    scenario: S2
+    stem: "A team uses Claude Code to build a web app across many sessions. Early sessions try to build everything at once and leave half-finished features; later sessions see the existing code and declare the project complete while many features are still broken. Which harness design does Anthropic recommend?"
+    options:
+      - "One very long session with a larger output limit, so that the whole app is built in a single pass"
+      - "A Markdown feature list that each session rewrites freely to reflect its current view of the scope"
+      - "An initializer session writes a JSON feature list marked failing; later sessions finish one feature at a time"
+      - "Each session judges completion by reviewing the code it wrote, without running the app end to end"
+    answer: [C]
+    explanation: "Bài effective harnesses: hai kiểu thất bại là agent cố làm cả ứng dụng một lần, và phiên sau thấy đã có tiến triển rồi tuyên bố xong quá sớm. Cách khắc phục: phiên initializer với prompt riêng dựng môi trường (init.sh, file tiến độ claude-progress.txt, commit git đầu tiên, danh sách tính năng JSON mỗi mục có trường passes); các phiên coding chỉ làm một tính năng mỗi lần, kiểm tra end-to-end (ví dụ bằng browser automation) rồi mới đổi passes, không được xoá hay sửa test. Model ít ghi đè sai file JSON hơn Markdown. Một phiên dài không giải quyết; tự đánh giá bằng đọc code bỏ qua kiểm thử thật. Nguồn: https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents"
+    ref: lessons/03-agent.html#phien
+    status: active
+    difficulty: medium
+    tags: [long-running, harness]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCARF-009
+    exams: { CCAR-F: D2, CCDV-F: D8 }
+    scenario: S1
+    stem: "A customer-support agent's `lookup_customer` tool returns the full 40-field record, including internal UUIDs, MIME types and image URLs. The agent often passes the wrong identifier to follow-up tools, and its context fills quickly on long cases. Which tool redesign follows Anthropic's guidance?"
+    options:
+      - "Return the complete raw record, so that the agent never lacks a field it might need at a later step"
+      - "Return high-signal fields with meaningful identifiers, plus a response_format option for concise or detailed"
+      - "Split the record into 40 single-field tools, so that the agent requests only one field at a time"
+      - "Shorten the tool description, so that the agent spends fewer tokens reading about the tool itself"
+    answer: [B]
+    explanation: "Writing tools for agents: tool nên trả thông tin có tín hiệu cao, tránh định danh kỹ thuật cấp thấp (uuid, mime_type, URL ảnh); chuyển UUID khó hiểu thành ngôn ngữ hoặc định danh có nghĩa giúp agent truy xuất chính xác hơn; có thể thêm tham số enum response_format (concise hoặc detailed) để agent chọn mức chi tiết và tiết kiệm token. Trả nguyên bản ghi làm phình context. 40 tool một trường làm tăng số lời gọi và nhầm lẫn. Rút ngắn mô tả không giải quyết output nhiễu. Nguồn: https://www.anthropic.com/engineering/writing-tools-for-agents"
+    ref: lessons/04-tool-mcp.html#mo-ta-tool
+    status: active
+    difficulty: medium
+    tags: [tool-design, tool-responses]
+    created: 2026-11-18
+    reviewed: 2026-11-18
+  - id: AI-CCARF-010
+    exams: { CCAR-F: D4, CCDV-F: D6 }
+    scenario: S1
+    stem: "A voice-based customer-support agent's replies are converted to speech. The system prompt says “NEVER use ellipses,” but ellipses still appear now and then, and the speech engine mispronounces them. Which prompt change does Anthropic's prompting guidance suggest?"
+    options:
+      - "Repeat the rule in capital letters at both the start and the end of the system prompt"
+      - "Replace the rule with a long list of every punctuation mark that replies must not use"
+      - "Explain why: replies are read aloud by a speech engine that cannot pronounce ellipses"
+      - "Move the rule out of the system prompt and into a reminder added to every user turn"
+    answer: [C]
+    explanation: "Doc prompting best practices: cung cấp ngữ cảnh hoặc động cơ đằng sau chỉ dẫn — giải thích vì sao hành vi đó quan trọng — giúp Claude hiểu mục tiêu và phản hồi đúng hơn. Ví dụ chính trong doc: thay \"NEVER use ellipses\" bằng giải thích rằng câu trả lời sẽ được engine text-to-speech đọc to nên không dùng dấu ba chấm vì engine không biết đọc; Claude khái quát hoá được từ lời giải thích. Viết hoa và lặp lại không thêm thông tin. Danh sách cấm dài gây nhiễu. Dời vị trí không bù được lý do còn thiếu. Nguồn: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+    ref: lessons/06-prompt-output.html#cau-truc-prompt
+    status: active
+    difficulty: easy
+    tags: [prompting, context]
+    created: 2026-11-18
+    reviewed: 2026-11-18

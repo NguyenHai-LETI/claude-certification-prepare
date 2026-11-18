@@ -1,0 +1,74 @@
+id: fixture
+title: Bộ câu kiểm thử
+origin: manual
+description: Câu nhỏ cho test.
+questions:
+  - id: F01
+    exams: { CCDV-F: D2, CCAR-F: D4 }
+    scenario: S6
+    stem: "A response ends with `stop_reason` = `max_tokens`. What is the most appropriate fix?"
+    options:
+      - Retry the identical request until it is not truncated.
+      - Raise `max_tokens` for this route, or ask the model to continue.
+      - Add "keep answers short" to the system prompt.
+      - Switch to streaming, which removes the output limit.
+    answer: [B]
+    explanation: "max_tokens nghĩa là câu trả lời bị cắt vì chạm giới hạn đã đặt; tăng giới hạn hoặc yêu cầu viết tiếp. Gửi lại y hệt vẫn bị cắt."
+    ref: lessons/01-api.html#stop-reason
+  - id: F02
+    exams: { CCDV-F: D2 }
+    stem: "Which TWO errors should a client retry with backoff? (Choose two.)"
+    options:
+      - HTTP 429 rate_limit_error
+      - HTTP 400 invalid_request_error
+      - HTTP 529 overloaded_error
+      - HTTP 401 authentication_error
+    answer: [A, C]
+    explanation: "429 và 529 là lỗi tạm thời nên retry kèm exponential backoff; 400 và 401 là lỗi của chính request / khoá, gửi lại không giúp gì."
+    ref: lessons/01-api.html#loi-http
+  - id: F03
+    exams: { CCAR-F: D1 }
+    scenario: S1
+    stem: A support agent must escalate refunds above a limit. Where should the limit be enforced?
+    options:
+      - In the system prompt only.
+      - In a tool-side check the agent cannot bypass.
+      - In the user message.
+      - Nowhere; trust the model.
+    answer: B
+    explanation: "Ràng buộc nghiệp vụ quan trọng phải được kiểm ở phía tool/code, không chỉ dựa vào prompt; prompt có thể bị bỏ qua."
+    ref: lessons/01-api.html#tong-quan
+  - id: F04
+    exams: { CCAO-F: D1 }
+    stem: Đây là câu nháp, không phục vụ trong bài test.
+    options: [Một, Hai]
+    answer: [A]
+    status: draft
+    explanation: "Câu nháp dùng để kiểm tra rằng status draft không được đưa vào bài test của app."
+    ref: lessons/01-api.html
+  - id: F05
+    exams: { CCAO-F: D1 }
+    stem: Câu đã nghỉ hưu.
+    options: [Một, Hai]
+    answer: [A]
+    status: retired
+    explanation: "Câu retired bị ẩn khỏi bài test và khỏi danh sách ngân hàng mặc định của app."
+    ref: lessons/01-api.html
+  - id: F06
+    exams: { CCAO-F: D9 }
+    stem: Broken domain.
+    options: [A1, B1]
+    answer: [A]
+    explanation: x
+  - id: F01
+    exams: { CCAO-F: D1 }
+    stem: Duplicate id.
+    options: [A1, B1]
+    answer: [A]
+    explanation: x
+  - id: F07
+    exams: { CCAO-F: D2 }
+    stem: Key outside options.
+    options: [A1, B1]
+    answer: [C]
+    explanation: x

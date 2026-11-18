@@ -1,0 +1,26 @@
+# Test fixture config (tests copy this tree to a temp dir).
+server:
+  port: 0
+  lan: false
+  public_hosts: ["surreal-magnesium-mug.ngrok-free.dev"]
+public:
+  ngrok_domain: "surreal-magnesium-mug.ngrok-free.dev"
+  check_seconds: 60
+scoring:
+  pass_pct: 72
+  review_streak: 2
+practice:
+  shuffle_options: true
+  default_count: 5
+ai:
+  claude_path: ""
+  model: ""
+  ask_model: ""
+  sync_before: false
+  sync_after: false
+sync:
+  enabled: false
+  data_paths: [claude-cert/results, claude-cert/coach, claude-cert/bank]
+  auto: off
+  auto_delay_minutes: 3
+  remote: origin

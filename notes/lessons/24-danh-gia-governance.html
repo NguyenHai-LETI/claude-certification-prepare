@@ -1,0 +1,490 @@
+<p class="lesson-source">Nguồn: tài liệu ôn tập công khai <a href="https://claude.ai/artifact/3NhHr42CxTHGEs33N1ntFf" target="_blank" rel="noopener">artifact 3NhHr42…</a> (bài 24). Không thuộc và không được Anthropic xác nhận.</p>
+<header class="cover">
+  <div class="eyebrow">Luyện thi chứng chỉ Claude · Bài 24</div>
+  <h1>Đánh giá, tối ưu và governance <span class="ja">CCAR-P · D4 Evaluation, Testing &amp; Optimization · D5 Governance, Safety &amp; Risk</span></h1>
+  <p class="lead">Chỉ số đánh giá, bộ dữ liệu và grader, A/B test, chẩn đoán sự cố, tối ưu token, độ trễ, chi phí; guardrail nhiều lớp, rủi ro và kiểu thất bại, human-in-the-loop, GDPR, HIPAA, FedRAMP, đạo đức.</p>
+  <dl class="meta">
+    <dt>Kỳ thi</dt><dd>CCAR-P D4 (16%) · D5 (14%)</dd>
+    <dt>Phục vụ</dt><dd><span class="tag xt1">CCDV-F</span> 4 mục · <span class="tag xt4">CCAR-P</span> 10 mục · <a href="#xsum">bảng nhãn từng mục</a></dd>
+
+    <dt>Nguồn</dt><dd>Exam guide CCAR-P v1.0; bài kỹ thuật Anthropic, MCP security và authorization, tài liệu platform.claude.com, code.claude.com (tra 17/11/2026)</dd>
+    <dt>Cập nhật</dt><dd><span class="status">v0.22 · 2026-11-18</span> · theo exam guide v1.0</dd>
+  </dl>
+</header>
+
+<details class="toc">
+<summary>Mục lục</summary>
+
+    <ol>
+      <li><a href="#chi-so"><span class="n">1</span><span class="tx">Chỉ số đánh giá</span><span class="xds" aria-hidden="true"><i class="xd xt4" title="CCAR-P"></i></span></a></li>
+      <li><a href="#bo-du-lieu"><span class="n">2</span><span class="tx">Bộ dữ liệu eval và phương pháp chấm</span><span class="xds" aria-hidden="true"><i class="xd xt4" title="CCAR-P"></i><i class="xd xt1" title="CCDV-F"></i></span></a></li>
+      <li><a href="#ab-test"><span class="n">3</span><span class="tx">A/B test và cải tiến lặp</span><span class="xds" aria-hidden="true"><i class="xd xt4" title="CCAR-P"></i></span></a></li>
+      <li><a href="#chan-doan"><span class="n">4</span><span class="tx">Chẩn đoán sự cố</span><span class="xds" aria-hidden="true"><i class="xd xt4" title="CCAR-P"></i><i class="xd xt1" title="CCDV-F"></i></span></a></li>
+      <li><a href="#toi-uu"><span class="n">5</span><span class="tx">Tối ưu token, độ trễ, chi phí</span><span class="xds" aria-hidden="true"><i class="xd xt4" title="CCAR-P"></i><i class="xd xt1" title="CCDV-F"></i></span></a></li>
+      <li><a href="#guardrail"><span class="n">6</span><span class="tx">Guardrail và kiểm soát an toàn</span><span class="xds" aria-hidden="true"><i class="xd xt4" title="CCAR-P"></i><i class="xd xt1" title="CCDV-F"></i></span></a></li>
+      <li><a href="#rui-ro"><span class="n">7</span><span class="tx">Rủi ro và kiểu thất bại của hệ LLM</span><span class="xds" aria-hidden="true"><i class="xd xt4" title="CCAR-P"></i></span></a></li>
+      <li><a href="#hitl"><span class="n">8</span><span class="tx">Chiến lược human-in-the-loop</span><span class="xds" aria-hidden="true"><i class="xd xt4" title="CCAR-P"></i></span></a></li>
+      <li><a href="#tuan-thu"><span class="n">9</span><span class="tx">Tuân thủ: GDPR, HIPAA, FedRAMP</span><span class="xds" aria-hidden="true"><i class="xd xt4" title="CCAR-P"></i></span></a></li>
+      <li><a href="#dao-duc"><span class="n">10</span><span class="tx">Đạo đức: thiên lệch, công bằng, minh bạch</span><span class="xds" aria-hidden="true"><i class="xd xt4" title="CCAR-P"></i></span></a></li>
+    </ol>
+
+</details>
+
+<details class="xsum" id="xsum">
+<summary>Mục nào phục vụ bài thi nào</summary>
+<p class="xnote">Mã đầu là bài thi chính của mục. <b>Nền</b>: cần để hiểu các mục sau. <b>Nâng cao</b>: ngoài phạm vi các exam guide. Ôn cho một bài thi thì đọc các mục có mã của bài đó trước.</p>
+<div class="tw"><table>
+<thead><tr><th>Mục</th><th>Bài thi</th><th>Ghi chú</th></tr></thead>
+<tbody>
+<tr><td><a href="#chi-so">1. Chỉ số đánh giá</a></td><td><span class="tag xt4">CCAR-P D4</span></td><td></td></tr>
+<tr><td><a href="#bo-du-lieu">2. Bộ dữ liệu eval và phương pháp chấm</a></td><td><span class="tag xt4">CCAR-P D4</span> <span class="tag xt1">CCDV-F D4</span></td><td></td></tr>
+<tr><td><a href="#ab-test">3. A/B test và cải tiến lặp</a></td><td><span class="tag xt4">CCAR-P D4</span></td><td></td></tr>
+<tr><td><a href="#chan-doan">4. Chẩn đoán sự cố</a></td><td><span class="tag xt4">CCAR-P D4</span> <span class="tag xt1">CCDV-F D4</span></td><td></td></tr>
+<tr><td><a href="#toi-uu">5. Tối ưu token, độ trễ, chi phí</a></td><td><span class="tag xt4">CCAR-P D4</span> <span class="tag xt1">CCDV-F D5</span></td><td></td></tr>
+<tr><td><a href="#guardrail">6. Guardrail và kiểm soát an toàn</a></td><td><span class="tag xt4">CCAR-P D5</span> <span class="tag xt1">CCDV-F D7</span></td><td></td></tr>
+<tr><td><a href="#rui-ro">7. Rủi ro và kiểu thất bại của hệ LLM</a></td><td><span class="tag xt4">CCAR-P D5</span></td><td></td></tr>
+<tr><td><a href="#hitl">8. Chiến lược human-in-the-loop</a></td><td><span class="tag xt4">CCAR-P D5</span></td><td></td></tr>
+<tr><td><a href="#tuan-thu">9. Tuân thủ: GDPR, HIPAA, FedRAMP</a></td><td><span class="tag xt4">CCAR-P D5</span></td><td></td></tr>
+<tr><td><a href="#dao-duc">10. Đạo đức: thiên lệch, công bằng, minh bạch</a></td><td><span class="tag xt4">CCAR-P D5</span></td><td></td></tr>
+</tbody></table></div>
+</details>
+
+<h2 id="chi-so">1. Chỉ số đánh giá</h2>
+<p class="xtags"><span class="tag xt4">CCAR-P D4</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Đánh giá một tài xế không chỉ nhìn "đến nơi chưa". Còn mất bao lâu, tốn bao nhiêu xăng, có vi phạm luật không, có để khách bỏ quên đồ không. Một chỉ số đẹp có thể che giấu chỉ số khác xấu.
+</div>
+<div class="tw"><table>
+  <thead><tr><th>Nhóm</th><th>Chỉ số ví dụ</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Chính xác, hoàn thành việc</strong></td><td>Tỷ lệ đúng theo grader, tỷ lệ việc hoàn thành, độ chính xác theo trường, theo loại tài liệu</td></tr>
+    <tr><td><strong>Độ trễ</strong></td><td>p50, p95, thời gian tới token đầu, thời gian hoàn thành việc agent</td></tr>
+    <tr><td><strong>Chi phí</strong></td><td>Chi phí trên mỗi việc hoàn thành, token theo route, tỷ lệ cache hit</td></tr>
+    <tr><td><strong>An toàn</strong></td><td>Tỷ lệ nội dung vi phạm chính sách, tỷ lệ từ chối sai (từ chối việc hợp lệ)</td></tr>
+    <tr><td><strong>Bảo mật</strong></td><td>Tỷ lệ tấn công prompt injection thành công trên bộ thử, lộ dữ liệu, hành động vượt quyền</td></tr>
+  </tbody>
+</table></div>
+<p>Với agent, phân biệt <strong>pass@k</strong> (ít nhất một trong k lần thử thành công: hợp khi được thử nhiều cách) và <strong>pass^k</strong> (cả k lần đều thành công: hợp khi cần nhất quán với khách hàng). Agent đúng 75% mỗi lần thì pass^3 chỉ còn khoảng 42%.</p>
+<div class="insight"><strong>Cốt lõi.</strong> Chọn chỉ số theo cam kết với người dùng (SLA) và theo rủi ro, đo nhiều chiều cùng lúc, chia theo nhóm để không bị trung bình che giấu.</div>
+<p><strong>Ví dụ chạy từng bước: bộ chỉ số cho agent hỗ trợ có quyền hoàn tiền.</strong></p>
+<ol>
+  <li>Chính xác: tỷ lệ ticket giải quyết đúng chính sách, chấm theo rubric; chia theo loại ticket.</li>
+  <li>Độ trễ: p95 thời gian tới token đầu và thời gian hoàn thành mỗi ticket.</li>
+  <li>Chi phí: chi phí trên mỗi ticket giải quyết được.</li>
+  <li>An toàn và bảo mật: tỷ lệ hoàn tiền sai quy tắc trên bộ thử (mục tiêu 0), tỷ lệ injection thành công trên bộ đối kháng.</li>
+  <li>Nhất quán: pass^3 trên các ca hoàn tiền, vì khách mong cùng câu hỏi được xử lý giống nhau.</li>
+</ol>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div>Báo cáo "độ chính xác tổng 97%" trong khi trường ngày hoá đơn sai 20% và một khách hàng lớn phàn nàn.</div>
+  <div class="box right"><div class="hd">Đúng</div>Chia độ chính xác theo trường và theo loại tài liệu; đặt ngưỡng riêng cho trường quan trọng.</div>
+</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>pass@k</dt><dd>Xác suất ít nhất một trong k lần thử thành công.</dd>
+  <dt>pass^k</dt><dd>Xác suất cả k lần thử đều thành công; đo sự nhất quán.</dd>
+</dl></div>
+
+<h2 id="bo-du-lieu">2. Bộ dữ liệu eval và phương pháp chấm</h2>
+<p class="xtags"><span class="tag xt4">CCAR-P D4</span> <span class="tag xt1">CCDV-F D4</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Một đề thi tốt có câu dễ để biết học sinh nắm nền, câu khó để phân loại, và câu bẫy để biết ai chỉ học vẹt. Giáo viên chấm trắc nghiệm bằng máy, chấm bài luận bằng tay theo thang điểm, và thỉnh thoảng hai giáo viên chấm chéo cùng một bài để xem thang điểm có rõ không.
+</div>
+<div class="tw"><table>
+  <thead><tr><th>Nguồn ca thử</th><th>Vai trò</th></tr></thead>
+  <tbody>
+    <tr><td>Mẫu lưu lượng thật (đã che PII)</td><td>Phản ánh đúng phân bố thực tế</td></tr>
+    <tr><td>Ca biên, ca khó, ca đã từng lỗi</td><td>Bắt hồi quy, tránh bộ eval toàn ca dễ</td></tr>
+    <tr><td>Ca đối kháng (injection, jailbreak, dữ liệu xấu)</td><td>Đo an toàn và bảo mật</td></tr>
+    <tr><td>Ca tổng hợp do model tạo</td><td>Tăng độ phủ nhanh; phải kiểm lại bằng người</td></tr>
+  </tbody>
+</table></div>
+<div class="tw"><table>
+  <thead><tr><th>Grader</th><th>Mạnh</th><th>Yếu</th></tr></thead>
+  <tbody>
+    <tr><td>Bằng code (khớp chính xác, regex, chạy test)</td><td>Nhanh, rẻ, ổn định, mở rộng tốt</td><td>Không chấm được sắc thái</td></tr>
+    <tr><td>Model chấm (LLM-as-judge) theo rubric</td><td>Chấm được tiêu chí chủ quan ở quy mô lớn</td><td>Cần hiệu chỉnh so với người; dễ thiên lệch nếu rubric mơ hồ</td></tr>
+    <tr><td>Người chấm</td><td>Chuẩn vàng cho chất lượng tinh tế</td><td>Chậm, đắt, khó lặp lại</td></tr>
+  </tbody>
+</table></div>
+<p>Phối hợp: code cho phần kiểm được bằng quy tắc, model chấm theo rubric rõ cho phần chủ quan, người chấm một mẫu để hiệu chỉnh model chấm. Tách <strong>eval năng lực</strong> (việc khó, tỷ lệ đạt thấp, để leo dần) khỏi <strong>eval hồi quy</strong> (việc đã làm được, phải giữ gần 100%). Đọc transcript, không chỉ nhìn điểm.</p>
+<div class="alert"><strong>Bẫy.</strong> Dùng chính model và prompt đang thử để tự chấm đầu ra của nó, hoặc bộ eval chỉ gồm ca dễ đã đạt: điểm cao nhưng không nói gì về chất lượng thật.</div>
+<p><strong>Ví dụ chạy từng bước: dựng bộ eval cho trợ lý trả lời chính sách.</strong></p>
+<ol>
+  <li>Lấy 300 câu hỏi thật từ log (đã che PII), giữ đúng tỷ lệ các chủ đề.</li>
+  <li>Thêm 80 ca khó và ca từng lỗi: câu hỏi mơ hồ, hai chính sách mâu thuẫn, câu hỏi ngoài phạm vi (phải trả lời "không có trong tài liệu").</li>
+  <li>Thêm 40 ca đối kháng: tài liệu chứa lệnh cài sẵn, người dùng ép tiết lộ thông tin nội bộ.</li>
+  <li>Grader: code kiểm có trích nguồn và nguồn có tồn tại; model chấm theo rubric độ đúng và đầy đủ; hai người chấm 50 ca để so với model chấm, sửa rubric tới khi khớp.</li>
+  <li>Chia thành eval hồi quy (ca đã đạt) và eval năng lực (ca còn trượt); mỗi lỗi mới trên production thêm thành một ca.</li>
+</ol>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div>50 ca tự nghĩ ra mà prompt hiện tại đã trả lời đúng hết; điểm 100% nên coi như xong.</div>
+  <div class="box right"><div class="hd">Đúng</div>Ca thật, ca khó, ca đối kháng; grader phối hợp có hiệu chỉnh với người; bộ eval lớn dần theo lỗi thật.</div>
+</div>
+<div class="insight"><strong>Cốt lõi.</strong> Bộ eval tốt giống phân bố thật và có đủ ca khó; chấm bằng code khi được, model theo rubric khi cần, người để hiệu chỉnh. Đọc transcript để hiểu vì sao điểm như vậy.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Rubric</dt><dd>Thang chấm có tiêu chí cụ thể, giúp người và model chấm nhất quán.</dd>
+  <dt>LLM-as-judge</dt><dd>Dùng một model để chấm đầu ra theo rubric.</dd>
+</dl></div>
+
+<h2 id="ab-test">3. A/B test và cải tiến lặp</h2>
+<p class="xtags"><span class="tag xt4">CCAR-P D4</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Quán bánh muốn đổi công thức. Họ không thay ngay cho cả chuỗi. Trước tiên nhờ thợ trong bếp nếm thử (kiểm tra nội bộ). Rồi bán công thức mới ở một chi nhánh vài tuần, so doanh số và lời phàn nàn với chi nhánh giữ công thức cũ. Họ chỉ đổi một thứ mỗi lần: nếu vừa đổi bột vừa đổi đường, bánh ngon hơn hay tệ đi cũng không biết vì đâu.
+</div>
+<p>Mỗi thay đổi về prompt, model, tool hay retrieval là một giả thuyết: "thay đổi này làm hệ thống tốt hơn". Cải tiến lặp là kiểm giả thuyết theo hai tầng: <strong>eval offline</strong> trên bộ dữ liệu cố định, rồi <strong>thử online</strong> trên lưu lượng thật.</p>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 170" role="img" aria-label="Quy trình cải tiến: đổi một thứ, chạy eval offline, nếu đạt thì canary một phần nhỏ lưu lượng, A/B so chỉ số chính và chỉ số bảo vệ, rồi mở rộng hoặc rollback">
+    <defs><marker id="m2401" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker></defs>
+    <rect x="8" y="40" width="112" height="62" rx="6" class="b-step"/><text x="64" y="64" class="t tb" text-anchor="middle">1 Đổi một thứ</text><text x="64" y="80" class="ts" text-anchor="middle">prompt, model,</text><text x="64" y="93" class="ts" text-anchor="middle">tool, retrieval</text>
+    <rect x="136" y="40" width="112" height="62" rx="6" class="b-step"/><text x="192" y="64" class="t tb" text-anchor="middle">2 Eval offline</text><text x="192" y="80" class="ts" text-anchor="middle">năng lực và</text><text x="192" y="93" class="ts" text-anchor="middle">hồi quy</text>
+    <rect x="264" y="40" width="112" height="62" rx="6" class="b-hot"/><text x="320" y="64" class="t tb" text-anchor="middle">3 Canary</text><text x="320" y="80" class="ts" text-anchor="middle">vài % lưu lượng</text>
+    <rect x="392" y="40" width="112" height="62" rx="6" class="b-hot"/><text x="448" y="64" class="t tb" text-anchor="middle">4 A/B</text><text x="448" y="80" class="ts" text-anchor="middle">chỉ số chính +</text><text x="448" y="93" class="ts" text-anchor="middle">chỉ số bảo vệ</text>
+    <rect x="520" y="40" width="112" height="62" rx="6" class="b-done"/><text x="576" y="64" class="t tb" text-anchor="middle">5 Mở rộng</text><text x="576" y="80" class="ts" text-anchor="middle">hoặc rollback</text>
+    <path class="ln-acc flow" d="M120,71 H134" marker-end="url(#m2401)"/>
+    <path class="ln-acc flow" d="M248,71 H262" marker-end="url(#m2401)"/>
+    <path class="ln-acc flow" d="M376,71 H390" marker-end="url(#m2401)"/>
+    <path class="ln-acc flow" d="M504,71 H518" marker-end="url(#m2401)"/>
+    <circle class="tok" r="7" style="transform:translate(576px,28px)"/>
+    <text x="320" y="138" class="ts" text-anchor="middle">Mỗi lần đổi một biến để biết thay đổi nào gây ra kết quả; giữ đường rollback.</text>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Chỉ đổi một biến mỗi lần.</li>
+    <li>Chạy eval offline: năng lực phải tăng, hồi quy không được giảm.</li>
+    <li>Đưa ra một phần nhỏ lưu lượng thật.</li>
+    <li>So chỉ số chính (tỷ lệ giải quyết) và chỉ số bảo vệ (chi phí, độ trễ, an toàn), đủ mẫu để có ý nghĩa thống kê.</li>
+    <li>Đạt thì mở rộng dần; xấu đi thì rollback.</li>
+  </ol>
+  <figcaption>Hình 1. Từ thay đổi tới production qua eval offline, canary và A/B.</figcaption>
+</figure>
+<p>Ba điểm cần nắm:</p>
+<ul>
+  <li><strong>Hai loại eval offline.</strong> Eval năng lực đo việc hệ thống còn làm chưa tốt, kỳ vọng điểm tăng dần. Eval hồi quy giữ những ca đã làm được, kỳ vọng gần 100% và không được tụt. Thay đổi tốt phải tăng cái thứ nhất mà không làm giảm cái thứ hai.</li>
+  <li><strong>Chỉ số chính và chỉ số bảo vệ.</strong> Chỉ số chính là thứ bạn muốn cải thiện (tỷ lệ ticket được giải quyết). Chỉ số bảo vệ là thứ không được xấu đi (chi phí mỗi ticket, độ trễ, tỷ lệ vi phạm an toàn, độ hài lòng).</li>
+  <li><strong>Đủ mẫu.</strong> Chênh lệch 1–2 điểm trên vài trăm hội thoại có thể chỉ là ngẫu nhiên. Ước lượng cỡ mẫu trước, chạy đủ thời gian để gồm cả ngày thường lẫn cuối tuần.</li>
+</ul>
+<p><strong>Ví dụ chạy từng bước.</strong> Đội muốn thêm few-shot vào prompt của agent hỗ trợ.</p>
+<ol>
+  <li>Eval offline: năng lực tăng từ 71% lên 76%, hồi quy giữ 99%. Đạt, đi tiếp.</li>
+  <li>Canary 5% lưu lượng trong hai ngày: không có lỗi lạ, chi phí mỗi hội thoại tăng 4% do prompt dài hơn.</li>
+  <li>A/B 50/50 trong hai tuần: tỷ lệ giải quyết tăng 3 điểm; chỉ số bảo vệ: độ trễ p95 không đổi, chi phí tăng 4%, độ hài lòng không giảm.</li>
+  <li>Quyết định theo giá trị: 3 điểm giải quyết thêm tiết kiệm nhiều giờ nhân viên hơn mức tăng 4% chi phí API, nên mở rộng. Ghi quyết định cùng số liệu.</li>
+  <li>Thêm các ca lỗi gặp trong A/B vào bộ eval để vòng sau dùng.</li>
+</ol>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div>Cùng lúc đổi model, system prompt và cấu hình retrieval; chất lượng giảm mà không biết do đâu.</div>
+  <div class="box right"><div class="hd">Đúng</div>Mỗi lần đổi một biến, qua eval offline rồi canary và A/B, có chỉ số bảo vệ và đường rollback.</div>
+</div>
+<div class="alert"><strong>Bẫy.</strong> Đáp án "thay đổi tăng chỉ số chính nên triển khai ngay" bỏ qua chỉ số bảo vệ. Tăng 3% tỷ lệ giải quyết mà chi phí tăng 40% cần được cân bằng giá trị kinh doanh, không tự động là tốt hơn.</div>
+<div class="insight"><strong>Cốt lõi.</strong> Eval offline trước, online sau; đổi một biến mỗi lần; luôn có chỉ số bảo vệ để thay đổi "tốt hơn" ở chỉ số chính không làm hỏng chỉ số khác.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Eval hồi quy</dt><dd>Bộ ca hệ thống đã làm đúng, dùng để bảo đảm thay đổi mới không làm hỏng chúng.</dd>
+  <dt>Chỉ số bảo vệ (guardrail metric)</dt><dd>Chỉ số không được xấu đi khi tối ưu chỉ số chính.</dd>
+</dl></div>
+
+<h2 id="chan-doan">4. Chẩn đoán sự cố</h2>
+<p class="xtags"><span class="tag xt4">CCAR-P D4</span> <span class="tag xt1">CCDV-F D4</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Thợ sửa xe nghe khách tả "xe kêu lạ". Thợ giỏi không thay ngay động cơ. Họ hỏi kêu lúc nào (khởi động, phanh, rẽ), gần đây có sửa gì không, rồi thử lại tiếng kêu và loại dần từng bộ phận. Thứ vừa thay đổi gần nhất thường là nghi phạm đầu tiên.
+</div>
+<p>Chẩn đoán hệ LLM theo ba bước: <strong>tái hiện</strong> lỗi trên ca cụ thể, <strong>khoanh vùng</strong> lỗi ở tầng nào (tích hợp, retrieval, prompt, model), rồi <strong>so phiên bản</strong> trước và sau thay đổi gần nhất. Bảng dưới gợi ý nghi phạm đầu tiên theo triệu chứng.</p>
+<div class="tw"><table>
+  <thead><tr><th>Triệu chứng</th><th>Nghi trước</th><th>Kiểm</th></tr></thead>
+  <tbody>
+    <tr><td>Sai đột ngột sau khi cập nhật tài liệu; model, độ trễ không đổi</td><td>Retrieval, index</td><td>Chunk trả về có liên quan, có mới không; index có lỗi không</td></tr>
+    <tr><td>Sai đột ngột sau khi đổi model hoặc alias</td><td>Model không khớp việc, đổi hành vi</td><td>Chạy eval trên hai phiên bản; ghim model ID</td></tr>
+    <tr><td>Bịa chi tiết cụ thể (số, trích dẫn)</td><td>Hallucination, thiếu căn cứ</td><td>Có đưa nguồn không; bật citations; cho phép "không biết"</td></tr>
+    <tr><td>Sai định dạng, bỏ trường</td><td>Prompt, schema</td><td>Strict tool, structured output, few-shot</td></tr>
+    <tr><td>Chọn sai tool</td><td>Mô tả tool</td><td>Mô tả trùng lặp, từ khoá trong system prompt</td></tr>
+    <tr><td>Lỗi 4xx, 5xx, timeout, parse</td><td>Tầng tích hợp</td><td>Log request, mã lỗi, request-id; sửa bằng code</td></tr>
+    <tr><td>Chất lượng giảm dần theo độ dài hội thoại</td><td>Context drift</td><td>Compaction, tóm tắt, cắt kết quả tool</td></tr>
+  </tbody>
+</table></div>
+<p><strong>Phân biệt tầng tích hợp với output của model.</strong> Lỗi tích hợp có dấu hiệu "cơ khí": mã HTTP, timeout, JSON bị cắt vì chạm <code>max_tokens</code>, code parse sai trường, tool trả lỗi mà không báo cho model. Lỗi output là model nhận đủ dữ liệu đúng mà vẫn trả lời sai. Đọc transcript đầy đủ (input thật model nhận, tool result thật) trước khi kết luận; nhiều "lỗi model" hoá ra là model không bao giờ nhận được dữ liệu đúng.</p>
+<p><strong>Model không hợp việc</strong> (model mismatch) có hai chiều: model quá nhỏ cho việc cần suy luận nhiều bước (sai ở ca khó, đúng ở ca dễ), hoặc model lớn dùng cho việc đơn giản (đúng nhưng chậm và đắt). Eval theo nhóm độ khó cho thấy chiều nào.</p>
+<p><strong>Ví dụ chạy từng bước.</strong> Trợ lý chính sách bắt đầu trả lời sai về thời hạn đổi trả từ thứ Ba.</p>
+<ol>
+  <li>Tái hiện: hỏi lại đúng câu đó, vẫn sai. Lấy transcript.</li>
+  <li>Khoanh vùng: không có lỗi HTTP; model ID không đổi. Xem đoạn truy xuất được: là chính sách cũ 30 ngày, không phải bản mới 14 ngày.</li>
+  <li>So thay đổi: thứ Ba đội nội dung tải chính sách mới lên nhưng job đánh index lỗi, bản cũ vẫn trong chỉ mục.</li>
+  <li>Sửa: chạy lại index, xoá bản cũ; thêm ca "thời hạn đổi trả" vào eval; thêm cảnh báo khi job index lỗi.</li>
+</ol>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div>Thấy trả lời sai thì sửa prompt "hãy chú ý thời hạn mới nhất" mà chưa xem model đã nhận được tài liệu nào.</div>
+  <div class="box right"><div class="hd">Đúng</div>Đọc transcript và đoạn truy xuất trước, khoanh vùng tầng lỗi, sửa đúng tầng đó, thêm ca vào eval.</div>
+</div>
+<div class="alert"><strong>Bẫy.</strong> "Model đã âm thầm đổi trọng số", "context window bị thu nhỏ", "temperature quá thấp" là phương án nhiễu điển hình khi triệu chứng chỉ ra retrieval.</div>
+<div class="insight"><strong>Cốt lõi.</strong> Tái hiện, khoanh vùng tầng, so với thay đổi gần nhất. Đọc thứ model thật sự nhận được trước khi đổ lỗi cho model.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Transcript</dt><dd>Bản ghi đầy đủ một lần chạy: prompt, tool call, tool result, câu trả lời.</dd>
+  <dt>Model mismatch</dt><dd>Model không hợp độ khó của việc: quá yếu thì sai, quá mạnh thì phí.</dd>
+</dl></div>
+
+<h2 id="toi-uu">5. Tối ưu token, độ trễ, chi phí</h2>
+<p class="xtags"><span class="tag xt4">CCAR-P D4</span> <span class="tag xt1">CCDV-F D5</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Hoá đơn điện tăng gấp đôi. Việc đầu tiên không phải thay tủ lạnh rẻ hơn mà đọc công tơ: tháng này cái gì ngốn điện? Có thể chỉ là máy lạnh phòng trống chạy cả đêm. Tắt nó đi thì đỡ tốn mà không ai thiệt gì. Chỉ khi đã hết chỗ lãng phí mới tính tới chuyện đổi thiết bị yếu hơn, chấp nhận kém tiện hơn.
+</div>
+<p>Tối ưu chi phí có hai loại đòn bẩy. <strong>Đòn bẩy miễn phí</strong> giảm lãng phí mà không đụng tới chất lượng. <strong>Đòn bẩy đánh đổi</strong> hy sinh một chút chất lượng hay tốc độ để lấy tiền. Thứ tự nên thử: <strong>miễn phí trước, đánh đổi sau</strong>, và trước cả hai là đo.</p>
+<p><strong>Đo trước khi tối ưu.</strong> Mỗi response có trường <code>usage</code>: <code>input_tokens</code>, <code>output_tokens</code>, <code>cache_creation_input_tokens</code>, <code>cache_read_input_tokens</code>. Gom theo route (loại tác vụ), model và workspace để biết chi phí đến từ đâu: input hay output, route nào, có cache hay không.</p>
+<ol class="principles">
+  <li><strong>Prompt caching</strong>: phần tĩnh đứng đầu, ổn định từng byte; theo dõi <code>cache_read_input_tokens</code>. Token đọc từ cache tính khoảng 0,1 lần giá input thường.</li>
+  <li><strong>Vệ sinh token đầu vào</strong>: cắt kết quả tool, bỏ lịch sử thừa, context editing.</li>
+  <li><strong>Vệ sinh token đầu ra</strong>: yêu cầu độ dài phù hợp, định dạng gọn. Output đắt hơn input nhiều lần, nên câu trả lời dài dòng tốn hơn ta tưởng.</li>
+  <li><strong>Batches</strong> cho việc không ai đang chờ: giảm 50% cho cả input và output, cộng dồn được với giảm giá của caching.</li>
+  <li>Đánh đổi: hạ effort, chọn model nhỏ hơn cho route đơn giản, routing nhiều model (đo cả mất cache).</li>
+</ol>
+<div class="tw"><table>
+  <thead><tr><th>Đòn bẩy</th><th>Loại</th><th>Rủi ro chất lượng</th><th>Kiểm bằng</th></tr></thead>
+  <tbody>
+    <tr><td>Prompt caching</td><td>Miễn phí</td><td>Không</td><td>Tỷ lệ cache read trong <code>usage</code></td></tr>
+    <tr><td>Cắt kết quả tool, lịch sử</td><td>Miễn phí</td><td>Thấp, nếu không cắt mất dữ kiện cần</td><td>Eval trên hội thoại dài</td></tr>
+    <tr><td>Output gọn</td><td>Miễn phí</td><td>Thấp</td><td>Eval độ đầy đủ</td></tr>
+    <tr><td>Batches</td><td>Miễn phí với việc không gấp</td><td>Không; kết quả chậm tới 24 giờ</td><td>Yêu cầu độ trễ của nghiệp vụ</td></tr>
+    <tr><td>Hạ effort</td><td>Đánh đổi</td><td>Có, với việc cần suy luận</td><td>Eval từng route</td></tr>
+    <tr><td>Model nhỏ hơn, routing</td><td>Đánh đổi</td><td>Có; routing sai đẩy ca khó vào model yếu</td><td>Eval theo nhóm độ khó; tính cả chi phí sửa lỗi</td></tr>
+  </tbody>
+</table></div>
+<p>Độ trễ: streaming cho trải nghiệm, song song hoá bước độc lập, giảm số lượt agent bằng programmatic tool calling, prompt ngắn gọn, giới hạn số chunk (xem <a href="/notes/lessons/23-tich-hop.html#tre-chinh-xac">bài 23 §6</a>).</p>
+<p><strong>Ví dụ chạy từng bước.</strong> Chi phí API tăng gấp ba trong một quý.</p>
+<ol>
+  <li>Gom <code>usage</code> theo route: 70% chi phí đến từ route "tóm tắt hợp đồng", phần lớn là input.</li>
+  <li>Xem cache: system prompt có dấu thời gian ở dòng đầu, nên mỗi request khác nhau từ byte đầu tiên và cache không bao giờ trúng. Chuyển dấu thời gian xuống cuối: cache read tăng từ 0% lên khoảng 80% số token input.</li>
+  <li>Route tóm tắt hợp đồng chạy đêm, không ai chờ: chuyển sang Batches.</li>
+  <li>Chỉ sau đó mới thử model nhỏ hơn cho route phân loại email, chạy eval trước, giữ model lớn cho ca khó.</li>
+</ol>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div>Chi phí tăng thì đổi tất cả sang model rẻ nhất ngay, rồi chờ người dùng than phiền.</div>
+  <div class="box right"><div class="hd">Đúng</div>Đo <code>usage</code> theo route, sửa lãng phí (cache, token thừa, batch) trước, rồi mới thử đánh đổi có eval đi kèm.</div>
+</div>
+<div class="alert"><strong>Bẫy.</strong> Cache gắn với từng model. Routing request qua lại giữa nhiều model có thể làm mất cache, nên tiết kiệm từ model rẻ bị bù lại bởi việc phải ghi cache nhiều lần. Phải đo tổng chi phí sau khi bật routing, không chỉ nhìn giá niêm yết.</div>
+<div class="insight"><strong>Cốt lõi.</strong> Đo trước, rồi cắt lãng phí (cache, token thừa, Batches), cuối cùng mới đánh đổi chất lượng, và mọi đánh đổi đều phải qua eval.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Route</dt><dd>Một loại tác vụ trong hệ thống (phân loại, tóm tắt, trả lời), thường có prompt và model riêng.</dd>
+  <dt>Cache hit</dt><dd>Phần đầu của request trùng với phần đã cache, nên được đọc lại với giá thấp.</dd>
+</dl></div>
+
+<h2 id="guardrail">6. Guardrail và kiểm soát an toàn</h2>
+<p class="xtags"><span class="tag xt4">CCAR-P D5</span> <span class="tag xt1">CCDV-F D7</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Sân bay không dựa vào một lớp kiểm tra. Có soi vé, soi hành lý, cửa an ninh, nhân viên quan sát. Mỗi lớp lọt một ít, nhiều lớp chồng lên thì lọt rất ít.
+</div>
+<p>Mỗi lớp kiểm soát giống một lát pho mát có lỗ: lớp nào cũng có chỗ lọt. Xếp nhiều lát lệch nhau thì hiếm khi các lỗ thẳng hàng. Với hệ LLM, điều này càng quan trọng vì model không tất định: một lời dặn trong prompt được tuân thủ 99 lần vẫn có thể bị bỏ qua lần thứ 100.</p>
+<div class="tw"><table>
+  <thead><tr><th>Lớp</th><th>Ví dụ</th></tr></thead>
+  <tbody>
+    <tr><td>Kiểm đầu vào</td><td>Lọc bằng model nhỏ (sàng lọc nội dung có hại hoặc injection), kiểm định dạng, giới hạn độ dài</td></tr>
+    <tr><td>Prompt</td><td>Phạm vi rõ, tách dữ liệu khỏi chỉ dẫn, cho phép "không biết", yêu cầu trích dẫn</td></tr>
+    <tr><td>Quyền</td><td>Quyền tối thiểu, tool hẹp, sandbox, không có quyền ghi khi chỉ cần đọc</td></tr>
+    <tr><td>Cổng bằng code</td><td>Hook, điều kiện tiên quyết cho quy tắc bắt buộc</td></tr>
+    <tr><td>Kiểm đầu ra</td><td>Validate schema, kiểm chính sách, kiểm trích dẫn</td></tr>
+    <tr><td>Người</td><td>Duyệt hành động có hậu quả, lấy mẫu kiểm toán</td></tr>
+    <tr><td>Giám sát</td><td>Theo dõi tỷ lệ vi phạm, cảnh báo, chặn tài khoản lạm dụng</td></tr>
+  </tbody>
+</table></div>
+<p><strong>Đặt quy tắc vào lớp nào?</strong> Hỏi: "nếu quy tắc này bị vi phạm một lần thì sao?"</p>
+<ul>
+  <li>Hậu quả nặng, không đảo ngược (chuyển tiền, xoá dữ liệu, gửi ra ngoài): <strong>code và quyền</strong>. Model không có khả năng làm sai, chứ không chỉ được dặn đừng làm.</li>
+  <li>Hậu quả vừa, cần phán đoán (câu trả lời có đúng chính sách không): <strong>kiểm đầu ra và người duyệt</strong> cho ca rủi ro.</li>
+  <li>Chất lượng, giọng văn, phạm vi chủ đề: <strong>prompt</strong>, có giám sát để phát hiện trượt.</li>
+</ul>
+<p><strong>Ví dụ chạy từng bước: agent hỗ trợ có quyền hoàn tiền.</strong> Quy tắc: hoàn trên 1.000 USD phải có quản lý duyệt.</p>
+<ol>
+  <li>Prompt: nêu quy tắc để Claude giải thích đúng với khách và đề xuất chuyển quản lý.</li>
+  <li>Tool <code>refund</code>: code kiểm số tiền; trên 1.000 USD thì không thực hiện mà tạo yêu cầu duyệt, trả về cho Claude thông báo "đã chuyển quản lý".</li>
+  <li>Quyền: tool chỉ hoàn về phương thức thanh toán gốc, không cho nhập tài khoản đích.</li>
+  <li>Giám sát: cảnh báo khi số lần hoàn tiền mỗi giờ vượt mức thường; lấy mẫu hội thoại có hoàn tiền để kiểm.</li>
+</ol>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div>Chỉ viết "không bao giờ hoàn trên 1.000 USD" trong system prompt và coi là đã kiểm soát.</div>
+  <div class="box right"><div class="hd">Đúng</div>Ép ngưỡng trong code của tool, prompt chỉ để giải thích cho khách, cộng giám sát và lấy mẫu.</div>
+</div>
+<div class="alert"><strong>Bẫy.</strong> Guardrail quá chặt cũng là lỗi: từ chối cả yêu cầu hợp lệ (ví dụ app thông tin y tế bị chặn câu hỏi bình thường) làm người dùng bỏ đi hoặc tìm cách lách. Đo cả tỷ lệ từ chối nhầm trên bộ eval, không chỉ tỷ lệ chặn đúng.</div>
+<div class="insight"><strong>Cốt lõi.</strong> Không lớp nào đủ một mình. Quy tắc bắt buộc đặt ở code; prompt là một lớp giảm xác suất; người duyệt cho việc có hậu quả.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Phòng thủ nhiều lớp</dt><dd>Chồng nhiều kiểm soát độc lập để chỗ lọt của lớp này được lớp khác chặn.</dd>
+  <dt>Từ chối nhầm (over-refusal)</dt><dd>Hệ thống chặn yêu cầu hợp lệ vì kiểm soát quá rộng.</dd>
+</dl></div>
+
+<h2 id="rui-ro">7. Rủi ro và kiểu thất bại của hệ LLM</h2>
+<p class="xtags"><span class="tag xt4">CCAR-P D5</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Hãng hàng không không chờ tai nạn rồi mới nghĩ cách phòng. Họ liệt kê trước mọi kiểu hỏng (hỏng động cơ, chim va, phi công mệt), đánh giá mỗi kiểu xảy ra thường không và hậu quả nặng tới đâu, rồi gắn cho mỗi kiểu một biện pháp và một người chịu trách nhiệm. Danh sách đó được xem lại sau mỗi sự cố.
+</div>
+<p>Hệ LLM có những kiểu thất bại riêng mà phần mềm thường không có. Kiến trúc sư cần gọi được tên chúng, ước lượng mức độ, và gắn kiểm soát cho từng kiểu. Có thể chia làm bốn nhóm:</p>
+<div class="tw"><table>
+  <thead><tr><th>Nhóm</th><th>Kiểu thất bại</th><th>Vì sao xảy ra</th></tr></thead>
+  <tbody>
+    <tr><td>Do model</td><td>Hallucination, trả lời tự tin khi không chắc, đồng ý theo người dùng dù họ sai</td><td>Model sinh văn bản hợp lý nhất, không tự kiểm chứng sự thật</td></tr>
+    <tr><td>Do hệ thống</td><td>Prompt injection, dùng tool vượt quyền, rò rỉ dữ liệu giữa người dùng</td><td>Thiết kế trộn dữ liệu với lệnh, cấp quyền rộng, retrieval không lọc theo quyền</td></tr>
+    <tr><td>Do cách dùng</td><td>Người dùng tin quá mức, dùng ngoài phạm vi thiết kế</td><td>Không công bố giới hạn, không hiện nguồn</td></tr>
+    <tr><td>Theo thời gian</td><td>Chất lượng trượt dần, model bị ngừng hỗ trợ</td><td>Dữ liệu đầu vào đổi, tài liệu cũ, đổi model không qua eval</td></tr>
+  </tbody>
+</table></div>
+<p>Các <strong>giới hạn</strong> cần nói rõ với bên liên quan: model không biết những gì không được đưa vào hoặc kết nối tới; kiến thức có mốc thời gian; context có giới hạn; cùng câu hỏi có thể cho câu trả lời khác nhau; model có thể sai mà vẫn nghe rất chắc chắn.</p>
+<div class="tw"><table>
+  <thead><tr><th>Rủi ro</th><th>Kiểm soát chính</th></tr></thead>
+  <tbody>
+    <tr><td>Hallucination</td><td>Đưa nguồn, citations, cho phép "không biết", kiểm chứng số liệu</td></tr>
+    <tr><td>Prompt injection</td><td>Coi nội dung ngoài là dữ liệu, giới hạn quyền ghi, duyệt trước hành động</td></tr>
+    <tr><td>Rò rỉ dữ liệu</td><td>Che PII, phân quyền theo người dùng trong retrieval, ZDR khi cần</td></tr>
+    <tr><td>Dùng tool sai, vượt quyền</td><td>Quyền tối thiểu, hook, xác nhận</td></tr>
+    <tr><td>Thiên lệch</td><td>Eval theo nhóm, rà dữ liệu và prompt, người duyệt quyết định về cá nhân</td></tr>
+    <tr><td>Phụ thuộc quá mức của người dùng</td><td>Công bố có AI, hiển thị nguồn và mức chắc chắn, đào tạo người dùng</td></tr>
+    <tr><td>Trượt chất lượng theo thời gian</td><td>Eval online, giám sát, ghim model</td></tr>
+  </tbody>
+</table></div>
+<p><strong>Ví dụ chạy từng bước: sổ rủi ro cho trợ lý HR nội bộ.</strong> Trợ lý trả lời câu hỏi về chính sách nghỉ phép và đọc được hồ sơ nhân viên.</p>
+<ol>
+  <li>Liệt kê kiểu thất bại theo bốn nhóm: bịa chính sách; lộ hồ sơ của người A cho người B; nhân viên coi câu trả lời là cam kết pháp lý; chính sách mới không được cập nhật.</li>
+  <li>Chấm mỗi kiểu theo khả năng xảy ra và mức hậu quả. Lộ hồ sơ: ít xảy ra nhưng hậu quả rất nặng, nên ưu tiên cao nhất.</li>
+  <li>Gắn kiểm soát: retrieval lọc theo quyền của người hỏi (không dựa vào lời dặn trong prompt); trích dẫn điều khoản kèm link; ghi chú "thông tin tham khảo, liên hệ HR để xác nhận"; quy trình cập nhật tài liệu khi chính sách đổi.</li>
+  <li>Gắn người chịu trách nhiệm cho từng kiểm soát, và một ca eval cho mỗi kiểu thất bại (ví dụ: hỏi hồ sơ người khác phải bị từ chối).</li>
+  <li>Xem lại sổ rủi ro sau mỗi sự cố và mỗi lần đổi model.</li>
+</ol>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div>Dặn trong system prompt "không được tiết lộ hồ sơ người khác" và coi như đã kiểm soát rủi ro lộ dữ liệu.</div>
+  <div class="box right"><div class="hd">Đúng</div>Lọc quyền ngay ở tầng truy xuất: model không bao giờ nhận được hồ sơ mà người hỏi không có quyền xem.</div>
+</div>
+<div class="alert"><strong>Bẫy.</strong> Với rủi ro hậu quả nặng, kiểm soát phải nằm ngoài model (code, quyền, cổng duyệt). Lời dặn trong prompt chỉ là một lớp phụ, vì model không tất định và có thể bị injection.</div>
+<div class="insight"><strong>Cốt lõi.</strong> Gọi tên kiểu thất bại, chấm theo khả năng và hậu quả, gắn kiểm soát và người chịu trách nhiệm, có ca eval cho từng kiểu. Rủi ro càng nặng thì kiểm soát càng phải nằm ngoài model.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Failure mode</dt><dd>Kiểu thất bại: một cách cụ thể mà hệ thống có thể cho kết quả sai hoặc gây hại.</dd>
+  <dt>Sổ rủi ro</dt><dd>Danh sách rủi ro kèm mức độ, biện pháp kiểm soát và người chịu trách nhiệm.</dd>
+</dl></div>
+
+<h2 id="hitl">8. Chiến lược human-in-the-loop</h2>
+<p class="xtags"><span class="tag xt4">CCAR-P D5</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Ngân hàng cho máy tự duyệt giao dịch nhỏ, quen thuộc. Giao dịch lớn hay bất thường thì vào hàng chờ của kiểm soát viên. Cuối tháng, kiểm toán còn rút ngẫu nhiên một ít giao dịch máy đã duyệt để xem máy có duyệt sai không. Không ai bắt kiểm soát viên xem từng ly cà phê, cũng không ai để máy tự chuyển một tỷ đồng.
+</div>
+<p>Human-in-the-loop (HITL) không có nghĩa là người xem mọi thứ. Đó là đặt người ở <strong>đúng chỗ</strong>: nơi lỗi đắt, không đảo ngược được, hoặc nơi model không chắc chắn. Phần còn lại tự động, có lấy mẫu kiểm tra.</p>
+<div class="tw"><table>
+  <thead><tr><th>Mẫu</th><th>Dùng khi</th></tr></thead>
+  <tbody>
+    <tr><td>Cổng duyệt trước hành động</td><td>Hành động không đảo ngược hoặc có hậu quả: thanh toán, gửi cho khách, xoá dữ liệu</td></tr>
+    <tr><td>Định tuyến theo độ tin cậy</td><td>Ca tin cậy thấp, mâu thuẫn, mơ hồ chuyển người; độ tin cậy hiệu chỉnh bằng tập có nhãn</td></tr>
+    <tr><td>Lấy mẫu kiểm toán</td><td>Ca tự động hoàn toàn: lấy mẫu phân tầng định kỳ để đo tỷ lệ lỗi</td></tr>
+    <tr><td>Escalation theo tiêu chí</td><td>Khách yêu cầu gặp người, chính sách không nói tới, không tiến triển</td></tr>
+    <tr><td>Người có chuyên môn duyệt</td><td>Khuyến nghị rủi ro cao về cá nhân theo Usage Policy (y tế, pháp lý, tài chính, việc làm…)</td></tr>
+  </tbody>
+</table></div>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 220" role="img" aria-label="Định tuyến human-in-the-loop cho hoá đơn: Claude trích xuất, kiểm tra quy tắc cứng bằng code, chia ba nhánh: tự duyệt, hàng chờ người duyệt, chặn; nhánh tự duyệt có lấy mẫu kiểm toán, và kết quả người sửa quay lại làm ca eval">
+    <defs><marker id="m2402" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker></defs>
+    <rect x="8" y="80" width="110" height="52" rx="6" class="b-step"/><text x="63" y="102" class="t tb" text-anchor="middle">1 Claude</text><text x="63" y="118" class="ts" text-anchor="middle">trích xuất</text>
+    <rect x="148" y="80" width="130" height="52" rx="6" class="b-sys"/><text x="213" y="102" class="t tb" text-anchor="middle">2 Kiểm bằng code</text><text x="213" y="118" class="ts" text-anchor="middle">số tiền, khớp PO</text>
+    <rect x="320" y="14" width="150" height="46" rx="6" class="b-done"/><text x="395" y="34" class="t tb" text-anchor="middle">3 Tự duyệt</text><text x="395" y="50" class="ts" text-anchor="middle">nhỏ, khớp, tin cậy cao</text>
+    <rect x="320" y="84" width="150" height="46" rx="6" class="b-warn"/><text x="395" y="104" class="t tb" text-anchor="middle">4 Người duyệt</text><text x="395" y="120" class="ts" text-anchor="middle">lớn, lệch, mơ hồ</text>
+    <rect x="320" y="154" width="150" height="46" rx="6" class="b-hot"/><text x="395" y="174" class="t tb" text-anchor="middle">5 Chặn</text><text x="395" y="190" class="ts" text-anchor="middle">nhà cung cấp lạ</text>
+    <rect x="500" y="14" width="132" height="46" rx="6" class="b-opt"/><text x="566" y="34" class="t tb" text-anchor="middle">6 Lấy mẫu</text><text x="566" y="50" class="ts" text-anchor="middle">kiểm toán 2%</text>
+    <rect x="500" y="84" width="132" height="46" rx="6" class="b-opt"/><text x="566" y="104" class="t tb" text-anchor="middle">7 Ca eval</text><text x="566" y="120" class="ts" text-anchor="middle">từ chỗ người sửa</text>
+    <path class="ln-acc flow" d="M118,106 H146" marker-end="url(#m2402)"/>
+    <path class="ln-acc flow" d="M278,100 L318,40" marker-end="url(#m2402)"/>
+    <path class="ln-acc flow" d="M278,106 H318" marker-end="url(#m2402)"/>
+    <path class="ln-acc flow" d="M278,114 L318,174" marker-end="url(#m2402)"/>
+    <path class="ln-acc flow" d="M470,37 H498" marker-end="url(#m2402)"/>
+    <path class="ln-acc flow" d="M470,107 H498" marker-end="url(#m2402)"/>
+    <circle class="tok" r="7" style="transform:translate(63px,70px)"/>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Claude trích xuất số tiền, nhà cung cấp, số đơn mua hàng (PO) từ hoá đơn.</li>
+    <li>Code kiểm quy tắc cứng: số tiền dưới ngưỡng, khớp PO, nhà cung cấp đã biết.</li>
+    <li>Khớp hết và độ tin cậy cao: tự duyệt.</li>
+    <li>Số tiền lớn, lệch PO hoặc trường mơ hồ: vào hàng chờ người duyệt, kèm bằng chứng.</li>
+    <li>Nhà cung cấp lạ: chặn, không cho tự duyệt.</li>
+    <li>Một phần nhỏ ca tự duyệt được rút ngẫu nhiên để người kiểm, đo tỷ lệ lỗi thật.</li>
+    <li>Mỗi ca người sửa trở thành một ca eval để cải thiện prompt và ngưỡng.</li>
+  </ol>
+  <figcaption>Hình 2. Đặt người ở đúng chỗ: quy tắc cứng bằng code, người cho ca khó, lấy mẫu cho ca dễ.</figcaption>
+</figure>
+<p><strong>Độ tin cậy phải được hiệu chỉnh.</strong> Một con số "độ tin cậy 0,9" do model tự báo chưa chắc nghĩa là đúng 90% số lần. Trước khi dùng nó để định tuyến, chạy trên tập có nhãn và xem: trong các ca model báo 0,9, thực tế đúng bao nhiêu? Ngưỡng định tuyến được chọn từ số liệu đó, rồi kiểm lại định kỳ.</p>
+<p><strong>Người duyệt cũng có thể thành con dấu.</strong> Khi hàng chờ quá dài, hoặc model thường đúng, người duyệt có xu hướng bấm "đồng ý" theo thói quen (automation bias). Cách giữ cho bước duyệt có ý nghĩa: hiện bằng chứng (trích đoạn, nguồn) chứ không chỉ kết luận; giữ hàng chờ vừa sức; theo dõi tỷ lệ người sửa hoặc bác bỏ. Tỷ lệ này gần 0% kéo dài là dấu hiệu cần kiểm tra lại.</p>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div>Cho người duyệt mọi hoá đơn "cho chắc": hàng chờ dài, người duyệt bấm qua, lợi ích tự động hoá biến mất.</div>
+  <div class="box right"><div class="hd">Đúng</div>Quy tắc cứng bằng code, tự duyệt ca dễ có lấy mẫu kiểm toán, người duyệt ca lớn hoặc mơ hồ kèm bằng chứng, theo dõi tỷ lệ sửa.</div>
+</div>
+<div class="alert"><strong>Bẫy.</strong> Quy tắc nghiệp vụ bắt buộc (ví dụ hoàn tiền trên 1.000 USD phải có quản lý duyệt) phải được ép bằng code ở tầng tool hoặc workflow, không chỉ viết trong prompt. HITL là để phán đoán ca khó, không thay cho quy tắc cứng.</div>
+<div class="insight"><strong>Cốt lõi.</strong> Đặt người ở chỗ lỗi đắt hoặc model không chắc; tự động phần còn lại kèm lấy mẫu. Hiệu chỉnh ngưỡng tin cậy bằng tập có nhãn, và đo xem người duyệt có thật sự duyệt không.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Hiệu chỉnh (calibration)</dt><dd>Kiểm tra độ tin cậy model báo có khớp với tỷ lệ đúng thực tế không.</dd>
+  <dt>Automation bias</dt><dd>Xu hướng con người tin và chấp nhận kết quả của máy mà không kiểm tra kỹ.</dd>
+  <dt>Lấy mẫu phân tầng</dt><dd>Rút mẫu từ từng nhóm (loại hoá đơn, nhà cung cấp) để nhóm nhỏ cũng được kiểm.</dd>
+</dl></div>
+
+<h2 id="tuan-thu">9. Tuân thủ: GDPR, HIPAA, FedRAMP</h2>
+<p class="xtags"><span class="tag xt4">CCAR-P D5</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Xây nhà phải theo luật xây dựng của nơi đó: giấy phép, chiều cao, khoảng lùi. Chủ nhà không thể nói "thợ hứa làm cẩn thận" thay cho giấy phép. Nhà ở vùng khác thì luật khác, và có những công trình (bệnh viện, trụ sở nhà nước) còn phải theo tiêu chuẩn riêng.
+</div>
+<div class="tw"><table>
+  <thead><tr><th>Khung</th><th>Điều cần trong thiết kế</th><th>Công cụ phía Claude</th></tr></thead>
+  <tbody>
+    <tr><td><strong>GDPR</strong></td><td>Cơ sở pháp lý, tối thiểu hoá dữ liệu, giới hạn mục đích, quyền của chủ thể dữ liệu (truy cập, xoá), chuyển dữ liệu qua biên giới, hợp đồng xử lý dữ liệu</td><td>DPA với Anthropic, thời hạn lưu tuỳ chỉnh (Enterprise), <code>inference_geo</code>, ZDR theo thoả thuận, che PII trước khi gửi</td></tr>
+    <tr><td><strong>HIPAA</strong></td><td>Xử lý PHI chỉ trong dịch vụ có BAA; kiểm soát truy cập, nhật ký</td><td>Gói Enterprise HIPAA-ready có BAA (không phải mọi tính năng đều nằm trong BAA); API HIPAA-ready, ZDR</td></tr>
+    <tr><td><strong>FedRAMP</strong></td><td>Hệ thống liên bang Mỹ chỉ dùng dịch vụ đã được cấp phép ở mức phù hợp</td><td>Triển khai qua môi trường đã được cấp phép (ví dụ nền tảng cloud cho chính phủ); kiểm tra Trust Center</td></tr>
+  </tbody>
+</table></div>
+<p>Lưu ý phạm vi: ZDR áp cho Messages API và một số tính năng đủ điều kiện, không áp cho Console, Managed Agents (transcript lưu tới khi bạn xoá), giao diện Team, Enterprise (trừ Claude Code trên Enterprise có ZDR riêng), và một số model yêu cầu lưu 30 ngày.</p>
+<div class="alert"><strong>Bẫy.</strong> "Bật HIPAA là mọi tính năng đều được BAA bảo vệ": sai, phải kiểm danh sách tính năng thuộc BAA. "Dặn model không lưu dữ liệu" không phải biện pháp tuân thủ.</div>
+<p><strong>Ví dụ chạy từng bước: bệnh viện muốn bác sĩ dùng Claude với dữ liệu bệnh nhân.</strong></p>
+<ol>
+  <li>Xác định dữ liệu là PHI, nên chỉ được xử lý trong dịch vụ có BAA với Anthropic.</li>
+  <li>Ký BAA cho gói HIPAA-ready; lấy danh sách tính năng thuộc phạm vi BAA, tắt hoặc chặn các tính năng ngoài danh sách.</li>
+  <li>Bật SSO, phân quyền theo vai trò, nhật ký truy cập; đặt thời hạn lưu dữ liệu theo chính sách bệnh viện.</li>
+  <li>Đào tạo bác sĩ: Claude hỗ trợ soạn và tóm tắt; quyết định lâm sàng do bác sĩ, có công bố với bệnh nhân khi AI tham gia khuyến nghị.</li>
+  <li>Pháp chế và bảo mật duyệt luồng dữ liệu trước khi mở rộng ra các khoa.</li>
+</ol>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div>Bác sĩ dán bệnh án vào tài khoản Claude cá nhân vì "chỉ để tóm tắt nhanh".</div>
+  <div class="box right"><div class="hd">Đúng</div>Dịch vụ có BAA, chỉ dùng tính năng trong phạm vi BAA, có phân quyền và nhật ký, có quy trình được duyệt.</div>
+</div>
+<div class="insight"><strong>Cốt lõi.</strong> Tuân thủ là hợp đồng, cấu hình và quy trình kiểm chứng được (DPA, BAA, vùng xử lý, thời hạn lưu, nhật ký), không phải lời dặn model. Luôn kiểm phạm vi: tính năng nào nằm trong thoả thuận.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>PHI</dt><dd>Protected health information: thông tin sức khoẻ gắn với một cá nhân, được HIPAA bảo vệ.</dd>
+  <dt>BAA</dt><dd>Business Associate Agreement: thoả thuận để nhà cung cấp được xử lý PHI theo HIPAA.</dd>
+  <dt>DPA</dt><dd>Data Processing Agreement: hợp đồng xử lý dữ liệu cá nhân theo GDPR.</dd>
+</dl></div>
+
+<h2 id="dao-duc">10. Đạo đức: thiên lệch, công bằng, minh bạch</h2>
+<p class="xtags"><span class="tag xt4">CCAR-P D5</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Kỳ thi nghiêm túc chấm bài giấu tên để giám khảo không bị ảnh hưởng bởi người viết là ai. Thí sinh được biết tiêu chí chấm, được phúc khảo, và hội đồng ký tên chịu trách nhiệm về điểm. Không ai coi lời hứa "chúng tôi chấm công bằng" là đủ: công bằng được bảo đảm bằng quy trình.
+</div>
+<p>Trong CCAR-P, đạo đức là các quyết định thiết kế có thể kiểm tra được, không phải một đoạn tuyên bố. Bốn khía cạnh và cách biến từng khía cạnh thành việc làm cụ thể:</p>
+<ul>
+  <li><strong>Thiên lệch</strong>: đo kết quả theo nhóm (ngôn ngữ, giới tính, vùng) trên bộ eval; ca chỉ khác thuộc tính nhạy cảm phải cho kết quả tương đương.</li>
+  <li><strong>Công bằng</strong>: quyết định về cá nhân (tuyển dụng, tín dụng) cần người duyệt, tiêu chí rõ, khả năng khiếu nại.</li>
+  <li><strong>Minh bạch</strong>: báo người dùng khi nội dung do AI tạo hoặc AI tham gia quyết định; hiện nguồn; ghi lại lý do.</li>
+  <li><strong>Trách nhiệm giải trình</strong>: có người sở hữu hệ thống, nhật ký quyết định, quy trình xử lý sự cố.</li>
+</ul>
+<p><strong>Test phản thực (counterfactual)</strong> là cách đo thiên lệch dễ làm nhất: lấy một ca, chỉ đổi thuộc tính nhạy cảm (tên gợi giới tính hay dân tộc, quê quán, tuổi) và giữ nguyên mọi thứ khác. Kết quả phải tương đương. Làm với đủ nhiều cặp rồi so tỷ lệ theo nhóm, không kết luận từ vài ca lẻ.</p>
+<p>Usage Policy của Anthropic coi các khuyến nghị ảnh hưởng tới cá nhân trong lĩnh vực như pháp lý, y tế, bảo hiểm, tài chính, việc làm là rủi ro cao. Những trường hợp này cần người có chuyên môn xem lại và cần công bố với người dùng rằng có AI tham gia (xem <a href="/notes/lessons/20-san-pham-du-lieu.html#usage-policy">bài 20 §1</a>).</p>
+<p><strong>Ví dụ chạy từng bước: trợ lý sàng lọc hồ sơ ứng viên.</strong></p>
+<ol>
+  <li>Bỏ khỏi input những trường không liên quan tới năng lực: ảnh, tuổi, tình trạng hôn nhân.</li>
+  <li>Viết tiêu chí chấm rõ ràng, gắn với yêu cầu công việc, và bắt Claude trích đoạn hồ sơ làm căn cứ cho mỗi điểm.</li>
+  <li>Dựng bộ cặp phản thực: cùng hồ sơ, chỉ đổi tên gợi giới tính hoặc trường gợi vùng miền. So điểm trung bình và tỷ lệ qua vòng theo nhóm.</li>
+  <li>Claude chỉ xếp hạng và giải thích; người tuyển dụng quyết định. Ứng viên được báo có AI hỗ trợ và có kênh yêu cầu xem xét lại.</li>
+  <li>Lưu nhật ký: phiên bản prompt, model, điểm, lý do, người quyết định. Chạy lại test phản thực mỗi lần đổi prompt hoặc model.</li>
+</ol>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div>Thêm câu "hãy công bằng, không thiên vị" vào system prompt và để AI tự loại ứng viên.</div>
+  <div class="box right"><div class="hd">Đúng</div>Bỏ trường nhạy cảm, tiêu chí rõ có trích dẫn, test phản thực theo nhóm, người quyết định, công bố và kênh khiếu nại.</div>
+</div>
+<div class="alert"><strong>Bẫy.</strong> Bỏ trường "giới tính" chưa đủ để hết thiên lệch: tên, trường học, sở thích, khoảng trống trong lý lịch vẫn có thể gián tiếp mang thông tin đó. Phải đo kết quả theo nhóm, không chỉ kiểm tra input.</div>
+<div class="insight"><strong>Cốt lõi.</strong> Đạo đức trong CCAR-P là quyết định thiết kế đo được: eval theo nhóm, người duyệt, công bố, nhật ký. Không phải một câu tuyên bố trong system prompt.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Test phản thực</dt><dd>So kết quả của hai ca giống hệt nhau trừ một thuộc tính nhạy cảm.</dd>
+  <dt>Thuộc tính đại diện (proxy)</dt><dd>Thông tin không nhạy cảm nhưng gián tiếp tiết lộ thuộc tính nhạy cảm, như tên hay địa chỉ.</dd>
+  <dt>Trách nhiệm giải trình</dt><dd>Có người cụ thể chịu trách nhiệm về quyết định và giải thích được vì sao quyết định như vậy.</dd>
+</dl></div>
+
+<p class="lesson-practice">Luyện câu hỏi của bài này trong <a href="/bank?lesson=24">🗂️ Ngân hàng</a>.</p>
+
+<div class="btns pager">
+  <a class="btn" href="/notes/lessons/23-tich-hop.html">← Bài 23 · Tích hợp</a>
+  <a class="btn primary" href="/notes/lessons/25-ben-lien-quan-van-hanh.html">Bài 25 · Bên liên quan, vòng đời, năng suất đội →</a>
+</div>
+
+<footer>
+  Luyện thi chứng chỉ Claude · Bài 24 · Đánh giá, tối ưu và governance · v0.22 · 2026-11-18. Tổng quan: <a href="/notes/00-tong-quan.md">00</a> · Luyện đề: <a href="/new">30</a>.
+</footer>

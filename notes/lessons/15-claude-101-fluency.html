@@ -1,0 +1,600 @@
+<p class="lesson-source">Nguồn: tài liệu ôn tập công khai <a href="https://claude.ai/artifact/3NhHr42CxTHGEs33N1ntFf" target="_blank" rel="noopener">artifact 3NhHr42…</a> (bài 15). Không thuộc và không được Anthropic xác nhận.</p>
+<header class="cover">
+  <div class="eyebrow">Luyện thi chứng chỉ Claude · Bài 15</div>
+  <h1>Claude 101 &amp; AI Fluency Framework <span class="ja">Claude 101 · AI Fluency Framework</span></h1>
+  <p class="lead">Constitutional AI, 200K+ context window, cách truy cập (Claude.ai/Code/Tag/Design/M365), Projects (knowledge base, RAG, team sharing), Research mode vs web search vs Thinking; 4D Framework: Delegation, Description, Discernment, Diligence.</p>
+  <dl class="meta">
+    <dt>Kỳ thi</dt><dd>CCAO-F D1–D6 (toàn bộ foundation)</dd>
+    <dt>Phục vụ</dt><dd><span class="tag xt2">CCAO-F</span> 2 mục · <span class="tag x-nen">Nền</span> 1 mục · <a href="#xsum">bảng nhãn từng mục</a></dd>
+
+    <dt>Nguồn</dt><dd>academy.claude.com · Claude 101, AI Fluency Framework · Crawl 2026-11-17</dd>
+    <dt>Cập nhật</dt><dd><span class="status">v0.22 · 2026-11-18</span> · theo exam guide v1.0</dd>
+  </dl>
+</header>
+
+<details class="toc">
+<summary>Mục lục</summary>
+
+    <ol>
+      <li><a href="#tong-quan"><span class="n">1</span><span class="tx">Tổng quan</span></a></li>
+      <li><a href="#claude-101"><span class="n">2</span><span class="tx">Claude 101 — 13 bài</span><span class="xds" aria-hidden="true"><i class="xd xt2" title="CCAO-F"></i><i class="xd x-nen" title="Nền"></i></span></a></li>
+      <li><a href="#ai-fluency"><span class="n">3</span><span class="tx">AI Fluency Framework — 14 bài</span><span class="xds" aria-hidden="true"><i class="xd xt2" title="CCAO-F"></i></span></a></li>
+      <li><a href="#exam-tips"><span class="n">4</span><span class="tx">Lưu ý ôn thi</span></a></li>
+    </ol>
+
+</details>
+
+<details class="xsum" id="xsum">
+<summary>Mục nào phục vụ bài thi nào</summary>
+<p class="xnote">Mã đầu là bài thi chính của mục. <b>Nền</b>: cần để hiểu các mục sau. <b>Nâng cao</b>: ngoài phạm vi các exam guide. Ôn cho một bài thi thì đọc các mục có mã của bài đó trước.</p>
+<div class="tw"><table>
+<thead><tr><th>Mục</th><th>Bài thi</th><th>Ghi chú</th></tr></thead>
+<tbody>
+<tr><td><a href="#claude-101">2. Claude 101 — 13 bài</a></td><td><span class="tag xt2">CCAO-F D3</span> <span class="tag xt2">CCAO-F D1</span> <span class="tag x-nen">Nền</span></td><td></td></tr>
+<tr><td><a href="#ai-fluency">3. AI Fluency Framework — 14 bài</a></td><td><span class="tag xt2">CCAO-F D1</span> <span class="tag xt2">CCAO-F D6</span> <span class="tag xt2">CCAO-F D2</span> <span class="tag xt2">CCAO-F D4</span> <span class="tag xt2">CCAO-F D7</span></td><td></td></tr>
+</tbody></table></div>
+</details>
+
+<h2 id="tong-quan">1. Tổng quan</h2>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Học lái xe có hai phần. Phần một dạy bạn biết xe: bấm nút nào, bật đèn thế nào. Phần hai dạy bạn biết đường: khi nào nhường, khi nào dừng, và lỡ có sự cố thì làm gì. Hai khóa học trong bài này cũng vậy. <strong>Claude 101</strong> dạy bạn biết “chiếc xe” là Claude. <strong>AI Fluency Framework</strong> dạy bạn biết “luật đường” khi làm việc cùng AI.
+</div>
+<p>Bài này tổng hợp hai khóa dành cho người dùng cuối: <strong>Claude 101</strong> (13 bài, nhập môn Claude.ai) và <strong>AI Fluency Framework</strong> (14 bài, tư duy làm việc với AI). Nội dung chính cho CCAO-F D1–D7. CCAO-F là kỳ thi cho người dùng nghiệp vụ, nên các ví dụ trong bài lấy từ công việc văn phòng: viết email, tóm tắt hợp đồng, soạn báo cáo. Bài không cần bạn biết lập trình.</p>
+
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 224" role="img" aria-label="Hai khóa và các domain CCAO-F: Claude 101 phủ D1 prompting, D2 đánh giá output, D3 chọn sản phẩm; AI Fluency Framework phủ D4 workflow, D5 cấu hình, D6 governance">
+    <rect x="4" y="4" width="312" height="216" rx="8" class="lane"/>
+    <rect x="324" y="4" width="312" height="216" rx="8" class="lane"/>
+    <text x="160" y="22" class="lane-lb" text-anchor="middle">KHÓA 1 · MỤC 2</text>
+    <text x="480" y="22" class="lane-lb" text-anchor="middle">KHÓA 2 · MỤC 3</text>
+    <rect x="24" y="34" width="272" height="46" rx="6" class="b-sys"/>
+    <text x="160" y="55" class="t tb" text-anchor="middle">Claude 101 · 13 bài</text><text x="160" y="71" class="ts" text-anchor="middle">biết dùng Claude.ai</text>
+    <rect x="24" y="94" width="272" height="30" rx="6" class="b-step"/><text x="160" y="114" class="t" text-anchor="middle">D1 · Prompting</text>
+    <rect x="24" y="132" width="272" height="30" rx="6" class="b-step"/><text x="160" y="152" class="t" text-anchor="middle">D2 · Đánh giá output</text>
+    <rect x="24" y="170" width="272" height="30" rx="6" class="b-step"/><text x="160" y="190" class="t" text-anchor="middle">D3 · Chọn model, feature, plan</text>
+    <rect x="344" y="34" width="272" height="46" rx="6" class="b-sys"/>
+    <text x="480" y="55" class="t tb" text-anchor="middle">AI Fluency Framework · 14 bài</text><text x="480" y="71" class="ts" text-anchor="middle">biết nghĩ khi làm việc với AI</text>
+    <rect x="344" y="94" width="272" height="30" rx="6" class="b-done"/><text x="480" y="114" class="t" text-anchor="middle">D4 · Workflow = Delegation</text>
+    <rect x="344" y="132" width="272" height="30" rx="6" class="b-done"/><text x="480" y="152" class="t" text-anchor="middle">D5 · Projects + system prompt</text>
+    <rect x="344" y="170" width="272" height="30" rx="6" class="b-done"/><text x="480" y="190" class="t" text-anchor="middle">D6 · Governance = Diligence</text>
+  </svg></div>
+  <figcaption>Hình 1. Hai khóa và phần CCAO-F mỗi khóa phủ (theo ghi chú ôn thi ở mục 4).</figcaption>
+</figure>
+
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Claude.ai</dt><dd>Trang và ứng dụng chat với Claude dành cho người dùng cuối.</dd>
+  <dt>Prompt</dt><dd>Câu bạn viết để giao việc cho Claude.</dd>
+  <dt>AI Fluency</dt><dd>Khả năng làm việc với AI một cách hiệu quả và có trách nhiệm. Khung 4D (bốn chữ D) là bộ xương của nó.</dd>
+  <dt>CCAO-F</dt><dd>Kỳ thi chứng chỉ dành cho người dùng nghiệp vụ. D1 đến D7 là các domain (mảng kiến thức) của đề.</dd>
+</dl></div>
+<div class="insight"><strong>Cốt lõi.</strong> Học theo thứ tự: biết công cụ làm được gì (mục 2), rồi biết cách nghĩ khi dùng nó (mục 3), rồi ôn các điểm hay hỏi (mục 4).</div>
+
+<h2 id="claude-101">2. Claude 101 — 13 bài</h2>
+<p class="xtags"><span class="tag xt2">CCAO-F D3</span> <span class="tag xt2">CCAO-F D1</span> <span class="tag x-nen">Nền</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Claude giống một thực tập sinh rất thông minh, đọc nhanh, viết tốt, làm việc không mệt, nhưng chưa biết gì về công ty bạn. Bạn giao việc càng rõ (làm gì, cho ai, độ dài bao nhiêu), kết quả càng đúng ý. Bạn đưa sẵn tài liệu của công ty thì thực tập sinh làm việc càng sát. Cả mục 2 xoay quanh hai việc đó: giao việc rõ và đưa đúng tài liệu.
+</div>
+
+<h3>2.1 What Is Claude? (Bài 1–2)</h3>
+<p>Claude là AI assistant được tạo bởi Anthropic, dựa trên <strong>Constitutional AI</strong> (CAI): phương pháp huấn luyện để AI có các giá trị và nguyên tắc cụ thể (helpful, harmless, honest). Hiểu đơn giản: thay vì chỉ để con người chấm từng câu trả lời, người ta đưa cho AI một bộ nguyên tắc viết sẵn (một “hiến pháp”) để nó tự đối chiếu. Khác với chatbot thông thường, Claude được thiết kế để suy nghĩ về đạo đức và từ chối các yêu cầu có hại.</p>
+<p><strong>Các khả năng chính:</strong></p>
+<ul>
+  <li><strong>Context window 200K+ tokens</strong>: đọc được toàn bộ sách, codebase lớn, hợp đồng dài. <strong>Token</strong> là mảnh chữ nhỏ mà AI dùng để đếm độ dài. <strong>Context window</strong> là “bàn làm việc” của Claude: lượng chữ tối đa nó nhìn thấy cùng lúc.</li>
+  <li><strong>Thinking mode</strong>: suy nghĩ sâu hơn trước khi trả lời (trên claude.ai Pro/Team).</li>
+  <li><strong>Multimodal</strong>: hiểu ảnh, PDF, và (sắp có) audio/video. Bạn chụp một hoá đơn rồi hỏi tổng tiền là được.</li>
+  <li><strong>Viết code</strong>: không chỉ explain mà còn chạy code trong artifacts. <strong>Artifact</strong> là khung riêng cạnh khung chat, nơi Claude hiện sản phẩm như tài liệu, bảng, trang web nhỏ hay đoạn code chạy được.</li>
+</ul>
+<p>Ví dụ: bạn dán hợp đồng 40 trang và hỏi “điều khoản nào nói về phạt chậm thanh toán?”. Việc này vừa với context window lớn. Claude đọc cả hợp đồng một lần, rồi trả lời kèm vị trí điều khoản.</p>
+<div class="insight"><strong>Cốt lõi.</strong> CAI nghĩa là Claude học giá trị từ một bộ nguyên tắc viết rõ, không chỉ từ phản hồi của con người. Với đề thi, nhớ ba chữ: helpful, harmless, honest.</div>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Anthropic đã công bố tài liệu <a href="https://www.anthropic.com/constitution" target="_blank" rel="noopener">Claude’s Constitution</a> mô tả giá trị và cách suy luận của Claude, và đã có bài viết về <a href="https://www.anthropic.com/news/claude-new-constitution" target="_blank" rel="noopener">bản constitution mới</a>. Đề thi vẫn chỉ cần ý helpful, harmless, honest ở trên.</div>
+
+<h3>2.2 Cách tiếp cận Claude (Bài 3–4)</h3>
+<p><strong>Claude không phải search engine</strong>: không dùng để lookup thông tin cụ thể cần độ chính xác tuyệt đối (giá cổ phiếu, tin tức mới nhất, số liệu thống kê chính xác). Dùng cho tasks cần suy nghĩ, viết lách, phân tích, hay brainstorming.</p>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Claude.ai hiện có <strong>web search</strong>, thích hợp cho câu hỏi sự kiện cần thông tin mới, như tin vừa ra hay kết quả hôm qua (<a href="https://support.claude.com/en/articles/11095361-when-should-i-use-web-search-extended-thinking-and-research" target="_blank" rel="noopener">hướng dẫn chọn tính năng</a>). Nguyên tắc của đề không đổi: số liệu quan trọng vẫn phải đối chiếu nguồn gốc.</div>
+<p><strong>Cách viết prompt tốt:</strong></p>
+<ol>
+  <li><strong>Context:</strong> cho Claude biết bạn đang làm gì và tại sao</li>
+  <li><strong>Role:</strong> "Act as a senior product manager reviewing this PRD"</li>
+  <li><strong>Format:</strong> "Respond in bullet points" / "Write in Vietnamese"</li>
+  <li><strong>Constraints:</strong> "Keep it under 200 words" / "Avoid technical jargon"</li>
+  <li><strong>Examples:</strong> cho ví dụ input/output khi format quan trọng</li>
+</ol>
+<p>Để thấy từng phần giúp gì, ta xây một prompt cho việc văn phòng: nhắc khách trả hoá đơn quá hạn.</p>
+
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 286" role="img" aria-label="Năm thành phần của prompt: Context, Role, Format, Constraints, Examples được ghép dần thành một prompt hoàn chỉnh để nhờ Claude viết email nhắc thanh toán">
+    <defs><marker id="m1502" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker></defs>
+    <text x="10" y="20" class="lane-lb">NĂM THÀNH PHẦN</text>
+    <text x="262" y="20" class="lane-lb">PROMPT GỬI CHO CLAUDE</text>
+    <rect x="252" y="28" width="380" height="226" rx="8" class="b-code"/>
+    <g><rect x="10" y="36" width="200" height="36" rx="6" class="b-sys"/><text x="20" y="52" class="t tb">1 · Context</text><text x="20" y="66" class="ts">bạn đang làm gì, vì sao</text>
+      <path d="M210,54 H250" class="ln-acc flow" marker-end="url(#m1502)"/><text x="264" y="58" class="ts">Tôi là kế toán, khách trễ hoá đơn 7 ngày.</text></g>
+    <g><rect x="10" y="82" width="200" height="36" rx="6" class="b-step"/><text x="20" y="98" class="t tb">2 · Role</text><text x="20" y="112" class="ts">Claude đóng vai ai</text>
+      <path d="M210,100 H250" class="ln-acc flow" marker-end="url(#m1502)"/><text x="264" y="104" class="ts">Hãy viết như một trưởng phòng chăm sóc khách hàng.</text></g>
+    <g><rect x="10" y="128" width="200" height="36" rx="6" class="b-done"/><text x="20" y="144" class="t tb">3 · Format</text><text x="20" y="158" class="ts">dạng của kết quả</text>
+      <path d="M210,146 H250" class="ln-acc flow" marker-end="url(#m1502)"/><text x="264" y="150" class="ts">Trả lời bằng email, 3 đoạn ngắn, tiếng Việt.</text></g>
+    <g><rect x="10" y="174" width="200" height="36" rx="6" class="b-warn"/><text x="20" y="190" class="t tb">4 · Constraints</text><text x="20" y="204" class="ts">giới hạn cần tuân thủ</text>
+      <path d="M210,192 H250" class="ln-acc flow" marker-end="url(#m1502)"/><text x="264" y="196" class="ts">Dưới 120 từ, giọng lịch sự, không doạ khách.</text></g>
+    <g><rect x="10" y="220" width="200" height="36" rx="6" class="b-hot"/><text x="20" y="236" class="t tb">5 · Examples</text><text x="20" y="250" class="ts">mẫu đầu vào, đầu ra</text>
+      <path d="M210,238 H250" class="ln-acc flow" marker-end="url(#m1502)"/><text x="264" y="242" class="ts">Mở đầu như: “Kính gửi anh/chị …”</text></g>
+    <text x="320" y="278" class="tw-good" text-anchor="middle">Đủ năm phần thì Claude ít phải đoán</text>
+  </svg></div>
+  <ol class="anim-steps">
+    <li><strong>Context:</strong> nói bạn là ai và chuyện gì đang xảy ra.</li>
+    <li><strong>Role:</strong> chọn vai để Claude có giọng và góc nhìn phù hợp.</li>
+    <li><strong>Format:</strong> nói rõ dạng kết quả muốn nhận.</li>
+    <li><strong>Constraints:</strong> đặt giới hạn về độ dài, giọng, điều cấm.</li>
+    <li><strong>Examples:</strong> đưa mẫu khi định dạng quan trọng.</li>
+    <li>Ghép lại thành một prompt đủ ý. Không phải prompt nào cũng cần cả năm phần, nhưng thiếu phần nào Claude sẽ phải đoán phần đó.</li>
+  </ol>
+  <figcaption>Hình 2. Năm thành phần ghép dần thành một prompt hoàn chỉnh.</figcaption>
+</figure>
+
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div><ul>
+    <li>“Viết email nhắc khách trả tiền.”</li>
+    <li>Hỏi giá cổ phiếu hôm nay mà không bật web search, rồi tin ngay con số</li>
+    <li>Coi Claude như công cụ tra cứu cần độ chính xác tuyệt đối</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đúng</div><ul>
+    <li>Nêu Context, Role, Format, Constraints, Examples như Hình 2</li>
+    <li>Giao việc cần suy nghĩ: viết, phân tích, brainstorm</li>
+    <li>Số liệu và tin mới nhất thì đối chiếu nguồn gốc</li>
+  </ul></div>
+</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>PRD</dt><dd>Product Requirements Document: tài liệu mô tả sản phẩm cần làm gì.</dd>
+  <dt>Input/output</dt><dd>Cái đưa vào và cái nhận ra. Một cặp ví dụ cho Claude thấy bạn muốn gì.</dd>
+  <dt>Brainstorming</dt><dd>Nghĩ ra thật nhiều ý tưởng, chưa cần chọn.</dd>
+  <dt>Jargon</dt><dd>Biệt ngữ chuyên ngành mà người ngoài khó hiểu.</dd>
+</dl></div>
+
+<h3>2.3 Cách truy cập Claude (Bài 5–7)</h3>
+<p>Cùng một Claude, nhưng có nhiều “cửa” để vào, tuỳ bạn làm việc ở đâu. Chọn sai cửa thì tốn công mà không thêm giá trị.</p>
+<div class="tw"><table>
+  <thead><tr><th>Sản phẩm</th><th>Use case chính</th><th>Availability</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Claude.ai</strong></td><td>Chat tổng quát, documents, brainstorm</td><td>Free / Pro / Team / Enterprise</td></tr>
+    <tr><td><strong>Claude Code</strong></td><td>Coding agent, terminal/IDE</td><td>Pro / Team / Enterprise</td></tr>
+    <tr><td><strong>Claude Tag</strong></td><td>Claude trong Slack workspace</td><td>Enterprise / Team</td></tr>
+    <tr><td><strong>Claude Design</strong></td><td>Visual design workflows</td><td>Enterprise (thử nghiệm)</td></tr>
+    <tr><td><strong>M365 integration</strong></td><td>Claude trong Word, Outlook, Teams</td><td>Enterprise (partnership)</td></tr>
+    <tr><td><strong>Claude API</strong></td><td>Tích hợp vào ứng dụng tự build</td><td>Developer</td></tr>
+  </tbody>
+</table></div>
+
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 206" role="img" aria-label="Chọn sản phẩm Claude theo nơi làm việc: Claude.ai cho chat và tài liệu, Claude Code cho lập trình, Claude Tag trong Slack, Claude Design cho thiết kế, tích hợp M365 trong Word Outlook Teams, Claude API cho ứng dụng tự build">
+    <rect x="190" y="8" width="260" height="34" rx="6" class="b-sys"/><text x="320" y="30" class="t tb" text-anchor="middle">Bạn muốn dùng Claude ở đâu?</text>
+    <path d="M320,42 V62 M50,62 H590 M50,62 V84 M158,62 V84 M266,62 V84 M374,62 V84 M482,62 V84 M590,62 V84" class="ln"/>
+    <rect x="2" y="84" width="96" height="114" rx="6" class="b-sys"/>
+    <text x="50" y="104" class="t tb" text-anchor="middle">Claude.ai</text>
+    <text x="50" y="124" class="ts" text-anchor="middle">Chat tổng quát,</text><text x="50" y="138" class="ts" text-anchor="middle">tài liệu,</text><text x="50" y="152" class="ts" text-anchor="middle">brainstorm</text>
+    <text x="50" y="174" class="ts" text-anchor="middle">Free · Pro ·</text><text x="50" y="188" class="ts" text-anchor="middle">Team · Enterprise</text>
+    <rect x="110" y="84" width="96" height="114" rx="6" class="b-step"/>
+    <text x="158" y="104" class="t tb" text-anchor="middle">Claude Code</text>
+    <text x="158" y="124" class="ts" text-anchor="middle">Coding agent,</text><text x="158" y="138" class="ts" text-anchor="middle">terminal / IDE</text>
+    <text x="158" y="174" class="ts" text-anchor="middle">Pro · Team ·</text><text x="158" y="188" class="ts" text-anchor="middle">Enterprise</text>
+    <rect x="218" y="84" width="96" height="114" rx="6" class="b-step"/>
+    <text x="266" y="104" class="t tb" text-anchor="middle">Claude Tag</text>
+    <text x="266" y="124" class="ts" text-anchor="middle">Claude trong</text><text x="266" y="138" class="ts" text-anchor="middle">Slack workspace</text>
+    <text x="266" y="174" class="ts" text-anchor="middle">Enterprise ·</text><text x="266" y="188" class="ts" text-anchor="middle">Team</text>
+    <rect x="326" y="84" width="96" height="114" rx="6" class="b-opt"/>
+    <text x="374" y="104" class="t tb" text-anchor="middle">Claude Design</text>
+    <text x="374" y="124" class="ts" text-anchor="middle">Quy trình thiết</text><text x="374" y="138" class="ts" text-anchor="middle">kế hình ảnh</text>
+    <text x="374" y="174" class="ts" text-anchor="middle">Enterprise</text><text x="374" y="188" class="ts" text-anchor="middle">(thử nghiệm)</text>
+    <rect x="434" y="84" width="96" height="114" rx="6" class="b-step"/>
+    <text x="482" y="104" class="t tb" text-anchor="middle">M365</text>
+    <text x="482" y="124" class="ts" text-anchor="middle">Claude trong</text><text x="482" y="138" class="ts" text-anchor="middle">Word, Outlook,</text><text x="482" y="152" class="ts" text-anchor="middle">Teams</text>
+    <text x="482" y="174" class="ts" text-anchor="middle">Enterprise</text><text x="482" y="188" class="ts" text-anchor="middle">(partnership)</text>
+    <rect x="542" y="84" width="96" height="114" rx="6" class="b-done"/>
+    <text x="590" y="104" class="t tb" text-anchor="middle">Claude API</text>
+    <text x="590" y="124" class="ts" text-anchor="middle">Tích hợp vào</text><text x="590" y="138" class="ts" text-anchor="middle">ứng dụng tự</text><text x="590" y="152" class="ts" text-anchor="middle">build</text>
+    <text x="590" y="174" class="ts" text-anchor="middle">Developer</text>
+  </svg></div>
+  <figcaption>Hình 3. Chọn sản phẩm theo nơi bạn làm việc và gói bạn có.</figcaption>
+</figure>
+<p>Ví dụ: nhân viên hành chính muốn tóm tắt biên bản họp đã lưu thành file thì dùng <strong>Claude.ai</strong>. Một đội dùng Slack cả ngày và muốn hỏi Claude ngay trong kênh chat thì dùng <strong>Claude Tag</strong>. Công ty có phần mềm riêng cần gọi Claude từ code thì dùng <strong>Claude API</strong>.</p>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Plan (gói)</dt><dd>Gói dịch vụ bạn trả tiền: Free, Pro, Team, Enterprise. Gói khác nhau thì tính năng và giới hạn dùng khác nhau.</dd>
+  <dt>Slack</dt><dd>Ứng dụng chat nhóm của công ty.</dd>
+  <dt>M365</dt><dd>Microsoft 365: bộ Word, Excel, Outlook, Teams.</dd>
+  <dt>API</dt><dd>Cổng để một phần mềm khác gọi Claude. Người dùng thường không cần chạm tới.</dd>
+</dl></div>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Theo <a href="https://support.claude.com/en/articles/11145838-using-claude-code-with-your-pro-or-max-plan" target="_blank" rel="noopener">trang hỗ trợ Claude Code</a>, Claude Code còn dùng được với gói Max và Ultra, chung giới hạn với Claude. Bảng trên giữ theo tài liệu thi, và gói có thể thay đổi, nên hãy xem trang giá khi cần chắc chắn.</div>
+
+<h3>2.4 Projects: Knowledge Base Cá Nhân (Bài 8–10)</h3>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Mỗi vụ việc của một văn phòng luật sư có một <strong>hồ sơ</strong> riêng: hợp đồng, thư từ, ghi chú. Ai mở hồ sơ ra cũng thấy đủ giấy tờ, không phải xin lại từ đầu. <strong>Projects</strong> là hồ sơ đó trong Claude. Mỗi cuộc chat bên trong đã “có sẵn” tài liệu của hồ sơ.
+</div>
+<p><strong>Projects</strong> là tính năng lưu context liên tục qua nhiều hội thoại, nên không cần paste lại tài liệu mỗi lần. Mỗi project có:</p>
+<ul>
+  <li><strong>Knowledge base:</strong> upload documents, files, URLs → Claude sử dụng mỗi khi chat trong project (RAG)</li>
+  <li><strong>System prompt:</strong> tùy chỉnh behavior của Claude cho project</li>
+  <li><strong>Conversation history:</strong> tất cả chats trong project được nhóm lại</li>
+  <li><strong>Team sharing:</strong> chia sẻ project (và knowledge base) với team</li>
+</ul>
+
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 258" role="img" aria-label="Một project gồm knowledge base lấy từ tài liệu bạn upload, system prompt và các chat; khi bạn hỏi, Claude tìm đoạn liên quan trong knowledge base rồi trả lời; project có thể chia sẻ với team">
+    <defs>
+      <marker id="m1504" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker>
+      <marker id="m1504g" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-good"/></marker>
+    </defs>
+    <text x="178" y="14" class="lane-lb">PROJECT</text>
+    <rect x="172" y="20" width="298" height="204" rx="8" class="lane"/>
+    <g>
+      <rect x="8" y="40" width="130" height="30" rx="5" class="b-step"/><text x="16" y="59" class="tm">Brand-guide.pdf</text>
+      <rect x="8" y="80" width="130" height="30" rx="5" class="b-step"/><text x="16" y="99" class="tm">Hop-dong.docx</text>
+      <rect x="8" y="120" width="130" height="30" rx="5" class="b-step"/><text x="16" y="139" class="tm">Spec.md</text>
+      <path d="M138,55 H154 M138,95 H154 M138,135 H154 M154,55 V135" class="ln"/>
+      <path d="M154,95 H184" class="ln-acc flow" marker-end="url(#m1504)"/>
+      <rect x="186" y="44" width="254" height="56" rx="6" class="b-done"/><text x="313" y="66" class="t tb" text-anchor="middle">Knowledge base</text><text x="313" y="84" class="ts" text-anchor="middle">tài liệu, file, URL dùng cho mọi chat</text>
+    </g>
+    <g><rect x="186" y="112" width="214" height="44" rx="6" class="b-sys"/><text x="293" y="131" class="t tb" text-anchor="middle">System prompt</text><text x="293" y="147" class="ts" text-anchor="middle">cách Claude trả lời</text></g>
+    <g><rect x="186" y="168" width="254" height="44" rx="6" class="b-step"/><text x="313" y="187" class="t tb" text-anchor="middle">Chat trong project</text><text x="313" y="203" class="ts" text-anchor="middle">mọi hội thoại được nhóm lại</text>
+      <rect x="500" y="168" width="132" height="44" rx="6" class="b-hot"/><text x="566" y="187" class="t tb" text-anchor="middle">Bạn</text><text x="566" y="203" class="ts" text-anchor="middle">hỏi câu mới</text>
+      <path d="M498,200 H442" class="ln-acc flow" marker-end="url(#m1504)"/></g>
+    <g><path d="M425,168 V102" class="ln-acc flow" marker-end="url(#m1504)"/>
+      <text x="480" y="132" class="ts">RAG: chỉ lấy</text><text x="480" y="146" class="ts">đoạn liên quan</text></g>
+    <g><path d="M442,180 H498" class="ln-good flow" marker-end="url(#m1504g)"/></g>
+    <g><path d="M440,72 H498" class="ln-acc flow" marker-end="url(#m1504)"/>
+      <rect x="500" y="44" width="132" height="56" rx="6" class="b-opt"/><text x="566" y="66" class="t tb" text-anchor="middle">Team</text><text x="566" y="84" class="ts" text-anchor="middle">dùng chung project</text></g>
+    <text x="320" y="248" class="tw-good" text-anchor="middle">Không phải paste lại tài liệu mỗi lần</text>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Bạn upload tài liệu vào <strong>knowledge base</strong> của project một lần.</li>
+    <li>Bạn viết <strong>system prompt</strong> cho project: giọng văn, quy tắc chung.</li>
+    <li>Bạn mở một chat mới trong project và đặt câu hỏi.</li>
+    <li>Claude tìm trong knowledge base đúng các đoạn liên quan tới câu hỏi (kỹ thuật RAG).</li>
+    <li>Claude trả lời dựa trên tài liệu của project.</li>
+    <li>Bạn có thể chia sẻ project với team, nên cả đội dùng chung một nguồn tài liệu.</li>
+  </ol>
+  <figcaption>Hình 4. Một project: knowledge base, system prompt, chat, và chia sẻ với team.</figcaption>
+</figure>
+
+<p><strong>Use cases tốt cho Projects:</strong></p>
+<ul>
+  <li>Brand voice guide → luôn viết theo tone nhất quán</li>
+  <li>Legal documents → hỏi về điều khoản hợp đồng</li>
+  <li>Engineering specs → debug với context đầy đủ</li>
+  <li>Customer support → knowledge base từ docs</li>
+</ul>
+<p>Ví dụ: phòng marketing upload bản hướng dẫn thương hiệu vào một project. Mỗi nhân viên mới chỉ cần mở project và yêu cầu “viết bài đăng Facebook cho đợt khuyến mãi tháng này”. Claude viết đúng giọng thương hiệu mà không ai phải dán lại bản hướng dẫn.</p>
+<div class="insight"><strong>Projects vs Conversations:</strong> Conversations riêng lẻ không nhớ gì qua sessions. Projects nhớ knowledge base và conversations trong project đó. Dùng Projects cho work của bạn, Conversations cho quick tasks một lần.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Knowledge base</dt><dd>Kho tài liệu của project, Claude tra khi bạn hỏi.</dd>
+  <dt>RAG</dt><dd>Retrieval-augmented generation: Claude <em>tìm</em> đoạn liên quan trong kho tài liệu rồi mới <em>viết</em> câu trả lời dựa trên đoạn đó, thay vì đọc cả kho mỗi lần.</dd>
+  <dt>System prompt</dt><dd>Lời dặn cố định áp dụng cho mọi chat trong project, như “luôn trả lời bằng tiếng Việt, giọng thân thiện”.</dd>
+  <dt>Tone</dt><dd>Giọng văn: trang trọng, thân mật, vui vẻ…</dd>
+</dl></div>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Theo <a href="https://support.claude.com/en/articles/11473015-retrieval-augmented-generation-rag-for-projects" target="_blank" rel="noopener">trang hỗ trợ về RAG cho projects</a>: khi knowledge của project gần chạm giới hạn context window, Claude tự bật chế độ RAG trên gói trả phí, mở rộng sức chứa tới khoảng 10 lần. Bạn không cần cấu hình. Claude lúc đó dùng một công cụ “project knowledge search” để lấy các đoạn liên quan, và bạn thấy nó hiện trong hội thoại.</div>
+
+<h3>2.5 Research Mode (Bài 11–13)</h3>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Bạn cần biết giá một món đồ: hỏi nhanh một người bạn là đủ (<em>web search</em>). Bạn cần bài toán khó: ngồi nghĩ kỹ một mình (<em>thinking</em>). Bạn cần báo cáo so sánh năm nhà cung cấp cho giám đốc: phải nhờ một nhân viên đi thu thập nhiều nguồn, đối chiếu, rồi viết báo cáo kèm nguồn (<em>research</em>).
+</div>
+<p><strong>Research mode</strong> là tính năng agentic: Claude tự chủ động tìm kiếm nhiều nguồn, tổng hợp, trích dẫn. “Agentic” nghĩa là Claude tự quyết tìm gì tiếp, không chỉ làm một bước. Khác với web search thông thường:</p>
+<div class="tw"><table>
+  <thead><tr><th>Tính năng</th><th>Mô tả</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Multi-source synthesis</strong></td><td>Tìm kiếm hàng chục nguồn, tổng hợp thành bài phân tích</td></tr>
+    <tr><td><strong>Citations</strong></td><td>Mọi claim đều có nguồn trích dẫn rõ ràng</td></tr>
+    <tr><td><strong>Conflict detection</strong></td><td>Phát hiện khi các nguồn mâu thuẫn nhau</td></tr>
+    <tr><td><strong>Deep dive</strong></td><td>Hỏi follow-up để đào sâu hơn</td></tr>
+  </tbody>
+</table></div>
+<p><strong>Phân biệt ba chế độ:</strong></p>
+<div class="tw"><table>
+  <thead><tr><th>Chế độ</th><th>Khi nào dùng</th><th>Thời gian</th></tr></thead>
+  <tbody>
+    <tr><td>Standard chat</td><td>Phân tích, viết lách, brainstorm</td><td>Tức thì</td></tr>
+    <tr><td>Thinking mode</td><td>Vấn đề phức tạp cần reasoning sâu</td><td>10–30 giây</td></tr>
+    <tr><td>Research mode</td><td>Cần thông tin từ nhiều nguồn, cần citations</td><td>2–5 phút</td></tr>
+  </tbody>
+</table></div>
+
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 206" role="img" aria-label="Chọn chế độ theo nhu cầu: standard chat cho viết lách và phân tích, thinking mode cho lập luận sâu, web search cho tin mới, research mode cho nhiều nguồn có trích dẫn">
+    <rect x="190" y="8" width="260" height="34" rx="6" class="b-sys"/><text x="320" y="30" class="t tb" text-anchor="middle">Bạn cần gì từ Claude?</text>
+    <path d="M320,42 V62 M78,62 H564 M78,62 V84 M240,62 V84 M402,62 V84 M564,62 V84" class="ln"/>
+    <rect x="8" y="84" width="140" height="114" rx="6" class="b-step"/>
+    <text x="78" y="106" class="t tb" text-anchor="middle">Standard chat</text>
+    <text x="78" y="128" class="ts" text-anchor="middle">Phân tích, viết lách,</text><text x="78" y="142" class="ts" text-anchor="middle">brainstorm</text>
+    <text x="78" y="170" class="ts" text-anchor="middle">Thời gian: tức thì</text>
+    <rect x="170" y="84" width="140" height="114" rx="6" class="b-sys"/>
+    <text x="240" y="106" class="t tb" text-anchor="middle">Thinking mode</text>
+    <text x="240" y="128" class="ts" text-anchor="middle">Vấn đề phức tạp cần</text><text x="240" y="142" class="ts" text-anchor="middle">reasoning sâu,</text><text x="240" y="156" class="ts" text-anchor="middle">không cần tin mới</text>
+    <text x="240" y="184" class="ts" text-anchor="middle">Thời gian: 10–30 giây</text>
+    <rect x="332" y="84" width="140" height="114" rx="6" class="b-opt"/>
+    <text x="402" y="106" class="t tb" text-anchor="middle">Web search</text>
+    <text x="402" y="128" class="ts" text-anchor="middle">Câu hỏi sự kiện, tin</text><text x="402" y="142" class="ts" text-anchor="middle">mới, 1–2 lần tra</text>
+    <text x="402" y="170" class="ts" text-anchor="middle">Thời gian: nhanh</text>
+    <rect x="494" y="84" width="140" height="114" rx="6" class="b-hot"/>
+    <text x="564" y="106" class="t tb" text-anchor="middle">Research mode</text>
+    <text x="564" y="128" class="ts" text-anchor="middle">Nhiều nguồn, có</text><text x="564" y="142" class="ts" text-anchor="middle">citations, báo cáo dài</text>
+    <text x="564" y="170" class="ts" text-anchor="middle">Thời gian: 2–5 phút</text>
+  </svg></div>
+  <figcaption>Hình 5. Chọn chế độ theo nhu cầu. Bảng ba chế độ ở trên là phần đề thi hay hỏi. Web search là lựa chọn thêm cho câu hỏi tra cứu nhanh.</figcaption>
+</figure>
+<p>Ví dụ từng bước: trưởng phòng nhờ “so sánh ba phần mềm chấm công, kèm giá và đánh giá người dùng, có nguồn”. Việc này cần nhiều nguồn và cần nguồn trích dẫn, nên chọn <strong>Research mode</strong>. Vài phút sau Claude trả báo cáo có chú thích nguồn và chỉ ra chỗ hai nguồn nói khác nhau. Bạn hỏi tiếp “phần mềm nào hợp công ty 50 người?” (deep dive). Ngược lại, nhờ “viết lại đoạn mở đầu báo cáo cho gọn” thì standard chat là đủ.</p>
+<div class="alert"><strong>Bẫy.</strong> Dùng Research mode cho mọi câu hỏi. Nó chậm hơn và tốn nhiều lượt dùng hơn. Việc viết lách đơn giản chỉ cần standard chat, bài toán lập luận khó chỉ cần Thinking mode. Research dành cho việc cần nhiều nguồn và citations.</div>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> <a href="https://support.claude.com/en/articles/11095361-when-should-i-use-web-search-extended-thinking-and-research" target="_blank" rel="noopener">Trang hỗ trợ</a> mô tả Research dùng từ năm lệnh gọi tool trở lên trong khoảng 1 đến 3 phút, và Extended thinking dành cho lập luận phức tạp không cần thông tin mới. Con số 2–5 phút trong bảng là của bài giảng thi. <a href="https://support.claude.com/en/articles/11088861-use-research-on-claude" target="_blank" rel="noopener">Cách bật Research</a>: nút “+” ở góc dưới bên trái khung chat, rồi chọn Research (cần bật web search trước). Đề thi vẫn tính theo bảng ba chế độ.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Citation</dt><dd>Chú thích nguồn cho từng thông tin, để bạn bấm vào kiểm tra.</dd>
+  <dt>Synthesis</dt><dd>Tổng hợp nhiều nguồn thành một bài thống nhất.</dd>
+  <dt>Follow-up</dt><dd>Câu hỏi tiếp theo để đào sâu.</dd>
+  <dt>Reasoning</dt><dd>Lập luận nhiều bước, như giải bài toán hoặc cân nhắc lợi hại.</dd>
+</dl></div>
+
+<h2 id="ai-fluency">3. AI Fluency Framework — 14 bài</h2>
+<p class="xtags"><span class="tag xt2">CCAO-F D1</span> <span class="tag xt2">CCAO-F D6</span> <span class="tag xt2">CCAO-F D2</span> <span class="tag xt2">CCAO-F D4</span> <span class="tag xt2">CCAO-F D7</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Một trưởng nhóm giỏi làm bốn việc với nhân viên mới. Quyết định giao việc nào cho ai (<em>delegation</em>). Giải thích yêu cầu rõ ràng (<em>description</em>). Kiểm tra kết quả nhận về (<em>discernment</em>). Chịu trách nhiệm về những gì nhóm gửi ra ngoài (<em>diligence</em>). Nhân viên mới ở đây là AI. Bốn việc đó là bốn chữ D.
+</div>
+
+<h3>3.1 4D Framework: Tổng quan (Bài 1)</h3>
+<p>AI Fluency Framework gồm bốn chiều (4D) giúp người dùng làm việc hiệu quả với AI:</p>
+<ul>
+  <li><strong>Delegation</strong>: quyết định giao gì cho AI</li>
+  <li><strong>Description</strong>: mô tả yêu cầu rõ ràng</li>
+  <li><strong>Discernment</strong>: đánh giá và cải thiện output</li>
+  <li><strong>Diligence</strong>: sử dụng AI có trách nhiệm</li>
+</ul>
+<p>Bốn chữ D không phải bốn bước làm một lần rồi xong. Chúng chạy như một vòng lặp. Bạn quyết định giao việc, mô tả, xem kết quả, rồi chịu trách nhiệm về nó. Kết quả thường kéo bạn quay lại mô tả hoặc quyết định giao việc lần sau.</p>
+
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 250" role="img" aria-label="Vòng lặp 4D: Delegation, Description, Discernment, Diligence nối vòng; vòng trong gồm Description và Discernment, vòng ngoài gồm Delegation và Diligence">
+    <defs><marker id="m1506" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker></defs>
+    <g><rect x="60" y="30" width="170" height="62" rx="6" class="b-sys"/><text x="145" y="55" class="t tb" text-anchor="middle">Delegation</text><text x="145" y="73" class="ts" text-anchor="middle">giao gì cho AI</text></g>
+
+    <g><path d="M230,61 H408" class="ln-acc flow" marker-end="url(#m1506)"/>
+      <rect x="410" y="30" width="170" height="62" rx="6" class="b-step"/><text x="495" y="55" class="t tb" text-anchor="middle">Description</text><text x="495" y="73" class="ts" text-anchor="middle">mô tả yêu cầu rõ</text></g>
+
+    <g><path d="M495,92 V168" class="ln-acc flow" marker-end="url(#m1506)"/>
+      <rect x="410" y="170" width="170" height="62" rx="6" class="b-hot"/><text x="495" y="195" class="t tb" text-anchor="middle">Discernment</text><text x="495" y="213" class="ts" text-anchor="middle">đánh giá output</text></g>
+
+    <g><path d="M410,201 H232" class="ln-acc flow" marker-end="url(#m1506)"/>
+      <rect x="60" y="170" width="170" height="62" rx="6" class="b-done"/><text x="145" y="195" class="t tb" text-anchor="middle">Diligence</text><text x="145" y="213" class="ts" text-anchor="middle">dùng AI có trách nhiệm</text></g>
+
+    <path d="M145,170 V94" class="ln-acc flow" marker-end="url(#m1506)"/>
+    <text x="320" y="120" class="ts" text-anchor="middle">Vòng trong, hằng ngày: Description và Discernment</text>
+    <text x="320" y="154" class="ts" text-anchor="middle">Vòng ngoài, quyết định: Delegation và Diligence</text>
+  </svg></div>
+  <ol class="anim-steps">
+    <li><strong>Delegation:</strong> việc này có nên giao cho AI không, và giao phần nào?</li>
+    <li><strong>Description:</strong> mô tả rõ thứ bạn cần, cách làm và chất lượng mong muốn.</li>
+    <li><strong>Discernment:</strong> đọc kết quả với đầu óc phản biện, xem có đúng, đủ, hợp không.</li>
+    <li><strong>Diligence:</strong> chịu trách nhiệm: duyệt trước khi gửi, minh bạch việc dùng AI.</li>
+    <li>Kết quả làm bạn xem lại cách giao việc, và vòng bắt đầu lại.</li>
+    <li>Mỗi ngày bạn đi nhiều vòng nhỏ Description và Discernment. Delegation và Diligence là các quyết định lớn hơn, đặt ra ngoài vòng nhỏ đó.</li>
+  </ol>
+  <figcaption>Hình 6. Bốn chiều của khung 4D chạy như một vòng lặp.</figcaption>
+</figure>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Delegation</dt><dd>Giao việc. Phát âm: “đe-lê-gây-sần”. Trả lời câu hỏi: ai làm gì, người hay AI.</dd>
+  <dt>Description</dt><dd>Mô tả việc cần làm cho AI.</dd>
+  <dt>Discernment</dt><dd>Sự sáng suốt khi đánh giá: nhận ra cái gì đúng, cái gì chưa ổn.</dd>
+  <dt>Diligence</dt><dd>Sự cẩn trọng và trách nhiệm.</dd>
+</dl></div>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Trên <a href="https://academy.claude.com/courses/ai-fluency-for-small-businesses/the-4d-framework" target="_blank" rel="noopener">Claude Academy</a>, khung 4D được mô tả có hai vòng: vòng trong (Description và Discernment) cho tương tác hằng ngày, vòng ngoài (Delegation và Diligence) cho các quyết định rộng hơn về khi nào và cách dùng AI. Tài liệu gốc của Anthropic về khung này nằm ở <a href="https://www-cdn.anthropic.com/4396730ed190e691a3712cf2fd6bfe35509deca2.pdf" target="_blank" rel="noopener">bản mô tả AI Fluency</a>. Hình 6 vẽ theo cách nhìn đó, còn bốn tên D vẫn như đề thi.</div>
+
+<h3>3.2 Delegation (Bài 2–4)</h3>
+<p>Delegation gồm ba loại awareness (hiểu biết):</p>
+<div class="tw"><table>
+  <thead><tr><th>Awareness</th><th>Câu hỏi cốt lõi</th><th>Ví dụ</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Problem Awareness</strong></td><td>Vấn đề này có phù hợp cho AI không?</td><td>AI tốt cho brainstorm, không tốt cho quyết định đạo đức</td></tr>
+    <tr><td><strong>Platform Awareness</strong></td><td>Dùng AI nào, model nào, feature nào?</td><td>Research mode vs chat vs Code</td></tr>
+    <tr><td><strong>Task Awareness</strong></td><td>Phân chia task hợp lý?</td><td>Cho AI làm draft, bạn review; không để AI quyết định cuối cùng</td></tr>
+  </tbody>
+</table></div>
+
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 224" role="img" aria-label="Delegation có ba loại awareness: problem, platform, task; kết quả là AI làm bản nháp, người review và quyết định cuối cùng">
+    <defs><marker id="m1507" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker></defs>
+    <rect x="8" y="8" width="196" height="100" rx="6" class="b-step"/>
+    <text x="106" y="30" class="t tb" text-anchor="middle">Problem Awareness</text>
+    <text x="106" y="52" class="ts" text-anchor="middle">Việc này hợp với AI không?</text>
+    <text x="106" y="72" class="ts" text-anchor="middle">Tốt: brainstorm, bản nháp</text><text x="106" y="86" class="ts" text-anchor="middle">Không: quyết định đạo đức</text>
+    <rect x="222" y="8" width="196" height="100" rx="6" class="b-sys"/>
+    <text x="320" y="30" class="t tb" text-anchor="middle">Platform Awareness</text>
+    <text x="320" y="52" class="ts" text-anchor="middle">Dùng AI, model, tính năng nào?</text>
+    <text x="320" y="72" class="ts" text-anchor="middle">Ví dụ: Research mode,</text><text x="320" y="86" class="ts" text-anchor="middle">chat hay Claude Code</text>
+    <rect x="436" y="8" width="196" height="100" rx="6" class="b-done"/>
+    <text x="534" y="30" class="t tb" text-anchor="middle">Task Awareness</text>
+    <text x="534" y="52" class="ts" text-anchor="middle">Chia việc hợp lý thế nào?</text>
+    <text x="534" y="72" class="ts" text-anchor="middle">AI làm bản nháp,</text><text x="534" y="86" class="ts" text-anchor="middle">bạn review</text>
+    <text x="320" y="138" class="lane-lb" text-anchor="middle">KẾT QUẢ: PHÂN CHIA VIỆC</text>
+    <rect x="96" y="150" width="200" height="56" rx="6" class="b-step"/><text x="196" y="173" class="t tb" text-anchor="middle">AI làm</text><text x="196" y="191" class="ts" text-anchor="middle">bản nháp, tóm tắt, ý tưởng</text>
+    <path d="M296,178 H342" class="ln-acc" marker-end="url(#m1507)"/>
+    <rect x="344" y="150" width="200" height="56" rx="6" class="b-done"/><text x="444" y="173" class="t tb" text-anchor="middle">Bạn làm</text><text x="444" y="191" class="ts" text-anchor="middle">review, chỉnh, quyết định cuối</text>
+  </svg></div>
+  <figcaption>Hình 7. Ba loại awareness của Delegation và cách chia việc giữa AI và người.</figcaption>
+</figure>
+<p>Ví dụ từng bước, với việc “chọn nhà cung cấp mới cho công ty”: (1) <em>Problem</em>: thu thập và so sánh thông tin nhà cung cấp hợp với AI, còn quyết định ký hợp đồng thì không. (2) <em>Platform</em>: cần nhiều nguồn có trích dẫn nên chọn Research mode. (3) <em>Task</em>: AI làm bảng so sánh nháp, bạn kiểm tra số liệu và là người quyết định cuối cùng.</p>
+<div class="insight"><strong>Quy tắc delegation:</strong> Đừng automate mọi thứ. AI tốt nhất như "brilliant junior": cần review, cần guidance, có thể sai. Giữ human judgment cho các quyết định có hệ quả lớn.</div>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div><ul>
+    <li>Giao hết mọi việc cho AI, kể cả quyết định cuối</li>
+    <li>Dùng đúng một tính năng cho mọi việc</li>
+    <li>Gửi bản AI viết thẳng cho khách, không ai đọc</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đúng</div><ul>
+    <li>AI làm bản nháp, người review và quyết định</li>
+    <li>Chọn model, tính năng hợp việc (Research, Thinking, chat, Code)</li>
+    <li>Giữ phán đoán của con người cho việc có hệ quả lớn</li>
+  </ul></div>
+</div>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Trong <a href="https://www-cdn.anthropic.com/4396730ed190e691a3712cf2fd6bfe35509deca2.pdf" target="_blank" rel="noopener">bản mô tả khung của Anthropic</a>, ba thành phần của Delegation là Problem Awareness, Platform Awareness và <strong>Task Delegation</strong> (phân chia việc giữa người và AI). Bài giảng thi gọi thành phần thứ ba là Task Awareness. Ý nghĩa giống nhau, và đề thi theo cách gọi trong bảng trên.</div>
+
+<h3>3.3 Description (Bài 5–7)</h3>
+<p>Description gồm ba dimension:</p>
+<div class="tw"><table>
+  <thead><tr><th>Dimension</th><th>Mô tả</th><th>Ví dụ prompt element</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Product</strong></td><td>Mô tả output cuối muốn nhận</td><td>"Write a 500-word email" / "Create a table with columns X, Y, Z"</td></tr>
+    <tr><td><strong>Process</strong></td><td>Mô tả cách bạn muốn AI đi đến kết quả</td><td>"Think step by step" / "Consider pros and cons before recommending"</td></tr>
+    <tr><td><strong>Performance</strong></td><td>Mô tả tiêu chuẩn chất lượng</td><td>"At the level of a senior consultant" / "Appropriate for C-suite audience"</td></tr>
+  </tbody>
+</table></div>
+<p>Ví dụ cho cùng một việc “báo cáo doanh thu quý”: <strong>Product</strong> là “một bảng ba cột: khu vực, doanh thu, tăng trưởng”. <strong>Process</strong> là “so sánh với quý trước rồi mới kết luận”. <strong>Performance</strong> là “viết cho ban giám đốc, ngắn gọn, không biệt ngữ”.</p>
+<p><strong>5 cách phổ biến cải thiện kết quả:</strong></p>
+<ol>
+  <li>Thêm role context ("You are a...")</li>
+  <li>Chỉ định format output rõ ràng</li>
+  <li>Cho ví dụ (few-shot)</li>
+  <li>Chia task lớn thành steps nhỏ</li>
+  <li>Thêm constraints (độ dài, audience, tone)</li>
+</ol>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div><ul>
+    <li>“Làm báo cáo doanh thu.” (chỉ nói việc, không nói sản phẩm, cách làm, chất lượng)</li>
+    <li>Giao cả việc lớn trong một câu</li>
+    <li>Không nói người đọc là ai</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đúng</div><ul>
+    <li>Product: bảng ba cột khu vực, doanh thu, tăng trưởng</li>
+    <li>Process: so sánh quý trước rồi kết luận</li>
+    <li>Performance: viết cho ban giám đốc, ngắn gọn</li>
+  </ul></div>
+</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Dimension</dt><dd>Một “chiều” hay khía cạnh của khái niệm.</dd>
+  <dt>Few-shot</dt><dd>Đưa vài ví dụ mẫu trong prompt để Claude bắt chước kiểu trả lời.</dd>
+  <dt>Audience</dt><dd>Người sẽ đọc kết quả. C-suite là các giám đốc cấp cao như CEO, CFO.</dd>
+  <dt>Step by step</dt><dd>Làm lần lượt từng bước thay vì nhảy thẳng tới kết luận.</dd>
+</dl></div>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Trong <a href="https://www-cdn.anthropic.com/4396730ed190e691a3712cf2fd6bfe35509deca2.pdf" target="_blank" rel="noopener">bản mô tả khung của Anthropic</a>, Performance Description là mô tả <em>hành vi của AI trong lúc cộng tác</em>: nên ngắn hay chi tiết, nên thách thức hay hỗ trợ bạn. Bảng trên ghi theo bài giảng thi (tiêu chuẩn chất lượng). Hai cách ghi đều xoay quanh việc nói rõ AI cần cư xử và đạt mức nào, nên các ví dụ trong bảng vẫn dùng được.</div>
+
+<h3>3.4 Discernment (Bài 8–10)</h3>
+<p>Discernment là khả năng đánh giá output AI và cải thiện nếu cần.</p>
+<p><strong>Ba dimension:</strong></p>
+<ul>
+  <li><strong>Product discernment:</strong> Output có đúng không? Có đủ không? Có phù hợp không?</li>
+  <li><strong>Process discernment:</strong> AI có dùng đúng approach không? (nhận ra khi AI reasoning sai)</li>
+  <li><strong>Performance discernment:</strong> Chất lượng có đạt mức kỳ vọng không?</li>
+</ul>
+<p><strong>The Discernment Loop:</strong></p>
+<ol>
+  <li>Review output với critical mindset (đừng accept blindly)</li>
+  <li>Identify gap: missing info? wrong tone? factual error?</li>
+  <li>Provide targeted feedback: "The second paragraph is too technical. Simplify for non-engineers."</li>
+  <li>Iterate cho đến khi đạt yêu cầu</li>
+</ol>
+
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 176" role="img" aria-label="Discernment loop: review output, tìm khoảng trống, góp ý cụ thể, lặp lại; chưa đạt thì quay về bước một">
+    <defs><marker id="m1508" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker></defs>
+    <g><rect x="8" y="30" width="132" height="56" rx="6" class="b-step"/><text x="74" y="53" class="t tb" text-anchor="middle">1 · Review</text><text x="74" y="71" class="ts" text-anchor="middle">đọc có phản biện</text></g>
+    <g><path d="M140,58 H166" class="ln-acc flow" marker-end="url(#m1508)"/><rect x="168" y="30" width="132" height="56" rx="6" class="b-warn"/><text x="234" y="53" class="t tb" text-anchor="middle">2 · Tìm gap</text><text x="234" y="71" class="ts" text-anchor="middle">thiếu ý? sai giọng?</text></g>
+    <g><path d="M300,58 H326" class="ln-acc flow" marker-end="url(#m1508)"/><rect x="328" y="30" width="132" height="56" rx="6" class="b-hot"/><text x="394" y="53" class="t tb" text-anchor="middle">3 · Góp ý</text><text x="394" y="71" class="ts" text-anchor="middle">chỉ rõ chỗ cần sửa</text></g>
+    <g><path d="M460,58 H486" class="ln-acc flow" marker-end="url(#m1508)"/><rect x="488" y="30" width="132" height="56" rx="6" class="b-done"/><text x="554" y="53" class="t tb" text-anchor="middle">4 · Lặp lại</text><text x="554" y="71" class="ts" text-anchor="middle">đến khi đạt yêu cầu</text></g>
+    <g><path d="M554,86 V124 H74 V88" class="ln-warn-solid flow" marker-end="url(#m1508)"/><text x="314" y="118" class="ts halo" text-anchor="middle">chưa đạt thì quay lại bước 1</text></g>
+    <text x="320" y="162" class="tw-good" text-anchor="middle">Không chấp nhận output một cách mù quáng</text>
+  </svg></div>
+  <ol class="anim-steps">
+    <li><strong>Review:</strong> bản tóm tắt hợp đồng Claude trả về. Đọc kỹ, đối chiếu với hợp đồng.</li>
+    <li><strong>Tìm gap:</strong> thiếu điều khoản phạt? Giọng quá kỹ thuật? Có con số sai?</li>
+    <li><strong>Góp ý cụ thể:</strong> “Đoạn hai quá kỹ thuật, hãy viết lại cho người không chuyên luật.”</li>
+    <li><strong>Lặp lại</strong> cho đến khi bản nhận được đạt yêu cầu.</li>
+    <li>Mỗi lần chưa đạt, vòng quay lại bước đọc kết quả mới.</li>
+    <li>Đừng bao giờ nhận kết quả đầu tiên mà không đọc.</li>
+  </ol>
+  <figcaption>Hình 8. The Discernment Loop: review, tìm gap, góp ý, lặp lại.</figcaption>
+</figure>
+<div class="alert"><strong>Hallucination risk:</strong> AI có thể tự tin trả lời sai. Với facts quan trọng (số liệu, citations, tên người), luôn verify qua nguồn gốc. Dùng Research mode nếu cần citations.</div>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div><ul>
+    <li>“Viết lại đi, chưa hay.” (không nói chỗ nào)</li>
+    <li>Tin ngay con số và tên người Claude đưa ra</li>
+    <li>Chấp nhận bản đầu tiên vì “nghe có vẻ chuyên nghiệp”</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đúng</div><ul>
+    <li>“Đoạn hai quá kỹ thuật, hãy đơn giản hoá cho người không chuyên.”</li>
+    <li>Kiểm tra số liệu, trích dẫn, tên người qua nguồn gốc</li>
+    <li>Lặp lại cho tới khi đạt, đọc kỹ từng vòng</li>
+  </ul></div>
+</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Hallucination</dt><dd>AI đưa ra thông tin nghe rất chắc chắn nhưng không có thật hoặc sai.</dd>
+  <dt>Critical mindset</dt><dd>Thái độ đọc có phản biện, luôn hỏi “thật không?”.</dd>
+  <dt>Verify</dt><dd>Kiểm chứng lại bằng nguồn gốc đáng tin.</dd>
+  <dt>Iterate</dt><dd>Làm lại nhiều vòng, mỗi vòng tốt hơn.</dd>
+</dl></div>
+
+<h3>3.5 Diligence (Bài 11–14)</h3>
+<p>Diligence = sử dụng AI có trách nhiệm, trong cả ba dimension:</p>
+<div class="tw"><table>
+  <thead><tr><th>Dimension</th><th>Nghĩa là</th><th>Ví dụ thực hành</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Creation diligence</strong></td><td>Không submit AI output mà không review</td><td>Luôn đọc và chỉnh sửa trước khi gửi/publish</td></tr>
+    <tr><td><strong>Transparency diligence</strong></td><td>Minh bạch về việc dùng AI khi relevant</td><td>Disclose AI assistance khi company policy/audience yêu cầu</td></tr>
+    <tr><td><strong>Deployment diligence</strong></td><td>Cân nhắc hậu quả trước khi deploy AI rộng rãi</td><td>Test với edge cases, có fallback khi AI fail</td></tr>
+  </tbody>
+</table></div>
+<p>Ví dụ từng bước: nhân viên dùng Claude soạn báo cáo cho khách hàng. <strong>Creation</strong>: nhân viên đọc, sửa, kiểm tra số liệu trước khi gửi. <strong>Transparency</strong>: công ty có quy định phải ghi chú việc dùng AI, nên báo cáo có dòng ghi chú. <strong>Deployment</strong>: phòng muốn cho cả đội dùng quy trình này, nên thử trước với vài báo cáo khó (ví dụ dữ liệu thiếu) và chuẩn bị cách làm tay khi AI sai.</p>
+<p><strong>Diligence statements:</strong> Khi output quan trọng và sẽ được chia sẻ rộng, thêm statement về AI use. Ví dụ: "This report was drafted with AI assistance and reviewed by [human name]."</p>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div><ul>
+    <li>Gửi thẳng bản Claude viết cho khách</li>
+    <li>Giấu việc dùng AI dù chính sách yêu cầu nêu rõ</li>
+    <li>Đưa quy trình AI cho cả công ty mà chưa thử trường hợp khó</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đúng</div><ul>
+    <li>Đọc, sửa, kiểm tra rồi mới gửi (creation)</li>
+    <li>Ghi rõ việc dùng AI khi cần (transparency)</li>
+    <li>Thử với edge cases, có phương án dự phòng (deployment)</li>
+  </ul></div>
+</div>
+<div class="insight"><strong>Cốt lõi.</strong> Người ký tên chịu trách nhiệm cho kết quả, dù AI soạn. Diligence là bước biến “AI viết” thành “tôi duyệt và chịu trách nhiệm”.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Edge case</dt><dd>Tình huống hiếm hoặc khác thường mà quy trình có thể làm sai.</dd>
+  <dt>Fallback</dt><dd>Phương án dự phòng khi AI sai hoặc không dùng được.</dd>
+  <dt>Deploy</dt><dd>Đưa vào dùng thật, với nhiều người.</dd>
+  <dt>Disclose</dt><dd>Nói rõ, công khai việc đã dùng AI.</dd>
+</dl></div>
+
+<h2 id="exam-tips">4. Lưu ý ôn thi</h2>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Trước giờ thi, người ta không đọc lại cả cuốn sách mà xem một tờ ghi chú: “gặp tình huống này thì nghĩ tới khái niệm kia”. Mục này là tờ ghi chú đó cho CCAO-F.
+</div>
+<div class="insight"><strong>CCAO-F D1–D3:</strong> Claude 101 phủ D1 (prompting), D2 (output evaluation = discernment loop), D3 (product selection = chọn model/feature/plan). Nhớ: Research mode cho multi-source, Thinking cho reasoning sâu, Projects cho persistent context.</div>
+<div class="insight"><strong>CCAO-F D4–D6:</strong> AI Fluency Framework phủ D4 (workflow integration = delegation), D5 (configuration = Projects + system prompt), D6 (governance = Diligence dimension). 4D = Delegation, Description, Discernment, Diligence.</div>
+<div class="insight"><strong>Key exam trap:</strong> Constitutional AI ≠ chỉ về safety. CAI là framework để AI học giá trị từ nguyên tắc (principles), không chỉ từ human feedback. Nhưng trên exam, biết "Claude được thiết kế để helpful, harmless, honest" là đủ.</div>
+
+<div class="tw"><table>
+  <thead><tr><th>Tình huống trong đề</th><th>Nghĩ tới</th></tr></thead>
+  <tbody>
+    <tr><td>Kết quả chung chung, lệch giọng</td><td>Description: thêm role, format, constraints, ví dụ</td></tr>
+    <tr><td>Cần so sánh nhiều nguồn, có trích dẫn</td><td>Research mode</td></tr>
+    <tr><td>Bài toán lập luận khó, không cần tin mới</td><td>Thinking mode</td></tr>
+    <tr><td>Muốn Claude nhớ tài liệu công ty qua nhiều chat</td><td>Projects (knowledge base + system prompt)</td></tr>
+    <tr><td>Nhận bản nháp có số liệu đáng ngờ</td><td>Discernment: verify qua nguồn gốc, góp ý cụ thể, lặp lại</td></tr>
+    <tr><td>Báo cáo sắp gửi khách, chính sách yêu cầu nêu việc dùng AI</td><td>Diligence: review, và thêm diligence statement</td></tr>
+    <tr><td>Quyết định xem giao việc nào cho AI</td><td>Delegation: Problem, Platform, Task Awareness</td></tr>
+  </tbody>
+</table></div>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div><ul>
+    <li>“Constitutional AI chỉ nói về an toàn”</li>
+    <li>“Conversations riêng lẻ nhớ tài liệu giữa các phiên”</li>
+    <li>“Dùng Research mode cho mọi câu hỏi”</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đúng</div><ul>
+    <li>CAI: AI học giá trị từ nguyên tắc viết rõ, không chỉ từ phản hồi con người</li>
+    <li>Projects mới nhớ knowledge base và chat trong project</li>
+    <li>Research cho nhiều nguồn và citations, Thinking cho reasoning sâu</li>
+  </ul></div>
+</div>
+
+<p class="lesson-practice">Luyện câu hỏi của bài này trong <a href="/bank?lesson=15">🗂️ Ngân hàng</a>.</p>
+
+<div class="btns pager">
+  <a class="btn" href="/notes/lessons/14-claude-code-101.html">← Bài 14 · Claude Code 101</a>
+  <a class="btn primary" href="/notes/lessons/16-capabilities-enterprise.html">Bài 16 · AI Capabilities, Human-Agent Teams &amp; Enterprise →</a>
+</div>
+
+<footer>
+  Luyện thi chứng chỉ Claude · Bài 15 · Claude 101 &amp; AI Fluency Framework · v0.22 · 2026-11-18. Tổng quan: <a href="/notes/00-tong-quan.md">00</a> · Luyện đề: <a href="/new">30</a>.
+</footer>

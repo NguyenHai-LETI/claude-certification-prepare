@@ -1,0 +1,404 @@
+id: official
+title: Câu mẫu chính thức trong Exam Guide v1.0 (Anthropic)
+origin: official
+source: https://anthropic-partners.skilljar.com/page/partner-certifications
+description: "Chép nguyên văn stem, phương án và đáp án từ mục Sample Questions của bốn Exam Guide v1.0 (July 2026); mỗi câu ghi PDF gốc ở trường `source`. Guide CCAR-F ghi các câu này 'drawn from the practice test'; guide ba đề còn lại ghi là câu minh hoạ, không lấy từ ngân hàng đề thật. Giải thích tiếng Việt do người soạn viết dựa trên rationale chính thức. Domain của câu CCAR-F do người soạn gán theo task statement (guide chỉ ghi scenario); domain của ba đề còn lại lấy đúng nhãn trong guide."
+imported: 2026-11-18
+questions:
+  # ── CCAR-F (12 câu, guide §9) ─────────────────────────────────────────────
+  - id: OF-CCARF-01
+    exams: { CCAR-F: D1 }
+    scenario: S1
+    source: https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf
+    stem: "Production data shows that in 12% of cases, your agent skips get_customer entirely and calls lookup_order using only the customer's stated name, occasionally leading to misidentified accounts and incorrect refunds. What change would most effectively address this reliability issue?"
+    options:
+      - "Add a programmatic prerequisite that blocks lookup_order and process_refund calls until get_customer has returned a verified customer ID."
+      - "Enhance the system prompt to state that customer verification via get_customer is mandatory before any order operations."
+      - "Add few-shot examples showing the agent always calling get_customer first, even when customers volunteer order details."
+      - "Implement a routing classifier that analyzes each request and enables only the subset of tools appropriate for that request type."
+    answer: [A]
+    explanation: |-
+      **A đúng.** Thứ tự gọi tool ở đây là logic nghiệp vụ có hậu quả tài chính (hoàn tiền nhầm tài khoản). Khi một trình tự *bắt buộc*, cần **chặn bằng code** (prerequisite gate/hook): `lookup_order` và `process_refund` bị từ chối cho đến khi `get_customer` trả về customer ID đã xác minh. Đây là bảo đảm tất định.
+      - **B sai:** viết "bắt buộc" vào system prompt vẫn chỉ là tuân thủ xác suất; prompt có tỉ lệ thất bại khác 0, mà 12% hiện tại đã cho thấy model bỏ qua bước này.
+      - **C sai:** few-shot cũng chỉ tăng xác suất làm đúng, không bảo đảm; không đủ khi sai sót gây mất tiền.
+      - **D sai:** classifier quyết định *tool nào có mặt*, không quyết định *thứ tự gọi*; vấn đề là thứ tự.
+    ref: exams/CCAR-F.md#14-workflow-nhiều-bước-enforcement-và-handoff
+    tags: [prerequisite-gate, hooks, enforcement]
+    created: 2026-11-18
+  - id: OF-CCARF-02
+    exams: { CCAR-F: D2 }
+    scenario: S1
+    source: https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf
+    stem: "Production logs show the agent frequently calls get_customer when users ask about orders (e.g., \"check my order #12345\"), instead of calling lookup_order. Both tools have minimal descriptions (\"Retrieves customer information\" / \"Retrieves order details\") and accept similar identifier formats. What's the most effective first step to improve tool selection reliability?"
+    options:
+      - "Add few-shot examples to the system prompt demonstrating correct tool selection patterns, with 5-8 examples showing order-related queries routing to lookup_order."
+      - "Expand each tool's description to include input formats it handles, example queries, edge cases, and boundaries explaining when to use it versus similar tools."
+      - "Implement a routing layer that parses user input before each turn and pre-selects the appropriate tool based on detected keywords and identifier patterns."
+      - "Consolidate both tools into a single lookup_entity tool that accepts any identifier and internally determines which backend to query."
+    answer: [B]
+    explanation: |-
+      **B đúng.** Tool description là cơ chế chính để model chọn tool. Hai mô tả một dòng, input giống nhau → model không có căn cứ phân biệt. Viết lại mô tả (định dạng input, ví dụ truy vấn, edge case, khi nào dùng tool này thay vì tool kia) sửa đúng nguyên nhân gốc với công sức nhỏ — đúng nghĩa "first step".
+      - **A sai:** few-shot tốn thêm token mỗi request mà không sửa gốc (mô tả tool vẫn sơ sài).
+      - **C sai:** routing layer theo keyword là over-engineering và bỏ qua khả năng hiểu ngôn ngữ của LLM.
+      - **D sai:** gộp tool là lựa chọn kiến trúc hợp lệ nhưng tốn công hơn mức cần cho bước đầu khi vấn đề trước mắt chỉ là mô tả kém.
+    ref: exams/CCAR-F.md#21-thiết-kế-tool-interface
+    tags: [tool-description, tool-selection]
+    created: 2026-11-18
+  - id: OF-CCARF-03
+    exams: { CCAR-F: D5 }
+    scenario: S1
+    source: https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf
+    stem: "Your agent achieves 55% first-contact resolution, well below the 80% target. Logs show it escalates straightforward cases (standard damage replacements with photo evidence) while attempting to autonomously handle complex situations requiring policy exceptions. What's the most effective way to improve escalation calibration?"
+    options:
+      - "Add explicit escalation criteria to your system prompt with few-shot examples demonstrating when to escalate versus resolve autonomously."
+      - "Have the agent self-report a confidence score (1-10) before each response and automatically route requests to humans when confidence falls below a threshold."
+      - "Deploy a separate classifier model trained on historical tickets to predict which requests need escalation before the main agent begins processing."
+      - "Implement sentiment analysis to detect customer frustration levels and automatically escalate when negative sentiment exceeds a threshold."
+    answer: [A]
+    explanation: |-
+      **A đúng.** Agent escalate ca dễ và tự xử ca cần ngoại lệ chính sách → nguyên nhân gốc là **ranh giới quyết định không rõ**. Tiêu chí escalate tường minh kèm few-shot minh hoạ "escalate hay tự giải quyết" là phản ứng đầu tiên tương xứng, trước khi thêm hạ tầng.
+      - **B sai:** confidence do LLM tự báo hiệu chỉnh kém — agent hiện đã tự tin sai ở chính các ca khó.
+      - **C sai:** classifier riêng cần dữ liệu gán nhãn và hạ tầng ML, quá tay khi chưa thử tối ưu prompt.
+      - **D sai:** giải bài toán khác; mức bực bội của khách không tương quan với độ phức tạp của ca.
+    ref: exams/CCAR-F.md#52-escalation-và-xử-lý-mơ-hồ
+    tags: [escalation, few-shot]
+    created: 2026-11-18
+  - id: OF-CCARF-04
+    exams: { CCAR-F: D3 }
+    scenario: S2
+    source: https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf
+    stem: "You want to create a custom /review slash command that runs your team's standard code review checklist. This command should be available to every developer when they clone or pull the repository. Where should you create this command file?"
+    options:
+      - "In the .claude/commands/ directory in the project repository"
+      - "In ~/.claude/commands/ in each developer's home directory"
+      - "In the CLAUDE.md file at the project root"
+      - "In a .claude/config.json file with a commands array"
+    answer: [A]
+    explanation: |-
+      **A đúng.** Slash command cấp project đặt trong `.claude/commands/` của repo: được version control, ai clone/pull cũng có.
+      - **B sai:** `~/.claude/commands/` là command **cá nhân**, không chia sẻ qua git; bắt từng người tự chép là không đạt yêu cầu.
+      - **C sai:** CLAUDE.md chứa chỉ dẫn và context dự án, không phải nơi định nghĩa command.
+      - **D sai:** Claude Code không có cơ chế `.claude/config.json` với mảng `commands` — phương án bịa.
+    ref: exams/CCAR-F.md#32-custom-slash-command-và-skill
+    tags: [slash-commands, scope]
+    created: 2026-11-18
+  - id: OF-CCARF-05
+    exams: { CCAR-F: D3 }
+    scenario: S2
+    source: https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf
+    stem: "You've been assigned to restructure the team's monolithic application into microservices. This will involve changes across dozens of files and requires decisions about service boundaries and module dependencies. Which approach should you take?"
+    options:
+      - "Enter plan mode to explore the codebase, understand dependencies, and design an implementation approach before making changes."
+      - "Start with direct execution and make changes incrementally, letting the implementation reveal the natural service boundaries."
+      - "Use direct execution with comprehensive upfront instructions detailing exactly how each service should be structured."
+      - "Begin in direct execution mode and only switch to plan mode if you encounter unexpected complexity during implementation."
+    answer: [A]
+    explanation: |-
+      **A đúng.** Plan mode dành cho việc lớn, nhiều cách làm hợp lệ, có quyết định kiến trúc — đúng như tách monolith thành microservice (hàng chục file, ranh giới service, phụ thuộc module). Nó cho phép khám phá codebase an toàn và thiết kế trước khi sửa.
+      - **B sai:** sửa dần rồi "để code tự lộ ranh giới" dễ phải làm lại tốn kém khi phát hiện phụ thuộc muộn.
+      - **C sai:** giả định đã biết cấu trúc đúng mà chưa khám phá code.
+      - **D sai:** độ phức tạp đã được nêu sẵn trong yêu cầu, không phải thứ "có thể xuất hiện" sau.
+    ref: exams/CCAR-F.md#34-plan-mode-vs-direct-execution
+    tags: [plan-mode]
+    created: 2026-11-18
+  - id: OF-CCARF-06
+    exams: { CCAR-F: D3 }
+    scenario: S2
+    source: https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf
+    stem: "Your codebase has distinct areas with different coding conventions: React components use functional style with hooks, API handlers use async/await with specific error handling, and database models follow a repository pattern. Test files are spread throughout the codebase alongside the code they test (e.g., Button.test.tsx next to Button.tsx), and you want all tests to follow the same conventions regardless of location. What's the most maintainable way to ensure Claude automatically applies the correct conventions when generating code?"
+    options:
+      - "Create rule files in .claude/rules/ with YAML frontmatter specifying glob patterns to conditionally apply conventions based on file paths"
+      - "Consolidate all conventions in the root CLAUDE.md file under headers for each area, relying on Claude to infer which section applies"
+      - "Create skills in .claude/skills/ for each code type that include the relevant conventions in their SKILL.md files"
+      - "Place a separate CLAUDE.md file in each subdirectory containing that area's specific conventions"
+    answer: [A]
+    explanation: |-
+      **A đúng.** File trong `.claude/rules/` có frontmatter `paths` với glob (vd. `**/*.test.tsx`) tự áp quy ước theo đường dẫn file, bất kể file nằm ở thư mục nào — cần thiết khi test nằm rải khắp codebase.
+      - **B sai:** dồn hết vào CLAUDE.md gốc rồi trông vào việc Claude tự suy ra mục nào áp dụng → dựa vào suy luận, không khớp tường minh, kém tin cậy.
+      - **C sai:** skill phải được gọi hoặc được Claude chọn nạp, trái với yêu cầu áp dụng **tự động, tất định** theo đường dẫn.
+      - **D sai:** CLAUDE.md gắn với thư mục, khó phủ các file test rải ở rất nhiều thư mục.
+    ref: exams/CCAR-F.md#33-rule-theo-đường-dẫn
+    tags: [claude-rules, path-scoping]
+    created: 2026-11-18
+  - id: OF-CCARF-07
+    exams: { CCAR-F: D1 }
+    scenario: S3
+    source: https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf
+    stem: "After running the system on the topic \"impact of AI on creative industries,\" you observe that each subagent completes successfully: the web search agent finds relevant articles, the document analysis agent summarizes papers correctly, and the synthesis agent produces coherent output. However, the final reports cover only visual arts, completely missing music, writing, and film production. When you examine the coordinator's logs, you see it decomposed the topic into three subtasks: \"AI in digital art creation,\" \"AI in graphic design,\" and \"AI in photography.\" What is the most likely root cause?"
+    options:
+      - "The synthesis agent lacks instructions for identifying coverage gaps in the findings it receives from other agents."
+      - "The coordinator agent's task decomposition is too narrow, resulting in subagent assignments that don't cover all relevant domains of the topic."
+      - "The web search agent's queries are not comprehensive enough and need to be expanded to cover more creative industry sectors."
+      - "The document analysis agent is filtering out sources related to non-visual creative industries due to overly restrictive relevance criteria."
+    answer: [B]
+    explanation: |-
+      **B đúng.** Log của coordinator cho thấy thẳng nguyên nhân: "creative industries" bị chia chỉ thành ba mảng thị giác (digital art, graphic design, photography), bỏ hẳn âm nhạc, viết, điện ảnh. Các subagent làm đúng phần được giao — sai ở **cái được giao**, tức phân rã quá hẹp ở coordinator.
+      - **A sai:** synthesis chỉ tổng hợp những gì nhận được; đổ lỗi cho tầng hạ nguồn đang làm đúng phạm vi.
+      - **C sai:** web search tìm đúng theo subtopic được giao; mở rộng truy vấn của nó không sửa được việc subtopic thiếu.
+      - **D sai:** không có dấu hiệu bộ lọc; nguồn ngoài mảng thị giác chưa từng được yêu cầu.
+    ref: exams/CCAR-F.md#12-multi-agent-coordinatorsubagent
+    tags: [coordinator, decomposition]
+    created: 2026-11-18
+  - id: OF-CCARF-08
+    exams: { CCAR-F: D5 }
+    scenario: S3
+    source: https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf
+    stem: "The web search subagent times out while researching a complex topic. You need to design how this failure information flows back to the coordinator agent. Which error propagation approach best enables intelligent recovery?"
+    options:
+      - "Return structured error context to the coordinator including the failure type, the attempted query, any partial results, and potential alternative approaches."
+      - "Implement automatic retry logic with exponential backoff within the subagent, returning a generic \"search unavailable\" status only after all retries are exhausted."
+      - "Catch the timeout within the subagent and return an empty result set marked as successful."
+      - "Propagate the timeout exception directly to a top-level handler that terminates the entire research workflow."
+    answer: [A]
+    explanation: |-
+      **A đúng.** Ngữ cảnh lỗi có cấu trúc (loại lỗi, truy vấn đã thử, kết quả một phần, phương án thay thế) cho coordinator đủ thông tin để chọn: thử lại với truy vấn khác, đi đường khác, hay tiếp tục với kết quả một phần.
+      - **B sai:** trạng thái chung chung "search unavailable" che mất thông tin coordinator cần để quyết định.
+      - **C sai:** nuốt lỗi, báo thất bại là thành công → không thể phục hồi và báo cáo thiếu mà không ai biết.
+      - **D sai:** dừng toàn bộ workflow vì một lỗi là không cần thiết khi còn cách phục hồi.
+    ref: exams/CCAR-F.md#53-lan-truyền-lỗi-trong-hệ-multi-agent
+    tags: [error-propagation, multi-agent]
+    created: 2026-11-18
+  - id: OF-CCARF-09
+    exams: { CCAR-F: D2 }
+    scenario: S3
+    source: https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf
+    stem: "During testing, you observe that the synthesis agent frequently needs to verify specific claims while combining findings. Currently, when verification is needed, the synthesis agent returns control to the coordinator, which invokes the web search agent, then re-invokes synthesis with results. This adds 2-3 round trips per task and increases latency by 40%. Your evaluation shows that 85% of these verifications are simple fact-checks (dates, names, statistics) while 15% require deeper investigation. What's the most effective approach to reduce overhead while maintaining system reliability?"
+    options:
+      - "Give the synthesis agent a scoped verify_fact tool for simple lookups, while complex verifications continue delegating to the web search agent through the coordinator."
+      - "Have the synthesis agent accumulate all verification needs and return them as a batch to the coordinator at the end of its pass, which then sends them all to the web search agent at once."
+      - "Give the synthesis agent access to all web search tools so it can handle any verification need directly without round-trips through the coordinator."
+      - "Have the web search agent proactively cache extra context around each source during initial research, anticipating what the synthesis agent might need to verify."
+    answer: [A]
+    explanation: |-
+      **A đúng.** Áp dụng least privilege: chỉ cho synthesis agent một tool hẹp `verify_fact` đủ cho 85% ca kiểm tra đơn giản, còn 15% ca phức tạp vẫn đi qua coordinator như cũ → giảm vòng lặp mà giữ được kiến trúc phối hợp.
+      - **B sai:** gom lại kiểm một lượt tạo phụ thuộc chặn — các bước tổng hợp có thể cần fact đã kiểm ở bước trước.
+      - **C sai:** cấp toàn bộ tool web search là cấp thừa quyền, phá separation of concerns (agent có tool ngoài chuyên môn dễ dùng sai).
+      - **D sai:** cache "đoán trước" không thể biết chắc synthesis sẽ cần kiểm gì.
+    ref: exams/CCAR-F.md#23-phân-bổ-tool-và-tool_choice
+    tags: [scoped-tools, least-privilege]
+    created: 2026-11-18
+  - id: OF-CCARF-10
+    exams: { CCAR-F: D3 }
+    scenario: S5
+    source: https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf
+    stem: "Your pipeline script runs claude \"Analyze this pull request for security issues\" but the job hangs indefinitely. Logs indicate Claude Code is waiting for interactive input. What's the correct approach to run Claude Code in an automated pipeline?"
+    options:
+      - "Add the -p flag: claude -p \"Analyze this pull request for security issues\""
+      - "Set the environment variable CLAUDE_HEADLESS=true before running the command"
+      - "Redirect stdin from /dev/null: claude \"Analyze this pull request for security issues\" < /dev/null"
+      - "Add the --batch flag: claude --batch \"Analyze this pull request for security issues\""
+    answer: [A]
+    explanation: |-
+      **A đúng.** `-p` (hay `--print`) là cách được tài liệu hoá để chạy Claude Code **non-interactive**: xử lý prompt, in kết quả ra stdout rồi thoát, không chờ người dùng — đúng thứ CI/CD cần.
+      - **B sai:** không có biến môi trường `CLAUDE_HEADLESS`.
+      - **C sai:** chuyển stdin về `/dev/null` là mẹo Unix, không phải cách chạy non-interactive đúng của Claude Code.
+      - **D sai:** không có cờ `--batch` (đừng nhầm với Message Batches API).
+    ref: exams/CCAR-F.md#36-claude-code-trong-cicd
+    tags: [ci-cd, headless, cli]
+    created: 2026-11-18
+  - id: OF-CCARF-11
+    exams: { CCAR-F: D4 }
+    scenario: S5
+    source: https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf
+    stem: "Your team wants to reduce API costs for automated analysis. Currently, real-time Claude calls power two workflows: (1) a blocking pre-merge check that must complete before developers can merge, and (2) a technical debt report generated overnight for review the next morning. Your manager proposes switching both to the Message Batches API for its 50% cost savings. How should you evaluate this proposal?"
+    options:
+      - "Use batch processing for the technical debt reports only; keep real-time calls for pre-merge checks."
+      - "Switch both workflows to batch processing with status polling to check for completion."
+      - "Keep real-time calls for both workflows to avoid batch result ordering issues."
+      - "Switch both to batch processing with a timeout fallback to real-time if batches take too long."
+    answer: [A]
+    explanation: |-
+      **A đúng.** Message Batches giảm 50% chi phí nhưng có thể mất tới 24 giờ và **không có SLA độ trễ**. Không hợp với pre-merge check (dev đang chờ để merge), rất hợp với báo cáo nợ kỹ thuật chạy qua đêm.
+      - **B sai:** polling không làm batch nhanh hơn; trông vào việc "thường xong sớm" là không chấp nhận được cho luồng chặn.
+      - **C sai:** dựa trên hiểu lầm — kết quả batch ghép lại được bằng `custom_id`, thứ tự không thành vấn đề.
+      - **D sai:** thêm độ phức tạp không cần thiết; giải pháp đơn giản là dùng đúng API cho đúng loại việc.
+    ref: exams/CCAR-F.md#45-batch-processing
+    tags: [batch, latency, cost]
+    created: 2026-11-18
+  - id: OF-CCARF-12
+    exams: { CCAR-F: D4 }
+    scenario: S5
+    source: https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf
+    stem: "A pull request modifies 14 files across the stock tracking module. Your single-pass review analyzing all files together produces inconsistent results: detailed feedback for some files but superficial comments for others, obvious bugs missed, and contradictory feedback—flagging a pattern as problematic in one file while approving identical code elsewhere in the same PR. How should you restructure the review?"
+    options:
+      - "Split into focused passes: analyze each file individually for local issues, then run a separate integration-focused pass examining cross-file data flow."
+      - "Require developers to split large PRs into smaller submissions of 3-4 files before the automated review runs."
+      - "Switch to a higher-tier model with a larger context window to give all 14 files adequate attention in one pass."
+      - "Run three independent review passes on the full PR and only flag issues that appear in at least two of the three runs."
+    answer: [A]
+    explanation: |-
+      **A đúng.** Nguyên nhân gốc là **attention dilution** khi xử lý nhiều file cùng lúc. Review từng file cho độ sâu đồng đều; một lượt tích hợp riêng bắt lỗi luồng dữ liệu xuyên file.
+      - **B sai:** đẩy gánh nặng sang developer mà không cải thiện hệ thống review.
+      - **C sai:** context window lớn hơn không giải quyết chất lượng chú ý.
+      - **D sai:** đòi đồng thuận 2/3 lượt sẽ **giấu** bug thật chỉ thỉnh thoảng mới được phát hiện.
+    ref: exams/CCAR-F.md#46-review-nhiều-instance-nhiều-lượt
+    tags: [multi-pass-review, attention-dilution]
+    created: 2026-11-18
+
+  # ── CCDV-F (3 câu, guide §8) ──────────────────────────────────────────────
+  - id: OF-CCDVF-01
+    exams: { CCDV-F: D2 }
+    source: https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542875%2FClaude+Certified+Developer+%E2%80%93+Foundations+Exam+Guide.pdf
+    stem: "A developer must process 10,000 documents overnight to produce a non-urgent analytics report. Cost is the primary concern, and results are not needed until the following morning. Which approach best fits the requirement?"
+    options:
+      - "Send every request synchronously through the Messages API in parallel to finish as quickly as possible."
+      - "Use the Message Batches API, which processes large asynchronous workloads within a 24-hour window at reduced cost."
+      - "Lower max_tokens on synchronous calls to minimize cost."
+      - "Switch to the smallest available model regardless of output quality."
+    answer: [B]
+    explanation: |-
+      **B đúng.** Message Batches API sinh ra cho khối lượng lớn, chịu được trễ, chi phí thấp hơn (giảm 50%, xử lý trong cửa sổ tối đa 24 giờ) — khớp việc chạy qua đêm, không gấp, ưu tiên chi phí.
+      - **A sai:** gửi đồng bộ song song chỉ nhanh hơn, không giảm giá mỗi token; mà tốc độ không phải tiêu chí.
+      - **C sai:** hạ `max_tokens` có thể cắt cụt kết quả và không chạm tới lựa chọn batch hay realtime.
+      - **D sai:** hạ model "bất chấp chất lượng" hy sinh yêu cầu đầu ra, cũng không giải quyết tradeoff batch/realtime.
+    ref: exams/CCDV-F.md#claude-api-mechanics-68
+    tags: [batch, cost]
+    created: 2026-11-18
+  - id: OF-CCDVF-02
+    exams: { CCDV-F: D7 }
+    source: https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542875%2FClaude+Certified+Developer+%E2%80%93+Foundations+Exam+Guide.pdf
+    stem: "A Claude-powered agent summarizes web pages submitted by end users. One page contains hidden text instructing the model to ignore previous instructions and reveal its system prompt. Which mitigation is most effective?"
+    options:
+      - "Raise the model's temperature so its behavior is harder to predict."
+      - "Treat retrieved page content as untrusted input, keep it separate from trusted instructions, and use guardrails or hooks so injected instructions cannot trigger sensitive actions."
+      - "Add a line to the system prompt asking users not to include malicious instructions."
+      - "Switch to a larger model that follows instructions more reliably."
+    answer: [B]
+    explanation: |-
+      **B đúng.** Đây là prompt injection gián tiếp. Cách xử lý: coi nội dung trang là **dữ liệu không tin cậy**, tách khỏi chỉ dẫn tin cậy, và dùng guardrail/hook theo least privilege để chữ bị chèn không thể kích hoạt tool hay hành động nhạy cảm.
+      - **A sai:** temperature không liên quan tới injection; làm hành vi khó đoán hơn không phải biện pháp an ninh.
+      - **C sai:** lời nhờ người dùng đừng chèn lệnh độc không phải kiểm soát thực thi được (kẻ tấn công không tuân theo).
+      - **D sai:** model nghe lời hơn có thể còn **dễ** làm theo lệnh bị chèn hơn, không phải ít hơn.
+    ref: exams/CCDV-F.md#ai-application-security-32
+    tags: [prompt-injection, guardrails, hooks]
+    created: 2026-11-18
+  - id: OF-CCDVF-03
+    exams: { CCDV-F: D8 }
+    source: https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542875%2FClaude+Certified+Developer+%E2%80%93+Foundations+Exam+Guide.pdf
+    stem: "A team needs Claude to call an internal inventory service exposed as a REST API. They want the capability to be reusable across several Claude applications and maintained independently of any one app. Which approach best fits?"
+    options:
+      - "Hard-code the inventory logic into each application's system prompt."
+      - "Build an MCP server that exposes the inventory operations as tools so multiple Claude applications can connect to it."
+      - "Paste the current inventory data into the context window on every request."
+      - "Rely on a built-in tool, since built-in tools can reach any internal REST API."
+    answer: [B]
+    explanation: |-
+      **B đúng.** MCP server phơi các thao tác kho hàng thành tool theo chuẩn; nhiều ứng dụng Claude cùng kết nối, server được bảo trì độc lập với từng app — đúng hai yêu cầu "tái dùng" và "bảo trì riêng".
+      - **A sai:** nhét logic vào system prompt của từng app: không tái dùng, khó bảo trì, và prompt không gọi được API.
+      - **C sai:** dán dữ liệu vào context mỗi request không cho truy cập dữ liệu sống và tốn context.
+      - **D sai:** built-in tool không tự với tới được API nội bộ tuỳ ý.
+    ref: exams/CCDV-F.md#agentic-customization-41
+    tags: [mcp, reuse]
+    created: 2026-11-18
+
+  # ── CCAO-F (3 câu, guide §8) ──────────────────────────────────────────────
+  - id: OF-CCAOF-01
+    exams: { CCAO-F: D2 }
+    source: https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542847%2FClaude+Certified+Associate+%E2%80%93+Foundations+Exam+Guide.pdf
+    stem: "An associate asks Claude to summarize a new regulation, and Claude produces a confident summary citing a specific subsection number. Before sending the summary to the compliance team, what is the most appropriate action?"
+    options:
+      - "Send it as-is, since Claude expressed high confidence."
+      - "Verify the cited subsection against the official regulation text before sharing."
+      - "Ask Claude to rate its own confidence and send it if the rating is high."
+      - "Reword the summary to sound more formal, then send it."
+    answer: [B]
+    explanation: |-
+      **B đúng.** Model có thể bịa chi tiết trông rất cụ thể như số điều khoản (hallucination). Với nội dung gửi đội compliance, bước cẩn trọng bắt buộc là đối chiếu trích dẫn với **văn bản quy định chính thức**.
+      - **A sai:** giọng tự tin của model không phải bằng chứng đúng.
+      - **C sai:** điểm tự tin do model tự chấm cũng không phải tín hiệu chính xác đáng tin.
+      - **D sai:** viết lại cho trang trọng chỉ đổi hình thức, không kiểm tra tính đúng.
+    ref: exams/CCAO-F.md#d2--output-evaluation-and-validation-21
+    tags: [hallucination, verification]
+    created: 2026-11-18
+  - id: OF-CCAOF-02
+    exams: { CCAO-F: D3 }
+    source: https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542847%2FClaude+Certified+Associate+%E2%80%93+Foundations+Exam+Guide.pdf
+    stem: "An associate needs to generate a high volume of short customer-reply drafts where speed and cost matter more than deep reasoning. Which choice best fits the task?"
+    options:
+      - "Use the most capable, highest-cost model for every reply to maximize quality."
+      - "Use a faster, lower-cost model suited to straightforward, high-volume tasks."
+      - "Disable all product features to reduce cost."
+      - "Switch to a different AI platform."
+    answer: [B]
+    explanation: |-
+      **B đúng.** Chọn model theo yêu cầu việc: khối lượng lớn, việc đơn giản, ưu tiên tốc độ và chi phí → model nhanh, rẻ (vd. Haiku); để model mạnh nhất cho suy luận phức tạp.
+      - **A sai:** dùng model mạnh nhất cho mọi thư trả lời ngắn là lãng phí chi phí và độ trễ.
+      - **C sai:** tắt hết tính năng không liên quan tới việc chọn model phù hợp.
+      - **D sai:** đổi nền tảng không giải quyết tradeoff chất lượng – tốc độ – chi phí.
+    ref: exams/CCAO-F.md#d3--product-and-model-selection-12
+    tags: [model-selection]
+    created: 2026-11-18
+  - id: OF-CCAOF-03
+    exams: { CCAO-F: D6 }
+    source: https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542847%2FClaude+Certified+Associate+%E2%80%93+Foundations+Exam+Guide.pdf
+    stem: "A project manager wants to upload a spreadsheet containing customer names and account numbers so Claude can analyze trends. Organizational policy restricts sharing regulated personal data. What is the most appropriate action?"
+    options:
+      - "Upload the file as-is, since the analysis is internal."
+      - "Remove or anonymize the personal identifiers before uploading, consistent with policy."
+      - "Upload the file but instruct Claude not to retain it."
+      - "Skip the analysis entirely."
+    answer: [B]
+    explanation: |-
+      **B đúng.** Áp dụng biện pháp về độ nhạy dữ liệu: loại bỏ hoặc ẩn danh định danh cá nhân bị quản lý **trước khi** tải lên; phân tích xu hướng vẫn làm được mà không lộ dữ liệu được bảo vệ.
+      - **A sai:** "dùng nội bộ" không miễn trừ chính sách; tải nguyên file là vi phạm.
+      - **C sai:** dặn model "đừng lưu" không phải là biện pháp kiểm soát thoả chính sách — dữ liệu đã bị chia sẻ.
+      - **D sai:** bỏ hẳn việc là không cần thiết khi ẩn danh hoá cho phép làm tiếp.
+    ref: exams/CCAO-F.md#d6--governance-risk-and-responsible-use-15
+    tags: [data-sensitivity, pii, governance]
+    created: 2026-11-18
+
+  # ── CCAR-P (3 câu, guide §8) ──────────────────────────────────────────────
+  - id: OF-CCARP-01
+    exams: { CCAR-P: D3 }
+    source: https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542810%2FClaude+Certified+Architect+%E2%80%93+Professional+Exam+Guide.pdf
+    stem: "A team exposes a customer-support agent that can read tickets, draft replies, issue refunds, and delete user accounts. Support staff only ever need to read tickets and draft replies. Applying least-privilege principles, which change best reduces risk?"
+    options:
+      - "Add logging to the refund and delete tools so misuse can be audited later."
+      - "Remove the refund and delete tools from the agent's configuration entirely."
+      - "Keep all tools but add a confirmation prompt before refunds and deletions."
+      - "Replace the agent with a larger model that follows instructions more reliably."
+    answer: [B]
+    explanation: |-
+      **B đúng.** Least privilege = gỡ hẳn năng lực vai trò không cần. Nhân viên chỉ đọc ticket và soạn trả lời → bỏ tool refund và delete khỏi cấu hình agent, **xoá luôn bề mặt tấn công** thay vì canh chừng nó (đây cũng là ca "capability bloat" của D3).
+      - **A sai:** logging là kiểm soát phát hiện sau sự việc, không gỡ quyền thừa.
+      - **C sai:** hộp xác nhận là kiểm soát bù trừ; quyền nguy hiểm vẫn còn đó.
+      - **D sai:** kích cỡ model không liên quan tới phạm vi quyền.
+    ref: exams/CCAR-P.md#d3--integration-19
+    tags: [least-privilege, capability-bloat]
+    created: 2026-11-18
+  - id: OF-CCARP-02
+    exams: { CCAR-P: D2 }
+    source: https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542810%2FClaude+Certified+Architect+%E2%80%93+Professional+Exam+Guide.pdf
+    stem: "An application sends the same 8,000-token system prompt and policy document on every request, followed by a short, varying user message. Latency and cost are both concerns. Which optimization most directly addresses both?"
+    options:
+      - "Truncate the policy document to the first 1,000 tokens."
+      - "Switch to the smallest available model regardless of task fit."
+      - "Place the static system prompt and policy before the dynamic content and enable prompt caching."
+      - "Move the policy document into a few-shot example block."
+    answer: [C]
+    explanation: |-
+      **C đúng.** Đặt phần tĩnh (system prompt + policy) trước phần động rồi bật prompt caching → tiền tố lặp lại được tái dùng, giảm cả time-to-first-token lẫn chi phí mỗi request mà không bỏ bớt context cần thiết.
+      - **A sai:** cắt còn 1.000 token làm mất nội dung policy cần dùng.
+      - **B sai:** hạ model bất chấp độ phù hợp với việc → rủi ro chất lượng.
+      - **D sai:** dời policy thành khối few-shot không tạo ra tiền tố cache tái dùng được, cũng không giảm token.
+    ref: exams/CCAR-P.md#d2--claude-models-prompting--context-engineering-13
+    tags: [prompt-caching, latency, cost]
+    created: 2026-11-18
+  - id: OF-CCARP-03
+    exams: { CCAR-P: D4 }
+    source: https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542810%2FClaude+Certified+Architect+%E2%80%93+Professional+Exam+Guide.pdf
+    stem: "A RAG system suddenly returns confident but incorrect answers after a document refresh, while latency and model version are unchanged. What is the most likely first place to investigate?"
+    options:
+      - "The model weights have silently changed."
+      - "The retrieval/indexing step is returning irrelevant or stale chunks."
+      - "The temperature setting is too low."
+      - "The context window has shrunk."
+    answer: [B]
+    explanation: |-
+      **B đúng.** Triệu chứng xuất hiện **ngay sau khi làm mới tài liệu**, trong khi model và độ trễ không đổi → nghi bước retrieval đưa context kém cho model (re-index hỏng, embedding không khớp, chunk cũ/không liên quan). Model trả lời tự tin dựa trên context sai.
+      - **A sai:** phiên bản model không đổi; "weights tự thay đổi" không phải giả thuyết hợp lý.
+      - **C sai:** temperature thấp không gây ra sai lệch gắn với sự kiện làm mới tài liệu.
+      - **D sai:** context window không tự co lại; cũng không liên quan tới việc làm mới tài liệu.
+    ref: exams/CCAR-P.md#d4--evaluation-testing--optimization-16
+    tags: [rag, debugging]
+    created: 2026-11-18

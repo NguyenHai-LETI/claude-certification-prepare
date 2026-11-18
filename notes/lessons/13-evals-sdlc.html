@@ -1,0 +1,707 @@
+<p class="lesson-source">Nguồn: tài liệu ôn tập công khai <a href="https://claude.ai/artifact/3NhHr42CxTHGEs33N1ntFf" target="_blank" rel="noopener">artifact 3NhHr42…</a> (bài 13). Không thuộc và không được Anthropic xác nhận.</p>
+<header class="cover">
+  <div class="eyebrow">Luyện thi chứng chỉ Claude · Bài 13</div>
+  <h1>Evals, Claude Code in Action &amp; SDLC <span class="ja">Introduction to Evals · Claude Code in Action · AI-Native SDLC Playbook</span></h1>
+  <p class="lead">5 bước chọn model, golden dataset, 3 loại grader, batch API, nightly drift sampling; plan mode, /compact, /rewind, CLAUDE.md hierarchy, hooks (exit 2 blocks), GitHub Actions integration; AI-native SDLC 6 stages, intent.md, parallel worktrees, verifier subagent.</p>
+  <dl class="meta">
+    <dt>Kỳ thi</dt><dd>CCAR-F D3 (20%) · CCDV-F D4 (2,6%)</dd>
+    <dt>Phục vụ</dt><dd><span class="tag xt1">CCDV-F</span> 3 mục · <span class="tag xt3">CCAR-F</span> 2 mục · <span class="tag xt4">CCAR-P</span> 2 mục · <a href="#xsum">bảng nhãn từng mục</a></dd>
+
+    <dt>Nguồn</dt><dd>academy.claude.com · Introduction to evals, Claude Code in action, AI-native SDLC playbook · Crawl 2026-11-17</dd>
+    <dt>Cập nhật</dt><dd><span class="status">v0.22 · 2026-11-18</span> · theo exam guide v1.0</dd>
+  </dl>
+</header>
+
+<details class="toc">
+<summary>Mục lục</summary>
+
+    <ol>
+      <li><a href="#tong-quan"><span class="n">1</span><span class="tx">Tổng quan</span></a></li>
+      <li><a href="#evals"><span class="n">2</span><span class="tx">Introduction to Evals — 4 bài</span><span class="xds" aria-hidden="true"><i class="xd xt1" title="CCDV-F"></i><i class="xd xt4" title="CCAR-P"></i></span></a></li>
+      <li><a href="#claude-code-in-action"><span class="n">3</span><span class="tx">Claude Code in Action — 9 bài</span><span class="xds" aria-hidden="true"><i class="xd xt3" title="CCAR-F"></i><i class="xd xt1" title="CCDV-F"></i></span></a></li>
+      <li><a href="#sdlc-playbook"><span class="n">4</span><span class="tx">AI-Native SDLC Playbook — 14 bài</span><span class="xds" aria-hidden="true"><i class="xd xt1" title="CCDV-F"></i><i class="xd xt3" title="CCAR-F"></i><i class="xd xt4" title="CCAR-P"></i></span></a></li>
+      <li><a href="#exam-tips"><span class="n">5</span><span class="tx">Lưu ý ôn thi</span></a></li>
+    </ol>
+
+</details>
+
+<details class="xsum" id="xsum">
+<summary>Mục nào phục vụ bài thi nào</summary>
+<p class="xnote">Mã đầu là bài thi chính của mục. <b>Nền</b>: cần để hiểu các mục sau. <b>Nâng cao</b>: ngoài phạm vi các exam guide. Ôn cho một bài thi thì đọc các mục có mã của bài đó trước.</p>
+<div class="tw"><table>
+<thead><tr><th>Mục</th><th>Bài thi</th><th>Ghi chú</th></tr></thead>
+<tbody>
+<tr><td><a href="#evals">2. Introduction to Evals — 4 bài</a></td><td><span class="tag xt1">CCDV-F D2</span> <span class="tag xt1">CCDV-F D4</span> <span class="tag xt4">CCAR-P D4</span></td><td></td></tr>
+<tr><td><a href="#claude-code-in-action">3. Claude Code in Action — 9 bài</a></td><td><span class="tag xt3">CCAR-F D3</span> <span class="tag xt1">CCDV-F D2</span> <span class="tag xt1">CCDV-F D3</span></td><td></td></tr>
+<tr><td><a href="#sdlc-playbook">4. AI-Native SDLC Playbook — 14 bài</a></td><td><span class="tag xt1">CCDV-F D2</span> <span class="tag xt3">CCAR-F D3</span> <span class="tag xt4">CCAR-P D7</span></td><td>Phần lớn playbook (intent.md, worktree song song) là nâng cao; đề chỉ hỏi vòng đời và review.</td></tr>
+</tbody></table></div>
+</details>
+
+<h2 id="tong-quan">1. Tổng quan</h2>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Bạn mở một quán ăn. Trước hết cần cách <strong>chấm điểm món</strong> để biết công thức mới ngon hơn hay dở hơn (evals). Tiếp theo cần <strong>quy trình trong bếp</strong>: ai nấu, ai nếm, ai được mở tủ lạnh (Claude Code với hooks, CLAUDE.md, quyền). Cuối cùng là <strong>cách vận hành cả quán</strong> từ nhận đơn tới dọn bàn, có người và máy phối hợp (AI-native SDLC).
+</div>
+<p>Bài này tổng hợp ba khóa: <strong>Introduction to Evals</strong> (4 bài), <strong>Claude Code in Action</strong> (9 bài), và <strong>AI-Native SDLC Playbook</strong> (14 bài). Nội dung phủ toàn bộ CCAR-F D3, CCDV-F D4, và phần advanced deployment.</p>
+<div class="tw"><table>
+  <thead><tr><th>Khóa</th><th>Số bài</th><th>Trả lời câu hỏi</th><th>Mục</th></tr></thead>
+  <tbody>
+    <tr><td>Introduction to Evals</td><td>4</td><td>Làm sao biết prompt hay model nào tốt hơn?</td><td>2</td></tr>
+    <tr><td>Claude Code in Action</td><td>9</td><td>Dùng Claude Code an toàn và lặp lại được thế nào?</td><td>3</td></tr>
+    <tr><td>AI-Native SDLC Playbook</td><td>14</td><td>Cả vòng đời phần mềm chia việc cho AI và người ra sao?</td><td>4</td></tr>
+  </tbody>
+</table></div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Eval</dt><dd>Phép đo chất lượng câu trả lời của Claude một cách có hệ thống, lặp lại được.</dd>
+  <dt>SDLC</dt><dd>Software Development Life Cycle: vòng đời phần mềm, từ hiểu yêu cầu tới vận hành.</dd>
+  <dt>Hook</dt><dd>Đoạn script tự chạy trước hoặc sau khi Claude dùng một tool.</dd>
+  <dt>CI</dt><dd>Continuous Integration: máy chủ tự chạy kiểm tra mỗi khi có code mới.</dd>
+</dl></div>
+<div class="insight"><strong>Cốt lõi.</strong> Ba khóa cùng một ý: đừng tin cảm giác. Đo bằng eval, ép quy tắc bằng hook, và để người giữ các cổng quyết định.</div>
+
+<h2 id="evals">2. Introduction to Evals — 4 bài</h2>
+<p class="xtags"><span class="tag xt1">CCDV-F D2</span> <span class="tag xt1">CCDV-F D4</span> <span class="tag xt4">CCAR-P D4</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Giáo viên ra một bộ đề kiểm tra có đáp án chuẩn. Mỗi lần đổi cách dạy (prompt), thầy cho học sinh làm lại cùng bộ đề rồi chấm điểm. Nếu điểm tăng thì cách dạy mới tốt hơn. Nếu không có bộ đề cố định, thầy chỉ “cảm thấy” lớp giỏi lên, và có thể sai.
+</div>
+<h3>2.1 Why Evals Matter (Bài 1)</h3>
+<p>Eval = cơ chế đo lường chất lượng response của Claude một cách có hệ thống. Không có evals, bạn không biết liệu prompt thay đổi có cải thiện hay làm xấu đi kết quả. <strong>Quy tắc:</strong> iterate prompt trước, upgrade model sau — thường cải thiện prompt hiệu quả hơn và rẻ hơn nhiều so với chuyển sang model mạnh hơn.</p>
+<p><strong>Quy trình 5 bước chọn model và tối ưu:</strong></p>
+<ol>
+  <li>Xác định tiêu chí chất lượng (accuracy floor)</li>
+  <li>Viết test cases vào golden dataset</li>
+  <li>Chọn grader phù hợp (code/LLM/human)</li>
+  <li>Iterate prompt cho đến khi vượt accuracy floor</li>
+  <li>Chỉ khi đó mới xem xét upgrade model</li>
+</ol>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 188" role="img" aria-label="Năm bước chọn model: tiêu chí chất lượng, golden dataset, chọn grader, sửa prompt cho đến khi vượt accuracy floor, rồi mới xem xét nâng model">
+    <defs><marker id="m1301" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker></defs>
+    <g><rect x="10" y="30" width="112" height="76" rx="6" class="b-step"/><text x="66" y="52" class="t tb" text-anchor="middle">1. Tiêu chí</text><text x="66" y="70" class="ts" text-anchor="middle">accuracy floor</text><text x="66" y="84" class="ts" text-anchor="middle">(ngưỡng tối thiểu)</text></g>
+    <g><path class="ln-acc flow" d="M122,68 H135" marker-end="url(#m1301)"/><rect x="137" y="30" width="112" height="76" rx="6" class="b-step"/><text x="193" y="52" class="t tb" text-anchor="middle">2. Test cases</text><text x="193" y="70" class="ts" text-anchor="middle">golden dataset</text><text x="193" y="84" class="ts" text-anchor="middle">(input + expected)</text></g>
+    <g><path class="ln-acc flow" d="M249,68 H262" marker-end="url(#m1301)"/><rect x="264" y="30" width="112" height="76" rx="6" class="b-step"/><text x="320" y="52" class="t tb" text-anchor="middle">3. Chọn grader</text><text x="320" y="70" class="ts" text-anchor="middle">code, LLM, human</text><text x="320" y="84" class="ts" text-anchor="middle">(theo loại output)</text></g>
+    <g><path class="ln-acc flow" d="M376,68 H389" marker-end="url(#m1301)"/><rect x="391" y="30" width="112" height="76" rx="6" class="b-hot"/><text x="447" y="52" class="t tb" text-anchor="middle">4. Sửa prompt</text><text x="447" y="70" class="ts" text-anchor="middle">đến khi vượt</text><text x="447" y="84" class="ts" text-anchor="middle">accuracy floor</text><text x="447" y="122" class="ts" text-anchor="middle">↺ lặp lại bước 4</text></g>
+    <g><path class="ln-acc flow" d="M503,68 H516" marker-end="url(#m1301)"/><rect x="518" y="30" width="112" height="76" rx="6" class="b-opt"/><text x="574" y="52" class="t tb" text-anchor="middle">5. Nâng model</text><text x="574" y="70" class="ts" text-anchor="middle">chỉ khi prompt</text><text x="574" y="84" class="ts" text-anchor="middle">vẫn chưa đủ</text></g>
+    <text x="320" y="164" class="tw-acc" text-anchor="middle">Quy tắc: iterate prompt trước, upgrade model sau</text>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Đặt ngưỡng chất lượng tối thiểu (accuracy floor), ví dụ 80%.</li>
+    <li>Viết các test case vào golden dataset: input kèm đáp án mong đợi.</li>
+    <li>Chọn loại grader hợp với kiểu output: code, LLM hoặc người.</li>
+    <li>Sửa prompt, chạy lại eval, lặp cho đến khi vượt ngưỡng.</li>
+    <li>Chỉ khi prompt đã tối ưu mà vẫn thiếu mới cân nhắc nâng model, vì model mạnh hơn đắt hơn.</li>
+  </ol>
+  <figcaption>Hình 1. Năm bước chọn model và tối ưu: prompt trước, model sau.</figcaption>
+</figure>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Golden dataset</dt><dd>Bộ test case chuẩn: mỗi dòng có input, đáp án mong đợi và rubric.</dd>
+  <dt>Accuracy floor</dt><dd>Ngưỡng accuracy thấp nhất chấp nhận được.</dd>
+  <dt>Grader</dt><dd>Thứ chấm điểm một câu trả lời: code, LLM hoặc người.</dd>
+  <dt>Rubric</dt><dd>Tiêu chí chấm viết thành lời, ví dụ “câu trả lời phải nêu mã đơn”.</dd>
+</dl></div>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div><ul>
+    <li>Thấy kết quả chưa ổn thì đổi ngay sang model mạnh nhất</li>
+    <li>Sửa prompt rồi “thấy tốt hơn” mà không đo</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đúng</div><ul>
+    <li>Đặt ngưỡng, đo bằng golden dataset, sửa prompt đến khi vượt ngưỡng</li>
+    <li>Chỉ nâng model khi prompt đã tối ưu mà vẫn không đạt</li>
+  </ul></div>
+</div>
+
+<h3>2.2 Building Your First Eval (Bài 2)</h3>
+<p>Cấu trúc eval đơn giản: golden dataset + grader + run loop.</p>
+<pre><code class="language-python">import anthropic
+import json
+
+client = anthropic.Anthropic()
+
+# Golden dataset — input + expected output + rubric
+with open("golden.json") as f:
+    test_cases = json.load(f)
+# Format: [{"input": "...", "expected": "...", "rubric": "..."}]
+
+def run_eval(test_cases: list, grader_model="claude-haiku-4-5") -> dict:
+    results = []
+    for case in test_cases:
+        # Chạy model cần test
+        response = client.messages.create(
+            model="claude-sonnet-5",
+            max_tokens=1024,
+            system=SYSTEM_PROMPT,
+            messages=[{"role": "user", "content": case["input"]}]
+        )
+        actual = response.content[0].text
+
+        # LLM grader với rubric
+        grade = client.messages.create(
+            model=grader_model,
+            max_tokens=100,
+            system="You are an evaluator. Answer only PASS or FAIL.",
+            messages=[{"role": "user", "content": f"""
+Rubric: {case['rubric']}
+Expected: {case['expected']}
+Actual: {actual}
+Does the actual response satisfy the rubric? Answer PASS or FAIL."""}]
+        )
+        passed = "PASS" in grade.content[0].text.upper()
+        results.append({"input": case["input"], "passed": passed, "actual": actual})
+
+    total = len(results)
+    passing = sum(1 for r in results if r["passed"])
+    return {"accuracy": passing / total, "results": results}
+
+report = run_eval(test_cases)
+print(f"Accuracy: {report['accuracy']:.1%}")  # target: > 80%</code></pre>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 214" role="img" aria-label="Một test case đi qua golden dataset, model cần test, LLM grader rồi ra kết quả PASS hoặc FAIL; cuối cùng tính accuracy">
+    <defs><marker id="m1302" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker></defs>
+    <g><rect x="10" y="62" width="110" height="78" rx="6" class="b-sys"/><text x="65" y="84" class="t tb" text-anchor="middle">golden.json</text><text x="65" y="102" class="ts" text-anchor="middle">input</text><text x="65" y="116" class="ts" text-anchor="middle">expected, rubric</text></g>
+    <g><path class="ln-acc flow" d="M120,101 H148" marker-end="url(#m1302)"/><rect x="150" y="62" width="130" height="78" rx="6" class="b-step"/><text x="215" y="84" class="t tb" text-anchor="middle">Model cần test</text><text x="215" y="102" class="ts" text-anchor="middle">claude-sonnet-5</text><text x="215" y="116" class="ts" text-anchor="middle">trả về: actual</text></g>
+    <g><path class="ln-acc flow" d="M280,101 H308" marker-end="url(#m1302)"/><rect x="310" y="62" width="150" height="78" rx="6" class="b-hot"/><text x="385" y="84" class="t tb" text-anchor="middle">LLM grader</text><text x="385" y="102" class="ts" text-anchor="middle">claude-haiku-4-5</text><text x="385" y="116" class="ts" text-anchor="middle">rubric, expected, actual</text><text x="385" y="130" class="ts" text-anchor="middle">max_tokens=100</text></g>
+    <g><path class="ln-acc flow" d="M460,101 H488" marker-end="url(#m1302)"/><rect x="490" y="62" width="140" height="78" rx="6" class="b-done"/><text x="560" y="84" class="t tb" text-anchor="middle">PASS hoặc FAIL</text><text x="560" y="102" class="ts" text-anchor="middle">passed = PASS in text</text><text x="560" y="116" class="ts" text-anchor="middle">lưu vào results</text></g>
+    <circle class="tok" r="7" style="transform:translate(560px,46px)"/>
+    <g><text x="320" y="174" class="t tb" text-anchor="middle">Lặp cho mọi case, rồi accuracy = passing / total</text><text x="320" y="194" class="tw-good" text-anchor="middle">Mục tiêu trong ví dụ: accuracy &gt; 80%</text></g>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Lấy một case từ golden dataset: input, expected, rubric.</li>
+    <li>Chạy model cần test với input, thu được <code>actual</code>.</li>
+    <li>Đưa rubric, expected và actual cho LLM grader (model nhỏ, rẻ), bắt trả lời chỉ PASS hoặc FAIL.</li>
+    <li>Ghi kết quả <code>passed</code> của case này.</li>
+    <li>Sau mọi case, <code>accuracy</code> là tỉ lệ case đạt trên tổng số case.</li>
+  </ol>
+  <figcaption>Hình 2. Một case chạy qua model và grader, rồi gộp thành accuracy.</figcaption>
+</figure>
+<p>Đọc code theo thứ tự: nạp <code>golden.json</code>; với mỗi case, gọi model cần test, rồi gọi grader (<code>grader_model</code>, mặc định <code>claude-haiku-4-5</code>) với rubric; <code>"PASS" in …upper()</code> đổi chữ trả về thành true hoặc false; cuối cùng chia số case đạt cho tổng số.</p>
+<div class="alert"><strong>Bẫy.</strong> Để grader nói tự do. Hãy ép grader chỉ trả PASS hoặc FAIL (system prompt và <code>max_tokens</code> nhỏ như trong ví dụ), vì câu trả lời dài khó chuyển thành số.</div>
+
+<h3>2.3 Grader Types và CI Evals (Bài 3–4)</h3>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Chấm bài thi: câu trắc nghiệm thì máy quét chấm tức thì (code grader). Bài luận thì cần giáo viên đọc (LLM hoặc người). Bài quan trọng cuối kỳ thì thầy chủ nhiệm xem lại (human). Rẻ và nhanh để kiểm tra mỗi ngày, đắt và chậm để kiểm tra kỹ.
+</div>
+<div class="tw"><table>
+  <thead><tr><th>Grader</th><th>Khi nào dùng</th><th>Chi phí</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Code grader</strong></td><td>Output có cấu trúc (JSON, SQL, code)</td><td>Rất thấp</td></tr>
+    <tr><td><strong>LLM grader</strong></td><td>Open-ended text, cần đánh giá chất lượng</td><td>Trung bình</td></tr>
+    <tr><td><strong>Human grader</strong></td><td>Validation cuối, edge cases, calibration</td><td>Cao nhất</td></tr>
+  </tbody>
+</table></div>
+<p><strong>CI smoke eval</strong> — chạy trong GitHub Actions, chỉ dùng 10–20 test cases đại diện. <strong>Smoke test</strong> là phép thử nhanh để báo sớm có gì hỏng, không cần chạy hết bộ dữ liệu:</p>
+<pre><code class="language-yaml"># .github/workflows/eval.yml
+name: Smoke Eval
+on: [push, pull_request]
+jobs:
+  eval:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run smoke eval
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python scripts/smoke_eval.py --threshold 0.80</code></pre>
+<p>Chú giải: <code>on: [push, pull_request]</code> chạy mỗi khi có commit hoặc PR. Khóa API lấy từ <code>secrets</code> của GitHub, không ghi vào file. <code>--threshold 0.80</code> là accuracy floor: dưới 80% thì script thoát lỗi và job đỏ.</p>
+<p><strong>Batch API</strong> cho nightly eval đầy đủ — rẻ hơn 50% so với gọi thẳng:</p>
+<pre><code class="language-python">batch = client.messages.batches.create(requests=[
+    {"custom_id": f"case-{i}", "params": {
+        "model": "claude-sonnet-5", "max_tokens": 1024,
+        "messages": [{"role": "user", "content": case["input"]}]
+    }}
+    for i, case in enumerate(full_test_cases)
+])
+# Poll cho đến khi xong, rồi đọc kết quả
+while batch.processing_status != "ended":
+    batch = client.messages.batches.retrieve(batch.id)
+
+for result in client.messages.batches.results(batch.id):
+    if result.result.type == "succeeded":
+        process(result.custom_id, result.result.message)
+    else:
+        log_error(result.custom_id, result.result.error)</code></pre>
+<p>Mỗi request trong batch có một <code>custom_id</code> riêng (ở đây <code>case-0</code>, <code>case-1</code>…) để ghép kết quả về đúng case, vì kết quả có thể trả về không theo thứ tự.</p>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Trang Batch hiện hành ghi bốn loại kết quả cho mỗi request: <code>succeeded</code>, <code>errored</code>, <code>canceled</code>, <code>expired</code> (batch hết hạn sau 24 giờ), và <code>request_counts</code> đếm số request đang xử lý cùng từng loại kết quả. Chỉ <code>errored</code> có thông tin lỗi, nên nhánh <code>else</code> trong ví dụ chỉ đúng khi bạn kiểm tra thêm loại. Vòng <code>while</code> ở trên nên có <code>sleep</code> giữa hai lần hỏi. Nguồn: <a href="https://platform.claude.com/docs/en/build-with-claude/batch-processing" target="_blank" rel="noopener">Batch processing</a>.</div>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 234" role="img" aria-label="Nightly drift sampling: chọn 100 request thật, gửi qua Batch API, chờ ended, chấm và so với baseline, tụt điểm thì nghi model đã đổi hành vi">
+    <defs><marker id="m1303" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker></defs>
+    <g><rect x="10" y="24" width="140" height="82" rx="6" class="b-sys"/><text x="80" y="46" class="t tb" text-anchor="middle">100 request thật</text><text x="80" y="64" class="ts" text-anchor="middle">chọn ngẫu nhiên</text><text x="80" y="78" class="ts" text-anchor="middle">từ traffic mỗi đêm</text></g>
+    <g><path class="ln-acc flow" d="M150,65 H168" marker-end="url(#m1303)"/><rect x="170" y="24" width="140" height="82" rx="6" class="b-step"/><text x="240" y="46" class="t tb" text-anchor="middle">Batch API</text><text x="240" y="64" class="ts" text-anchor="middle">custom_id mỗi case</text><text x="240" y="78" class="ts" text-anchor="middle">rẻ hơn 50%</text></g>
+    <g><path class="ln-acc flow" d="M310,65 H328" marker-end="url(#m1303)"/><rect x="330" y="24" width="140" height="82" rx="6" class="b-step"/><text x="400" y="46" class="t tb" text-anchor="middle">Chờ kết quả</text><text x="400" y="64" class="ts" text-anchor="middle">status: ended</text><text x="400" y="78" class="ts" text-anchor="middle">đếm: request_counts</text></g>
+    <g><path class="ln-acc flow" d="M470,65 H488" marker-end="url(#m1303)"/><rect x="490" y="24" width="140" height="82" rx="6" class="b-hot"/><text x="560" y="46" class="t tb" text-anchor="middle">Chấm + so sánh</text><text x="560" y="64" class="ts" text-anchor="middle">với accuracy các</text><text x="560" y="78" class="ts" text-anchor="middle">đêm trước (baseline)</text></g>
+    <g><rect x="10" y="130" width="620" height="84" rx="8" class="b-warn"/><text x="320" y="154" class="t tb" text-anchor="middle">Accuracy tụt dù prompt không đổi</text><text x="320" y="174" class="ts" text-anchor="middle">Nghi một lần cập nhật model đã làm thay đổi behavior (drift)</text><text x="320" y="190" class="ts" text-anchor="middle">Hành động: xem lại các case tụt, chỉnh prompt hoặc ghim phiên bản model</text></g>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Mỗi đêm lấy ngẫu nhiên 100 request thật từ traffic.</li>
+    <li>Gửi cả 100 qua Batch API, vì không cần kết quả ngay và rẻ hơn 50%.</li>
+    <li>Hỏi trạng thái cho tới khi <code>processing_status</code> là <code>ended</code>, rồi đọc kết quả.</li>
+    <li>Chấm điểm và so với accuracy các đêm trước.</li>
+    <li>Nếu tụt dù prompt giữ nguyên, nhiều khả năng model được cập nhật và hành vi đã đổi.</li>
+  </ol>
+  <figcaption>Hình 3. Nightly drift sampling bằng batch eval.</figcaption>
+</figure>
+<div class="insight"><strong>Nightly drift sampling:</strong> Run 100 random real requests mỗi đêm qua batch eval để detect khi model update làm thay đổi behavior mà không có thay đổi prompt.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Smoke eval</dt><dd>Eval nhỏ (10–20 case) chạy trong CI để bắt lỗi sớm.</dd>
+  <dt>Batch API</dt><dd>Gửi nhiều request chạy bất đồng bộ, rẻ hơn 50%, phù hợp việc không cần kết quả ngay.</dd>
+  <dt>Drift</dt><dd>Hành vi đổi dần theo thời gian dù bạn không sửa gì, ví dụ do model được cập nhật.</dd>
+  <dt>Baseline</dt><dd>Mức điểm chuẩn để so sánh các lần chạy sau.</dd>
+</dl></div>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div><ul>
+    <li>Chạy cả bộ eval đầy đủ ở mỗi commit</li>
+    <li>Chỉ dùng LLM grader cho output JSON</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đúng</div><ul>
+    <li>Smoke eval 10–20 case ở CI, bộ đầy đủ chạy nightly qua Batch API</li>
+    <li>Output có cấu trúc thì dùng code grader: rẻ và chắc</li>
+  </ul></div>
+</div>
+
+<h2 id="claude-code-in-action">3. Claude Code in Action — 9 bài</h2>
+<p class="xtags"><span class="tag xt3">CCAR-F D3</span> <span class="tag xt1">CCDV-F D2</span> <span class="tag xt1">CCDV-F D3</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Một thợ phụ mới vào xưởng. Bạn bảo anh ta: “Vẽ phương án trước, chưa được đụng dụng cụ” (plan mode). Bạn dán nội quy lên tường (CLAUDE.md). Có một bảo vệ ở cửa kho kiểm tra phiếu trước khi cho lấy đồ (hooks). Và bạn quy định mức độ anh được tự quyết (permission modes). Nếu anh làm sai, bạn bấm “quay lại” (rewind).
+</div>
+<h3>3.1 Plan Mode, Compact, Rewind (Bài 1–2)</h3>
+<p><strong>Plan mode:</strong> Nhấn <kbd>Shift+Tab</kbd> (hoặc gõ <code>/plan</code>) để bật — Claude đọc/phân tích nhưng không viết code. Dùng để review kế hoạch trước khi thực thi. Nhấn lại để tắt.</p>
+<p><strong>Compact conversation:</strong> Dùng <code>/compact</code> khi context đầy — Claude tóm tắt lịch sử hội thoại, giải phóng context window. Có thể truyền custom summary prompt: <code>/compact Focus on the database schema changes.</code></p>
+<p><strong>Rewind:</strong> Nếu Claude đi sai hướng, nhấn <kbd>Escape</kbd> để dừng, sau đó dùng <code>/rewind</code> để quay về checkpoint trước. Checkpoint tạo tự động trước mỗi bước quan trọng.</p>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 238" role="img" aria-label="Plan mode: bật bằng Shift+Tab, Claude chỉ đọc và phân tích, đưa kế hoạch, người duyệt rồi tắt plan mode để Claude sửa code; bên dưới là Escape và rewind, compact">
+    <defs><marker id="m1304" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker></defs>
+    <g><rect x="10" y="18" width="140" height="78" rx="6" class="b-sys"/><text x="80" y="40" class="t tb" text-anchor="middle">Bật plan mode</text><text x="80" y="58" class="ts" text-anchor="middle">Shift+Tab</text><text x="80" y="72" class="ts" text-anchor="middle">hoặc /plan</text></g>
+    <g><path class="ln-acc flow" d="M150,57 H168" marker-end="url(#m1304)"/><rect x="170" y="18" width="140" height="78" rx="6" class="b-step"/><text x="240" y="40" class="t tb" text-anchor="middle">Chỉ đọc, phân tích</text><text x="240" y="58" class="ts" text-anchor="middle">Read, Grep: được</text><text x="240" y="72" class="ts" text-anchor="middle">Edit, Write: không</text></g>
+    <g><path class="ln-acc flow" d="M310,57 H328" marker-end="url(#m1304)"/><rect x="330" y="18" width="140" height="78" rx="6" class="b-hot"/><text x="400" y="40" class="t tb" text-anchor="middle">Đưa ra kế hoạch</text><text x="400" y="58" class="ts" text-anchor="middle">bạn đọc và chỉnh</text><text x="400" y="72" class="ts" text-anchor="middle">trước khi làm</text></g>
+    <g><path class="ln-acc flow" d="M470,57 H488" marker-end="url(#m1304)"/><rect x="490" y="18" width="140" height="78" rx="6" class="b-done"/><text x="560" y="40" class="t tb" text-anchor="middle">Duyệt, thực thi</text><text x="560" y="58" class="ts" text-anchor="middle">Shift+Tab tắt plan</text><text x="560" y="72" class="ts" text-anchor="middle">Claude mới sửa code</text></g>
+    <g><rect x="10" y="130" width="300" height="94" rx="6" class="b-warn"/><text x="160" y="152" class="t tb" text-anchor="middle">Đi sai hướng: Escape rồi /rewind</text><text x="160" y="172" class="ts" text-anchor="middle">Escape dừng Claude lại</text><text x="160" y="186" class="ts" text-anchor="middle">/rewind quay về checkpoint trước</text><text x="160" y="200" class="ts" text-anchor="middle">Checkpoint tạo tự động trước bước quan trọng</text></g>
+    <g><rect x="330" y="130" width="300" height="94" rx="6" class="b-opt"/><text x="480" y="152" class="t tb" text-anchor="middle">Context đầy: /compact</text><text x="480" y="172" class="ts" text-anchor="middle">Tóm tắt lịch sử, giải phóng context</text><text x="480" y="186" class="ts" text-anchor="middle">Có thể dặn trọng tâm:</text><text x="480" y="200" class="ts" text-anchor="middle">/compact Focus on the database schema</text></g>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Nhấn <kbd>Shift+Tab</kbd> (hoặc <code>/plan</code>) để vào plan mode.</li>
+    <li>Claude chỉ đọc và phân tích, không sửa file.</li>
+    <li>Claude đưa kế hoạch để bạn review, sửa hướng đi khi còn rẻ.</li>
+    <li>Bạn duyệt, tắt plan mode, Claude bắt đầu thực thi.</li>
+    <li>Nếu đi sai: <kbd>Escape</kbd> để dừng, <code>/rewind</code> để quay về checkpoint.</li>
+    <li>Nếu context đầy: <code>/compact</code> tóm tắt, có thể kèm câu dặn trọng tâm.</li>
+  </ol>
+  <figcaption>Hình 4. Plan mode, rewind và compact trong một phiên làm việc.</figcaption>
+</figure>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Tài liệu hiện hành mô tả <kbd>Shift+Tab</kbd> là phím <em>xoay vòng</em> các permission mode (default, acceptEdits, plan, rồi auto nếu có), và khởi động thẳng vào plan bằng <code>claude --permission-mode plan</code>. Checkpoint được tạo trước mỗi prompt bắt đầu một lượt; <code>/rewind</code> (bí danh <code>/undo</code>) hoặc nhấn <kbd>Esc</kbd> hai lần mở menu gồm: khôi phục code và hội thoại, chỉ hội thoại, chỉ code, hoặc “Summarize”. File chỉ bị đổi bởi lệnh Bash không được theo dõi, vì vậy checkpoint không thay thế git. Chưa tìm thấy lệnh <code>/plan</code> trong trang tài liệu đã tra; vẫn giữ theo bài giảng. Nguồn: <a href="https://code.claude.com/docs/en/permission-modes" target="_blank" rel="noopener">Permission modes</a>, <a href="https://code.claude.com/docs/en/checkpointing" target="_blank" rel="noopener">Checkpointing</a>.</div>
+
+<h3>3.2 CLAUDE.md Hierarchy (Bài 3)</h3>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Nội quy có nhiều tầng: nội quy tập đoàn, nội quy chi nhánh, nội quy riêng của phòng ban, và ghi chú cá nhân của bạn. Khi làm việc ở phòng nào, bạn đọc các tầng liên quan. CLAUDE.md cũng vậy: Claude đọc nhiều file nội quy theo vị trí.
+</div>
+<p>CLAUDE.md được load từ bốn vị trí, theo thứ tự ưu tiên:</p>
+<ol>
+  <li><code>~/.claude/CLAUDE.md</code> — global, áp dụng mọi project</li>
+  <li><code>{project-root}/CLAUDE.md</code> — project-level (committed vào git)</li>
+  <li><code>{subdirectory}/CLAUDE.md</code> — subdirectory scope (chỉ áp dụng khi làm việc trong thư mục đó)</li>
+  <li><code>.claude/CLAUDE.md</code> — không committed, settings cá nhân trong project</li>
+</ol>
+<p>Dùng <code>/init</code> để tạo CLAUDE.md từ codebase analysis tự động. <strong>Two-strikes rule:</strong> sửa một lỗi lần đầu tay; nếu xảy ra lần thứ hai, thêm vào CLAUDE.md ngay.</p>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 262" role="img" aria-label="Bốn vị trí CLAUDE.md theo bài giảng: global, project root, subdirectory, và file cá nhân trong .claude; kèm two-strikes rule">
+    <text x="10" y="20" class="lane-lb">4 vị trí CLAUDE.md (theo thứ tự trong bài)</text>
+    <rect x="10" y="32" width="620" height="38" rx="6" class="b-sys"/><text x="22" y="56" class="t tb">1. ~/.claude/CLAUDE.md</text><text x="290" y="56" class="ts">global: áp dụng mọi project</text>
+    <rect x="10" y="78" width="620" height="38" rx="6" class="b-step"/><text x="22" y="102" class="t tb">2. {project-root}/CLAUDE.md</text><text x="290" y="102" class="ts">project-level: committed vào git, cả đội dùng</text>
+    <rect x="10" y="124" width="620" height="38" rx="6" class="b-step"/><text x="22" y="148" class="t tb">3. {subdirectory}/CLAUDE.md</text><text x="290" y="148" class="ts">chỉ áp dụng khi làm việc trong thư mục đó</text>
+    <rect x="10" y="170" width="620" height="38" rx="6" class="b-opt"/><text x="22" y="194" class="t tb">4. .claude/CLAUDE.md</text><text x="290" y="194" class="ts">không committed: cài đặt cá nhân trong project</text>
+    <rect x="10" y="220" width="620" height="34" rx="6" class="b-hot"/><text x="320" y="242" class="t tb" text-anchor="middle">Two-strikes: lần 1 sửa tay, lần 2 thêm vào CLAUDE.md</text>
+  </svg></div>
+  <figcaption>Hình 5. Bốn vị trí CLAUDE.md và quy tắc two-strikes.</figcaption>
+</figure>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Tài liệu hiện hành chia khác bài giảng. Có thêm bản <strong>managed policy</strong> cho cả tổ chức (macOS <code>/Library/Application Support/ClaudeCode/CLAUDE.md</code>, Linux <code>/etc/claude-code/CLAUDE.md</code>). Chỗ ghi cá nhân, không commit là <code>./CLAUDE.local.md</code> (nên thêm vào <code>.gitignore</code>), còn <code>./.claude/CLAUDE.md</code> được tính là vị trí project, dùng chung qua git như <code>./CLAUDE.md</code>. Các file được <strong>nối vào</strong> context (không ghi đè nhau), và file gần thư mục làm việc được đọc sau cùng. File trong thư mục con chỉ nạp khi Claude đọc hoặc sửa file ở đó. Nên giữ mỗi file dưới khoảng 200 dòng. CLAUDE.md là chỉ dẫn, không phải cơ chế ép buộc; muốn chặn chắc chắn thì dùng hook PreToolUse. Đề thi vẫn theo bốn vị trí như bài. Nguồn: <a href="https://code.claude.com/docs/en/memory" target="_blank" rel="noopener">Memory</a>.</div>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div><ul>
+    <li>Lỗi lặp lại lần hai mà vẫn nhắc bằng lời mỗi phiên</li>
+    <li>Nhồi quy trình dài, ít dùng vào CLAUDE.md</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đúng</div><ul>
+    <li>Lần hai gặp lỗi thì thêm một dòng cụ thể vào CLAUDE.md</li>
+    <li>Dùng <code>/init</code> tạo bản đầu, rồi chỉnh tay cho ngắn, rõ</li>
+  </ul></div>
+</div>
+
+<h3>3.3 Hooks và Permissions (Bài 4–5)</h3>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Cổng kiểm soát ở kho hàng. Bảo vệ nhận phiếu lấy hàng, xem xét, rồi làm một trong ba việc: vẫy tay cho qua (exit 0), nhắc nhở nhưng vẫn cho qua (exit 1), hoặc chặn lại và nói lý do (exit 2). Chỉ có “chặn lại” mới thật sự giữ hàng ở trong kho.
+</div>
+<p><strong>Hooks</strong> = shell script chạy trước/sau khi Claude dùng tool. Cấu hình trong <code>.claude/settings.json</code>:</p>
+<pre><code class="language-json">{
+  "hooks": {
+    "PreToolUse": [{
+      "matcher": "Bash",
+      "hooks": [{
+        "type": "command",
+        "command": "node scripts/safety-check.js"
+      }]
+    }]
+  }
+}</code></pre>
+<p>Hook nhận tool input qua stdin (JSON), có thể:</p>
+<ul>
+  <li><strong>Allow:</strong> thoát với exit code 0, không output gì</li>
+  <li><strong>Block:</strong> thoát với exit code 2 + output lý do — <strong>exit 1 KHÔNG block, chỉ exit 2 mới block</strong></li>
+  <li><strong>Ask:</strong> output JSON <code>{"permissionDecision": "ask", "message": "..."}</code></li>
+</ul>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 292" role="img" aria-label="Hook PreToolUse chặn lệnh deploy: Claude gọi Bash, hook chạy npm test, test fail, hook thoát exit 2 kèm stderr, tool bị chặn và lý do quay về Claude; bên dưới ba mã thoát">
+    <defs>
+      <marker id="m1305" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker>
+      <marker id="m1306" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-warn"/></marker>
+    </defs>
+    <rect x="10" y="26" width="120" height="48" rx="6" class="b-sys"/><text x="70" y="46" class="t tb" text-anchor="middle">Claude</text><text x="70" y="62" class="ts" text-anchor="middle">muốn chạy deploy</text>
+    <rect x="230" y="26" width="190" height="48" rx="6" class="b-step"/><text x="325" y="46" class="t tb" text-anchor="middle">Hook PreToolUse</text><text x="325" y="62" class="ts" text-anchor="middle">check-test-pass.sh</text>
+    <rect x="510" y="26" width="120" height="48" rx="6" class="b-sys"/><text x="570" y="46" class="t tb" text-anchor="middle">Tool Bash</text><text x="570" y="62" class="ts" text-anchor="middle">git push, deploy</text>
+    <g><path class="ln-acc flow" d="M130,50 H228" marker-end="url(#m1305)"/><text x="179" y="42" class="ts halo" text-anchor="middle">stdin: JSON</text></g>
+    <g><text x="325" y="96" class="tw-warn" text-anchor="middle">npm test: FAIL</text></g>
+    <g><rect x="250" y="106" width="150" height="30" rx="6" class="b-hot"/><text x="325" y="126" class="tm" text-anchor="middle">exit 2 + stderr</text>
+      <path class="ln-warn-solid" d="M420,50 H490"/><text x="500" y="56" class="tw-warn" text-anchor="middle">✕</text></g>
+    <g><path class="ln-warn flow" d="M250,121 H70 V76" marker-end="url(#m1306)"/><text x="160" y="115" class="ts halo" text-anchor="middle">stderr: lý do chặn</text></g>
+    <g>
+      <rect x="10" y="164" width="200" height="118" rx="6" class="b-done"/><text x="110" y="186" class="t tb" text-anchor="middle">exit 0 = allow</text><text x="110" y="208" class="ts" text-anchor="middle">cho chạy tiếp</text><text x="110" y="222" class="ts" text-anchor="middle">không cần output</text><text x="110" y="246" class="ts" text-anchor="middle">hoặc in JSON quyết định</text>
+      <rect x="220" y="164" width="200" height="118" rx="6" class="b-warn"/><text x="320" y="186" class="t tb" text-anchor="middle">exit 1 = warning</text><text x="320" y="208" class="ts" text-anchor="middle">KHÔNG chặn</text><text x="320" y="222" class="ts" text-anchor="middle">tool vẫn chạy</text><text x="320" y="246" class="ts" text-anchor="middle">hay bị nhầm là block</text>
+      <rect x="430" y="164" width="200" height="118" rx="6" class="b-hot"/><text x="530" y="186" class="t tb" text-anchor="middle">exit 2 = block</text><text x="530" y="208" class="ts" text-anchor="middle">chặn hành động</text><text x="530" y="222" class="ts" text-anchor="middle">stderr gửi lại cho Claude</text><text x="530" y="246" class="ts" text-anchor="middle">cách duy nhất để chặn</text>
+    </g>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Trước khi Bash chạy, hook PreToolUse nhận mô tả lệnh qua stdin (JSON).</li>
+    <li>Script chạy <code>npm test</code> và test fail.</li>
+    <li>Script ghi lý do ra stderr và thoát với <strong>exit 2</strong>: lệnh bị chặn.</li>
+    <li>Lý do quay về Claude để nó sửa test thay vì cố deploy.</li>
+    <li>Nhớ ba mã thoát: 0 cho qua, 1 chỉ cảnh báo và không chặn, 2 mới chặn.</li>
+  </ol>
+  <figcaption>Hình 6. Hook PreToolUse chặn deploy bằng exit 2.</figcaption>
+</figure>
+<pre><code class="language-bash">#!/bin/bash
+# hooks/redact-secrets.sh — hook PreToolUse để redact PII trước khi log
+INPUT=$(cat)
+TOOL=$(echo "$INPUT" | jq -r '.name')
+if [ "$TOOL" = "Bash" ]; then
+    COMMAND=$(echo "$INPUT" | jq -r '.input.command')
+    # Check for secret patterns
+    if echo "$COMMAND" | grep -qE "(password|secret|token|key)="; then
+        echo '{"permissionDecision":"ask","message":"Command contains potential secrets. Review before proceeding."}'
+        exit 0
+    fi
+fi
+exit 0</code></pre>
+<p>Script này đọc JSON từ stdin, lấy tên tool và lệnh. Nếu lệnh Bash chứa mẫu như <code>password=</code> hoặc <code>token=</code>, nó in JSON “ask” rồi <code>exit 0</code>: Claude Code sẽ hỏi bạn trước khi chạy. Ngược lại nó thoát 0 và không in gì, tức cho qua.</p>
+<p><strong>Permission modes:</strong> default (hỏi mọi thứ), auto-approve (approve mọi thứ), bypassPermissions (developer mode — không hỏi gì cả, chỉ dùng trong CI với môi trường sandboxed).</p>
+<div class="alert"><strong>Bẫy.</strong> Viết hook chặn nhưng dùng <code>exit 1</code>. Hook báo lỗi, nhưng lệnh vẫn chạy. Muốn chặn phải <code>exit 2</code>.</div>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Tài liệu hooks hiện hành xác nhận: exit 2 là cách chặn; mọi mã khác (kể cả 1) là “non-blocking error”, hành động vẫn đi tiếp. Muốn trả quyết định bằng JSON thì phải thoát <strong>exit 0</strong>; nếu thoát 2 thì JSON <code>allow</code> cũng không mở được cổng. JSON đầu vào của hook dùng khóa <code>tool_name</code> và <code>tool_input</code> (ví dụ <code>tool_input.command</code>), khác với <code>.name</code> và <code>.input.command</code> trong ví dụ trên. Về permission mode, tài liệu liệt kê: <code>default</code>, <code>acceptEdits</code>, <code>plan</code>, <code>auto</code>, <code>dontAsk</code>, <code>bypassPermissions</code>; <code>bypassPermissions</code> chỉ nên dùng trong container hoặc VM cô lập. Đề thi theo ba mode như bài. Nguồn: <a href="https://code.claude.com/docs/en/hooks" target="_blank" rel="noopener">Hooks reference</a>, <a href="https://code.claude.com/docs/en/permission-modes" target="_blank" rel="noopener">Permission modes</a>.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>PreToolUse / PostToolUse</dt><dd>Hook chạy trước / sau khi Claude dùng một tool.</dd>
+  <dt>matcher</dt><dd>Bộ lọc chọn hook áp dụng cho tool nào, ví dụ <code>Bash</code> hoặc <code>Edit</code>.</dd>
+  <dt>stdin / stderr</dt><dd>Kênh vào chuẩn và kênh lỗi chuẩn của một chương trình.</dd>
+  <dt>Sandbox</dt><dd>Môi trường cô lập để lỗi hoặc lệnh nguy hiểm không chạm tới hệ thống thật.</dd>
+</dl></div>
+
+<h3>3.4 Scheduled Tasks và Headless Mode (Bài 6–7)</h3>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Máy giặt hẹn giờ: bạn bỏ đồ vào, bấm nút, máy tự chạy lúc 6 giờ sáng mà không cần bạn đứng cạnh. <strong>Headless mode</strong> là Claude Code chạy “không màn hình”, không hỏi gì giữa chừng. <strong>Scheduled task</strong> là hẹn giờ cho nó.
+</div>
+<p><strong>Headless mode:</strong> chạy Claude Code không tương tác — dùng trong scripts, CI, cron jobs.</p>
+<pre><code class="language-bash"># -p: prompt text
+# --bare: output chỉ content (không có markdown formatting)
+# --output-format json: machine-readable output
+claude -p "Review these test failures and suggest fixes" \
+       --input-file test-results.txt \
+       --bare \
+       --output-format json > review.json
+
+# Chạy từ Agent SDK (Python)
+result = subprocess.run(
+    ["claude", "-p", task_description, "--bare"],
+    capture_output=True, text=True, cwd=project_dir
+)</code></pre>
+<p><strong>Scheduled tasks:</strong> Dùng <code>/schedule</code> command trong Claude Code (hoặc <code>claude schedule create</code>) để tạo cloud-hosted cron job. Cũng có thể dùng GitHub Actions với <code>schedule</code> trigger.</p>
+<p><strong>Cron</strong> là cách viết lịch lặp bằng năm trường: phút, giờ, ngày trong tháng, tháng, thứ. Ví dụ <code>0 9 * * 1-5</code> là 9 giờ sáng các ngày trong tuần.</p>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Trang tài liệu hiện hành mô tả <code>--bare</code> theo nghĩa khác bài: nó bỏ qua việc tự nạp hook, skill, subagent, plugin, MCP server, auto memory và CLAUDE.md để chạy giống nhau trên mọi máy; không phải “chỉ in nội dung”. Dạng gọi là <code>claude --bare -p "…"</code>, và bare mode không dùng đăng nhập subscription nên cần <code>ANTHROPIC_API_KEY</code>. Đưa dữ liệu vào bằng pipe stdin (<code>cat file | claude -p "…"</code>), tôi chưa thấy cờ <code>--input-file</code> trong trang đã tra. Về lịch chạy, tài liệu liệt kê cloud scheduled tasks (routines), Desktop scheduled tasks, <code>/loop</code> trong phiên, và GitHub Actions; tôi chưa kiểm chứng được lệnh <code>/schedule</code> hay <code>claude schedule create</code>. Nguồn: <a href="https://code.claude.com/docs/en/headless" target="_blank" rel="noopener">Headless</a>, <a href="https://code.claude.com/docs/en/scheduled-tasks" target="_blank" rel="noopener">Scheduled tasks</a>.</div>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div><ul>
+    <li>Chạy <code>claude</code> tương tác trong cron job rồi chờ nó hỏi quyền</li>
+    <li>Dùng <code>bypassPermissions</code> trên máy làm việc thật</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đúng</div><ul>
+    <li>Dùng <code>-p</code> và <code>--output-format json</code> để script đọc được kết quả</li>
+    <li><code>bypassPermissions</code> chỉ trong CI sandboxed</li>
+  </ul></div>
+</div>
+
+<h3>3.5 GitHub Actions Integration (Bài 8–9)</h3>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Mỗi khi ai đó nộp bài (mở pull request), một người chấm tự động được gọi tới, đọc bài, rồi ghi nhận xét lên chính tờ bài. Bạn không phải nhắc. GitHub Actions là chuông báo, Claude là người chấm.
+</div>
+<pre><code class="language-yaml"># .github/workflows/claude-review.yml
+name: Claude Code Review
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Claude Code Review
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          review_type: "security,performance,correctness"
+          post_as_comment: true</code></pre>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 252" role="img" aria-label="Luồng GitHub Actions: PR mở hoặc có commit mới, workflow chạy, claude-code-action review, kết quả quay lại PR; bên dưới là quyền tối thiểu và dịch vụ Code Review của Anthropic">
+    <defs><marker id="m1307" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker></defs>
+    <g><rect x="10" y="20" width="140" height="82" rx="6" class="b-sys"/><text x="80" y="42" class="t tb" text-anchor="middle">PR mở / cập nhật</text><text x="80" y="60" class="ts" text-anchor="middle">types: opened,</text><text x="80" y="74" class="ts" text-anchor="middle">synchronize</text></g>
+    <g><path class="ln-acc flow" d="M150,61 H168" marker-end="url(#m1307)"/><rect x="170" y="20" width="140" height="82" rx="6" class="b-step"/><text x="240" y="42" class="t tb" text-anchor="middle">Workflow chạy</text><text x="240" y="60" class="ts" text-anchor="middle">ubuntu-latest</text><text x="240" y="74" class="ts" text-anchor="middle">checkout fetch-depth 0</text></g>
+    <g><path class="ln-acc flow" d="M310,61 H328" marker-end="url(#m1307)"/><rect x="330" y="20" width="140" height="82" rx="6" class="b-hot"/><text x="400" y="42" class="t tb" text-anchor="middle">Claude review</text><text x="400" y="60" class="ts" text-anchor="middle">claude-code-action@v1</text><text x="400" y="74" class="ts" text-anchor="middle">key lấy từ secrets</text></g>
+    <g><path class="ln-acc flow" d="M470,61 H488" marker-end="url(#m1307)"/><rect x="490" y="20" width="140" height="82" rx="6" class="b-done"/><text x="560" y="42" class="t tb" text-anchor="middle">Kết quả trên PR</text><text x="560" y="60" class="ts" text-anchor="middle">nhận xét về security,</text><text x="560" y="74" class="ts" text-anchor="middle">performance, correctness</text></g>
+    <g><rect x="10" y="128" width="300" height="108" rx="6" class="b-opt"/><text x="160" y="150" class="t tb" text-anchor="middle">Quyền tối thiểu</text><text x="160" y="172" class="ts" text-anchor="middle">contents: read</text><text x="160" y="186" class="ts" text-anchor="middle">pull-requests: write</text><text x="160" y="206" class="ts" text-anchor="middle">API key trong secrets, không ghi vào file</text></g>
+    <g><rect x="330" y="128" width="300" height="108" rx="6" class="b-sys"/><text x="480" y="150" class="t tb" text-anchor="middle">Claude Code Review service</text><text x="480" y="172" class="ts" text-anchor="middle">Anthropic-hosted, trigger qua GitHub App</text><text x="480" y="186" class="ts" text-anchor="middle">Không cần tự host</text><text x="480" y="206" class="ts" text-anchor="middle">Cấu hình qua CLAUDE.md trong repo</text></g>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Có người mở PR hoặc đẩy thêm commit vào PR, GitHub phát sự kiện <code>pull_request</code>.</li>
+    <li>Workflow chạy trên runner Ubuntu và checkout đủ lịch sử (<code>fetch-depth: 0</code>) để Claude xem được diff.</li>
+    <li>Bước <code>claude-code-action@v1</code> chạy với API key lấy từ secrets.</li>
+    <li>Kết quả review được ghi lại trên PR.</li>
+    <li>Chỉ cấp quyền cần thiết: đọc nội dung, ghi pull request.</li>
+    <li>Có thêm lựa chọn dịch vụ Code Review do Anthropic host, không cần tự dựng workflow.</li>
+  </ol>
+  <figcaption>Hình 7. Claude review pull request bằng GitHub Actions.</figcaption>
+</figure>
+<p><strong>Claude Code Review service:</strong> Anthropic-hosted service có thể trigger qua GitHub App — không cần tự host. Cấu hình qua <code>CLAUDE.md</code> trong repo hoặc review-specific settings.</p>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Trang GitHub Actions hiện hành dùng các input <code>anthropic_api_key</code> (hoặc <code>claude_code_oauth_token</code>), <code>prompt</code> và <code>claude_args</code>; chưa thấy <code>review_type</code> và <code>post_as_comment</code> trong tài liệu đã tra. Workflow mẫu hiện dùng <code>actions/checkout@v6</code> và <code>id-token: write</code> cho xác thực GitHub App mặc định. Khi workflow có <code>prompt</code>, Claude chạy ở chế độ automation; không có <code>prompt</code> thì chờ nhắc <code>@claude</code>. Trang này cũng tách “Code Review” (review tự động, không viết workflow) thành sản phẩm riêng. Ví dụ ở trên vẫn giữ theo bài giảng. Nguồn: <a href="https://code.claude.com/docs/en/github-actions" target="_blank" rel="noopener">Claude Code GitHub Actions</a>.</div>
+<div class="alert"><strong>Bẫy.</strong> Dán API key thẳng vào file workflow. Luôn dùng <code>${{ secrets.… }}</code>, và cấp <code>permissions</code> vừa đủ.</div>
+
+<h2 id="sdlc-playbook">4. AI-Native SDLC Playbook — 14 bài</h2>
+<p class="xtags"><span class="tag xt1">CCDV-F D2</span> <span class="tag xt3">CCAR-F D3</span> <span class="tag xt4">CCAR-P D7</span> <span class="xnote">Phần lớn playbook (intent.md, worktree song song) là nâng cao; đề chỉ hỏi vòng đời và review.</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Xây một căn nhà. Có kiến trúc sư, thợ xây, người kiểm tra chất lượng, và chủ nhà ký nhận. Máy móc làm phần nặng và lặp lại, nhưng chủ nhà vẫn giữ quyền quyết định ở những điểm quan trọng: bản vẽ cuối, nghiệm thu, bàn giao. AI-native SDLC chia việc kiểu đó giữa AI và người.
+</div>
+<h3>4.1 AI-Native SDLC: 6 Giai đoạn (Bài 1–2)</h3>
+<div class="tw"><table>
+  <thead><tr><th>Giai đoạn</th><th>AI role</th><th>Human role</th></tr></thead>
+  <tbody>
+    <tr><td>1. Intent clarification</td><td>Hỏi làm rõ, tóm tắt requirements</td><td>Viết <code>intent.md</code>, review tóm tắt</td></tr>
+    <tr><td>2. Architecture planning</td><td>Đề xuất kiến trúc, tradeoff analysis</td><td>Quyết định, sign-off</td></tr>
+    <tr><td>3. Implementation</td><td>Viết code, test, debug</td><td>Review PR, check edge cases</td></tr>
+    <tr><td>4. Verification</td><td>Chạy tests, lint, check coverage</td><td>Review failing tests, approve merge</td></tr>
+    <tr><td>5. Deployment</td><td>Chuẩn bị deployment plan</td><td>Approve deployment, monitor rollout</td></tr>
+    <tr><td>6. Retrospective</td><td>Phân tích incidents, đề xuất cải thiện</td><td>Update CLAUDE.md, process improvements</td></tr>
+  </tbody>
+</table></div>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 242" role="img" aria-label="Sáu giai đoạn AI-native SDLC, mỗi giai đoạn có vai trò của AI và của người">
+    <defs><marker id="m1308" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker></defs>
+    <g><rect x="10" y="12" width="190" height="94" rx="6" class="b-step"/><text x="105" y="32" class="t tb" text-anchor="middle">1. Intent clarification</text><text x="105" y="54" class="ts" text-anchor="middle">AI: hỏi làm rõ, tóm tắt yêu cầu</text><text x="105" y="72" class="ts" text-anchor="middle">Người: viết intent.md,</text><text x="105" y="86" class="ts" text-anchor="middle">review tóm tắt</text></g>
+    <g><path class="ln-acc flow" d="M200,59 H223" marker-end="url(#m1308)"/><rect x="225" y="12" width="190" height="94" rx="6" class="b-step"/><text x="320" y="32" class="t tb" text-anchor="middle">2. Architecture planning</text><text x="320" y="54" class="ts" text-anchor="middle">AI: đề xuất kiến trúc, tradeoff</text><text x="320" y="72" class="ts" text-anchor="middle">Người: quyết định, sign-off</text></g>
+    <g><path class="ln-acc flow" d="M415,59 H438" marker-end="url(#m1308)"/><rect x="440" y="12" width="190" height="94" rx="6" class="b-step"/><text x="535" y="32" class="t tb" text-anchor="middle">3. Implementation</text><text x="535" y="54" class="ts" text-anchor="middle">AI: viết code, test, debug</text><text x="535" y="72" class="ts" text-anchor="middle">Người: review PR,</text><text x="535" y="86" class="ts" text-anchor="middle">check edge cases</text></g>
+    <g><path class="ln-acc flow" d="M535,106 V118 H105 V130" marker-end="url(#m1308)"/><rect x="10" y="132" width="190" height="94" rx="6" class="b-hot"/><text x="105" y="152" class="t tb" text-anchor="middle">4. Verification</text><text x="105" y="174" class="ts" text-anchor="middle">AI: chạy test, lint, coverage</text><text x="105" y="192" class="ts" text-anchor="middle">Người: review test fail,</text><text x="105" y="206" class="ts" text-anchor="middle">approve merge</text></g>
+    <g><path class="ln-acc flow" d="M200,179 H223" marker-end="url(#m1308)"/><rect x="225" y="132" width="190" height="94" rx="6" class="b-hot"/><text x="320" y="152" class="t tb" text-anchor="middle">5. Deployment</text><text x="320" y="174" class="ts" text-anchor="middle">AI: chuẩn bị deployment plan</text><text x="320" y="192" class="ts" text-anchor="middle">Người: approve deploy,</text><text x="320" y="206" class="ts" text-anchor="middle">monitor rollout</text></g>
+    <g><path class="ln-acc flow" d="M415,179 H438" marker-end="url(#m1308)"/><rect x="440" y="132" width="190" height="94" rx="6" class="b-done"/><text x="535" y="152" class="t tb" text-anchor="middle">6. Retrospective</text><text x="535" y="174" class="ts" text-anchor="middle">AI: phân tích incident, đề xuất</text><text x="535" y="192" class="ts" text-anchor="middle">Người: cập nhật CLAUDE.md,</text><text x="535" y="206" class="ts" text-anchor="middle">quy trình</text></g>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Làm rõ ý định: AI hỏi lại và tóm tắt, người viết <code>intent.md</code> và duyệt tóm tắt.</li>
+    <li>Lên kiến trúc: AI đề xuất và phân tích đánh đổi, người quyết định.</li>
+    <li>Cài đặt: AI viết code và test, người review PR.</li>
+    <li>Kiểm chứng: AI chạy test và lint, người duyệt merge.</li>
+    <li>Triển khai: AI chuẩn bị kế hoạch, người cho phép và theo dõi.</li>
+    <li>Nhìn lại: AI phân tích sự cố, người cập nhật CLAUDE.md và quy trình.</li>
+  </ol>
+  <figcaption>Hình 8. Sáu giai đoạn AI-native SDLC: AI làm phần lặp lại, người giữ các cổng quyết định.</figcaption>
+</figure>
+<div class="insight"><strong>Cốt lõi.</strong> Ở mỗi giai đoạn, quyết định cuối cùng (sign-off, approve, merge, deploy) vẫn thuộc về người. AI làm phần phân tích và việc lặp lại.</div>
+
+<h3>4.2 Intent.md và CLAUDE.md /init (Bài 3–4)</h3>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Trước khi thuê thợ, bạn viết một tờ giấy: muốn gì, không được làm gì, thế nào là xong. Thợ đọc tờ giấy đó thay vì đoán ý bạn mỗi lần hỏi lại. <strong>intent.md</strong> là tờ giấy ấy.
+</div>
+<p><strong>intent.md:</strong> Viết trước khi bắt đầu task phức tạp — mô tả mục tiêu, constraints, success criteria. Đặt trong project root hoặc task-specific folder. Claude sẽ tham chiếu khi cần clarification.</p>
+<pre><code class="language-markdown"># Intent: Migrate auth system to JWT
+
+## Goal
+Replace session-based auth with stateless JWT tokens.
+
+## Constraints
+- Must maintain backward compatibility during rollout
+- Zero downtime migration
+- Keep existing user sessions valid for 24h after cutover
+
+## Success Criteria
+- All existing tests pass
+- Login time < 200ms p99
+- No auth-related errors in first 24h post-deploy</code></pre>
+<p>Ba phần: <strong>Goal</strong> (việc cần đạt), <strong>Constraints</strong> (điều không được vi phạm), <strong>Success Criteria</strong> (đo được để biết đã xong). Ví dụ <code>p99 &lt; 200ms</code> nghĩa là 99% lượt đăng nhập phải dưới 200 mili giây.</p>
+<p><strong>/init workflow:</strong> Chạy <code>/init</code> trong project mới → Claude đọc codebase → tạo CLAUDE.md với stack summary, commands, và conventions. <strong>Two-strikes rule:</strong> lần đầu sửa tay, lần thứ hai thêm vào CLAUDE.md.</p>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div><ul>
+    <li>“Chuyển auth sang JWT” và để Claude tự đoán ràng buộc</li>
+    <li>Success criteria mơ hồ: “chạy tốt”</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đúng</div><ul>
+    <li>Viết goal, constraints (zero downtime, tương thích ngược) và success criteria đo được</li>
+    <li>Đặt <code>intent.md</code> ở project root để Claude tham chiếu</li>
+  </ul></div>
+</div>
+
+<h3>4.3 Parallel Worktrees và Verifier Subagent (Bài 5–7)</h3>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Hai thợ cùng sửa một căn nhà. Nếu cùng đứng trong một phòng, họ vướng nhau. Cho mỗi người một phòng riêng (worktree) thì không đụng nhau. Sau khi thợ xong, một <em>người kiểm tra mới đến</em> (verifier) soi lại, vì người chưa từng thấy lúc thi công sẽ ít bị thiên vị hơn.
+</div>
+<p><strong>Parallel worktrees:</strong> Dùng <code>git worktree add</code> để nhiều instance Claude Code làm việc song song trên cùng repo mà không conflict:</p>
+<pre><code class="language-bash">git worktree add ../feature-auth feature/auth-migration
+git worktree add ../feature-tests feature/test-improvements
+# Mỗi worktree có thư mục riêng, branch riêng
+</code></pre>
+<p><strong>Verifier subagent pattern:</strong> Sau khi implementation subagent xong, spawn verifier subagent để review độc lập — có fresh context, không bị bias bởi implementation decisions.</p>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 276" role="img" aria-label="Hai worktree với branch riêng cho hai instance Claude Code chạy song song; implementation xong thì verifier subagent với context mới kiểm tra và trả APPROVED hoặc NEEDS_REVISION">
+    <defs><marker id="m1309" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker></defs>
+    <g><rect x="10" y="100" width="120" height="64" rx="6" class="b-sys"/><text x="70" y="124" class="t tb" text-anchor="middle">Repo chung</text><text x="70" y="142" class="ts" text-anchor="middle">cùng lịch sử git</text></g>
+    <g>
+      <path class="ln-acc flow" d="M130,118 L198,80" marker-end="url(#m1309)"/><path class="ln-acc flow" d="M130,146 L198,186" marker-end="url(#m1309)"/>
+      <rect x="200" y="40" width="200" height="74" rx="6" class="b-step"/><text x="300" y="62" class="t tb" text-anchor="middle">../feature-auth</text><text x="300" y="80" class="ts" text-anchor="middle">branch feature/auth-migration</text><text x="300" y="96" class="ts" text-anchor="middle">Claude Code instance 1</text>
+      <rect x="200" y="152" width="200" height="74" rx="6" class="b-step"/><text x="300" y="174" class="t tb" text-anchor="middle">../feature-tests</text><text x="300" y="192" class="ts" text-anchor="middle">branch feature/test-improvements</text><text x="300" y="208" class="ts" text-anchor="middle">Claude Code instance 2</text>
+    </g>
+    <g><path class="ln-acc flow" d="M400,77 H468" marker-end="url(#m1309)"/><text x="434" y="68" class="ts halo" text-anchor="middle">xong</text></g>
+    <g><rect x="470" y="40" width="160" height="74" rx="6" class="b-hot"/><text x="550" y="62" class="t tb" text-anchor="middle">code-verifier</text><text x="550" y="80" class="ts" text-anchor="middle">fresh context</text><text x="550" y="96" class="ts" text-anchor="middle">Bash, Glob, Grep, Read</text></g>
+    <g><text x="550" y="150" class="tw-good" text-anchor="middle">APPROVED</text><text x="550" y="174" class="tw-warn" text-anchor="middle">NEEDS_REVISION</text><text x="550" y="192" class="ts" text-anchor="middle">kèm vấn đề cụ thể</text></g>
+    <text x="320" y="254" class="tw-acc" text-anchor="middle">Mỗi worktree: thư mục riêng, branch riêng, nên không conflict</text>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Có một repo, nhiều việc cần làm song song.</li>
+    <li><code>git worktree add</code> tạo mỗi việc một thư mục và một branch riêng; mỗi thư mục chạy một instance Claude Code.</li>
+    <li>Khi implementation subagent hoàn thành…</li>
+    <li>…verifier subagent được tạo, có context mới và chỉ có tool đọc và chạy lệnh.</li>
+    <li>Verifier trả <code>APPROVED</code> hoặc <code>NEEDS_REVISION</code> kèm vấn đề cụ thể.</li>
+  </ol>
+  <figcaption>Hình 9. Worktree song song và verifier subagent review độc lập.</figcaption>
+</figure>
+<pre><code class="language-yaml">---
+name: code-verifier
+description: Verify implementation correctness after changes. Use when implementation is complete and needs independent review.
+tools: Bash, Glob, Grep, Read
+model: sonnet
+---
+Review the implementation for:
+1. All acceptance criteria from intent.md are met
+2. No security vulnerabilities introduced
+3. Tests cover happy path and error cases
+4. Performance implications considered
+
+Report: APPROVED or NEEDS_REVISION with specific issues.</code></pre>
+<p>Chú giải phần đầu file: <code>name</code> là tên subagent; <code>description</code> cho Claude biết khi nào nên gọi nó; <code>tools</code> giới hạn tool được dùng (không có <code>Edit</code>, nên verifier không tự sửa code); <code>model: sonnet</code> chọn model. Phần sau dấu <code>---</code> là chỉ dẫn gửi cho subagent.</p>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Claude Code hiện có cờ <code>claude --worktree &lt;tên&gt;</code> (hoặc <code>-w</code>) tạo worktree trong <code>.claude/worktrees/&lt;tên&gt;/</code> trên branch <code>worktree-&lt;tên&gt;</code>, và subagent có thể chạy trong worktree riêng bằng <code>isolation: worktree</code> trong frontmatter. Worktree mới là bản checkout sạch nên cần cài dependency lại. Nguồn: <a href="https://code.claude.com/docs/en/worktrees" target="_blank" rel="noopener">Worktrees</a>.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Git worktree</dt><dd>Một thư mục làm việc thêm của cùng repo, có branch riêng.</dd>
+  <dt>Subagent</dt><dd>Một Claude phụ chạy việc riêng với context riêng.</dd>
+  <dt>Fresh context</dt><dd>Context trống, chưa thấy quá trình làm việc trước, nên đánh giá độc lập.</dd>
+  <dt>Bias</dt><dd>Thiên lệch: người làm ra thường khó thấy lỗi của chính mình.</dd>
+</dl></div>
+
+<h3>4.4 Hooks như Approval Gates (Bài 8–10)</h3>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Cửa kiểm soát có khóa từ: dù nhân viên quên hay muốn bỏ qua, cửa không mở nếu chưa quét thẻ. Quy tắc viết trong tài liệu có thể bị quên. Quy tắc nằm trong hook thì máy tự ép thực hiện.
+</div>
+<p>Dùng hooks để enforce workflow steps — không thể skip, không thể bypass:</p>
+<pre><code class="language-json">{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [{
+          "type": "command",
+          "command": "scripts/check-test-pass.sh"
+        }]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit",
+        "hooks": [{
+          "type": "command",
+          "command": "scripts/auto-lint.sh"
+        }]
+      }
+    ]
+  }
+}</code></pre>
+<pre><code class="language-bash">#!/bin/bash
+# check-test-pass.sh — block deploy nếu tests chưa pass
+INPUT=$(cat)
+COMMAND=$(echo "$INPUT" | jq -r '.input.command')
+if echo "$COMMAND" | grep -q "deploy\|push"; then
+    if ! npm test --silent 2>/dev/null; then
+        echo "Tests must pass before deploying" >&2
+        exit 2  # exit 2 = block action
+    fi
+fi
+exit 0</code></pre>
+<p>Đọc từng bước: hook <code>PreToolUse</code> với matcher <code>Bash</code> chạy <code>check-test-pass.sh</code> trước mọi lệnh Bash. Nếu lệnh chứa <code>deploy</code> hoặc <code>push</code> và <code>npm test</code> thất bại, script ghi lý do ra stderr rồi <code>exit 2</code>, nên lệnh bị chặn (xem lại Hình 6). Hook <code>PostToolUse</code> với matcher <code>Edit</code> chạy <code>auto-lint.sh</code> sau mỗi lần sửa file.</p>
+<div class="alert"><strong>Exit codes quan trọng:</strong> exit 0 = allow, exit 1 = warning (KHÔNG block), exit 2 = block. Nhiều người nhầm exit 1 với block — nó không block!</div>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div><ul>
+    <li>Viết “luôn chạy test trước khi deploy” trong CLAUDE.md và tin là đủ</li>
+    <li><code>exit 1</code> trong hook chặn</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đúng</div><ul>
+    <li>Dùng hook PreToolUse để ép bước test, vì hook chạy chắc chắn</li>
+    <li><code>exit 2</code> kèm lý do ở stderr</li>
+  </ul></div>
+</div>
+
+<h3>4.5 Managed Settings cho Regulated Enterprises (Bài 11–14)</h3>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Một ngân hàng có quy định bảo mật chung do trụ sở đặt. Chi nhánh và từng nhân viên có thể chỉnh vài thứ nhỏ, nhưng các quy định an ninh thì không ai sửa được. Managed settings là bộ quy định từ trụ sở cho Claude Code.
+</div>
+<p>Enterprise quản lý Claude Code settings tập trung qua managed settings files:</p>
+<ul>
+  <li><strong>macOS:</strong> <code>/Library/Application Support/ClaudeCode/managed-settings.json</code></li>
+  <li><strong>Linux:</strong> <code>/etc/claude-code/managed-settings.json</code></li>
+  <li><strong>Windows:</strong> <code>C:\ProgramData\ClaudeCode\managed-settings.json</code></li>
+</ul>
+<p>Managed settings override user settings cho security-sensitive fields. Dùng MDM (Jamf, Intune) để deploy. Có thể pre-load skills và CLAUDE.md trên toàn tổ chức.</p>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Trang managed settings hiện hành ghi đường dẫn Windows là <code>C:\Program Files\ClaudeCode\managed-settings.json</code> và nói rõ Claude Code <strong>không còn đọc</strong> đường dẫn cũ <code>C:\ProgramData\ClaudeCode\managed-settings.json</code>. macOS và Linux giữ nguyên như bài. Ngoài file còn có server-managed settings (từ admin console claude.ai) và MDM, có thể kèm thư mục <code>managed-settings.d/</code> để chia policy cho nhiều đội. Đề thi theo bài giảng. Nguồn: <a href="https://code.claude.com/docs/en/managed-settings" target="_blank" rel="noopener">Managed settings</a>.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>MDM</dt><dd>Mobile Device Management: công cụ quản trị đẩy cấu hình xuống nhiều máy (Jamf, Intune).</dd>
+  <dt>Regulated enterprise</dt><dd>Tổ chức chịu quy định chặt như tài chính, y tế, nên cần kiểm soát tập trung.</dd>
+</dl></div>
+
+<h2 id="exam-tips">5. Lưu ý ôn thi</h2>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Trước giờ thi, bạn ghi ra một tờ nhớ nhanh những chỗ dễ nhầm nhất. Ở bài này, chỗ nhầm nổi tiếng nhất là cái “bảo vệ” (exit code): chỉ một mã duy nhất thật sự chặn cổng.
+</div>
+<div class="insight"><strong>CCAR-F D3 (20%) – hooks:</strong> Nhớ: exit 2 block, exit 1 không block. PreToolUse cho enforcement. <code>permissionDecision: allow/deny/ask</code>. Phân biệt permission modes. CLAUDE.md hierarchy (4 vị trí). Two-strikes rule.</div>
+<div class="insight"><strong>CCDV-F D4 (2,6%) – evals:</strong> 5 bước chọn model, 3 loại grader, batch API (custom_id, request_counts), nightly drift sampling. Iterate prompt trước upgrade model.</div>
+<div class="insight"><strong>SDLC key patterns:</strong> intent.md trước task phức tạp, parallel worktrees cho parallel work, verifier subagent cho independent review, hooks như approval gates.</div>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div><ul>
+    <li>“Hook thoát <code>exit 1</code> sẽ chặn lệnh”</li>
+    <li>“Kết quả chưa tốt thì nâng model trước”</li>
+    <li>“Verifier nên dùng lại context của implementation cho nhanh”</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đúng</div><ul>
+    <li>Chỉ <code>exit 2</code> chặn</li>
+    <li>Iterate prompt trước, upgrade model sau</li>
+    <li>Verifier có fresh context để review độc lập</li>
+  </ul></div>
+</div>
+
+<p class="lesson-practice">Luyện câu hỏi của bài này trong <a href="/bank?lesson=13">🗂️ Ngân hàng</a>.</p>
+
+<div class="btns pager">
+  <a class="btn" href="/notes/lessons/12-mcp.html">← Bài 12 · Model Context Protocol (MCP)</a>
+  <a class="btn primary" href="/notes/lessons/14-claude-code-101.html">Bài 14 · Claude Code 101 →</a>
+</div>
+
+<footer>
+  Luyện thi chứng chỉ Claude · Bài 13 · Evals, Claude Code in Action &amp; SDLC · v0.22 · 2026-11-18. Tổng quan: <a href="/notes/00-tong-quan.md">00</a> · Luyện đề: <a href="/new">30</a>.
+</footer>

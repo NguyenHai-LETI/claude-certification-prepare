@@ -1,0 +1,451 @@
+<p class="lesson-source">Nguồn: tài liệu ôn tập công khai <a href="https://claude.ai/artifact/3NhHr42CxTHGEs33N1ntFf" target="_blank" rel="noopener">artifact 3NhHr42…</a> (bài 23). Không thuộc và không được Anthropic xác nhận.</p>
+<header class="cover">
+  <div class="eyebrow">Luyện thi chứng chỉ Claude · Bài 23</div>
+  <h1>Tích hợp <span class="ja">CCAR-P · D3 Integration</span></h1>
+  <p class="lead">Phình năng lực và quyền tối thiểu, xác thực và phân quyền (token passthrough, confused deputy, OAuth 2.1), chọn MCP, API, CLI hay A2A, pipeline RAG với contextual retrieval, chiến lược truy xuất theo dạng dữ liệu, đánh đổi độ chính xác và độ trễ, quan sát ở quy mô lớn, khám phá dần hay context nguyên khối.</p>
+  <dl class="meta">
+    <dt>Kỳ thi</dt><dd>CCAR-P D3 (19%)</dd>
+    <dt>Phục vụ</dt><dd><span class="tag xt1">CCDV-F</span> 2 mục · <span class="tag xt4">CCAR-P</span> 8 mục · <a href="#xsum">bảng nhãn từng mục</a></dd>
+
+    <dt>Nguồn</dt><dd>Exam guide CCAR-P v1.0; bài kỹ thuật Anthropic, MCP security và authorization, tài liệu platform.claude.com, code.claude.com (tra 17/11/2026)</dd>
+    <dt>Cập nhật</dt><dd><span class="status">v0.22 · 2026-11-18</span> · theo exam guide v1.0</dd>
+  </dl>
+</header>
+
+<details class="toc">
+<summary>Mục lục</summary>
+
+    <ol>
+      <li><a href="#tool-bloat"><span class="n">1</span><span class="tx">Phình năng lực: quá nhiều tool, quá nhiều quyền</span><span class="xds" aria-hidden="true"><i class="xd xt4" title="CCAR-P"></i></span></a></li>
+      <li><a href="#xac-thuc"><span class="n">2</span><span class="tx">Xác thực, phân quyền và lỗ hổng</span><span class="xds" aria-hidden="true"><i class="xd xt4" title="CCAR-P"></i><i class="xd xt1" title="CCDV-F"></i></span></a></li>
+      <li><a href="#giao-thuc"><span class="n">3</span><span class="tx">Chọn cơ chế tích hợp: MCP, API, CLI, A2A</span><span class="xds" aria-hidden="true"><i class="xd xt4" title="CCAR-P"></i></span></a></li>
+      <li><a href="#rag"><span class="n">4</span><span class="tx">Thiết kế pipeline RAG</span><span class="xds" aria-hidden="true"><i class="xd xt4" title="CCAR-P"></i><i class="xd xt1" title="CCDV-F"></i></span></a></li>
+      <li><a href="#truy-xuat"><span class="n">5</span><span class="tx">Chiến lược truy xuất theo dạng dữ liệu</span><span class="xds" aria-hidden="true"><i class="xd xt4" title="CCAR-P"></i></span></a></li>
+      <li><a href="#tre-chinh-xac"><span class="n">6</span><span class="tx">Đánh đổi độ chính xác và độ trễ</span><span class="xds" aria-hidden="true"><i class="xd xt4" title="CCAR-P"></i></span></a></li>
+      <li><a href="#quan-sat"><span class="n">7</span><span class="tx">Quan sát hệ thống ở quy mô lớn</span><span class="xds" aria-hidden="true"><i class="xd xt4" title="CCAR-P"></i></span></a></li>
+      <li><a href="#context-chien-luoc"><span class="n">8</span><span class="tx">Khám phá dần hay context nguyên khối</span><span class="xds" aria-hidden="true"><i class="xd xt4" title="CCAR-P"></i></span></a></li>
+    </ol>
+
+</details>
+
+<details class="xsum" id="xsum">
+<summary>Mục nào phục vụ bài thi nào</summary>
+<p class="xnote">Mã đầu là bài thi chính của mục. <b>Nền</b>: cần để hiểu các mục sau. <b>Nâng cao</b>: ngoài phạm vi các exam guide. Ôn cho một bài thi thì đọc các mục có mã của bài đó trước.</p>
+<div class="tw"><table>
+<thead><tr><th>Mục</th><th>Bài thi</th><th>Ghi chú</th></tr></thead>
+<tbody>
+<tr><td><a href="#tool-bloat">1. Phình năng lực: quá nhiều tool, quá nhiều quyền</a></td><td><span class="tag xt4">CCAR-P D3</span></td><td></td></tr>
+<tr><td><a href="#xac-thuc">2. Xác thực, phân quyền và lỗ hổng</a></td><td><span class="tag xt4">CCAR-P D3</span> <span class="tag xt1">CCDV-F D7</span></td><td></td></tr>
+<tr><td><a href="#giao-thuc">3. Chọn cơ chế tích hợp: MCP, API, CLI, A2A</a></td><td><span class="tag xt4">CCAR-P D3</span></td><td></td></tr>
+<tr><td><a href="#rag">4. Thiết kế pipeline RAG</a></td><td><span class="tag xt4">CCAR-P D3</span> <span class="tag xt1">CCDV-F D2</span></td><td></td></tr>
+<tr><td><a href="#truy-xuat">5. Chiến lược truy xuất theo dạng dữ liệu</a></td><td><span class="tag xt4">CCAR-P D3</span></td><td></td></tr>
+<tr><td><a href="#tre-chinh-xac">6. Đánh đổi độ chính xác và độ trễ</a></td><td><span class="tag xt4">CCAR-P D3</span></td><td></td></tr>
+<tr><td><a href="#quan-sat">7. Quan sát hệ thống ở quy mô lớn</a></td><td><span class="tag xt4">CCAR-P D3</span> <span class="tag xt4">CCAR-P D4</span></td><td></td></tr>
+<tr><td><a href="#context-chien-luoc">8. Khám phá dần hay context nguyên khối</a></td><td><span class="tag xt4">CCAR-P D3</span></td><td></td></tr>
+</tbody></table></div>
+</details>
+
+<h2 id="tool-bloat">1. Phình năng lực: quá nhiều tool, quá nhiều quyền</h2>
+<p class="xtags"><span class="tag xt4">CCAR-P D3</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Nhân viên thu ngân được phát chìa khoá kho, két sắt và phòng giám đốc "cho tiện". Họ không cần, nhưng nếu bị lừa hoặc nhầm thì thiệt hại lớn hơn nhiều. Cách an toàn là thu lại chìa không dùng, không phải lắp thêm camera.
+</div>
+<p><strong>Capability bloat</strong> là khi agent có nhiều tool, quyền hoặc subagent hơn việc cần. Hậu quả: chọn tool kém chính xác hơn (nhiều tool mô tả gần giống nhau), tốn context cho định nghĩa tool, và bề mặt tấn công rộng hơn.</p>
+<div class="tw"><table>
+  <thead><tr><th>Biện pháp</th><th>Loại</th><th>Khi nào là đáp án</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Bỏ tool, quyền không cần</strong> cho vai trò đó</td><td>Phòng ngừa: loại bỏ rủi ro</td><td>Vai trò không bao giờ cần thao tác đó (quyền tối thiểu)</td></tr>
+    <tr><td>Xác nhận trước khi chạy</td><td>Giảm thiểu</td><td>Thao tác cần cho vai trò nhưng rủi ro cao</td></tr>
+    <tr><td>Log, kiểm toán</td><td>Phát hiện sau</td><td>Luôn cần, nhưng không ngăn được sự cố</td></tr>
+    <tr><td>Tool hẹp thay tool chung</td><td>Phòng ngừa</td><td><code>load_document</code> có kiểm URL thay vì <code>fetch_url</code> tự do</td></tr>
+    <tr><td>Chia tool theo subagent</td><td>Phòng ngừa</td><td>Mỗi agent chỉ có tool đúng chuyên môn</td></tr>
+  </tbody>
+</table></div>
+<p><strong>Ví dụ chạy từng bước: agent hỗ trợ có bốn tool.</strong> Agent có <code>read_ticket</code>, <code>draft_reply</code>, <code>issue_refund</code>, <code>delete_account</code>. Nhân viên hỗ trợ chỉ đọc ticket và soạn trả lời.</p>
+<ol>
+  <li>Liệt kê việc vai trò này thật sự làm: đọc ticket, soạn trả lời.</li>
+  <li>Bỏ <code>delete_account</code> khỏi agent này: vai trò không bao giờ cần, nên loại bỏ chứ không thêm xác nhận.</li>
+  <li><code>issue_refund</code> chuyển sang một agent khác dành cho đội tài chính, có cổng duyệt.</li>
+  <li>Đo lại: tỷ lệ chọn đúng tool tăng, định nghĩa tool chiếm ít context hơn, bề mặt tấn công nhỏ hơn.</li>
+</ol>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Capability bloat</dt><dd>Agent có nhiều tool, quyền hay subagent hơn việc cần.</dd>
+  <dt>Bề mặt tấn công</dt><dd>Tập các cách mà kẻ xấu có thể lợi dụng hệ thống; càng nhiều quyền thì càng rộng.</dd>
+</dl></div>
+<h3>Thư viện tool lớn: tải dần thay vì nạp hết</h3>
+<p>Khi cần hàng trăm tool (nhiều MCP server), có hai kỹ thuật của Anthropic:</p>
+<ul>
+  <li><strong>Tool search</strong>: đánh dấu tool <code>defer_loading</code>, Claude chỉ thấy công cụ tìm tool và vài tool hay dùng, rồi tìm và nạp tool khi cần. Bài viết của Anthropic ghi nhận giảm khoảng 85% token định nghĩa tool trong ví dụ của họ.</li>
+  <li><strong>Code execution với MCP</strong>: trình bày tool như file code để agent chỉ đọc định nghĩa cần dùng và xử lý dữ liệu trung gian trong sandbox; ví dụ của Anthropic giảm từ 150.000 xuống 2.000 token.</li>
+</ul>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div>Agent hỗ trợ có tool xoá tài khoản dù nhân viên hỗ trợ không bao giờ xoá tài khoản; "bù lại" bằng log và hộp thoại xác nhận.</div>
+  <div class="box right"><div class="hd">Đúng</div>Gỡ hẳn tool xoá tài khoản khỏi cấu hình agent đó. Log và xác nhận dành cho thao tác vai trò thật sự cần.</div>
+</div>
+<div class="insight"><strong>Cốt lõi.</strong> Câu hỏi "giảm rủi ro tốt nhất theo quyền tối thiểu" thì chọn loại bỏ năng lực không cần, không chọn biện pháp phát hiện hay bù trừ.</div>
+
+<h2 id="xac-thuc">2. Xác thực, phân quyền và lỗ hổng</h2>
+<p class="xtags"><span class="tag xt4">CCAR-P D3</span> <span class="tag xt1">CCDV-F D7</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Lễ tân khách sạn cầm thẻ tổng mở mọi phòng. Khách nào nói "mở phòng 305 giúp tôi" là lễ tân mở. Lễ tân bị lợi dụng làm "người được uỷ quyền nhầm": hệ thống tin lễ tân, lễ tân tin bất kỳ ai.
+</div>
+<div class="tw"><table>
+  <thead><tr><th>Lỗ hổng</th><th>Mô tả</th><th>Cách chặn</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Tài khoản dịch vụ dùng chung</strong></td><td>Agent dùng một tài khoản quyền rộng cho mọi người dùng</td><td>Hành động theo danh tính và quyền của từng người dùng (như connector thừa hưởng quyền)</td></tr>
+    <tr><td><strong>Confused deputy</strong></td><td>Proxy MCP tới API bên thứ ba bị lợi dụng để lấy quyền mà người dùng chưa đồng ý</td><td>Xin đồng ý theo từng client, kiểm tra redirect, không dùng lại sự đồng ý cũ</td></tr>
+    <tr><td><strong>Token passthrough</strong></td><td>MCP server nhận token từ client rồi chuyển thẳng cho API phía sau</td><td>Server <strong>không được</strong> chuyển tiếp token; chỉ nhận token cấp cho chính nó (kiểm audience), dùng token riêng cho API phía sau</td></tr>
+    <tr><td>Phạm vi token quá rộng</td><td>Lộ một token là lộ nhiều quyền</td><td>Scope tối thiểu, nâng dần khi cần</td></tr>
+    <tr><td>SSRF</td><td>Client bị dẫn tới gọi địa chỉ nội bộ</td><td>Chặn dải địa chỉ nội bộ, kiểm URL</td></tr>
+    <tr><td>Secret trong prompt hoặc code</td><td>Key lộ qua log, transcript</td><td>Secrets manager, biến môi trường, vault của Managed Agents</td></tr>
+  </tbody>
+</table></div>
+<p>Đặc tả authorization của MCP cho server từ xa dựa trên <strong>OAuth 2.1</strong>: client bắt buộc dùng <strong>PKCE</strong> và <strong>resource indicator</strong> (RFC 8707) để nói rõ token xin cho server nào; server kiểm tra token được cấp cho chính nó; token sai hoặc hết hạn trả 401.</p>
+<div class="alert"><strong>Bẫy.</strong> "Cho agent một API key admin để tránh lỗi quyền" là tạo lỗ hổng. "Model lớn hơn tuân lệnh tốt hơn nên an toàn hơn" không liên quan phạm vi quyền.</div>
+<p><strong>Ví dụ chạy từng bước: agent tra cứu nhân sự.</strong> Bản đầu dùng một tài khoản dịch vụ đọc được mọi hồ sơ, trả lời bất kỳ ai hỏi.</p>
+<ol>
+  <li>Nhận ra lỗ hổng: agent đọc hồ sơ thay cho người hỏi mà không kiểm người hỏi có quyền không.</li>
+  <li>Đưa danh tính người dùng vào: đăng nhập SSO, agent gọi API nhân sự bằng token mang quyền của chính người hỏi.</li>
+  <li>MCP server nhân sự kiểm token được cấp cho chính nó (audience), không chuyển tiếp token cho hệ thống khác; gọi hệ thống phía sau bằng token riêng.</li>
+  <li>Scope tối thiểu: quyền đọc hồ sơ của phòng mình; quyền rộng hơn phải xin riêng.</li>
+  <li>Log truy cập theo người dùng để kiểm toán.</li>
+</ol>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div>Một tài khoản dịch vụ quyền rộng cho mọi người dùng, kèm dặn trong prompt "chỉ trả lời người có quyền".</div>
+  <div class="box right"><div class="hd">Đúng</div>Agent hành động theo danh tính và quyền của từng người dùng; quyền được kiểm ở API, không ở prompt.</div>
+</div>
+<div class="insight"><strong>Cốt lõi.</strong> Agent không được có nhiều quyền hơn người nó phục vụ. Xác thực từng người dùng, token đúng audience và scope hẹp, không chuyển tiếp token, kiểm quyền ở hệ thống chứ không ở prompt.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Confused deputy</dt><dd>Một bên có quyền (proxy, server) bị lừa dùng quyền đó thay cho kẻ không có quyền.</dd>
+  <dt>Audience</dt><dd>Trường trong token cho biết token được cấp cho dịch vụ nào; dịch vụ phải từ chối token không dành cho mình.</dd>
+  <dt>PKCE</dt><dd>Cơ chế của OAuth chống bị đánh cắp mã cấp quyền trên đường trả về.</dd>
+</dl></div>
+
+<h2 id="giao-thuc">3. Chọn cơ chế tích hợp: MCP, API, CLI, A2A</h2>
+<p class="xtags"><span class="tag xt4">CCAR-P D3</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Cắm thiết bị vào nhà có nhiều cách. Ổ cắm chuẩn thì mọi thiết bị dùng chung (MCP). Nối dây riêng cho một máy đặc biệt thì chỉ máy đó dùng được (API riêng). Dụng cụ có sẵn trong hộp đồ nghề thì cứ thế mà dùng (CLI). Còn khi cần công ty khác làm giúp một việc, bạn không nối dây vào máy móc của họ mà ký hợp đồng giao việc (A2A).
+</div>
+<div class="tw"><table>
+  <thead><tr><th>Cơ chế</th><th>Nối gì với gì</th><th>Hợp khi</th></tr></thead>
+  <tbody>
+    <tr><td><strong>MCP</strong></td><td>Agent với tool, dữ liệu, prompt</td><td>Một hệ thống cần dùng lại ở nhiều ứng dụng, nhiều client (Claude Code, claude.ai, API); có hệ sinh thái server sẵn</td></tr>
+    <tr><td><strong>Gọi API trực tiếp</strong> (custom tool)</td><td>Một ứng dụng với một dịch vụ</td><td>Tích hợp riêng một app, cần kiểm soát chặt, ít client</td></tr>
+    <tr><td><strong>CLI</strong></td><td>Agent với công cụ dòng lệnh có sẵn (<code>git</code>, <code>gh</code>, <code>aws</code>)</td><td>Môi trường developer (Claude Code), công cụ đã có CLI tốt</td></tr>
+    <tr><td><strong>A2A</strong> (agent-to-agent)</td><td>Agent với agent khác, mỗi bên là hộp đen</td><td>Agent của tổ chức, nhà cung cấp khác nhau cần giao việc cho nhau; mỗi agent công bố khả năng (agent card)</td></tr>
+  </tbody>
+</table></div>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 196" role="img" aria-label="MCP nối agent với tool và dữ liệu; A2A nối agent với agent khác của bên khác; API trực tiếp nối một ứng dụng với một dịch vụ">
+    <defs><marker id="m2301" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah"/></marker></defs>
+    <rect x="240" y="70" width="160" height="56" rx="6" class="b-sys"/><text x="320" y="94" class="t tb" text-anchor="middle">Agent của bạn</text><text x="320" y="110" class="ts" text-anchor="middle">Claude + vòng lặp</text>
+    <rect x="10" y="20" width="170" height="50" rx="6" class="b-done"/><text x="95" y="42" class="t tb" text-anchor="middle">MCP server</text><text x="95" y="58" class="ts" text-anchor="middle">Jira, DB, Drive, nội bộ</text>
+    <rect x="10" y="126" width="170" height="50" rx="6" class="b-step"/><text x="95" y="148" class="t tb" text-anchor="middle">API một dịch vụ</text><text x="95" y="164" class="ts" text-anchor="middle">custom tool trong app</text>
+    <rect x="460" y="70" width="170" height="56" rx="6" class="b-warn"/><text x="545" y="94" class="t tb" text-anchor="middle">Agent bên khác</text><text x="545" y="110" class="ts" text-anchor="middle">hộp đen, agent card</text>
+    <path d="M240,88 L182,52" class="ln" marker-end="url(#m2301)"/><text x="196" y="80" class="ts halo">MCP</text>
+    <path d="M240,110 L182,146" class="ln" marker-end="url(#m2301)"/><text x="196" y="138" class="ts halo">API</text>
+    <path d="M400,98 H458" class="ln" marker-end="url(#m2301)"/><text x="429" y="92" class="ts halo" text-anchor="middle">A2A</text>
+  </svg></div>
+  <figcaption>Hình 1. MCP cho agent dùng công cụ; A2A cho agent nói chuyện với agent.</figcaption>
+</figure>
+<div class="insight"><strong>Cốt lõi.</strong> Agent cần dùng một hệ thống: MCP (dùng lại) hoặc API (riêng một app). Agent cần giao việc cho một agent khác mà nó không nhìn được bên trong: A2A.</div>
+<p>Câu hỏi giúp chọn nhanh:</p>
+<ol>
+  <li><strong>Thứ cần nối là tool hay dữ liệu, hay là một agent khác?</strong> Agent khác mà bạn không thấy bên trong: A2A. Tool, dữ liệu: MCP, API hoặc CLI.</li>
+  <li><strong>Bao nhiêu ứng dụng, client cần dùng?</strong> Nhiều (Claude Code, claude.ai, vài app API): MCP để viết một lần dùng nhiều nơi. Một app: custom tool gọi API là đủ.</li>
+  <li><strong>Đã có CLI tốt và người dùng là developer?</strong> Cho agent dùng CLI với quyền hẹp thường đơn giản nhất, không cần viết server mới.</li>
+</ol>
+<p><strong>Ví dụ chạy từng bước.</strong> Công ty có dịch vụ tồn kho, bốn nơi cần dùng: Claude Code của đội kỹ thuật, claude.ai của đội kinh doanh, hai app nội bộ gọi Claude API. Ngoài ra agent mua hàng cần giao việc đàm phán cho agent của nhà cung cấp.</p>
+<ol>
+  <li>Tồn kho: viết một MCP server remote có OAuth, mỗi người dùng chỉ thấy kho mình được phép; cả bốn nơi kết nối cùng server.</li>
+  <li>Đội kỹ thuật thao tác hạ tầng: dùng CLI <code>aws</code> sẵn có với role chỉ đọc, không viết MCP riêng.</li>
+  <li>Đàm phán với nhà cung cấp: A2A, vì agent của họ là hộp đen; trao đổi qua agent card và tác vụ, không chia sẻ prompt hay tool nội bộ.</li>
+</ol>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div>Mỗi app tự viết tích hợp riêng tới dịch vụ tồn kho; bốn bản code, bốn cách phân quyền.</div>
+  <div class="box right"><div class="hd">Đúng</div>Một MCP server dùng chung, phân quyền tập trung; app nào cần cũng kết nối được.</div>
+</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Agent card</dt><dd>Mô tả công khai của một agent trong A2A: nó làm được gì, nhận yêu cầu thế nào, xác thực ra sao.</dd>
+  <dt>MCP server remote</dt><dd>MCP server chạy trên mạng (HTTP), nhiều client kết nối được, thường có OAuth.</dd>
+</dl></div>
+
+<h2 id="rag">4. Thiết kế pipeline RAG</h2>
+<p class="xtags"><span class="tag xt4">CCAR-P D3</span> <span class="tag xt1">CCDV-F D2</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Thủ thư giỏi không đọc cả thư viện cho bạn. Họ có mục lục tốt (index), biết sách nào nói về gì (metadata), tra cả theo từ khoá lẫn theo chủ đề, rồi đưa bạn đúng vài trang.
+</div>
+<p>Trước khi dựng RAG: nếu kho tri thức nhỏ hơn khoảng <strong>200.000 token</strong>, cách đơn giản nhất là đưa toàn bộ vào prompt kèm prompt caching. RAG dành cho kho lớn hơn hoặc thay đổi thường xuyên.</p>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 214" role="img" aria-label="Pipeline RAG: chunk tài liệu, thêm ngữ cảnh cho từng chunk, đánh index embedding và BM25, truy xuất lai, rerank, đưa top chunk cho Claude trả lời kèm trích dẫn">
+    <defs><marker id="m2302" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker></defs>
+    <rect x="8" y="20" width="140" height="58" rx="6" class="b-step"/><text x="78" y="42" class="t tb" text-anchor="middle">1 Chunk</text><text x="78" y="58" class="ts" text-anchor="middle">theo cấu trúc, overlap</text>
+    <rect x="170" y="20" width="140" height="58" rx="6" class="b-step"/><text x="240" y="42" class="t tb" text-anchor="middle">2 Thêm ngữ cảnh</text><text x="240" y="58" class="ts" text-anchor="middle">chunk thuộc tài liệu nào</text>
+    <rect x="332" y="20" width="140" height="58" rx="6" class="b-step"/><text x="402" y="42" class="t tb" text-anchor="middle">3 Index kép</text><text x="402" y="58" class="ts" text-anchor="middle">embedding + BM25</text>
+    <rect x="494" y="20" width="138" height="58" rx="6" class="b-hot"/><text x="563" y="42" class="t tb" text-anchor="middle">4 Truy xuất lai</text><text x="563" y="58" class="ts" text-anchor="middle">gộp hai kết quả</text>
+    <rect x="332" y="130" width="140" height="58" rx="6" class="b-hot"/><text x="402" y="152" class="t tb" text-anchor="middle">5 Rerank</text><text x="402" y="168" class="ts" text-anchor="middle">chọn top chunk</text>
+    <rect x="130" y="130" width="160" height="58" rx="6" class="b-done"/><text x="210" y="152" class="t tb" text-anchor="middle">6 Claude trả lời</text><text x="210" y="168" class="ts" text-anchor="middle">kèm citations</text>
+    <path class="ln-acc flow" d="M148,49 H168" marker-end="url(#m2302)"/>
+    <path class="ln-acc flow" d="M310,49 H330" marker-end="url(#m2302)"/>
+    <path class="ln-acc flow" d="M472,49 H492" marker-end="url(#m2302)"/>
+    <path class="ln-acc flow" d="M563,78 V159 H474" marker-end="url(#m2302)"/>
+    <path class="ln-acc flow" d="M332,159 H292" marker-end="url(#m2302)"/>
+    <circle class="tok" r="7" style="transform:translate(210px,120px)"/>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Cắt tài liệu theo cấu trúc (tiêu đề, đoạn), có phần chồng lấn.</li>
+    <li>Contextual retrieval: thêm một câu ngữ cảnh cho mỗi chunk (thuộc tài liệu nào, nói về gì) trước khi index.</li>
+    <li>Index cả embedding (theo nghĩa) và BM25 (theo từ khoá chính xác).</li>
+    <li>Truy vấn cả hai, gộp kết quả.</li>
+    <li>Rerank để chọn ít chunk tốt nhất.</li>
+    <li>Claude trả lời dựa trên chunk, bật citations để kiểm chứng.</li>
+  </ol>
+  <figcaption>Hình 2. Pipeline RAG có contextual retrieval, truy xuất lai và rerank.</figcaption>
+</figure>
+<p>Theo Anthropic, contextual embeddings cộng contextual BM25 giảm số lần truy xuất thất bại khoảng <strong>49%</strong>, thêm rerank thì khoảng <strong>67%</strong>. Anthropic không cung cấp model embedding; tài liệu dùng Voyage AI hoặc nhà cung cấp khác.</p>
+<div class="tw"><table>
+  <thead><tr><th>Quyết định</th><th>Lựa chọn</th></tr></thead>
+  <tbody>
+    <tr><td>Chunking</td><td>Theo cấu trúc cho Markdown, HTML, văn bản pháp lý; theo kích thước có overlap làm mặc định; theo câu cho văn bản thuần</td></tr>
+    <tr><td>Metadata</td><td>Nguồn, ngày, phòng ban, quyền truy cập: dùng để lọc và để chặn người dùng thấy tài liệu họ không có quyền</td></tr>
+    <tr><td>Làm mới index</td><td>Re-index khi tài liệu đổi; kiểm tra sau mỗi lần refresh (lỗi index là nguyên nhân hay gặp khi câu trả lời đột ngột sai)</td></tr>
+  </tbody>
+</table></div>
+<div class="alert"><strong>Bẫy.</strong> RAG trả lời tự tin nhưng sai ngay sau một lần cập nhật tài liệu, model và độ trễ không đổi: nghi bước truy xuất và index trước (index hỏng, embedding lệch phiên bản), không nghi model "tự đổi trọng số".</div>
+<p><strong>Ví dụ chạy từng bước: trợ lý tri thức nội bộ cho cả công ty.</strong></p>
+<ol>
+  <li>Đo kho: 15.000 trang (vượt xa 200.000 token), đổi hằng tuần, nên cần RAG.</li>
+  <li>Chunking theo cấu trúc (mục, tiêu đề) cho tài liệu Markdown và HTML; theo kích thước có overlap cho PDF.</li>
+  <li>Thêm ngữ cảnh cho từng chunk trước khi đánh index (tên tài liệu, mục, kỳ báo cáo), để "doanh thu tăng 3%" biết là của công ty nào, quý nào.</li>
+  <li>Index lai embedding và BM25, rerank lấy 5–10 chunk.</li>
+  <li>Gắn metadata quyền truy cập; lọc theo quyền của người hỏi ngay khi truy xuất.</li>
+  <li>Eval riêng tầng truy xuất (chunk đúng có nằm trong top k không) và tầng trả lời; kiểm lại sau mỗi lần làm mới index.</li>
+</ol>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div>Index toàn bộ tài liệu không kèm quyền, rồi dặn model "không trích tài liệu mật".</div>
+  <div class="box right"><div class="hd">Đúng</div>Metadata quyền trên từng chunk, lọc theo người hỏi ngay ở bước truy xuất; model không bao giờ thấy tài liệu người hỏi không được xem.</div>
+</div>
+<div class="insight"><strong>Cốt lõi.</strong> Kho nhỏ thì đừng dựng RAG. Kho lớn: chunk theo cấu trúc, thêm ngữ cảnh cho chunk, tìm lai và rerank, lọc quyền khi truy xuất, eval riêng tầng truy xuất.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Chunk</dt><dd>Một đoạn tài liệu được cắt ra để đánh index và truy xuất.</dd>
+  <dt>Contextual retrieval</dt><dd>Kỹ thuật thêm một đoạn ngữ cảnh ngắn vào mỗi chunk trước khi đánh index, giúp truy xuất đúng hơn.</dd>
+</dl></div>
+
+<h2 id="truy-xuat">5. Chiến lược truy xuất theo dạng dữ liệu</h2>
+<p class="xtags"><span class="tag xt4">CCAR-P D3</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Trong thư viện, muốn tìm sách theo mã ISBN thì tra danh mục chính xác. Muốn "sách nào nói về nuôi dạy trẻ tuổi teen" thì hỏi thủ thư hiểu nội dung. Muốn biết "năm ngoái mượn bao nhiêu sách thiếu nhi" thì xem bảng thống kê, không đi đọc từng cuốn. Ba câu hỏi, ba cách tìm.
+</div>
+<p>RAG thường được nghĩ là "embedding và vector database", nhưng embedding chỉ hợp với một kiểu câu hỏi. Nhiệm vụ 3.6 kiểm tra bạn có <strong>khớp cách tìm với dạng dữ liệu và kiểu câu hỏi</strong> hay không.</p>
+<div class="tw"><table>
+  <thead><tr><th>Dạng dữ liệu, kiểu câu hỏi</th><th>Chiến lược hợp</th></tr></thead>
+  <tbody>
+    <tr><td>Bảng số liệu, câu hỏi tổng hợp ("doanh thu quý theo vùng")</td><td>Tool truy vấn SQL hoặc API có cấu trúc, không dùng embedding</td></tr>
+    <tr><td>Mã sản phẩm, số hợp đồng, tên riêng</td><td>Tìm kiếm từ khoá (BM25) hoặc tra cứu chính xác</td></tr>
+    <tr><td>Câu hỏi theo nghĩa, diễn đạt đa dạng</td><td>Embedding, thường kết hợp BM25</td></tr>
+    <tr><td>Quan hệ ("ai gọi hàm này", "phòng nào phụ thuộc hệ thống X")</td><td>Đồ thị, chỉ mục cấu trúc, công cụ tìm theo quan hệ</td></tr>
+    <tr><td>Thông tin mới theo thời gian</td><td>Lọc theo ngày, ưu tiên nguồn mới, ghi ngày nguồn</td></tr>
+    <tr><td>Codebase, thư mục tài liệu agent tự khám phá</td><td>Agentic search just-in-time (Grep, Glob, đọc file theo nhu cầu)</td></tr>
+  </tbody>
+</table></div>
+<p>Vì sao embedding không hợp mọi thứ:</p>
+<ul>
+  <li><strong>Mã và số chính xác</strong> (E-4471, HĐ-2026-118): embedding coi "E-4471" và "E-4417" gần nhau vì trông giống nhau, nhưng đó là hai lỗi khác hẳn. Tìm từ khoá khớp đúng chuỗi.</li>
+  <li><strong>Câu hỏi tổng hợp</strong>: "tổng doanh thu" cần cộng hàng nghìn dòng. Truy xuất vài đoạn văn rồi để model cộng sẽ sai; để cơ sở dữ liệu tính, model chỉ viết truy vấn và diễn giải kết quả.</li>
+  <li><strong>Quan hệ nhiều bước</strong>: "dịch vụ nào hỏng nếu đổi API thanh toán" cần đi theo chuỗi phụ thuộc, không phải tìm đoạn văn giống câu hỏi nhất.</li>
+</ul>
+<p><strong>Tìm kiếm lai (hybrid)</strong> chạy cả embedding và BM25 rồi gộp kết quả, sau đó rerank để giữ đoạn tốt nhất. Đây là cấu hình mặc định hợp lý cho kho văn bản hỗn hợp, vì người dùng vừa hỏi theo nghĩa vừa gõ mã chính xác.</p>
+<p><strong>Ví dụ chạy từng bước: trợ lý cho đội hỗ trợ kỹ thuật.</strong> Câu hỏi đến từ ba kiểu người dùng.</p>
+<ol>
+  <li>"Lỗi E-4471 là gì?": tìm từ khoá trên kho bài viết, khớp đúng mã.</li>
+  <li>"Máy in kêu lạch cạch khi khởi động": tìm lai embedding cộng BM25, rerank, lấy 5 đoạn.</li>
+  <li>"Tháng trước có bao nhiêu ticket về lỗi này theo khu vực?": tool chạy truy vấn có tham số trên kho ticket, model diễn giải bảng kết quả.</li>
+  <li>Cho agent cả ba tool, mô tả rõ khi nào dùng tool nào; eval có ca cho từng kiểu câu hỏi để đo agent chọn đúng tool.</li>
+</ol>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div>Đưa cả bảng doanh thu vào vector database, rồi hỏi "tổng doanh thu theo vùng" và để model cộng các đoạn truy xuất được.</div>
+  <div class="box right"><div class="hd">Đúng</div>Cho model một tool truy vấn SQL chỉ đọc, có giới hạn; cơ sở dữ liệu tính tổng, model diễn giải.</div>
+</div>
+<div class="alert"><strong>Bẫy.</strong> Cho model tự viết SQL tuỳ ý trên cơ sở dữ liệu production là rủi ro. Dùng tài khoản chỉ đọc, view giới hạn cột, truy vấn có tham số hoặc API có cấu trúc, và giới hạn số dòng trả về.</div>
+<div class="insight"><strong>Cốt lõi.</strong> Không có chiến lược truy xuất chung cho mọi thứ. Khớp cách tìm với hình dạng dữ liệu và kiểu câu hỏi; nhiều hệ thật dùng kết hợp.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>BM25</dt><dd>Thuật toán tìm kiếm theo từ khoá, chấm điểm theo tần suất từ; giỏi khớp chính xác mã và tên.</dd>
+  <dt>Hybrid search</dt><dd>Kết hợp tìm theo nghĩa (embedding) và tìm theo từ khoá, rồi gộp kết quả.</dd>
+</dl></div>
+
+<h2 id="tre-chinh-xac">6. Đánh đổi độ chính xác và độ trễ</h2>
+<p class="xtags"><span class="tag xt4">CCAR-P D3</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Quán phở có thể ninh nước dùng thêm hai tiếng cho ngon hơn, nhưng khách đang đứng chờ thì không đợi được hai tiếng. Chủ quán khéo không chọn "ngon nhất" hay "nhanh nhất". Họ hỏi: khách chịu chờ tối đa bao lâu, và trong thời gian đó làm sao cho ngon nhất? Ninh sẵn từ sáng (làm trước), trụng bánh song song với múc nước (làm cùng lúc), bưng rau ra trước cho khách đỡ sốt ruột (cho thấy kết quả sớm).
+</div>
+<p>Kiến trúc sư không tối ưu riêng độ chính xác hay riêng độ trễ. Bạn nhận hai ngưỡng từ yêu cầu (ví dụ độ chính xác từ 92%, p95 dưới 3 giây), rồi tìm <strong>cấu hình rẻ nhất đạt cả hai</strong>. Muốn làm vậy phải biết thời gian đang tiêu vào đâu. Cách làm là lập <strong>ngân sách độ trễ</strong>: chia SLA cho từng khâu (truy xuất, rerank, thời gian tới token đầu, sinh output) rồi đo từng khâu bằng trace.</p>
+<div class="tw"><table>
+  <thead><tr><th>Núm chỉnh</th><th>Tăng chính xác</th><th>Giá phải trả</th></tr></thead>
+  <tbody>
+    <tr><td>Model lớn hơn, effort cao hơn</td><td>Suy luận tốt hơn</td><td>Chậm hơn, đắt hơn</td></tr>
+    <tr><td>Thêm chunk, thêm rerank</td><td>Ít bỏ sót hơn</td><td>Thêm độ trễ, thêm token</td></tr>
+    <tr><td>Vòng kiểm tra (evaluator, validate)</td><td>Ít lỗi lọt ra</td><td>Thêm một hoặc nhiều lượt gọi</td></tr>
+    <tr><td>Song song hoá các bước độc lập</td><td>Không đổi</td><td>Giảm độ trễ, tăng chi phí đồng thời</td></tr>
+    <tr><td>Prompt caching, streaming</td><td>Không đổi</td><td>Giảm độ trễ (cảm nhận và thật) mà không giảm chất lượng</td></tr>
+  </tbody>
+</table></div>
+<p>Hai loại độ trễ cần tách riêng:</p>
+<ul>
+  <li><strong>Độ trễ cảm nhận</strong>: người dùng chờ bao lâu mới thấy chữ đầu tiên (time to first token, TTFT). Streaming và cache phần tĩnh cải thiện chỉ số này.</li>
+  <li><strong>Tổng độ trễ</strong>: lâu bao nhiêu thì xong cả câu trả lời hoặc cả tác vụ. Chỉ số này quan trọng khi hệ thống khác đang chờ kết quả (API phía sau, pipeline), vì máy không "đỡ sốt ruột" nhờ streaming.</li>
+</ul>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 210" role="img" aria-label="Ngân sách độ trễ của một trợ lý RAG: trước khi tối ưu tổng 4,2 giây gồm truy xuất 0,3, rerank 1,1, chờ token đầu 1,6, sinh output 1,2, vượt SLA 3 giây; sau khi tối ưu tổng 2,6 giây gồm truy xuất 0,3, rerank 0,5, chờ token đầu 0,7, sinh output 1,1">
+    <text x="8" y="40" class="t tb">Trước</text>
+    <rect x="70" y="24" width="36" height="28" class="b-step"/><text x="88" y="43" class="ts" text-anchor="middle">0,3</text>
+    <rect x="106" y="24" width="132" height="28" class="b-warn"/><text x="172" y="43" class="ts" text-anchor="middle">rerank 1,1</text>
+    <rect x="238" y="24" width="192" height="28" class="b-warn"/><text x="334" y="43" class="ts" text-anchor="middle">token đầu 1,6 (20 chunk)</text>
+    <rect x="430" y="24" width="144" height="28" class="b-sys"/><text x="502" y="43" class="ts" text-anchor="middle">sinh 1,2</text>
+    <text x="580" y="43" class="t tb">4,2 s</text>
+    <line x1="430" y1="14" x2="430" y2="138" class="ln-acc"/><text x="430" y="152" class="ts" text-anchor="middle">SLA p95 = 3 s</text>
+    <text x="8" y="106" class="t tb">Sau</text>
+    <rect x="70" y="90" width="36" height="28" class="b-step"/><text x="88" y="109" class="ts" text-anchor="middle">0,3</text>
+    <rect x="106" y="90" width="60" height="28" class="b-done"/><text x="136" y="109" class="ts" text-anchor="middle">0,5</text>
+    <rect x="166" y="90" width="84" height="28" class="b-done"/><text x="208" y="109" class="ts" text-anchor="middle">0,7</text>
+    <rect x="250" y="90" width="132" height="28" class="b-sys"/><text x="316" y="109" class="ts" text-anchor="middle">sinh 1,1</text>
+    <text x="390" y="109" class="t tb">2,6 s</text>
+    <text x="320" y="186" class="ts" text-anchor="middle">Độ chính xác trên bộ eval: 92,5% → 92,1%, vẫn đạt ngưỡng 92%</text>
+    <circle class="tok" r="7" style="transform:translate(250px,14px)"/>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Đo từng khâu bằng trace: tổng p95 là 4,2 giây, vượt SLA 3 giây.</li>
+    <li>Hai khâu chiếm nhiều nhất: rerank và chờ token đầu (vì nhồi 20 chunk vào input).</li>
+    <li>Giảm còn 8 chunk, rerank ít ứng viên hơn, cache phần system prompt tĩnh: còn 2,6 giây.</li>
+    <li>Chạy lại eval sau mỗi thay đổi: độ chính xác vẫn trên ngưỡng, nên giữ cấu hình mới.</li>
+  </ol>
+  <figcaption>Hình 3. Ngân sách độ trễ: đo từng khâu, cắt khâu lớn nhất, kiểm lại độ chính xác (số liệu minh hoạ).</figcaption>
+</figure>
+<p><strong>Ví dụ chạy từng bước.</strong> Trợ lý tra cứu chính sách đạt độ chính xác 92,5% nhưng p95 là 4,2 giây, trong khi SLA là 3 giây.</p>
+<ol>
+  <li>Đo trace theo khâu, không đoán: rerank 1,1 giây, chờ token đầu 1,6 giây vì input có 20 chunk.</li>
+  <li>Thử từng núm một và chạy lại eval sau mỗi lần: 20 chunk xuống 8 chunk, độ chính xác 92,5% xuống 92,1%; vẫn đạt.</li>
+  <li>Rerank chỉ 30 ứng viên đầu thay vì 100: rerank còn 0,5 giây, độ chính xác không đổi.</li>
+  <li>Đặt system prompt và chính sách chung lên đầu, bật prompt caching: chờ token đầu còn 0,7 giây.</li>
+  <li>Bật streaming cho giao diện chat để người dùng thấy chữ sớm hơn nữa.</li>
+  <li>Ghi quyết định: "Cấu hình B đạt 92,1% và p95 2,6 giây, rẻ hơn cấu hình A vì ít token input". Kèm số liệu eval để người sau hiểu vì sao.</li>
+</ol>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div>Thấy chậm thì đổi ngay sang model nhỏ nhất, không đo khâu nào chậm, không chạy lại eval.</div>
+  <div class="box right"><div class="hd">Đúng</div>Đo theo khâu, cắt khâu chiếm nhiều thời gian nhất, đổi một núm mỗi lần và chạy lại eval, chọn cấu hình rẻ nhất đạt cả hai ngưỡng.</div>
+</div>
+<div class="alert"><strong>Bẫy.</strong> Song song hoá các bước phụ thuộc nhau (bước sau cần kết quả bước trước) không giảm được độ trễ mà còn sai kết quả. Chỉ song song hoá bước độc lập, ví dụ ba lần tra cứu không liên quan nhau.</div>
+<div class="insight"><strong>Cốt lõi.</strong> Biện minh cấu hình bằng SLA và số liệu eval: "p95 dưới 3 giây, độ chính xác từ 92%; cấu hình B đạt cả hai với chi phí thấp nhất". Với tác vụ có người đang chờ, streaming và trả lời từng phần cải thiện trải nghiệm ngay cả khi tổng thời gian không đổi.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>p95</dt><dd>Mức độ trễ mà 95% request nhanh hơn. Dùng thay trung bình vì người dùng nhớ những lần chậm.</dd>
+  <dt>TTFT</dt><dd>Time to first token: thời gian từ lúc gửi request tới lúc nhận token đầu tiên.</dd>
+  <dt>Ngân sách độ trễ</dt><dd>Chia tổng thời gian cho phép thành phần cho từng khâu, để biết khâu nào đang vượt.</dd>
+  <dt>Reranker</dt><dd>Model chấm lại mức liên quan của các đoạn đã truy xuất, giữ lại những đoạn tốt nhất.</dd>
+</dl></div>
+
+<h2 id="quan-sat">7. Quan sát hệ thống ở quy mô lớn</h2>
+<p class="xtags"><span class="tag xt4">CCAR-P D3</span> <span class="tag xt4">CCAR-P D4</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Hãng giao hàng lớn không hỏi từng tài xế "hôm nay ổn không". Họ có bảng theo dõi từng đơn qua từng chặng, cảnh báo khi tỷ lệ trễ tăng, và đọc kỹ vài đơn lỗi mỗi ngày.
+</div>
+<div class="tw"><table>
+  <thead><tr><th>Thách thức</th><th>Chiến lược</th></tr></thead>
+  <tbody>
+    <tr><td>Agent nhiều bước khó biết hỏng ở đâu</td><td>Tracing theo từng bước (request, tool call, tool result), gắn mã yêu cầu xuyên suốt; chuẩn OpenTelemetry</td></tr>
+    <tr><td>Chất lượng trượt dần, không có lỗi HTTP</td><td>Eval online: lấy mẫu transcript định kỳ, chấm bằng grader; theo dõi tỷ lệ escalation, tỷ lệ người dùng sửa lại</td></tr>
+    <tr><td>Chi phí tăng bất thường</td><td>Theo dõi token theo route, model, workspace; tỷ lệ cache hit; cảnh báo ngưỡng</td></tr>
+    <tr><td>Độ trễ</td><td>p50, p95, thời gian tới token đầu, theo từng model và route</td></tr>
+    <tr><td>Dữ liệu nhạy cảm trong log</td><td>Che PII trước khi ghi, giới hạn ai đọc transcript, thời hạn lưu log</td></tr>
+  </tbody>
+</table></div>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Claude Code và Cowork xuất được metric, event qua OpenTelemetry; Admin API có báo cáo usage và cost theo workspace, API key, model. Nguồn: code.claude.com/docs/en/monitoring-usage, platform.claude.com.</div>
+<p>Mỗi bước của agent nên ghi một bản ghi có cấu trúc, gắn chung một mã yêu cầu để nối lại thành trace:</p>
+<div class="tw"><table>
+  <thead><tr><th>Trường</th><th>Vì sao cần</th></tr></thead>
+  <tbody>
+    <tr><td>Mã yêu cầu, mã phiên, <code>request-id</code> của API</td><td>Nối các bước; gửi cho hỗ trợ khi cần</td></tr>
+    <tr><td>Model ID, phiên bản prompt</td><td>Biết lỗi thuộc cấu hình nào</td></tr>
+    <tr><td>Tool được gọi, input, kết quả (đã che PII), lỗi</td><td>Thấy agent hỏng ở bước nào</td></tr>
+    <tr><td><code>usage</code> (input, output, cache), độ trễ từng bước</td><td>Chi phí và độ trễ theo route</td></tr>
+    <tr><td><code>stop_reason</code></td><td>Phát hiện cắt cụt (<code>max_tokens</code>), từ chối, vòng lặp tool</td></tr>
+  </tbody>
+</table></div>
+<p><strong>Ví dụ chạy từng bước.</strong> Agent hỗ trợ đôi khi trả lời sai; log cũ chỉ có câu trả lời cuối.</p>
+<ol>
+  <li>Thêm trace theo bước với các trường trên, xuất qua OpenTelemetry vào hệ thống quan sát sẵn có.</li>
+  <li>Lọc các phiên bị người dùng bấm "chưa đúng": 60% có tool tra đơn hàng trả về rỗng vì mã đơn bị cắt khoảng trắng sai.</li>
+  <li>Sửa ở tầng tool (chuẩn hoá mã đơn), thêm cảnh báo khi tỷ lệ tool trả rỗng vượt ngưỡng.</li>
+  <li>Thêm eval online: mỗi ngày chấm 200 transcript ngẫu nhiên bằng grader theo rubric, vẽ xu hướng.</li>
+</ol>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div>Chỉ log câu trả lời cuối và mã HTTP; bảng theo dõi xanh trong khi chất lượng trượt.</div>
+  <div class="box right"><div class="hd">Đúng</div>Trace từng bước có model, prompt version, tool, usage; eval online theo mẫu; cảnh báo cả chỉ số chất lượng.</div>
+</div>
+<div class="insight"><strong>Cốt lõi.</strong> Ở quy mô lớn, không đọc được mọi hội thoại. Trace từng bước để tìm chỗ hỏng, chỉ số theo route để thấy xu hướng, eval online trên mẫu để đo chất lượng.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Trace, span</dt><dd>Trace là toàn bộ hành trình một yêu cầu; span là một bước trong đó (một lời gọi model, một tool call).</dd>
+  <dt>Eval online</dt><dd>Chấm định kỳ một mẫu hội thoại thật trên production, khác eval offline trên bộ dữ liệu cố định.</dd>
+</dl></div>
+
+<h2 id="context-chien-luoc">8. Khám phá dần hay context nguyên khối</h2>
+<p class="xtags"><span class="tag xt4">CCAR-P D3</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Một luật sư chuẩn bị phiên toà. Vụ nhỏ thì bê cả tập hồ sơ lên bàn, lật đâu có đó. Vụ lớn có hàng nghìn trang thì không bê hết được: họ giữ mục lục và danh sách tài liệu, cần chứng cứ nào thì nhờ trợ lý lấy đúng tập đó lên. Bàn chỉ có hạn, nên càng nhiều giấy tờ không liên quan thì càng khó tìm thứ cần.
+</div>
+<p>Nhiệm vụ 3.8 của CCAR-P hỏi khi nào nạp mọi thứ vào context ngay từ đầu (<strong>nguyên khối</strong>, monolithic), và khi nào để agent tự tìm và nạp phần cần lúc cần (<strong>khám phá dần</strong>, progressive discovery). Context không phải chỉ là giới hạn token: nhồi nhiều thứ không liên quan làm model kém chú ý vào thứ quan trọng, kể cả khi còn chỗ.</p>
+<div class="split">
+  <div class="box"><div class="hd">Nguyên khối (nạp hết từ đầu)</div><ul>
+    <li>Mọi tài liệu, mọi định nghĩa tool trong system prompt</li>
+    <li>Đơn giản, dự đoán được, cache tốt khi phần tĩnh lớn</li>
+    <li>Hợp: kho nhỏ, ít tool, câu hỏi luôn cần cùng bối cảnh</li>
+    <li>Rủi ro: tốn token, loãng chú ý khi kho lớn</li></ul></div>
+  <div class="box"><div class="hd">Khám phá dần (progressive discovery)</div><ul>
+    <li>Skills nạp khi khớp việc; tool search; đọc file just-in-time</li>
+    <li>Tiết kiệm context, mở rộng tới kho rất lớn</li>
+    <li>Hợp: nhiều tool, nhiều quy trình, kho thay đổi</li>
+    <li>Rủi ro: thêm bước tìm, cần mô tả tốt để tìm đúng</li></ul></div>
+</div>
+<p>Các cơ chế khám phá dần trên nền tảng Claude:</p>
+<div class="tw"><table>
+  <thead><tr><th>Cơ chế</th><th>Luôn nằm trong context</th><th>Nạp khi cần</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Skills</strong></td><td>Tên và description của mỗi skill</td><td>Nội dung <code>SKILL.md</code> khi việc khớp; file kèm (script, tài liệu) khi skill cần</td></tr>
+    <tr><td><strong>Tool search</strong></td><td>Tool tìm kiếm và vài tool hay dùng</td><td>Định nghĩa của các tool khớp yêu cầu</td></tr>
+    <tr><td><strong>Đọc file just-in-time</strong></td><td>Đường dẫn, tên file, kết quả grep và glob</td><td>Nội dung file khi thật sự cần đọc</td></tr>
+    <tr><td><strong>MCP qua code execution</strong></td><td>Danh sách tool dạng file mã</td><td>Agent viết code gọi tool; chỉ kết quả cuối đi vào context</td></tr>
+    <tr><td><strong>Subagent khám phá</strong></td><td>Bản tóm tắt subagent trả về</td><td>Toàn bộ file subagent đọc nằm trong context riêng của nó</td></tr>
+  </tbody>
+</table></div>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Theo bài kỹ thuật của Anthropic: tool search giảm khoảng 85% token dành cho định nghĩa tool mà vẫn giữ quyền truy cập cả thư viện tool; gọi MCP qua code execution trong một ví dụ giảm từ 150.000 xuống 2.000 token. Với kho tri thức dưới khoảng 200.000 token, Anthropic gợi ý cách đơn giản nhất là đưa cả kho vào prompt kèm prompt caching, chưa cần RAG. Nguồn: anthropic.com/engineering (advanced tool use, code execution with MCP, contextual retrieval).</div>
+<p>Bốn câu hỏi giúp chọn:</p>
+<ol>
+  <li><strong>Kho lớn cỡ nào so với context?</strong> Nhỏ và ổn định thì nạp hết, cache phần tĩnh.</li>
+  <li><strong>Có bao nhiêu tool, bao nhiêu quy trình?</strong> Vài tool thì nạp thẳng; hàng chục tới hàng trăm tool thì dùng tool search hoặc Skills.</li>
+  <li><strong>Thay đổi thường xuyên không?</strong> Kho đổi hằng ngày thì khám phá dần đọc bản mới nhất, không phải dựng lại prompt.</li>
+  <li><strong>Độ trễ có gắt không?</strong> Mỗi bước tìm là thêm lượt gọi. Nếu mọi câu hỏi đều cần cùng một bối cảnh, nạp sẵn nhanh hơn.</li>
+</ol>
+<p><strong>Ví dụ chạy từng bước.</strong> Trợ lý nội bộ phải theo 40 quy trình và dùng 150 tool từ 8 MCP server. Bản đầu nạp hết, câu trả lời kém dần và mỗi request tốn nhiều token.</p>
+<ol>
+  <li>Đo context: định nghĩa tool chiếm khoảng 60.000 token, 40 quy trình thêm 30.000 token, trước khi người dùng hỏi gì.</li>
+  <li>Chuyển mỗi quy trình thành một Skill có description nói rõ khi nào dùng; chỉ tên và description nằm sẵn trong context.</li>
+  <li>Bật tool search; giữ nạp sẵn 5 tool dùng trong hầu hết hội thoại.</li>
+  <li>Giữ nguyên khối phần dùng chung cho mọi câu hỏi (chính sách công ty, khoảng 5.000 token) và cache nó.</li>
+  <li>Chạy lại eval: kiểm tra tỷ lệ chọn đúng skill và đúng tool, không chỉ độ chính xác câu trả lời.</li>
+</ol>
+<div class="alert"><strong>Bẫy.</strong> Khám phá dần chỉ tốt khi agent tìm được. Skill có description mơ hồ ("hỗ trợ công việc") thì không bao giờ được nạp đúng lúc; tool có tên trùng nghĩa thì tool search chọn nhầm. Khi chuyển sang khám phá dần, đo tỷ lệ chọn đúng chứ không chỉ đo token.</div>
+<div class="insight"><strong>Cốt lõi.</strong> Kho nhỏ và ổn định: nạp hết kèm cache. Kho lớn, nhiều tool, nhiều quy trình: khám phá dần, và đầu tư vào mô tả (tên, description) để agent tìm đúng. Hệ thống thật thường kết hợp cả hai: phần chung nguyên khối, phần chuyên biệt nạp khi cần.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Progressive disclosure</dt><dd>Cách Skills hoạt động: chỉ lộ thông tin tóm tắt trước, chi tiết được nạp dần khi cần.</dd>
+  <dt>Just-in-time</dt><dd>Nạp dữ liệu đúng lúc cần dùng, thay vì nạp sẵn từ đầu.</dd>
+  <dt>Tool search</dt><dd>Cơ chế để Claude tìm và nạp định nghĩa tool khi cần, thay vì nhận mọi định nghĩa ngay từ đầu.</dd>
+</dl></div>
+
+<p class="lesson-practice">Luyện câu hỏi của bài này trong <a href="/bank?lesson=23">🗂️ Ngân hàng</a>.</p>
+
+<div class="btns pager">
+  <a class="btn" href="/notes/lessons/22-thiet-ke-giai-phap.html">← Bài 22 · Thiết kế giải pháp và model</a>
+  <a class="btn primary" href="/notes/lessons/24-danh-gia-governance.html">Bài 24 · Đánh giá, tối ưu và governance →</a>
+</div>
+
+<footer>
+  Luyện thi chứng chỉ Claude · Bài 23 · Tích hợp · v0.22 · 2026-11-18. Tổng quan: <a href="/notes/00-tong-quan.md">00</a> · Luyện đề: <a href="/new">30</a>.
+</footer>
