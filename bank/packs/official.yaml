@@ -18,13 +18,15 @@ questions:
       - "Implement a routing classifier that analyzes each request and enables only the subset of tools appropriate for that request type."
     answer: [A]
     explanation: |-
-      **A đúng.** Thứ tự gọi tool ở đây là logic nghiệp vụ có hậu quả tài chính (hoàn tiền nhầm tài khoản). Khi một trình tự *bắt buộc*, cần **chặn bằng code** (prerequisite gate/hook): `lookup_order` và `process_refund` bị từ chối cho đến khi `get_customer` trả về customer ID đã xác minh. Đây là bảo đảm tất định.
-      - **B sai:** viết "bắt buộc" vào system prompt vẫn chỉ là tuân thủ xác suất; prompt có tỉ lệ thất bại khác 0, mà 12% hiện tại đã cho thấy model bỏ qua bước này.
-      - **C sai:** few-shot cũng chỉ tăng xác suất làm đúng, không bảo đảm; không đủ khi sai sót gây mất tiền.
-      - **D sai:** classifier quyết định *tool nào có mặt*, không quyết định *thứ tự gọi*; vấn đề là thứ tự.
+      **Đúng: thêm điều kiện tiên quyết bằng code, chặn `lookup_order` và `process_refund` cho tới khi `get_customer` trả về customer ID đã xác minh.** Thứ tự gọi tool ở đây là logic nghiệp vụ có hậu quả tài chính (hoàn tiền nhầm tài khoản). Khi một trình tự là *bắt buộc*, cần chặn bằng code (prerequisite gate, vd. hook `PreToolUse` trả `deny`) thay vì trông vào việc model tự tuân thủ — đó là bảo đảm tất định. Tài liệu Claude Code cũng khuyên: quy tắc phải đúng *mọi lần* thì đưa vào hook, vì chỉ dẫn dạng văn bản chỉ là context, không phải cấu hình được cưỡng chế.
+      - **Ghi vào system prompt rằng xác minh qua `get_customer` là bắt buộc:** vẫn chỉ là tuân thủ xác suất; 12% ca bỏ qua hiện nay cho thấy chỉ dẫn bằng lời có tỉ lệ thất bại khác 0.
+      - **Thêm few-shot luôn gọi `get_customer` trước:** cũng chỉ tăng xác suất làm đúng, không bảo đảm; không đủ khi sai sót gây mất tiền.
+      - **Classifier định tuyến chỉ bật tập tool phù hợp:** quyết định *tool nào có mặt*, không quyết định *thứ tự gọi*; tra đơn và hoàn tiền vẫn phải có mặt nên agent vẫn có thể bỏ qua bước xác minh.
+      Nguồn: https://code.claude.com/docs/en/agent-sdk/hooks · https://code.claude.com/docs/en/skills
     ref: exams/CCAR-F.md#14-workflow-nhiều-bước-enforcement-và-handoff
     tags: [prerequisite-gate, hooks, enforcement]
     created: 2026-11-18
+    reviewed: 2026-11-18
   - id: OF-CCARF-02
     exams: { CCAR-F: D2 }
     scenario: S1
@@ -37,13 +39,15 @@ questions:
       - "Consolidate both tools into a single lookup_entity tool that accepts any identifier and internally determines which backend to query."
     answer: [B]
     explanation: |-
-      **B đúng.** Tool description là cơ chế chính để model chọn tool. Hai mô tả một dòng, input giống nhau → model không có căn cứ phân biệt. Viết lại mô tả (định dạng input, ví dụ truy vấn, edge case, khi nào dùng tool này thay vì tool kia) sửa đúng nguyên nhân gốc với công sức nhỏ — đúng nghĩa "first step".
-      - **A sai:** few-shot tốn thêm token mỗi request mà không sửa gốc (mô tả tool vẫn sơ sài).
-      - **C sai:** routing layer theo keyword là over-engineering và bỏ qua khả năng hiểu ngôn ngữ của LLM.
-      - **D sai:** gộp tool là lựa chọn kiến trúc hợp lệ nhưng tốn công hơn mức cần cho bước đầu khi vấn đề trước mắt chỉ là mô tả kém.
+      **Đúng: viết lại mô tả của từng tool (định dạng input, ví dụ truy vấn, edge case, ranh giới khi nào dùng tool này thay vì tool kia).** Model chọn tool dựa vào mô tả; tài liệu Anthropic gọi mô tả thật chi tiết là yếu tố quan trọng nhất với hiệu năng tool, cần nêu tool làm gì, khi nào nên và không nên dùng, và khuyên ít nhất 3–4 câu mỗi mô tả. Hai mô tả một dòng với input giống nhau không cho model căn cứ phân biệt → sửa mô tả là sửa đúng nguyên nhân gốc với công sức nhỏ, đúng nghĩa "bước đầu tiên".
+      - **Thêm 5–8 few-shot định tuyến câu hỏi về đơn hàng sang `lookup_order`:** tốn thêm token mỗi request mà không sửa gốc (mô tả tool vẫn sơ sài), và chỉ phủ những mẫu đã đưa.
+      - **Lớp routing phân tích keyword và định dạng ID để chọn sẵn tool:** over-engineering, thêm hạ tầng phải bảo trì và bỏ qua khả năng hiểu ngôn ngữ của model; định dạng ID lại giống nhau nên luật keyword dễ sai.
+      - **Gộp thành một tool `lookup_entity` tự quyết backend:** là lựa chọn kiến trúc hợp lệ (tài liệu có khuyên gộp các thao tác liên quan) nhưng tốn công thiết kế lại hơn mức cần cho bước đầu, khi vấn đề trước mắt chỉ là mô tả kém.
+      Nguồn: https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools
     ref: exams/CCAR-F.md#21-thiết-kế-tool-interface
     tags: [tool-description, tool-selection]
     created: 2026-11-18
+    reviewed: 2026-11-18
   - id: OF-CCARF-03
     exams: { CCAR-F: D5 }
     scenario: S1
@@ -56,13 +60,14 @@ questions:
       - "Implement sentiment analysis to detect customer frustration levels and automatically escalate when negative sentiment exceeds a threshold."
     answer: [A]
     explanation: |-
-      **A đúng.** Agent escalate ca dễ và tự xử ca cần ngoại lệ chính sách → nguyên nhân gốc là **ranh giới quyết định không rõ**. Tiêu chí escalate tường minh kèm few-shot minh hoạ "escalate hay tự giải quyết" là phản ứng đầu tiên tương xứng, trước khi thêm hạ tầng.
-      - **B sai:** confidence do LLM tự báo hiệu chỉnh kém — agent hiện đã tự tin sai ở chính các ca khó.
-      - **C sai:** classifier riêng cần dữ liệu gán nhãn và hạ tầng ML, quá tay khi chưa thử tối ưu prompt.
-      - **D sai:** giải bài toán khác; mức bực bội của khách không tương quan với độ phức tạp của ca.
+      **Đúng: đưa tiêu chí escalate tường minh vào system prompt, kèm few-shot minh hoạ khi nào escalate, khi nào tự giải quyết.** Agent escalate ca dễ (thay hàng hỏng có ảnh làm bằng chứng) nhưng lại tự xử ca cần ngoại lệ chính sách → nguyên nhân gốc là ranh giới quyết định chưa rõ. Tiêu chí tường minh cộng ví dụ ngay tại ranh giới là phản ứng đầu tiên tương xứng, rẻ, trước khi thêm hạ tầng.
+      - **Agent tự báo điểm tự tin 1–10 rồi chuyển người khi dưới ngưỡng:** điểm tự tin do LLM tự chấm hiệu chỉnh kém — agent hiện đã tự tin sai ở chính các ca khó.
+      - **Classifier riêng huấn luyện trên ticket cũ để dự đoán ca cần escalate:** cần dữ liệu gán nhãn và hạ tầng ML, quá tay khi chưa thử sửa prompt.
+      - **Phân tích cảm xúc, escalate khi khách bực vượt ngưỡng:** giải bài toán khác; mức bực bội của khách không phản ánh độ phức tạp của ca hay việc có cần ngoại lệ chính sách.
     ref: exams/CCAR-F.md#52-escalation-và-xử-lý-mơ-hồ
     tags: [escalation, few-shot]
     created: 2026-11-18
+    reviewed: 2026-11-18
   - id: OF-CCARF-04
     exams: { CCAR-F: D3 }
     scenario: S2
@@ -75,13 +80,15 @@ questions:
       - "In a .claude/config.json file with a commands array"
     answer: [A]
     explanation: |-
-      **A đúng.** Slash command cấp project đặt trong `.claude/commands/` của repo: được version control, ai clone/pull cũng có.
-      - **B sai:** `~/.claude/commands/` là command **cá nhân**, không chia sẻ qua git; bắt từng người tự chép là không đạt yêu cầu.
-      - **C sai:** CLAUDE.md chứa chỉ dẫn và context dự án, không phải nơi định nghĩa command.
-      - **D sai:** Claude Code không có cơ chế `.claude/config.json` với mảng `commands` — phương án bịa.
+      **Đúng: tạo file trong thư mục `.claude/commands/` của repo.** Command cấp project nằm trong repo nên được version control; ai clone/pull cũng có. (Claude Code hiện gộp custom command vào skill: dạng mới là `.claude/skills/<tên>/SKILL.md`, còn file trong `.claude/commands/` là định dạng cũ vẫn hoạt động — cả hai đều chia sẻ cho team bằng cách commit vào repo.)
+      - **`~/.claude/commands/` trong home của từng developer:** đó là phạm vi **cá nhân**, chỉ có trên máy người đó và không đi theo git; bắt từng người tự chép là không đạt yêu cầu.
+      - **Viết vào CLAUDE.md ở gốc project:** CLAUDE.md chứa chỉ dẫn và context dự án được nạp mỗi phiên, không phải nơi định nghĩa slash command.
+      - **File `.claude/config.json` với mảng `commands`:** Claude Code không có cơ chế này — phương án bịa.
+      Nguồn: https://code.claude.com/docs/en/slash-commands
     ref: exams/CCAR-F.md#32-custom-slash-command-và-skill
     tags: [slash-commands, scope]
     created: 2026-11-18
+    reviewed: 2026-11-18
   - id: OF-CCARF-05
     exams: { CCAR-F: D3 }
     scenario: S2
@@ -94,13 +101,15 @@ questions:
       - "Begin in direct execution mode and only switch to plan mode if you encounter unexpected complexity during implementation."
     answer: [A]
     explanation: |-
-      **A đúng.** Plan mode dành cho việc lớn, nhiều cách làm hợp lệ, có quyết định kiến trúc — đúng như tách monolith thành microservice (hàng chục file, ranh giới service, phụ thuộc module). Nó cho phép khám phá codebase an toàn và thiết kế trước khi sửa.
-      - **B sai:** sửa dần rồi "để code tự lộ ranh giới" dễ phải làm lại tốn kém khi phát hiện phụ thuộc muộn.
-      - **C sai:** giả định đã biết cấu trúc đúng mà chưa khám phá code.
-      - **D sai:** độ phức tạp đã được nêu sẵn trong yêu cầu, không phải thứ "có thể xuất hiện" sau.
+      **Đúng: vào plan mode để khám phá codebase, hiểu phụ thuộc và thiết kế cách làm trước khi sửa.** Tách monolith thành microservice đụng hàng chục file và cần quyết định kiến trúc (ranh giới service, phụ thuộc module) — đúng loại việc nên lên kế hoạch trước. Ở plan mode, Claude đọc file và đề xuất kế hoạch nhưng không sửa gì cho tới khi bạn duyệt.
+      - **Thực thi trực tiếp, sửa dần để code tự lộ ranh giới service:** phát hiện phụ thuộc muộn dễ phải làm lại tốn kém trên hàng chục file.
+      - **Thực thi trực tiếp kèm chỉ dẫn chi tiết từ đầu cho từng service:** giả định đã biết cấu trúc đúng trong khi chưa khám phá code và phụ thuộc thực tế.
+      - **Bắt đầu thực thi trực tiếp, chỉ chuyển plan mode khi gặp phức tạp bất ngờ:** độ phức tạp đã được nêu sẵn trong yêu cầu, không phải thứ "có thể xuất hiện" về sau.
+      Nguồn: https://code.claude.com/docs/en/common-workflows
     ref: exams/CCAR-F.md#34-plan-mode-vs-direct-execution
     tags: [plan-mode]
     created: 2026-11-18
+    reviewed: 2026-11-18
   - id: OF-CCARF-06
     exams: { CCAR-F: D3 }
     scenario: S2
@@ -113,13 +122,15 @@ questions:
       - "Place a separate CLAUDE.md file in each subdirectory containing that area's specific conventions"
     answer: [A]
     explanation: |-
-      **A đúng.** File trong `.claude/rules/` có frontmatter `paths` với glob (vd. `**/*.test.tsx`) tự áp quy ước theo đường dẫn file, bất kể file nằm ở thư mục nào — cần thiết khi test nằm rải khắp codebase.
-      - **B sai:** dồn hết vào CLAUDE.md gốc rồi trông vào việc Claude tự suy ra mục nào áp dụng → dựa vào suy luận, không khớp tường minh, kém tin cậy.
-      - **C sai:** skill phải được gọi hoặc được Claude chọn nạp, trái với yêu cầu áp dụng **tự động, tất định** theo đường dẫn.
-      - **D sai:** CLAUDE.md gắn với thư mục, khó phủ các file test rải ở rất nhiều thư mục.
+      **Đúng: tạo file rule trong `.claude/rules/` có frontmatter YAML chứa glob để áp quy ước theo đường dẫn file.** Rule có trường `paths` (vd. `**/*.test.tsx`) chỉ được nạp khi Claude làm việc với file khớp mẫu, bất kể file nằm ở thư mục nào — đúng nhu cầu khi file test nằm rải khắp codebase; mỗi khu vực (component, API handler, model) có rule riêng, dễ bảo trì.
+      - **Dồn mọi quy ước vào CLAUDE.md gốc theo từng mục, để Claude tự suy ra mục nào áp dụng:** dựa vào suy luận chứ không khớp tường minh; mọi quy ước luôn nằm trong context gây nhiễu, kém tin cậy.
+      - **Tạo skill trong `.claude/skills/` cho từng loại code:** skill dành cho quy trình/tác vụ; mặc định chỉ phần mô tả được nạp, nội dung đầy đủ chỉ vào context khi skill được gọi, nên việc áp quy ước phụ thuộc vào việc skill có được kích hoạt — không phải cơ chế quy ước tự động, nhất quán theo đường dẫn như rule.
+      - **Đặt CLAUDE.md riêng ở từng thư mục con:** CLAUDE.md gắn với thư mục, không diễn đạt được "mọi file test ở bất kỳ đâu"; phải chép quy ước test vào rất nhiều thư mục.
+      Nguồn: https://code.claude.com/docs/en/memory · https://code.claude.com/docs/en/skills
     ref: exams/CCAR-F.md#33-rule-theo-đường-dẫn
     tags: [claude-rules, path-scoping]
     created: 2026-11-18
+    reviewed: 2026-11-18
   - id: OF-CCARF-07
     exams: { CCAR-F: D1 }
     scenario: S3
@@ -132,13 +143,14 @@ questions:
       - "The document analysis agent is filtering out sources related to non-visual creative industries due to overly restrictive relevance criteria."
     answer: [B]
     explanation: |-
-      **B đúng.** Log của coordinator cho thấy thẳng nguyên nhân: "creative industries" bị chia chỉ thành ba mảng thị giác (digital art, graphic design, photography), bỏ hẳn âm nhạc, viết, điện ảnh. Các subagent làm đúng phần được giao — sai ở **cái được giao**, tức phân rã quá hẹp ở coordinator.
-      - **A sai:** synthesis chỉ tổng hợp những gì nhận được; đổ lỗi cho tầng hạ nguồn đang làm đúng phạm vi.
-      - **C sai:** web search tìm đúng theo subtopic được giao; mở rộng truy vấn của nó không sửa được việc subtopic thiếu.
-      - **D sai:** không có dấu hiệu bộ lọc; nguồn ngoài mảng thị giác chưa từng được yêu cầu.
+      **Đúng: coordinator phân rã chủ đề quá hẹp, nên các phần việc giao cho subagent không phủ hết các mảng của chủ đề.** Log của coordinator cho thấy thẳng nguyên nhân: "creative industries" bị chia chỉ thành ba mảng thị giác (digital art, graphic design, photography), bỏ hẳn âm nhạc, viết, điện ảnh. Các subagent làm đúng phần được giao — sai nằm ở *cái được giao*.
+      - **Synthesis agent thiếu chỉ dẫn phát hiện lỗ hổng phạm vi:** synthesis chỉ tổng hợp những gì nhận được; đổ lỗi cho tầng hạ nguồn đang làm đúng phạm vi.
+      - **Truy vấn của web search agent chưa đủ rộng:** web search tìm đúng theo subtopic được giao; mở rộng truy vấn của nó không bù được subtopic bị thiếu.
+      - **Document analysis agent lọc bỏ nguồn ngoài mảng thị giác do tiêu chí quá chặt:** không có dấu hiệu bộ lọc nào; nguồn về âm nhạc, viết, điện ảnh chưa từng được yêu cầu.
     ref: exams/CCAR-F.md#12-multi-agent-coordinatorsubagent
     tags: [coordinator, decomposition]
     created: 2026-11-18
+    reviewed: 2026-11-18
   - id: OF-CCARF-08
     exams: { CCAR-F: D5 }
     scenario: S3
@@ -151,13 +163,14 @@ questions:
       - "Propagate the timeout exception directly to a top-level handler that terminates the entire research workflow."
     answer: [A]
     explanation: |-
-      **A đúng.** Ngữ cảnh lỗi có cấu trúc (loại lỗi, truy vấn đã thử, kết quả một phần, phương án thay thế) cho coordinator đủ thông tin để chọn: thử lại với truy vấn khác, đi đường khác, hay tiếp tục với kết quả một phần.
-      - **B sai:** trạng thái chung chung "search unavailable" che mất thông tin coordinator cần để quyết định.
-      - **C sai:** nuốt lỗi, báo thất bại là thành công → không thể phục hồi và báo cáo thiếu mà không ai biết.
-      - **D sai:** dừng toàn bộ workflow vì một lỗi là không cần thiết khi còn cách phục hồi.
+      **Đúng: trả về coordinator ngữ cảnh lỗi có cấu trúc gồm loại lỗi, truy vấn đã thử, kết quả một phần và hướng thay thế.** Với đủ thông tin đó, coordinator chọn được cách phục hồi: thử lại với truy vấn khác, đi đường khác, hay tiếp tục với kết quả một phần và ghi chú chỗ thiếu.
+      - **Tự retry với exponential backoff trong subagent, hết lượt mới trả trạng thái chung "search unavailable":** retry cục bộ có thể hữu ích, nhưng thông báo chung chung che mất thông tin coordinator cần để phục hồi thông minh.
+      - **Bắt timeout rồi trả tập kết quả rỗng đánh dấu thành công:** nuốt lỗi, báo thất bại là thành công → không thể phục hồi và báo cáo thiếu mà không ai biết.
+      - **Đẩy exception lên handler cấp cao nhất để dừng toàn bộ workflow:** dừng cả quy trình vì một lỗi là không cần thiết khi còn cách phục hồi.
     ref: exams/CCAR-F.md#53-lan-truyền-lỗi-trong-hệ-multi-agent
     tags: [error-propagation, multi-agent]
     created: 2026-11-18
+    reviewed: 2026-11-18
   - id: OF-CCARF-09
     exams: { CCAR-F: D2 }
     scenario: S3
@@ -170,13 +183,14 @@ questions:
       - "Have the web search agent proactively cache extra context around each source during initial research, anticipating what the synthesis agent might need to verify."
     answer: [A]
     explanation: |-
-      **A đúng.** Áp dụng least privilege: chỉ cho synthesis agent một tool hẹp `verify_fact` đủ cho 85% ca kiểm tra đơn giản, còn 15% ca phức tạp vẫn đi qua coordinator như cũ → giảm vòng lặp mà giữ được kiến trúc phối hợp.
-      - **B sai:** gom lại kiểm một lượt tạo phụ thuộc chặn — các bước tổng hợp có thể cần fact đã kiểm ở bước trước.
-      - **C sai:** cấp toàn bộ tool web search là cấp thừa quyền, phá separation of concerns (agent có tool ngoài chuyên môn dễ dùng sai).
-      - **D sai:** cache "đoán trước" không thể biết chắc synthesis sẽ cần kiểm gì.
+      **Đúng: cho synthesis agent một tool `verify_fact` phạm vi hẹp cho tra cứu đơn giản, còn kiểm chứng phức tạp vẫn chuyển qua coordinator tới web search agent.** Least privilege: tool hẹp đủ cho 85% ca kiểm tra đơn giản (ngày, tên, số liệu), 15% ca cần điều tra sâu vẫn đi đường cũ → bớt vòng lặp mà giữ được kiến trúc phối hợp và độ tin cậy.
+      - **Gom mọi nhu cầu kiểm chứng, trả một lô cho coordinator ở cuối lượt:** tạo phụ thuộc chặn — các bước tổng hợp sau có thể cần fact đã kiểm ở bước trước; vòng lặp qua coordinator vẫn còn.
+      - **Cấp cho synthesis agent toàn bộ tool web search:** cấp thừa quyền, phá phân tách trách nhiệm; agent có tool ngoài chuyên môn dễ dùng sai và khó chọn đúng tool.
+      - **Web search agent chủ động cache thêm ngữ cảnh quanh mỗi nguồn:** không thể biết trước synthesis sẽ cần kiểm gì; tốn thêm mà vẫn bỏ sót.
     ref: exams/CCAR-F.md#23-phân-bổ-tool-và-tool_choice
     tags: [scoped-tools, least-privilege]
     created: 2026-11-18
+    reviewed: 2026-11-18
   - id: OF-CCARF-10
     exams: { CCAR-F: D3 }
     scenario: S5
@@ -189,13 +203,15 @@ questions:
       - "Add the --batch flag: claude --batch \"Analyze this pull request for security issues\""
     answer: [A]
     explanation: |-
-      **A đúng.** `-p` (hay `--print`) là cách được tài liệu hoá để chạy Claude Code **non-interactive**: xử lý prompt, in kết quả ra stdout rồi thoát, không chờ người dùng — đúng thứ CI/CD cần.
-      - **B sai:** không có biến môi trường `CLAUDE_HEADLESS`.
-      - **C sai:** chuyển stdin về `/dev/null` là mẹo Unix, không phải cách chạy non-interactive đúng của Claude Code.
-      - **D sai:** không có cờ `--batch` (đừng nhầm với Message Batches API).
+      **Đúng: thêm cờ `-p`, tức `claude -p "Analyze this pull request for security issues"`.** `-p` (`--print`) là cách được tài liệu hoá để chạy Claude Code không tương tác: in phản hồi rồi thoát, không chờ người dùng nhập — đúng thứ pipeline CI/CD cần. Lệnh `claude "query"` không có `-p` thì mở phiên tương tác với prompt ban đầu, nên job bị treo.
+      - **Đặt biến môi trường `CLAUDE_HEADLESS=true`:** tài liệu Claude Code không có biến này; chế độ không tương tác bật bằng `-p`.
+      - **Chuyển stdin về `/dev/null`:** mẹo shell, không phải cách chạy không tương tác của Claude Code; lệnh vẫn là dạng mở phiên tương tác.
+      - **Thêm cờ `--batch`:** CLI không có cờ này (đừng nhầm với Message Batches API).
+      Nguồn: https://code.claude.com/docs/en/cli-reference
     ref: exams/CCAR-F.md#36-claude-code-trong-cicd
     tags: [ci-cd, headless, cli]
     created: 2026-11-18
+    reviewed: 2026-11-18
   - id: OF-CCARF-11
     exams: { CCAR-F: D4 }
     scenario: S5
@@ -208,13 +224,15 @@ questions:
       - "Switch both to batch processing with a timeout fallback to real-time if batches take too long."
     answer: [A]
     explanation: |-
-      **A đúng.** Message Batches giảm 50% chi phí nhưng có thể mất tới 24 giờ và **không có SLA độ trễ**. Không hợp với pre-merge check (dev đang chờ để merge), rất hợp với báo cáo nợ kỹ thuật chạy qua đêm.
-      - **B sai:** polling không làm batch nhanh hơn; trông vào việc "thường xong sớm" là không chấp nhận được cho luồng chặn.
-      - **C sai:** dựa trên hiểu lầm — kết quả batch ghép lại được bằng `custom_id`, thứ tự không thành vấn đề.
-      - **D sai:** thêm độ phức tạp không cần thiết; giải pháp đơn giản là dùng đúng API cho đúng loại việc.
+      **Đúng: chỉ dùng batch cho báo cáo nợ kỹ thuật; giữ gọi realtime cho pre-merge check.** Message Batches API giảm 50% chi phí; phần lớn batch xong dưới 1 giờ nhưng có thể mất tới 24 giờ (và hết hạn nếu chưa xong) — tức không có cam kết độ trễ. Không hợp với pre-merge check (developer đang chờ để merge), rất hợp với báo cáo chạy qua đêm.
+      - **Chuyển cả hai sang batch, polling trạng thái:** polling không làm batch nhanh hơn; trông vào việc "thường xong sớm" là không chấp nhận được cho luồng đang chặn developer.
+      - **Giữ realtime cho cả hai để tránh lỗi thứ tự kết quả batch:** dựa trên hiểu lầm — kết quả batch có thể về không theo thứ tự nhưng ghép lại được bằng `custom_id`; lại bỏ lỡ khoản tiết kiệm cho báo cáo qua đêm.
+      - **Chuyển cả hai sang batch, quá lâu thì fallback sang realtime:** thêm độ phức tạp và vẫn bắt developer chờ tới ngưỡng timeout; giải pháp đơn giản là dùng đúng API cho đúng loại việc.
+      Nguồn: https://platform.claude.com/docs/en/build-with-claude/batch-processing
     ref: exams/CCAR-F.md#45-batch-processing
     tags: [batch, latency, cost]
     created: 2026-11-18
+    reviewed: 2026-11-18
   - id: OF-CCARF-12
     exams: { CCAR-F: D4 }
     scenario: S5
@@ -227,13 +245,14 @@ questions:
       - "Run three independent review passes on the full PR and only flag issues that appear in at least two of the three runs."
     answer: [A]
     explanation: |-
-      **A đúng.** Nguyên nhân gốc là **attention dilution** khi xử lý nhiều file cùng lúc. Review từng file cho độ sâu đồng đều; một lượt tích hợp riêng bắt lỗi luồng dữ liệu xuyên file.
-      - **B sai:** đẩy gánh nặng sang developer mà không cải thiện hệ thống review.
-      - **C sai:** context window lớn hơn không giải quyết chất lượng chú ý.
-      - **D sai:** đòi đồng thuận 2/3 lượt sẽ **giấu** bug thật chỉ thỉnh thoảng mới được phát hiện.
+      **Đúng: tách thành các lượt tập trung — review từng file để bắt lỗi cục bộ, rồi một lượt riêng tập trung vào luồng dữ liệu xuyên file.** Nguyên nhân gốc là chú ý bị loãng (attention dilution) khi xử lý 14 file cùng lúc: chỗ kỹ chỗ sơ sài, nhận xét mâu thuẫn. Review từng file cho độ sâu đồng đều; lượt tích hợp bắt lỗi giữa các file.
+      - **Bắt developer chia PR thành các phần 3–4 file:** đẩy gánh nặng sang developer mà không cải thiện hệ thống review.
+      - **Đổi sang model cao cấp có context window lớn hơn:** vấn đề là chất lượng chú ý trên khối lượng lớn, không phải thiếu chỗ chứa; context lớn hơn không làm review đồng đều hơn.
+      - **Chạy ba lượt độc lập, chỉ báo lỗi xuất hiện ở ít nhất hai lượt:** đòi đồng thuận sẽ giấu bug thật chỉ thỉnh thoảng mới được phát hiện, và không sửa tận gốc nhận xét mâu thuẫn.
     ref: exams/CCAR-F.md#46-review-nhiều-instance-nhiều-lượt
     tags: [multi-pass-review, attention-dilution]
     created: 2026-11-18
+    reviewed: 2026-11-18
 
   # ── CCDV-F (3 câu, guide §8) ──────────────────────────────────────────────
   - id: OF-CCDVF-01
@@ -247,13 +266,15 @@ questions:
       - "Switch to the smallest available model regardless of output quality."
     answer: [B]
     explanation: |-
-      **B đúng.** Message Batches API sinh ra cho khối lượng lớn, chịu được trễ, chi phí thấp hơn (giảm 50%, xử lý trong cửa sổ tối đa 24 giờ) — khớp việc chạy qua đêm, không gấp, ưu tiên chi phí.
-      - **A sai:** gửi đồng bộ song song chỉ nhanh hơn, không giảm giá mỗi token; mà tốc độ không phải tiêu chí.
-      - **C sai:** hạ `max_tokens` có thể cắt cụt kết quả và không chạm tới lựa chọn batch hay realtime.
-      - **D sai:** hạ model "bất chấp chất lượng" hy sinh yêu cầu đầu ra, cũng không giải quyết tradeoff batch/realtime.
+      **Đúng: dùng Message Batches API — xử lý khối lượng lớn bất đồng bộ trong cửa sổ 24 giờ với chi phí thấp hơn.** Batch giảm 50% chi phí so với gọi thường; phần lớn batch xong dưới 1 giờ, tối đa 24 giờ — khớp việc chạy qua đêm, không gấp, ưu tiên chi phí.
+      - **Gửi đồng bộ song song qua Messages API cho nhanh:** chỉ nhanh hơn, giá mỗi token không giảm; mà tốc độ không phải tiêu chí ở đây.
+      - **Giảm `max_tokens` trên các lời gọi đồng bộ:** `max_tokens` chỉ là trần độ dài đầu ra; hạ nó có thể cắt cụt kết quả và không mang lại mức giảm giá như batch.
+      - **Đổi sang model nhỏ nhất bất kể chất lượng:** hy sinh yêu cầu đầu ra, lại không tận dụng việc kết quả có thể chờ tới sáng.
+      Nguồn: https://platform.claude.com/docs/en/build-with-claude/batch-processing
     ref: exams/CCDV-F.md#claude-api-mechanics-68
     tags: [batch, cost]
     created: 2026-11-18
+    reviewed: 2026-11-18
   - id: OF-CCDVF-02
     exams: { CCDV-F: D7 }
     source: https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542875%2FClaude+Certified+Developer+%E2%80%93+Foundations+Exam+Guide.pdf
@@ -265,13 +286,14 @@ questions:
       - "Switch to a larger model that follows instructions more reliably."
     answer: [B]
     explanation: |-
-      **B đúng.** Đây là prompt injection gián tiếp. Cách xử lý: coi nội dung trang là **dữ liệu không tin cậy**, tách khỏi chỉ dẫn tin cậy, và dùng guardrail/hook theo least privilege để chữ bị chèn không thể kích hoạt tool hay hành động nhạy cảm.
-      - **A sai:** temperature không liên quan tới injection; làm hành vi khó đoán hơn không phải biện pháp an ninh.
-      - **C sai:** lời nhờ người dùng đừng chèn lệnh độc không phải kiểm soát thực thi được (kẻ tấn công không tuân theo).
-      - **D sai:** model nghe lời hơn có thể còn **dễ** làm theo lệnh bị chèn hơn, không phải ít hơn.
+      **Đúng: coi nội dung trang là dữ liệu không tin cậy, tách khỏi chỉ dẫn tin cậy, dùng guardrail/hook.** Đây là prompt injection gián tiếp: lệnh ẩn nằm trong nội dung do người ngoài kiểm soát. Cách xử lý là coi nội dung trang là **dữ liệu không tin cậy**, giữ nó tách khỏi chỉ dẫn tin cậy (vd. trả về trong `tool_result` hoặc khối dữ liệu riêng, không nhét vào system prompt), và dùng guardrail/hook theo least privilege để chữ bị chèn không thể kích hoạt tool hay hành động nhạy cảm.
+      - **Tăng temperature:** không liên quan tới injection; làm hành vi khó đoán hơn không phải biện pháp an ninh.
+      - **Thêm dòng nhờ người dùng đừng chèn lệnh độc:** không phải kiểm soát thực thi được, kẻ tấn công không tuân theo.
+      - **Đổi sang model lớn hơn, nghe lời hơn:** model nào cũng có thể bị lệnh chèn đánh lừa; đổi model không tách dữ liệu khỏi chỉ dẫn và không chặn được hành động nhạy cảm.
     ref: exams/CCDV-F.md#ai-application-security-32
     tags: [prompt-injection, guardrails, hooks]
     created: 2026-11-18
+    reviewed: 2026-11-18
   - id: OF-CCDVF-03
     exams: { CCDV-F: D8 }
     source: https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542875%2FClaude+Certified+Developer+%E2%80%93+Foundations+Exam+Guide.pdf
@@ -283,13 +305,15 @@ questions:
       - "Rely on a built-in tool, since built-in tools can reach any internal REST API."
     answer: [B]
     explanation: |-
-      **B đúng.** MCP server phơi các thao tác kho hàng thành tool theo chuẩn; nhiều ứng dụng Claude cùng kết nối, server được bảo trì độc lập với từng app — đúng hai yêu cầu "tái dùng" và "bảo trì riêng".
-      - **A sai:** nhét logic vào system prompt của từng app: không tái dùng, khó bảo trì, và prompt không gọi được API.
-      - **C sai:** dán dữ liệu vào context mỗi request không cho truy cập dữ liệu sống và tốn context.
-      - **D sai:** built-in tool không tự với tới được API nội bộ tuỳ ý.
+      **Đúng: xây một MCP server phơi các thao tác kho hàng thành tool để nhiều ứng dụng Claude cùng kết nối.** MCP là chuẩn mở để kết nối ứng dụng AI với hệ thống bên ngoài ("build once and integrate everywhere"): server bọc REST API nội bộ, được bảo trì độc lập, và mọi ứng dụng hỗ trợ MCP đều dùng lại được — khớp hai yêu cầu "tái dùng" và "bảo trì riêng".
+      - **Hard-code logic kho hàng vào system prompt của từng app:** prompt không tự gọi được API; lặp lại ở từng app, không tái dùng, khó bảo trì.
+      - **Dán dữ liệu kho hiện tại vào context mỗi request:** không truy cập dữ liệu sống, không thực hiện được thao tác, lại tốn context.
+      - **Dựa vào built-in tool vì chúng với tới mọi REST API nội bộ:** tiền đề sai — tool do Anthropic cung cấp là một bộ cố định (vd. server tool như web search, web fetch chạy trên hạ tầng Anthropic); muốn gọi dịch vụ nội bộ phải tự định nghĩa tool hoặc dựng MCP server.
+      Nguồn: https://modelcontextprotocol.io/docs/getting-started/intro · https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview
     ref: exams/CCDV-F.md#agentic-customization-41
     tags: [mcp, reuse]
     created: 2026-11-18
+    reviewed: 2026-11-18
 
   # ── CCAO-F (3 câu, guide §8) ──────────────────────────────────────────────
   - id: OF-CCAOF-01
@@ -303,13 +327,15 @@ questions:
       - "Reword the summary to sound more formal, then send it."
     answer: [B]
     explanation: |-
-      **B đúng.** Model có thể bịa chi tiết trông rất cụ thể như số điều khoản (hallucination). Với nội dung gửi đội compliance, bước cẩn trọng bắt buộc là đối chiếu trích dẫn với **văn bản quy định chính thức**.
-      - **A sai:** giọng tự tin của model không phải bằng chứng đúng.
-      - **C sai:** điểm tự tin do model tự chấm cũng không phải tín hiệu chính xác đáng tin.
-      - **D sai:** viết lại cho trang trọng chỉ đổi hình thức, không kiểm tra tính đúng.
+      **Đúng: đối chiếu số điều khoản được trích với văn bản quy định chính thức trước khi chia sẻ.** Model có thể bịa chi tiết trông rất cụ thể như số điều khoản (hallucination); Anthropic khuyên luôn kiểm chứng thông tin quan trọng, nhất là cho quyết định có hệ quả lớn. Bản tóm tắt gửi đội compliance cần trích dẫn khớp nguồn gốc.
+      - **Gửi nguyên văn vì Claude tỏ ra rất tự tin:** giọng tự tin không phải bằng chứng đúng; nội dung bịa thường nghe rất chắc chắn.
+      - **Nhờ Claude tự chấm độ tự tin, cao thì gửi:** điểm do model tự chấm không đối chiếu gì với nguồn gốc, nên không phải tín hiệu chính xác đáng tin.
+      - **Viết lại cho trang trọng rồi gửi:** chỉ đổi hình thức, không kiểm tra tính đúng của trích dẫn.
+      Nguồn: https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations
     ref: exams/CCAO-F.md#d2--output-evaluation-and-validation-21
     tags: [hallucination, verification]
     created: 2026-11-18
+    reviewed: 2026-11-18
   - id: OF-CCAOF-02
     exams: { CCAO-F: D3 }
     source: https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542847%2FClaude+Certified+Associate+%E2%80%93+Foundations+Exam+Guide.pdf
@@ -321,13 +347,15 @@ questions:
       - "Switch to a different AI platform."
     answer: [B]
     explanation: |-
-      **B đúng.** Chọn model theo yêu cầu việc: khối lượng lớn, việc đơn giản, ưu tiên tốc độ và chi phí → model nhanh, rẻ (vd. Haiku); để model mạnh nhất cho suy luận phức tạp.
-      - **A sai:** dùng model mạnh nhất cho mọi thư trả lời ngắn là lãng phí chi phí và độ trễ.
-      - **C sai:** tắt hết tính năng không liên quan tới việc chọn model phù hợp.
-      - **D sai:** đổi nền tảng không giải quyết tradeoff chất lượng – tốc độ – chi phí.
+      **Đúng: dùng model nhanh hơn, chi phí thấp hơn, hợp với việc đơn giản khối lượng lớn.** Chọn model theo yêu cầu việc: nhiều bản nháp ngắn, ưu tiên tốc độ và chi phí → model nhanh, rẻ (vd. Haiku, được Anthropic mô tả là dành cho tác vụ khối lượng lớn, nhạy độ trễ); để model mạnh hơn cho suy luận phức tạp.
+      - **Dùng model mạnh nhất, đắt nhất cho mọi thư trả lời:** lãng phí chi phí và độ trễ cho việc không cần suy luận sâu — ngược với ưu tiên đề bài nêu.
+      - **Tắt hết tính năng sản phẩm để giảm chi phí:** không liên quan tới việc chọn model phù hợp, lại có thể mất chức năng cần dùng.
+      - **Chuyển sang nền tảng AI khác:** không giải quyết tradeoff chất lượng – tốc độ – chi phí; chính dòng model Claude đã có lựa chọn phù hợp.
+      Nguồn: https://platform.claude.com/docs/en/about-claude/models/overview
     ref: exams/CCAO-F.md#d3--product-and-model-selection-12
     tags: [model-selection]
     created: 2026-11-18
+    reviewed: 2026-11-18
   - id: OF-CCAOF-03
     exams: { CCAO-F: D6 }
     source: https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542847%2FClaude+Certified+Associate+%E2%80%93+Foundations+Exam+Guide.pdf
@@ -339,13 +367,14 @@ questions:
       - "Skip the analysis entirely."
     answer: [B]
     explanation: |-
-      **B đúng.** Áp dụng biện pháp về độ nhạy dữ liệu: loại bỏ hoặc ẩn danh định danh cá nhân bị quản lý **trước khi** tải lên; phân tích xu hướng vẫn làm được mà không lộ dữ liệu được bảo vệ.
-      - **A sai:** "dùng nội bộ" không miễn trừ chính sách; tải nguyên file là vi phạm.
-      - **C sai:** dặn model "đừng lưu" không phải là biện pháp kiểm soát thoả chính sách — dữ liệu đã bị chia sẻ.
-      - **D sai:** bỏ hẳn việc là không cần thiết khi ẩn danh hoá cho phép làm tiếp.
+      **Đúng: xoá hoặc ẩn danh các định danh cá nhân trước khi tải lên, đúng theo chính sách.** Chính sách hạn chế chia sẻ dữ liệu cá nhân bị quản lý; phân tích xu hướng không cần tên hay số tài khoản, nên loại bỏ/ẩn danh *trước khi* tải lên vừa tuân thủ vừa giữ được giá trị phân tích.
+      - **Tải nguyên file vì phân tích chỉ dùng nội bộ:** "dùng nội bộ" không miễn trừ chính sách; tải lên là đã chia sẻ dữ liệu bị hạn chế.
+      - **Tải lên nhưng dặn Claude đừng lưu:** lời dặn model không phải biện pháp kiểm soát thoả chính sách — dữ liệu đã bị chia sẻ ngay lúc tải lên, và lời dặn không thay đổi cách hệ thống lưu trữ dữ liệu.
+      - **Bỏ hẳn việc phân tích:** không cần thiết khi ẩn danh hoá cho phép làm tiếp một cách an toàn.
     ref: exams/CCAO-F.md#d6--governance-risk-and-responsible-use-15
     tags: [data-sensitivity, pii, governance]
     created: 2026-11-18
+    reviewed: 2026-11-18
 
   # ── CCAR-P (3 câu, guide §8) ──────────────────────────────────────────────
   - id: OF-CCARP-01
@@ -359,13 +388,14 @@ questions:
       - "Replace the agent with a larger model that follows instructions more reliably."
     answer: [B]
     explanation: |-
-      **B đúng.** Least privilege = gỡ hẳn năng lực vai trò không cần. Nhân viên chỉ đọc ticket và soạn trả lời → bỏ tool refund và delete khỏi cấu hình agent, **xoá luôn bề mặt tấn công** thay vì canh chừng nó (đây cũng là ca "capability bloat" của D3).
-      - **A sai:** logging là kiểm soát phát hiện sau sự việc, không gỡ quyền thừa.
-      - **C sai:** hộp xác nhận là kiểm soát bù trừ; quyền nguy hiểm vẫn còn đó.
-      - **D sai:** kích cỡ model không liên quan tới phạm vi quyền.
+      **Đúng: gỡ hẳn tool refund và delete khỏi cấu hình agent.** Least privilege = gỡ hẳn năng lực vai trò không cần. Nhân viên chỉ đọc ticket và soạn trả lời → bỏ hai tool này để **xoá luôn bề mặt tấn công** thay vì canh chừng nó (đây cũng là ca "capability bloat" của D3).
+      - **Thêm logging cho tool refund/delete:** là kiểm soát phát hiện sau sự việc, không gỡ quyền thừa.
+      - **Giữ mọi tool nhưng thêm bước xác nhận:** là kiểm soát bù trừ; quyền nguy hiểm vẫn còn đó.
+      - **Thay bằng model lớn hơn:** kích cỡ model không liên quan tới phạm vi quyền.
     ref: exams/CCAR-P.md#d3--integration-19
     tags: [least-privilege, capability-bloat]
     created: 2026-11-18
+    reviewed: 2026-11-18
   - id: OF-CCARP-02
     exams: { CCAR-P: D2 }
     source: https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542810%2FClaude+Certified+Architect+%E2%80%93+Professional+Exam+Guide.pdf
@@ -377,13 +407,14 @@ questions:
       - "Move the policy document into a few-shot example block."
     answer: [C]
     explanation: |-
-      **C đúng.** Đặt phần tĩnh (system prompt + policy) trước phần động rồi bật prompt caching → tiền tố lặp lại được tái dùng, giảm cả time-to-first-token lẫn chi phí mỗi request mà không bỏ bớt context cần thiết.
-      - **A sai:** cắt còn 1.000 token làm mất nội dung policy cần dùng.
-      - **B sai:** hạ model bất chấp độ phù hợp với việc → rủi ro chất lượng.
-      - **D sai:** dời policy thành khối few-shot không tạo ra tiền tố cache tái dùng được, cũng không giảm token.
+      **Đúng: đặt system prompt và policy tĩnh trước phần động rồi bật prompt caching.** Cache được dựng theo tiền tố (`tools` → `system` → `messages`), nên phần lặp lại đứng đầu được tái dùng: giảm time-to-first-token với prompt dài, và token đọc từ cache chỉ tính một phần nhỏ giá input (mặc định 0,1×), mà không bỏ bớt context cần thiết.
+      - **Cắt policy còn 1.000 token đầu:** mất nội dung policy cần dùng.
+      - **Chuyển sang model nhỏ nhất bất chấp độ phù hợp:** hạ model không xét việc cần gì → rủi ro chất lượng.
+      - **Dời policy vào khối few-shot:** không tạo ra tiền tố cache tái dùng được, cũng không giảm token.
     ref: exams/CCAR-P.md#d2--claude-models-prompting--context-engineering-13
     tags: [prompt-caching, latency, cost]
     created: 2026-11-18
+    reviewed: 2026-11-18
   - id: OF-CCARP-03
     exams: { CCAR-P: D4 }
     source: https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542810%2FClaude+Certified+Architect+%E2%80%93+Professional+Exam+Guide.pdf
@@ -395,10 +426,11 @@ questions:
       - "The context window has shrunk."
     answer: [B]
     explanation: |-
-      **B đúng.** Triệu chứng xuất hiện **ngay sau khi làm mới tài liệu**, trong khi model và độ trễ không đổi → nghi bước retrieval đưa context kém cho model (re-index hỏng, embedding không khớp, chunk cũ/không liên quan). Model trả lời tự tin dựa trên context sai.
-      - **A sai:** phiên bản model không đổi; "weights tự thay đổi" không phải giả thuyết hợp lý.
-      - **C sai:** temperature thấp không gây ra sai lệch gắn với sự kiện làm mới tài liệu.
-      - **D sai:** context window không tự co lại; cũng không liên quan tới việc làm mới tài liệu.
+      **Đúng: bước retrieval/indexing đang trả về chunk không liên quan hoặc cũ.** Triệu chứng xuất hiện **ngay sau khi làm mới tài liệu**, trong khi model và độ trễ không đổi → nghi bước retrieval đưa context kém cho model (re-index hỏng, embedding không khớp, chunk cũ/không liên quan). Model trả lời tự tin dựa trên context sai.
+      - **Trọng số model âm thầm thay đổi:** phiên bản model không đổi; "weights tự thay đổi" không phải giả thuyết hợp lý.
+      - **Temperature quá thấp:** temperature thấp không gây ra sai lệch gắn với sự kiện làm mới tài liệu.
+      - **Context window bị co lại:** context window không tự co lại; cũng không liên quan tới việc làm mới tài liệu.
     ref: exams/CCAR-P.md#d4--evaluation-testing--optimization-16
     tags: [rag, debugging]
     created: 2026-11-18
+    reviewed: 2026-11-18
