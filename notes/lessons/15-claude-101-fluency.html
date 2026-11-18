@@ -433,12 +433,12 @@
 <div class="tw"><table>
   <thead><tr><th>Dimension</th><th>Mô tả</th><th>Ví dụ prompt element</th></tr></thead>
   <tbody>
-    <tr><td><strong>Product</strong></td><td>Mô tả output cuối muốn nhận</td><td>"Write a 500-word email" / "Create a table with columns X, Y, Z"</td></tr>
+    <tr><td><strong>Product</strong></td><td>Mô tả output cuối muốn nhận: nội dung, định dạng, người đọc, văn phong</td><td>"Write a 500-word email" / "Create a table with columns X, Y, Z" / "For the C-suite, no jargon"</td></tr>
     <tr><td><strong>Process</strong></td><td>Mô tả cách bạn muốn AI đi đến kết quả</td><td>"Think step by step" / "Consider pros and cons before recommending"</td></tr>
-    <tr><td><strong>Performance</strong></td><td>Mô tả tiêu chuẩn chất lượng</td><td>"At the level of a senior consultant" / "Appropriate for C-suite audience"</td></tr>
+    <tr><td><strong>Performance</strong></td><td>Mô tả cách AI cư xử trong lúc cộng tác với bạn</td><td>"Be concise" / "Challenge my assumptions if they look weak" / "Ask before guessing"</td></tr>
   </tbody>
 </table></div>
-<p>Ví dụ cho cùng một việc “báo cáo doanh thu quý”: <strong>Product</strong> là “một bảng ba cột: khu vực, doanh thu, tăng trưởng”. <strong>Process</strong> là “so sánh với quý trước rồi mới kết luận”. <strong>Performance</strong> là “viết cho ban giám đốc, ngắn gọn, không biệt ngữ”.</p>
+<p>Ví dụ cho cùng một việc “báo cáo doanh thu quý”: <strong>Product</strong> là “một bảng ba cột: khu vực, doanh thu, tăng trưởng, viết cho ban giám đốc, không biệt ngữ” (người đọc và văn phong thuộc Product). <strong>Process</strong> là “so sánh với quý trước rồi mới kết luận”. <strong>Performance</strong> là “trả lời ngắn, chỉ ra giả định nào trong số liệu có vẻ yếu”. Nguồn: <a href="https://academy.claude.com/courses/ai-fluency-framework-foundations/a-closer-look-at-description">AI Fluency: A closer look at Description</a>.</p>
 <p><strong>5 cách phổ biến cải thiện kết quả:</strong></p>
 <ol>
   <li>Thêm role context ("You are a...")</li>
@@ -454,9 +454,9 @@
     <li>Không nói người đọc là ai</li>
   </ul></div>
   <div class="box right"><div class="hd">Đúng</div><ul>
-    <li>Product: bảng ba cột khu vực, doanh thu, tăng trưởng</li>
+    <li>Product: bảng ba cột khu vực, doanh thu, tăng trưởng, viết cho ban giám đốc</li>
     <li>Process: so sánh quý trước rồi kết luận</li>
-    <li>Performance: viết cho ban giám đốc, ngắn gọn</li>
+    <li>Performance: trả lời ngắn, chỉ ra giả định yếu</li>
   </ul></div>
 </div>
 <div class="gloss"><div class="hd">Thuật ngữ</div><dl>

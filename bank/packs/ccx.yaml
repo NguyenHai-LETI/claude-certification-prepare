@@ -1464,6 +1464,7 @@ questions:
       - B
     explanation: "Sàng lọc, loại ứng viên là khuyến nghị rủi ro cao trong lĩnh vực việc làm: được làm, nhưng cần người có chuyên môn xem xét và có quyền sửa trước khi quyết định, và phải báo cho ứng viên có AI tham gia. Không bị cấm hẳn; lời dặn trong prompt không phải biện pháp kiểm soát."
     ref: lessons/20-san-pham-du-lieu.html#usage-policy
+    reviewed: 2026-11-18
   - id: Y02
     exams:
       CCAO-F: D6
@@ -1477,6 +1478,7 @@ questions:
       - C
     explanation: Soạn tóm tắt nội bộ giải thích luật mà không áp vào hoàn cảnh của một người cụ thể không phải khuyến nghị rủi ro cao. Khuyến nghị đầu tư cá nhân, duyệt thuê nhà, quyết định bồi thường bảo hiểm đều thuộc lĩnh vực rủi ro cao.
     ref: lessons/20-san-pham-du-lieu.html#usage-policy
+    reviewed: 2026-11-18
   - id: Y03
     exams:
       CCAO-F: D6
@@ -1490,6 +1492,7 @@ questions:
       - A
     explanation: Khuyến nghị rủi ro cao cần cả người có chuyên môn duyệt lẫn công bố cho người nhận rằng có AI tham gia. Không bắt buộc nêu tên Claude hay model; không cần Anthropic duyệt từng tin.
     ref: lessons/20-san-pham-du-lieu.html#usage-policy
+    reviewed: 2026-11-18
   - id: Y04
     exams:
       CCAO-F: D6
@@ -1503,6 +1506,7 @@ questions:
       - C
     explanation: Tạo nhân vật giả hoặc gán nội dung sai nguồn để lừa người xem là việc bị cấm trong Universal Usage Standards. Người duyệt hay chú thích mơ hồ không biến việc bị cấm thành được phép.
     ref: lessons/20-san-pham-du-lieu.html#usage-policy
+    reviewed: 2026-11-18
   - id: Y05
     exams:
       CCAO-F: D6
@@ -1516,6 +1520,7 @@ questions:
       - B
     explanation: Mặc định Anthropic không dùng input, output từ gói thương mại (Team, Enterprise, API) để huấn luyện, trừ khi gửi feedback hoặc tổ chức đồng ý. Gói cá nhân mới có cài đặt cải thiện model do người dùng chọn.
     ref: lessons/20-san-pham-du-lieu.html#du-lieu-goi
+    reviewed: 2026-11-18
   - id: Y06
     exams:
       CCAO-F: D6
@@ -1529,6 +1534,7 @@ questions:
       - A
     explanation: Ở gói cá nhân, việc dùng chat để cải thiện model do cài đặt riêng tư quyết định. Lời dặn trong chat không có tác dụng; web hay app, model nào cũng theo cùng cài đặt đó.
     ref: lessons/20-san-pham-du-lieu.html#du-lieu-goi
+    reviewed: 2026-11-18
   - id: Y07
     exams:
       CCAO-F: D6
@@ -1542,6 +1548,7 @@ questions:
       - D
     explanation: Incognito không lưu vào lịch sử và memory, không dùng để huấn luyện, nhưng vẫn được giữ 30 ngày vì an toàn; ở Team, Enterprise nó nằm trong bản xuất dữ liệu và Compliance API. Nó không bị xoá ngay lập tức.
     ref: lessons/20-san-pham-du-lieu.html#du-lieu-goi
+    reviewed: 2026-11-18
   - id: Y08
     exams:
       CCAO-F: D6
@@ -1570,6 +1577,7 @@ questions:
       - C
     explanation: Ở gói thương mại, Primary Owner quản lý tài khoản và dữ liệu (xuất dữ liệu, thời hạn lưu trên Enterprise) theo hợp đồng giữa tổ chức và Anthropic. Cài đặt cá nhân là của gói consumer.
     ref: lessons/20-san-pham-du-lieu.html#du-lieu-goi
+    reviewed: 2026-11-18
   - id: Y10
     exams:
       CCAO-F: D5
@@ -1583,6 +1591,7 @@ questions:
       - B
     explanation: "Bối cảnh chung cho một loại việc lặp lại đặt vào Project: tài liệu vào kho, giọng văn vào instructions. Dán lại tốn công và hạn mức; memory dành cho thông tin cá nhân, không thay kho tài liệu; incognito bỏ mất bối cảnh."
     ref: lessons/20-san-pham-du-lieu.html#memory-project
+    reviewed: 2026-11-18
   - id: Y11
     exams:
       CCAO-F: D5
@@ -1591,11 +1600,12 @@ questions:
       - Replace the old document in Project knowledge and update instructions that mention 14 days.
       - Tell each colleague to type “the policy is now 30 days” at the start of their chats.
       - Leave the old file and add the new one, so Claude can choose the more recent version.
-      - Delete the Project and create a new one, since Projects cannot be edited after creation.
+      - Ask Claude in a chat to remember that the refund window is now 30 days.
     answer:
       - A
-    explanation: "Cập nhật nguồn tri thức là việc của cấu hình: thay file cũ, sửa instructions liên quan. Nhờ từng người nhắc là không bền; để cả hai bản dễ gây mâu thuẫn; Project sửa được, không cần tạo lại."
+    explanation: "Cập nhật nguồn tri thức là việc của cấu hình chung: thay file chính sách cũ trong Project knowledge và sửa instructions còn ghi 14 ngày. Nhờ từng đồng nghiệp gõ lại ở đầu mỗi chat là không bền và dễ quên. Để cả bản cũ lẫn bản mới tạo hai nguồn mâu thuẫn, Claude không chắc sẽ chọn bản mới hơn. Memory là của riêng từng người dùng, nên nhờ Claude ghi nhớ trong một chat không cập nhật Project cho các đồng nghiệp, còn file cũ vẫn nằm trong kho."
     ref: lessons/20-san-pham-du-lieu.html#memory-project
+    reviewed: 2026-11-18
   - id: Y12
     exams:
       CCAO-F: D3
@@ -1613,29 +1623,31 @@ questions:
   - id: Y13
     exams:
       CCAO-F: D3
-    stem: A user has memory turned on and works in two Projects, A and B. While chatting in Project B, which memory can Claude use?
+    stem: A user has memory turned on and works in two Projects, A and B. Project B's “Use account memory” setting is left on. While chatting in Project B, which memory can Claude use?
     options:
-      - Only Project B's memory, with nothing from outside Project B
+      - Project B's memory alone, kept separate from every other chat
       - All memory from every Project plus all chats outside Projects
       - Project B's memory plus memory from chats outside Projects
-      - Only the memory from chats outside Projects, never Project memory
+      - Memory from chats outside Projects, but not Project B's own memory
     answer:
       - C
-    explanation: Mỗi Project có memory riêng. Trong một Project, Claude dùng memory của Project đó cùng memory chung từ chat ngoài Project, không dùng memory của Project khác.
+    explanation: "Mỗi Project có memory riêng. Khi chat trong một Project, Claude dùng memory của Project đó cùng memory từ các chat ngoài Project, nhưng không dùng memory của Project khác. Chỉ dùng memory của Project B là trường hợp đã tắt “Use account memory” trên trang Project, còn tình huống nói cài đặt này vẫn bật. Gộp memory của mọi Project là sai vì memory của Project A không được đưa vào Project B. Bỏ memory của chính Project B cũng sai: memory mới trong Project được lưu vào Project đó và Claude dùng nó khi làm việc trong Project."
     ref: lessons/20-san-pham-du-lieu.html#memory-project
+    reviewed: 2026-11-18
   - id: Y14
     exams:
       CCAO-F: D5
     stem: A Project on a paid plan keeps growing past the context window as more manuals are added. What happens, and what helps Claude find the right content?
     options:
       - Uploads are blocked; the user must split the Project into several smaller Projects.
-      - Claude reads only the first files uploaded; renaming files changes nothing at all.
+      - Claude keeps reading the first files uploaded and skips the rest; filenames do not matter.
       - Claude silently ignores the oldest files; users should re-upload important ones weekly.
       - Claude switches to retrieval over the knowledge; clear, descriptive filenames help it.
     answer:
       - D
-    explanation: Trên gói trả phí, Project tự chuyển sang RAG khi tài liệu gần chạm giới hạn, chứa được nhiều hơn khoảng 10 lần; tên file rõ giúp Claude tìm đúng. Không bị chặn, không bỏ file cũ âm thầm.
+    explanation: "Trên gói trả phí (Pro, Max, Ultra, Team, Enterprise), khi kiến thức của Project gần chạm giới hạn context, Claude tự động chuyển sang RAG: dùng công cụ tìm kiếm trong kho để lấy phần liên quan, chứa được tới khoảng 10 lần nhiều hơn mà không cần cấu hình. Anthropic khuyên đặt tên file rõ, mô tả đúng nội dung để Claude truy xuất chính xác. Việc tải lên không bị chặn, không cần tách Project. Claude không chỉ đọc các file tải lên đầu tiên; RAG tìm trên toàn bộ kho và tên file có tác dụng. Claude cũng không âm thầm bỏ file cũ, nên tải lại hằng tuần là không cần thiết."
     ref: lessons/20-san-pham-du-lieu.html#memory-project
+    reviewed: 2026-11-18
   - id: Y15
     exams:
       CCAO-F: D5
@@ -1649,6 +1661,7 @@ questions:
       - A
     explanation: '"Can view" cho xem nội dung, tài liệu, instructions và chat trong Project nhưng không sửa. "Can edit" cho sửa; chia sẻ toàn tổ chức rộng hơn cần; gửi file qua email mất bối cảnh chung.'
     ref: lessons/20-san-pham-du-lieu.html#memory-project
+    reviewed: 2026-11-18
   - id: Y16
     exams:
       CCAO-F: D2
@@ -1656,25 +1669,27 @@ questions:
     options:
       - A long chat reply with the numbers formatted as a Markdown table
       - An .xlsx file created by Claude with working formulas
-      - A screenshot of a chart summarizing the budget totals
-      - A plain-text list of figures to copy into a spreadsheet
+      - A Word document with the budget laid out in a formatted table
+      - An artifact that shows the budget as an interactive web table
     answer:
       - B
-    explanation: Người nhận sẽ mở bằng Excel và tính tiếp nên cần file .xlsx có công thức chạy được (tạo file bằng code execution). Bảng trong chat, ảnh chụp hay danh sách số phải làm lại thủ công.
+    explanation: "Người nhận sẽ mở bằng Excel và tiếp tục chỉnh với công thức sống, nên cần file .xlsx có công thức chạy được; tính năng tạo file của Claude (chạy code) tạo được file Excel kèm công thức, phép tính và biểu đồ. Bảng Markdown trong chat phải chép tay sang Excel và không có công thức. Bảng trong file Word không có công thức sống, đồng nghiệp vẫn phải dựng lại trong Excel. Artifact dạng bảng web xem và chia sẻ tốt nhưng không phải file Excel để đồng nghiệp chỉnh tiếp. Nguồn: https://support.claude.com/en/articles/12111783-create-and-edit-files-with-claude"
     ref: lessons/20-san-pham-du-lieu.html#dinh-dang
+    reviewed: 2026-11-18
   - id: Y17
     exams:
       CCAO-F: D7
     stem: On an Enterprise plan, a user asks Claude to create a PowerPoint deck, but Claude only replies with text and no file appears. What should be checked first?
     options:
-      - Whether the user's prompt said “please” and specified the slide count
+      - Whether the user uploaded a PowerPoint template to the chat first
       - Whether the model chosen is the largest one available to the organization
       - Whether code execution and file creation are enabled in organization settings
-      - Whether the user's browser has the latest version of Microsoft Office installed
+      - Whether Microsoft PowerPoint is installed on the user's computer
     answer:
       - C
-    explanation: Tạo file cần bật "Code execution and file creation"; ở Team, Enterprise chủ tổ chức có thể tắt. Kiểm cấu hình trước khi đổi prompt hay model; trình duyệt không cần cài Office.
+    explanation: "Claude tạo file (.pptx, .docx, .xlsx, PDF) bằng code execution, bật/tắt chung qua công tắc “Code execution and file creation”. Ở gói Team và Enterprise, Owner quản lý công tắc này trong Organization settings > Capabilities và có thể tắt nó (support.claude.com/en/articles/12111783). Claude chỉ trả lời bằng chữ mà không có file là dấu hiệu tính năng đang tắt, nên kiểm cấu hình này trước. Tải template PowerPoint lên chỉ là tuỳ chọn, không phải điều kiện để Claude tạo file. Model lớn hơn không mở được tính năng đã bị tắt ở cấp tổ chức. File được tạo trong môi trường chạy code của Claude rồi tải về, nên máy người dùng không cần cài PowerPoint."
     ref: lessons/20-san-pham-du-lieu.html#dinh-dang
+    reviewed: 2026-11-18
   - id: Y18
     exams:
       CCAO-F: D2
@@ -1688,6 +1703,7 @@ questions:
       - A
     explanation: Nội dung độc lập sẽ được sửa nhiều lần và chia sẻ hợp với artifact (hoặc file). Trả lời trong chat khó tái dùng; JSON không hợp người đọc; chia nhỏ tin nhắn làm khó sửa tổng thể.
     ref: lessons/20-san-pham-du-lieu.html#dinh-dang
+    reviewed: 2026-11-18
   - id: Y19
     exams:
       CCAO-F: D3
@@ -1695,12 +1711,13 @@ questions:
     options:
       - Extended thinking alone, so Claude reasons carefully without using the web
       - A single web search, since vendor information is available on public websites
-      - Research, which runs many searches across the web and connected sources with citations
-      - Incognito chat, so the vendor comparison does not affect Claude's memory
+      - Research, which plans a series of searches and compiles a sourced report
+      - A Project with the vendors' brochures uploaded as knowledge for Claude to compare
     answer:
       - C
-    explanation: Research hợp với thu thập toàn diện nhiều nguồn (web và nguồn đã kết nối), có trích dẫn. Thinking không tìm web; một lần web search không đủ cho tám nhà cung cấp; incognito không liên quan.
+    explanation: "Research dành cho thu thập thông tin toàn diện: từ năm lần gọi công cụ trở lên trong 1–3 phút, tổng hợp nhiều nguồn trên web và từ các ứng dụng đã kết nối, có trích dẫn, cho ra báo cáo dài. Extended thinking chỉ giúp suy luận kỹ hơn, không tìm web hay dùng nguồn đã kết nối. Một lần web search hợp với câu hỏi sự kiện trả lời được bằng một hai lần tìm, không đủ cho tám nhà cung cấp. Project chứa brochure tải lên chỉ có tài liệu tĩnh do chính nhà cung cấp viết, không có nguồn web mới và bỏ qua tài liệu trong Drive của công ty."
     ref: lessons/20-san-pham-du-lieu.html#che-do
+    reviewed: 2026-11-18
   - id: Y20
     exams:
       CCAO-F: D3
@@ -1714,6 +1731,7 @@ questions:
       - C
     explanation: Thinking hợp với suy luận phức tạp không cần thông tin mới từ web, như bài toán xếp lịch nhiều ràng buộc. Giờ mở cửa, tin mới cần web search; báo cáo nhiều nguồn cần Research.
     ref: lessons/20-san-pham-du-lieu.html#che-do
+    reviewed: 2026-11-18
   - id: Y21
     exams:
       CCAO-F: D3
@@ -1721,12 +1739,13 @@ questions:
     options:
       - A chat with web search turned on, sending one note per message
       - Claude Cowork, which works through multi-step tasks and keeps running
-      - Claude Data, which turns the interview notes into a sales dashboard
-      - Claude Tag in a public Slack channel so the whole company can see
+      - Research, which runs many searches across the web and connected apps
+      - Claude in Chrome, which opens each note in a browser tab to read it
     answer:
       - B
-    explanation: Cowork nhận cả một việc nhiều bước (đọc file, tổng hợp, tạo tài liệu) và tiếp tục chạy khi bạn rời đi. Gửi từng ghi chú qua chat tốn công; Data dành cho số liệu; đưa ghi chú phỏng vấn vào kênh công khai là rủi ro.
+    explanation: "Cowork nhận cả một việc nhiều bước và làm thay bạn: đọc và ghi file cục bộ (trên app desktop) không cần tải lên thủ công, tổng hợp, tạo tài liệu; phiên chạy trên cloud vẫn tiếp tục khi bạn rời đi (việc dùng file cục bộ thì cần giữ app desktop mở). Gửi từng ghi chú qua chat là làm thủ công từng bước, và web search không giúp gì cho việc đọc ghi chú nội bộ. Research mạnh ở tìm kiếm nhiều nguồn trên web và ứng dụng kết nối để viết báo cáo, không phải xử lý một thư mục ghi chú có sẵn. Claude in Chrome dùng để thao tác trên website, không phải để đọc và tổng hợp file trong thư mục."
     ref: lessons/20-san-pham-du-lieu.html#san-pham
+    reviewed: 2026-11-18
   - id: Y22
     exams:
       CCAO-F: D3
@@ -1735,24 +1754,26 @@ questions:
       - Claude Data, which writes and shows a SQL query for each chart
       - Claude Design, which builds branded one-pagers on a canvas
       - Claude in Chrome, which reads the warehouse's web console
-      - Incognito chat, which hides revenue figures from history
+      - Research, which gathers figures from connected apps into a cited report
     answer:
       - A
-    explanation: Claude Data kết nối kho dữ liệu, viết truy vấn SQL cho từng biểu đồ và hiện truy vấn để kiểm tra. Design cho thiết kế; dùng Chrome đọc console vừa kém tin cậy vừa rủi ro; incognito không tạo dashboard.
+    explanation: "Claude Data kết nối nền tảng dữ liệu của công ty (Snowflake, BigQuery, Redshift…), viết một truy vấn SQL cho từng biểu đồ, chạy trên nguồn dữ liệu và hiện truy vấn để người xem kiểm tra con số được tính thế nào. Claude Design dành cho thiết kế, one-pager theo nhận diện thương hiệu, không truy vấn kho dữ liệu. Dùng Claude in Chrome đọc console web của kho vừa kém tin cậy vừa rủi ro khi agent thao tác trên trang nhạy cảm. Research tổng hợp thông tin thành báo cáo có trích dẫn, không tạo dashboard và không cho thấy truy vấn đằng sau từng con số."
     ref: lessons/20-san-pham-du-lieu.html#san-pham
+    reviewed: 2026-11-18
   - id: Y23
     exams:
       CCAO-F: D6
     stem: A user wants Claude in Chrome to log into their online banking and pay several bills automatically. What is the most appropriate guidance?
     options:
-      - Proceed, since safety classifiers make prompt injection on banking sites impossible.
-      - Proceed, but only after asking Claude to promise it will be careful with payments.
+      - Proceed, since built-in safety classifiers screen banking pages for prompt injection.
+      - Proceed in the user's everyday browser profile, so Claude can reuse saved bank logins.
       - Avoid it; guidance advises against browser agents for sensitive financial sites.
-      - Proceed only on weekends, when bank websites receive less malicious traffic.
+      - Proceed after approving Claude's permission prompt for the bank, which covers payments.
     answer:
       - C
-    explanation: "Hướng dẫn an toàn khuyên tránh dùng agent duyệt web cho trang nhạy cảm, tiền bạc: bộ lọc giảm rủi ro nhưng không về 0. Lời hứa của model không phải kiểm soát; chọn ngày không liên quan."
+    explanation: "Trang hướng dẫn dùng Claude in Chrome an toàn khuyên không dùng Claude in Chrome trên trang nhạy cảm, và nên dùng một hồ sơ trình duyệt riêng không đăng nhập tài khoản nhạy cảm (ngân hàng, y tế, chính phủ); rủi ro prompt injection đã giảm nhưng “không bằng 0”. Bộ phân loại an toàn có thật, nhưng chỉ giảm rủi ro, không phải lý do để giao việc thanh toán. Dùng hồ sơ trình duyệt thường ngày có sẵn mật khẩu ngân hàng là đúng điều hướng dẫn khuyên tránh. Hộp xin phép trước khi vào trang tài chính chỉ là một lớp xác nhận, không làm việc tự động thanh toán trở nên an toàn. Nguồn: https://support.claude.com/en/articles/12902428-use-claude-in-chrome-safely"
     ref: lessons/20-san-pham-du-lieu.html#san-pham
+    reviewed: 2026-11-18
   - id: Y24
     exams:
       CCAO-F: D5
@@ -1760,12 +1781,13 @@ questions:
     options:
       - Claude can read it, because connectors use an administrator account for all users.
       - Claude cannot read it, because connectors inherit the user's own permissions.
-      - Claude can read it once the user rephrases the request more politely.
-      - Claude can read it, but only the first page of the document is available.
+      - Claude can read it if the user pastes the file's share link into the chat.
+      - Claude can read it, because a Team owner enabled the Drive connector for everyone.
     answer:
       - B
-    explanation: "Connector thừa hưởng quyền của chính người dùng trong ứng dụng: ai không xem được file thì Claude cũng không xem được qua tài khoản đó."
+    explanation: "Connector Google Workspace phản chiếu quyền sẵn có của người dùng: Claude không truy cập được thứ người đó không xem được. Connector không dùng một tài khoản quản trị chung cho mọi người. Dán đường link chia sẻ không cấp thêm quyền; file vẫn được kiểm tra theo quyền của tài khoản đã kết nối. Owner bật connector cho tổ chức chỉ cho phép thành viên kết nối tài khoản của mình, không mở quyền đọc file mà từng người không có."
     ref: lessons/20-san-pham-du-lieu.html#connector-skill
+    reviewed: 2026-11-18
   - id: Y25
     exams:
       CCAO-F: D5
@@ -1779,6 +1801,7 @@ questions:
       - C
     explanation: "Quy trình lặp lại dùng ở nhiều nơi, cần thống nhất: đóng gói thành skill do chủ tổ chức cấp; đổi mẫu thì sửa một lần. Dán tay và memory cá nhân dễ lệch; ép mọi cuộc họp vào một Project là gượng ép."
     ref: lessons/20-san-pham-du-lieu.html#connector-skill
+    reviewed: 2026-11-18
   - id: Y26
     exams:
       CCAO-F: D5
@@ -1805,8 +1828,9 @@ questions:
       - Prompt injection; limit write actions or require approval before sending.
     answer:
       - D
-    explanation: Chỉ dẫn giấu trong nội dung bên ngoài là prompt injection. Nó cần cả việc đọc nội dung ngoài vùng tin cậy và quyền hành động; giới hạn quyền ghi hoặc bắt duyệt trước khi gửi cắt được điều kiện thứ hai.
+    explanation: "Chỉ dẫn giấu trong nội dung bên ngoài (email, trang web, tài liệu) nhằm khiến Claude làm việc ngoài ý người dùng là prompt injection. Nó gây hại khi có đủ hai điều kiện: Claude đọc nội dung không đáng tin, và Claude có quyền hành động. Giới hạn quyền ghi hoặc bắt người dùng duyệt trước khi gửi (như cơ chế xác nhận hành động rủi ro cao của Claude in Chrome) cắt điều kiện thứ hai. Hallucination là model tự bịa chi tiết, không phải bị nội dung bên ngoài điều khiển, và đổi sang model lớn hơn không chặn được lệnh giấu. Bias là thiên lệch trong cách đối xử, không giải thích việc hoá đơn bị chuyển ra ngoài. Rate limiting là giới hạn lưu lượng; đọc ít email hơn thì lệnh giấu vẫn được thực thi."
     ref: lessons/20-san-pham-du-lieu.html#rui-ro-agent
+    reviewed: 2026-11-18
   - id: Y28
     exams:
       CCAO-F: D4
@@ -1815,11 +1839,12 @@ questions:
       - Let Claude send replies directly to save time, since drafts are usually accurate.
       - Have Claude draft replies and a team member review and send each one.
       - Have Claude only read complaints, and type every reply manually as before.
-      - Let Claude send replies but only to customers who have complained before.
+      - Let Claude send replies directly, and have a team member audit a sample each week.
     answer:
       - B
-    explanation: 'Đưa Claude vào quy trình sẵn có: Claude soạn, người duyệt và gửi; giữ con người ở bước có hậu quả. Gửi thẳng bỏ kiểm soát; bỏ hẳn phần soạn mất giá trị; tiêu chí "đã từng phàn nàn" không liên quan rủi ro.'
+    explanation: "Đưa Claude vào quy trình sẵn có theo cách giữ con người ở bước có hậu quả: Claude soạn nháp, nhân viên duyệt rồi mới gửi. Trong Cowork có thể đặt công cụ gửi email của connector ở chế độ “Always ask” để Claude dừng trước mỗi lần gửi. Gửi thẳng vì bản nháp “thường đúng” bỏ mất điểm kiểm soát với khách hàng đang bức xúc. Chỉ cho Claude đọc rồi tự gõ mọi thư bỏ phí phần soạn nháp, giá trị chính của việc dùng Claude ở đây. Gửi thẳng rồi kiểm mẫu hằng tuần chỉ phát hiện lỗi sau khi thư sai đã đến tay khách."
     ref: lessons/20-san-pham-du-lieu.html#rui-ro-agent
+    reviewed: 2026-11-18
   - id: Y29
     exams:
       CCAO-F: D7
@@ -1834,6 +1859,7 @@ questions:
       - B
     explanation: Tài liệu dùng lại trong Project được cache nên tốn ít hơn; Research tốn nhiều, chỉ dùng cho việc cần thu thập rộng. Mọi nơi dùng Claude tính chung một hạn mức; model lớn tốn hạn mức nhanh hơn.
     ref: lessons/20-san-pham-du-lieu.html#gioi-han
+    reviewed: 2026-11-18
   - id: Y30
     exams:
       CCAO-F: D7
@@ -1869,14 +1895,15 @@ questions:
       CCAO-F: D4
     stem: A department head asks whether Claude can fully automate approval of employee expense claims, including integration with the finance system. What should a Claude associate do?
     options:
-      - Build it alone with chat prompts, since associates can configure any integration.
+      - Build the full integration alone in chat, since a connector can link the finance system.
       - Explain the value and limits, and escalate the integration design to developers or architects.
-      - Reject the idea, because AI should never be used anywhere near financial processes.
-      - Promise full automation by next week to keep the department head satisfied.
+      - Refer the request straight to IT without explaining what Claude could or could not do.
+      - Prototype the flow in a Project and present it as ready to approve real expense claims.
     answer:
       - B
-    explanation: Associate giải thích giá trị và giới hạn cho các bên, và chuyển phần tích hợp, tự động hoá phức tạp cho developer, architect. Tự làm vượt phạm vi; cấm hẳn là cực đoan; hứa quá mức là thiếu trung thực.
+    explanation: "Theo Exam Guide, Associate truyền đạt giá trị và giới hạn của Claude cho các bên liên quan, và chuyển phần tích hợp, tự động hoá phức tạp cho Developer hoặc Architect. Tự dựng tích hợp với hệ thống tài chính bằng chat và connector vượt phạm vi Associate và bỏ qua thiết kế kiểm soát, bảo mật. Chuyển thẳng cho IT mà không giải thích đúng hướng chuyển giao nhưng bỏ mất phần việc của Associate là giúp trưởng phòng hiểu Claude làm được gì, không làm được gì. Trình bày một bản thử trong Project như đã sẵn sàng duyệt chi phí thật là hứa quá mức với một quy trình tài chính cần kiểm soát."
     ref: lessons/20-san-pham-du-lieu.html#cau-mau
+    reviewed: 2026-11-18
   - id: Y33
     exams:
       CCAO-F: D1
@@ -1884,12 +1911,13 @@ questions:
     options:
       - Repeat the same request with “please be better” added at the end.
       - State the audience, purpose, key figures, length and format, and attach the Q3 data.
-      - Switch to a different AI tool, since Claude cannot write about financial results.
+      - Ask Claude to make the paragraph longer and more formal in tone.
       - Ask for ten versions at once and pick whichever one sounds the most confident.
     answer:
       - B
-    explanation: Prompt nghiệp vụ tốt nêu người đọc, mục đích, dữ liệu, độ dài, định dạng và đính kèm nguồn. Thêm "làm tốt hơn" không thêm thông tin; đổi công cụ không giải quyết gốc; chọn bản "nghe tự tin" không phải đánh giá.
+    explanation: "Prompt nghiệp vụ tốt nêu người đọc, mục đích, dữ liệu, độ dài, định dạng và đính kèm nguồn; Claude giống nhân viên mới chưa có bối cảnh của bạn. Thêm “làm tốt hơn” không thêm thông tin. Viết dài hơn, trang trọng hơn chỉ đổi văn phong, đoạn văn vẫn chung chung vì thiếu số liệu Q3. Chọn bản “nghe tự tin” nhất không phải đánh giá, giọng tự tin không chứng minh nội dung đúng."
     ref: lessons/20-san-pham-du-lieu.html#cau-mau
+    reviewed: 2026-11-18
   - id: Y34
     exams:
       CCAO-F: D1
@@ -1910,27 +1938,29 @@ questions:
       CCAO-F: D4
     stem: Leadership asks an associate to explain what Claude will and won't do in a new customer-support workflow. Which message is most accurate?
     options:
-      - Claude will handle every customer case end to end, so the support team can be reduced right away.
+      - Claude will handle customer cases end to end, so the support team can be reduced right away.
       - Claude drafts replies and summarizes cases faster; staff still review sensitive or high-impact replies.
-      - Claude cannot help customer support, because it often makes mistakes with names and dates.
-      - Claude is always correct when it sounds confident, so its replies need no further checking.
+      - Claude is limited to internal notes, since customer-facing replies must be written by staff.
+      - Claude's replies will be accurate once the knowledge base is complete, so review can be dropped.
     answer:
       - B
-    explanation: Giao tiếp với các bên phải nêu cả giá trị (soạn nháp, tóm tắt nhanh) lẫn giới hạn (người duyệt ca nhạy cảm, có hậu quả). Hứa tự động hoá toàn bộ, phủ nhận hoàn toàn, hay tin vào giọng tự tin đều sai.
+    explanation: "Thông điệp cho lãnh đạo phải nêu cả giá trị (soạn nháp, tóm tắt ca nhanh hơn) lẫn giới hạn (người vẫn duyệt câu trả lời nhạy cảm hoặc có hậu quả lớn). Hứa Claude xử lý trọn từng ca và cắt giảm nhân sự ngay là hứa quá mức, bỏ điểm kiểm duyệt của người. Giới hạn Claude ở ghi chú nội bộ là đánh giá thấp: soạn nháp trả lời khách vẫn an toàn khi có người duyệt. Kho tri thức đầy đủ giúp giảm sai nhưng không loại bỏ hallucination, nên không phải lý do để bỏ bước duyệt."
     ref: lessons/20-san-pham-du-lieu.html#cau-mau
+    reviewed: 2026-11-18
   - id: Q09
     exams:
       CCAO-F: D1
-    stem: "A prompt reads: “Create a three-column table of region, revenue and growth; compare with last quarter before concluding; write for the executive team without jargon.” Which 4D Description elements does it cover?"
+    stem: "A prompt reads: “Create a three-column table of region, revenue and growth for the executive team; compare with last quarter before concluding; keep your replies brief and challenge any assumption that looks weak.” Which 4D Description elements does it cover?"
     options:
       - Product only, since the table format is the only concrete instruction given
-      - "Product, Process and Performance: the output, the method, and the quality bar"
+      - "Product, Process and Performance: the output, the method, and how Claude behaves"
       - Delegation and Diligence, since it decides what AI does and who is accountable
       - Discernment only, because it asks Claude to evaluate last quarter's numbers
     answer:
       - B
-    explanation: Bảng ba cột là Product (đầu ra), so sánh quý trước rồi kết luận là Process (cách làm), viết cho ban giám đốc không biệt ngữ là Performance (mức chất lượng, cách cư xử). Delegation, Diligence, Discernment là các chiều khác của 4D.
+    explanation: "Theo Claude Academy, Product Description là mô tả đầu ra (định dạng, người đọc, văn phong), Process Description là cách AI tiếp cận yêu cầu, Performance Description là cách AI cư xử trong lúc cộng tác (ngắn gọn hay chi tiết, thách thức hay hỗ trợ). Bảng ba cột cho ban giám đốc là Product; so sánh với quý trước rồi mới kết luận là Process; trả lời ngắn và phản biện giả định yếu là Performance. Vì vậy “chỉ Product” bỏ sót hai phần kia. Delegation và Diligence không phải thành phần của Description, và prompt không nói gì về chia việc hay trách nhiệm. Discernment là việc người dùng đánh giá output, không phải chỉ dẫn trong prompt; yêu cầu so sánh số liệu là Process."
     ref: lessons/15-claude-101-fluency.html#ai-fluency
+    reviewed: 2026-11-18
   - id: Q10
     exams:
       CCAO-F: D7
@@ -1958,19 +1988,21 @@ questions:
       - C
     explanation: "Diligence là chịu trách nhiệm về những gì gửi đi: duyệt, kiểm chứng, minh bạch về việc dùng AI theo chính sách. Hỏi Claude tự xác nhận không phải kiểm chứng; đánh bóng câu chữ không đảm bảo đúng; gửi vội bỏ trách nhiệm."
     ref: lessons/15-claude-101-fluency.html#ai-fluency
+    reviewed: 2026-11-18
   - id: Q12
     exams:
       CCAO-F: D4
     stem: A team is choosing a new supplier. Applying the Delegation dimension, how should work be split between Claude and people?
     options:
       - Claude compiles and compares supplier information; people verify it and make the final choice.
-      - Claude makes the final supplier choice, since it can weigh more data than any person.
-      - People do everything manually, because supplier choices are too important for AI.
-      - Claude signs the contract through a connector once its comparison is complete.
+      - Claude makes the final supplier choice, since it can weigh more data than the team.
+      - People handle the whole comparison manually, because supplier choices are too important for AI.
+      - Claude negotiates prices with each supplier by email; people only approve the final contract.
     answer:
       - A
-    explanation: "Delegation: giao cho AI phần hợp (thu thập, so sánh nháp), giữ phán đoán và quyết định có hệ quả lớn cho con người. Để AI quyết định hay ký thay bỏ trách nhiệm; tự làm hết thì bỏ phí giá trị của AI."
+    explanation: "Delegation là quyết định phần việc nào giao cho AI, phần nào giữ cho người, dựa trên hiểu bài toán và năng lực của công cụ. Thu thập và so sánh thông tin nhà cung cấp là phần Claude làm tốt; kiểm chứng và chọn cuối cùng là phán đoán có hệ quả nên người giữ. Để Claude chọn thay là chuyển cả trách nhiệm quyết định sang AI; xử lý được nhiều dữ liệu hơn không thay được trách nhiệm giải trình. Tự so sánh thủ công toàn bộ bỏ phí phần việc AI hỗ trợ an toàn được, vì người vẫn kiểm và quyết. Để Claude thương lượng giá qua email là giao cho AI cam kết đối ngoại có hệ quả; người chỉ duyệt hợp đồng ở cuối thì không kiểm soát được những gì đã hứa với nhà cung cấp."
     ref: lessons/15-claude-101-fluency.html#ai-fluency
+    reviewed: 2026-11-18
   - id: Z01
     exams:
       CCAR-F: D1
@@ -3586,13 +3618,14 @@ questions:
     stem: How should you adapt your prompt when you want Claude to brainstorm campaign names rather than analyze campaign results?
     options:
       - For ideas, ask for many varied options; for analysis, ask for reasoning grounded in data.
-      - Use exactly the same prompt for both tasks, because Claude adapts to the type of task by itself.
+      - Keep one general prompt for both tasks and change only the topic, since Claude infers the task type.
       - For brainstorming, ask for the single best name and a short justification.
-      - For analysis, ask Claude to be creative and fill gaps in the numbers itself.
+      - For analysis, ask for many varied interpretations so that Claude explores every possible angle.
     answer:
       - A
-    explanation: "Đổi cách prompt theo loại việc: brainstorm cần đa dạng; phân tích cần lập luận có căn cứ."
+    explanation: "Exam Guide CCAO-F D1 yêu cầu đổi chiến lược prompt theo loại việc: brainstorm cần nhiều phương án đa dạng, chưa đánh giá vội; phân tích cần lập luận dựa trên dữ liệu, nêu giả định. Giữ một prompt chung rồi chỉ đổi chủ đề là trông vào việc Claude tự đoán, trong khi tài liệu prompting của Anthropic khuyên nói rõ đầu ra muốn có thay vì để model suy ra. Xin một cái tên tốt nhất ngay từ đầu làm hẹp ý tưởng, trái với mục đích brainstorm. Xin thật nhiều cách diễn giải cho bài phân tích là áp cách brainstorm sai chỗ: phân tích cần bám số liệu, không cần đa dạng."
     ref: lessons/09-ccao-f.html#prompting
+    reviewed: 2026-11-18
   - id: K05
     exams:
       CCAO-F: D2
@@ -3619,8 +3652,9 @@ questions:
       - Round it down to 70% so the claim is more conservative and safer.
     answer:
       - A
-    explanation: Số liệu không có nguồn có thể là bịa. Kiểm chứng trước khi công bố.
+    explanation: "Số liệu cụ thể mà không có nguồn có thể là bịa (hallucination); trước khi công bố phải tìm nguồn đáng tin để kiểm chứng, không được thì bỏ. Nghe hợp lý và rất cụ thể không phải bằng chứng đúng, chi tiết trông cụ thể lại là chỗ hallucination hay xuất hiện. Hỏi lại Claude trong cùng cuộc chat không phải kiểm chứng độc lập, vì nó có thể khẳng định lại chính lỗi đó. Làm tròn xuống 70% vẫn là con số chưa có căn cứ, chỉ đổi giá trị của một số liệu có thể sai."
     ref: lessons/09-ccao-f.html#danh-gia
+    reviewed: 2026-11-18
   - id: K07
     exams:
       CCAO-F: D2
@@ -3632,8 +3666,9 @@ questions:
       - Send it as is, because small mismatches in totals are normal in summaries.
     answer:
       - A
-    explanation: Nhận diện mâu thuẫn nội tại và đối chiếu với dữ liệu gốc là kỹ năng chính của domain đánh giá output.
+    explanation: "Tổng các vùng không khớp tổng công ty là mâu thuẫn nội tại, dấu hiệu có số sai; đối chiếu với bảng tính gốc để biết số nào đúng rồi yêu cầu Claude sửa. Lặng lẽ bỏ số vùng chỉ giấu mâu thuẫn, mà tổng công ty có thể chính là số sai. Bảng tính là dữ liệu gốc; sửa nguồn cho khớp bản tóm tắt là làm ngược và làm hỏng dữ liệu. Coi lệch tổng là “bình thường” rồi gửi đi là chuyển số sai cho người đọc."
     ref: lessons/09-ccao-f.html#danh-gia
+    reviewed: 2026-11-18
   - id: K08
     exams:
       CCAO-F: D2
@@ -3645,8 +3680,9 @@ questions:
       - Alternative subject lines for an internal newsletter.
     answer:
       - A
-    explanation: Nội dung pháp lý, tài chính, gửi ra ngoài, rủi ro cao cần người duyệt; bản nháp nội bộ rủi ro thấp thì nhẹ hơn.
+    explanation: "Mức kiểm chứng tỉ lệ với rủi ro: tóm tắt điều khoản hợp đồng gửi khách hàng là nội dung pháp lý, gửi ra ngoài, sai sót có thể gây hậu quả, nên cần người duyệt trước. Danh sách ý tưởng cho cuộc họp nội bộ chỉ là gợi ý để thảo luận tiếp. Bản nháp ghi chú cuộc họp cho riêng bạn không ai khác dùng. Các dòng tiêu đề thay thế cho bản tin nội bộ rủi ro thấp, sai thì sửa dễ. Ba việc này vẫn nên đọc lại nhưng không cần duyệt chính thức."
     ref: lessons/09-ccao-f.html#danh-gia
+    reviewed: 2026-11-18
   - id: K09
     exams:
       CCAO-F: D2
@@ -3683,12 +3719,13 @@ questions:
     options:
       - "Treat it as possible bias: review outputs, adjust the process, keep humans deciding."
       - Ignore it, because AI systems are neutral and their wording only reflects the applicants' data.
-      - Use the summaries to make the final hiring decisions faster and more consistently.
-      - Remove the human review step so that the same wording is applied to everyone.
+      - Add “be fair and unbiased” to the prompt and keep using the summaries as before.
+      - Switch to another Claude model and keep using its summaries without extra checks.
     answer:
       - A
-    explanation: Nhận diện thiên lệch là một phần của đánh giá output; quyết định ảnh hưởng tới con người cần người duyệt.
+    explanation: "Exam Guide CCAO-F D2 yêu cầu nhận diện thiên lệch trong output; cách mô tả kém thuận lợi lặp lại theo nhóm ứng viên là dấu hiệu đó, cần soát output, chỉnh quy trình và giữ người quyết định với việc ảnh hưởng tới con người. Cho rằng AI trung lập là sai, output có thể mang thiên lệch. Thêm câu “công bằng, không thiên lệch” vào prompt mà không soát lại thì không biết lỗi đã hết chưa. Đổi model rồi bỏ kiểm tra chỉ là đoán: model khác vẫn có thể thiên lệch, và quyết định tuyển dụng vẫn thiếu người duyệt."
     ref: lessons/09-ccao-f.html#danh-gia
+    reviewed: 2026-11-18
   - id: K12
     exams:
       CCAO-F: D3
@@ -3740,13 +3777,14 @@ questions:
     stem: Your department wants to start using Claude for drafting customer replies. What is the most sensible rollout?
     options:
       - Pilot one well-defined reply type with human review and quality checks, then expand.
-      - Replace the entire support team on day one so that the cost savings arrive immediately.
-      - Let each person use it however they like, with no guidelines or review.
-      - Ban it until it is perfect and can answer every customer without mistakes.
+      - Roll it out for every reply type at once, with a lead spot-checking a weekly sample.
+      - Let each agent experiment freely for a month, then write guidelines from what worked.
+      - Start with the complex escalated complaints, where time saved per reply is largest.
     answer:
       - A
-    explanation: "Đưa Claude vào quy trình: thí điểm phạm vi rõ, có bước duyệt, đo kết quả rồi mở rộng."
+    explanation: "Đưa Claude vào quy trình nên bắt đầu bằng thí điểm: một loại việc lặp lại, phạm vi rõ, có người duyệt và đo chất lượng, đạt rồi mới mở rộng. Triển khai cho mọi loại phản hồi cùng lúc chỉ với kiểm mẫu hằng tuần thì lỗi ở các loại khó lọt tới khách trước khi kịp phát hiện. Để mỗi người tự thử một tháng không hướng dẫn, không bước duyệt thì phản hồi chưa kiểm vẫn tới khách, kết quả cũng không đo so sánh được. Bắt đầu từ khiếu nại phức tạp đã leo thang là chọn đúng ca rủi ro cao nhất, nơi sai sót gây hậu quả lớn nhất."
     ref: lessons/09-ccao-f.html#quy-trinh
+    reviewed: 2026-11-18
   - id: K16
     exams:
       CCAO-F: D4
@@ -3754,12 +3792,13 @@ questions:
     options:
       - It can speed up review by summarizing terms and flagging risks; approval stays with people.
       - Yes, it can approve the contracts on its own once it has read the company's purchasing policy.
-      - No, it cannot help with contracts at all, because legal text is too complex.
-      - It is only useful for writing the emails that accompany each contract.
+      - Contract review is better kept out of scope, since legal wording is beyond its strengths.
+      - It can approve the low-value contracts by itself, while people approve the larger ones.
     answer:
       - A
-    explanation: "Giải thích giá trị và giới hạn cho các bên: tăng tốc, nhưng quyết định quan trọng vẫn cần người có thẩm quyền."
+    explanation: "Truyền đạt giá trị và giới hạn trung thực: Claude tăng tốc khâu xem xét (tóm tắt điều khoản, đánh dấu rủi ro), còn phê duyệt là quyết định có hậu quả, cần người có thẩm quyền chịu trách nhiệm. Cho Claude tự duyệt sau khi đọc chính sách mua hàng là giao quyết định cho một công cụ có thể sai mà không ai kiểm. Tự duyệt hợp đồng giá trị nhỏ vẫn là bỏ người khỏi quyết định; giá trị nhỏ không có nghĩa là rủi ro điều khoản nhỏ. Loại hẳn hợp đồng khỏi phạm vi là đánh giá thấp: tóm tắt và đánh dấu điều khoản là việc Claude làm tốt khi có người kiểm lại."
     ref: lessons/09-ccao-f.html#quy-trinh
+    reviewed: 2026-11-18
   - id: K17
     exams:
       CCAO-F: D4
@@ -3797,24 +3836,26 @@ questions:
       - Replace the old document with the new version and remove the outdated file.
       - Add the new version but keep the old one too, so that Claude can compare the two policies.
       - Tell Claude at the start of each chat to ignore the old document.
-      - Delete the whole Project and rebuild it from scratch.
+      - Rename the old file to “OLD – do not use” and keep it in the knowledge base.
     answer:
       - A
-    explanation: "Cập nhật cấu hình: tài liệu lỗi thời trong kho kiến thức gây trả lời sai; thay hẳn bằng bản mới."
+    explanation: "Kho tri thức còn bản lỗi thời thì Claude có thể trích hạn mức cũ; cách bền là thay bằng bản mới và gỡ bản cũ khỏi Project. Giữ cả hai để so sánh tạo hai nguồn mâu thuẫn, Claude vẫn có thể trích nhầm bản cũ. Dặn bỏ qua tài liệu cũ ở đầu mỗi chat phụ thuộc vào việc từng người nhớ dặn, không sửa tận gốc. Đổi tên file cũ thành “OLD” vẫn để nội dung cũ trong kho, Claude vẫn có thể truy xuất và trích nó."
     ref: lessons/09-ccao-f.html#cau-hinh
+    reviewed: 2026-11-18
   - id: K20
     exams:
       CCAO-F: D5
-    stem: You connect Google Drive to Claude. Which statement is accurate?
+    stem: Your manager asks you to connect your work Google Drive to Claude for a project. As a team lead, your Drive access includes some HR files. Which statement should guide your decision?
     options:
       - Claude can read what your account can access through it, so connect only what policy allows.
       - Claude gains access to every file in the company's shared Drive, whatever your own permissions are.
-      - Connectors copy all of your files to a public location for Claude to index.
-      - Connectors need no permissions, since Claude only reads file names.
+      - Claude can see only files you attach to a chat, so connecting the Drive adds no new exposure.
+      - Claude reads only file names until you open a file yourself, so the HR files stay private.
     answer:
       - A
-    explanation: Connector cho Claude đọc dữ liệu thật theo quyền của tài khoản bạn; quản lý connector là một phần cấu hình.
+    explanation: "Connector Google Drive phản chiếu quyền sẵn có của tài khoản bạn: Claude không vượt quá những gì bạn xem được, nhưng đọc được mọi thứ bạn xem được, kể cả file HR. Vì vậy chỉ kết nối khi chính sách tổ chức cho phép. Cho rằng Claude thấy toàn bộ Drive chung bất kể quyền của bạn là sai, connector không vượt quyền người dùng. Cho rằng Claude chỉ thấy file được đính kèm, hay chỉ đọc tên file, là đánh giá thấp phạm vi truy cập: khi đã kết nối, Claude tìm và đọc được nội dung trong phạm vi quyền của bạn."
     ref: lessons/09-ccao-f.html#cau-hinh
+    reviewed: 2026-11-18
   - id: K21
     exams:
       CCAO-F: D6
@@ -3836,13 +3877,14 @@ questions:
     stem: Your organization's AI policy allows only the company's approved Claude workspace for internal documents. A colleague wants to paste a confidential plan into a personal account to save time. What should you advise?
     options:
       - Use the approved company workspace, as the policy requires.
-      - Go ahead, since it saves time.
-      - Paste only half of the document.
+      - Remove the client names first, then paste it into the personal account.
+      - Use the personal account, but turn off memory and the model-improvement setting first.
       - Use a personal account, then delete the chat right afterwards.
     answer:
       - A
-    explanation: Tuân thủ chính sách AI của tổ chức; đáp án đúng vừa hoàn thành việc vừa đúng quy trình.
+    explanation: "Chính sách AI của tổ chức chỉ cho phép workspace đã duyệt với tài liệu nội bộ, nên cách đúng là làm việc đó trong workspace công ty: vẫn hoàn thành việc mà đúng quy trình. Bỏ tên khách hàng vẫn để lộ nội dung kế hoạch mật, và chính sách giới hạn nơi được dùng chứ không chỉ loại dữ liệu. Tắt memory hay tuỳ chọn cho phép dùng chat để cải thiện model không biến tài khoản cá nhân thành công cụ được duyệt. Xoá chat ngay sau đó không xoá được việc tài liệu mật đã đi vào một tài khoản ngoài sự quản lý của công ty."
     ref: lessons/09-ccao-f.html#quan-tri
+    reviewed: 2026-11-18
   - id: K23
     exams:
       CCAO-F: D6
@@ -3869,8 +3911,9 @@ questions:
       - Accept long answers and shorten them by hand afterwards.
     answer:
       - A
-    explanation: "Chẩn đoán prompt kém: yêu cầu mơ hồ thì thay bằng ràng buộc cụ thể, có ví dụ."
+    explanation: "Theo hướng dẫn prompt của Anthropic, Claude làm tốt nhất với chỉ dẫn rõ ràng, cụ thể về output mong muốn, và ví dụ là một trong những cách đáng tin nhất để định hình định dạng, độ dài. “Ngắn thôi” là yêu cầu mơ hồ, nên thay bằng giới hạn đo được (số gạch đầu dòng, số từ) kèm ví dụ. Lặp lại cùng một yêu cầu mơ hồ nhiều lần không làm nó cụ thể hơn. Mở chat mới với prompt y nguyên chỉ là chạy lại và hy vọng kết quả khác. Chấp nhận rồi tự cắt bằng tay thì bỏ qua nguyên nhân gốc và tốn công mỗi lần. Nguồn: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
     ref: lessons/09-ccao-f.html#xu-ly-su-co
+    reviewed: 2026-11-18
   - id: K25
     exams:
       CCAO-F: D7
@@ -3891,14 +3934,15 @@ questions:
       CCAO-F: D3
     stem: You need to analyze a 5,000-row CSV of sales data and produce a chart. Which capability helps Claude do this accurately?
     options:
-      - Code execution (running code to analyze the data and create files).
-      - Memory, so Claude remembers the dataset across chats.
+      - Code execution and file creation, so Claude runs code on the data.
+      - A higher effort setting, so Claude reasons through the rows more carefully in text.
       - A longer prompt that describes every column of the data and the chart in detail.
-      - Research mode, which looks up similar sales datasets.
+      - Research, so Claude cross-checks the sales figures against web sources.
     answer:
       - A
-    explanation: Code execution cho Claude chạy code để phân tích dữ liệu và tạo file, chính xác hơn tính nhẩm trong văn bản.
+    explanation: "Phân tích 5.000 dòng và vẽ biểu đồ cần tính toán thật: với Code execution and file creation, Claude viết và chạy code (vd. Python) trên file CSV và tạo biểu đồ, nên chính xác hơn tính nhẩm trong văn bản. Tăng effort chỉ làm Claude suy nghĩ kỹ hơn bằng chữ, vẫn không thực sự chạy phép tính trên dữ liệu. Prompt dài mô tả từng cột giúp Claude hiểu dữ liệu nhưng không thay được việc tính toán. Research tìm kiếm trên web và nguồn đã kết nối, không phân tích file bạn tải lên. Nguồn: https://support.claude.com/en/articles/12111783-create-and-edit-files-with-claude"
     ref: lessons/09-ccao-f.html#san-pham
+    reviewed: 2026-11-18
   - id: K27
     exams:
       CCAO-F: D2
@@ -3910,8 +3954,9 @@ questions:
       - Compare the length of the summary with the length of the contract.
     answer:
       - A
-    explanation: Kiểm tra độ đầy đủ bằng cách đối chiếu các phần quan trọng với bản gốc. Hỏi lại Claude không phải kiểm chứng độc lập.
+    explanation: "Kiểm độ đầy đủ bằng cách đối chiếu các phần quan trọng cho cuộc đàm phán (giá, chấm dứt, trách nhiệm, gia hạn) với bản hợp đồng gốc. Hỏi lại Claude trong cùng cuộc chat không phải kiểm chứng độc lập; Claude có thể trả lời là đủ dù đã bỏ sót. Định dạng đẹp, dễ đọc không nói gì về nội dung có đủ hay không. So độ dài bản tóm tắt với hợp đồng không cho biết điều khoản nào bị thiếu."
     ref: lessons/09-ccao-f.html#danh-gia
+    reviewed: 2026-11-18
   - id: K28
     exams:
       CCAO-F: D2
@@ -3919,25 +3964,27 @@ questions:
     options:
       - Note the data may be outdated and look for more recent sources before relying on it.
       - Use it as is, because any source that Claude cites has already been checked for accuracy.
-      - Change the year to 2026 in the text so the analysis looks current.
+      - Keep the 2021 figures but add a line saying the market has grown since then.
       - Delete the whole analysis and start again without Claude.
     answer:
       - A
-    explanation: Đánh giá cả độ mới của nguồn; dữ liệu cũ trong thị trường thay đổi nhanh có thể dẫn tới kết luận sai.
+    explanation: "Đánh giá output gồm cả độ mới của nguồn; số liệu năm 2021 trong thị trường thay đổi nhanh có thể dẫn tới kết luận sai, nên ghi nhận rủi ro và tìm nguồn mới hơn trước khi dùng. Nguồn Claude trích không tự động được kiểm chứng, thậm chí có thể không tồn tại. Giữ số cũ và thêm một câu “thị trường đã tăng” là nhận định không căn cứ, số liệu vẫn chưa được cập nhật. Xoá toàn bộ phân tích là phản ứng quá mức, chỉ phần dựa vào nguồn cũ cần kiểm lại."
     ref: lessons/09-ccao-f.html#danh-gia
+    reviewed: 2026-11-18
   - id: K29
     exams:
       CCAO-F: D2
     stem: Claude gives two different answers to the same factual question in two separate chats. What does this indicate, and what should you do?
     options:
       - Outputs vary, so treat the fact as unverified and check an authoritative source.
-      - The answer from the second chat is always the correct one, since it is more recent.
+      - Trust the answer that Claude stated more confidently and in more detail.
       - Claude is broken and should no longer be used for any factual work.
       - Average the two answers to get the most likely value.
     answer:
       - A
-    explanation: Hai câu trả lời mâu thuẫn là tín hiệu phải kiểm chứng với nguồn có thẩm quyền, không chọn bừa.
+    explanation: "Tài liệu Anthropic về giảm hallucination: chạy cùng một prompt nhiều lần rồi so sánh, câu trả lời không nhất quán có thể là dấu hiệu hallucination. Vì vậy coi dữ kiện là chưa kiểm chứng và tra nguồn có thẩm quyền. Câu trả lời tự tin, chi tiết hơn không chứng minh là đúng. Kết luận Claude hỏng rồi bỏ hẳn là phản ứng quá mức; tài liệu nói các kỹ thuật chỉ giảm chứ không loại bỏ hẳn hallucination, nên cách đúng là kiểm chứng thông tin quan trọng. Lấy trung bình hai giá trị có thể đều sai cho ra một số không có căn cứ."
     ref: lessons/09-ccao-f.html#danh-gia
+    reviewed: 2026-11-18
   - id: K30
     exams:
       CCAO-F: D2
@@ -3949,34 +3996,37 @@ questions:
       - Replace it with another title that Claude suggests at random.
     answer:
       - A
-    explanation: Tài liệu tham khảo có thể bị bịa; mọi mục cần kiểm chứng trước khi công bố.
+    explanation: "Đầu sách không tìm thấy ở đâu là dấu hiệu có thể bị bịa (hallucination); nếu một mục bịa thì các mục khác cũng có thể sai tác giả hoặc năm, nên kiểm mọi mục và bỏ mục không xác nhận được. Đoán là sách hiếm rồi vẫn đăng là công bố thông tin chưa kiểm chứng. Hỏi Claude xác nhận không phải kiểm chứng độc lập, nó có thể khẳng định lại lỗi. Thay bằng một đầu sách khác Claude gợi ý thì đầu sách mới cũng chưa được kiểm chứng."
     ref: lessons/09-ccao-f.html#danh-gia
+    reviewed: 2026-11-18
   - id: K31
     exams:
       CCAO-F: D1
     stem: You want Claude to rewrite a policy announcement in your company's voice. What makes the request most effective?
     options:
       - Share one or two past announcements as voice examples, plus the audience and key points.
-      - Just say “use our company voice” and let Claude infer the house style without any examples.
-      - Ask for ten versions and pick one of them at random.
-      - Ask Claude to guess who the audience is from the text.
+      - Tell Claude to “use our company voice” and trust it to know your house style.
+      - Describe the voice with adjectives such as “warm, confident, concise” and skip the audience.
+      - Ask for a neutral corporate draft, then add your company's voice yourself afterward.
     answer:
       - A
-    explanation: Ví dụ cụ thể về giọng văn cùng đối tượng và ý chính giúp Claude bắt đúng phong cách hơn mô tả chung chung.
+    explanation: "Tài liệu prompting của Anthropic nêu ví dụ là một trong những cách đáng tin cậy nhất để điều khiển giọng văn, định dạng và cấu trúc; thêm người đọc và ý chính cho Claude bối cảnh nó không tự có. Chỉ nói “giọng công ty” là coi Claude như đã biết quy ước nội bộ, trong khi nó giống nhân viên mới chưa có bối cảnh. Vài tính từ mô tả giọng mơ hồ hơn ví dụ thật, lại bỏ mất người đọc. Xin bản trung tính rồi tự sửa giọng là bỏ đúng phần việc muốn nhờ Claude làm."
     ref: lessons/09-ccao-f.html#prompting
+    reviewed: 2026-11-18
   - id: K32
     exams:
       CCAO-F: D1
-    stem: Claude asked several clarifying questions before drafting a project plan. How should you respond?
+    stem: Before drafting a project plan, Claude asks about the budget, the deadline and the team size, which only you know. How should you respond?
     options:
       - Answer the questions; the missing information usually makes the plan better.
-      - Ignore the questions and repeat the original request word for word until it complies.
-      - Start a new chat so Claude stops asking questions.
-      - Tell Claude never to ask clarifying questions again.
+      - Tell Claude to assume typical values for all three and draft the plan right away.
+      - Ask Claude to draft the plan first and list its open questions at the end.
+      - Skip the questions and paste a longer version of your original request instead.
     answer:
       - A
-    explanation: Câu hỏi làm rõ giúp lấp thông tin còn thiếu; trả lời chúng là một phần của làm việc lặp với Claude.
+    explanation: "Ngân sách, hạn chót và quy mô nhóm là bối cảnh chỉ bạn có; trả lời câu hỏi làm rõ là cách lặp hiệu quả, vì Claude giống nhân viên mới chưa biết bối cảnh của bạn. Để Claude tự giả định số “điển hình” tạo ra kế hoạch dựa trên số đoán, phải làm lại khi số thật khác. Soạn trước rồi hỏi sau cũng khiến bản nháp đầu dựng trên phỏng đoán. Viết lại yêu cầu dài hơn mà không trả lời ba câu hỏi vẫn không cung cấp thông tin còn thiếu."
     ref: lessons/09-ccao-f.html#prompting
+    reviewed: 2026-11-18
   - id: K33
     exams:
       CCAO-F: D4
@@ -4000,11 +4050,12 @@ questions:
       - Compare time and quality (accuracy, missed actions) before and after on a reviewed sample.
       - Count how many times the team uses Claude each week and treat any rising number as success.
       - Ask Claude whether its summaries are helping the team.
-      - Assume it helps, since AI tools always save time.
+      - Survey the team once after launch and ask whether they like the new summaries.
     answer:
       - A
-    explanation: "Đo giá trị bằng tiêu chí thực: thời gian, chất lượng, lỗi bỏ sót; không dựa vào số lần dùng hay lời tự đánh giá."
+    explanation: "Đo giá trị bằng tiêu chí gắn với kết quả: thời gian làm và chất lượng (độ chính xác, việc cần làm bị bỏ sót), so trước và sau trên một mẫu đã kiểm. Số lượt dùng tăng chỉ cho thấy mọi người dùng nhiều, không cho biết bản tóm tắt có đúng hay không. Hỏi Claude tự đánh giá không phải bằng chứng. Khảo sát một lần xem mọi người có thích không chỉ đo cảm nhận, không phát hiện được bản tóm tắt sai hay bỏ sót việc."
     ref: lessons/09-ccao-f.html#quy-trinh
+    reviewed: 2026-11-18
   - id: K35
     exams:
       CCAO-F: D5
@@ -4012,25 +4063,27 @@ questions:
     options:
       - Update the Project instructions to the new language and tone requirements.
       - Ask each person to add “please reply in Vietnamese” at the start of every message.
-      - Create a new Project for every chat with the new language.
+      - Add a knowledge file titled “Vietnamese clients” and keep the current instructions.
       - Leave it, since Claude will work out the language from the client.
     answer:
       - A
-    explanation: Yêu cầu thay đổi thì cập nhật cấu hình ở một chỗ (Project instructions) để cả nhóm dùng chung.
+    explanation: "Yêu cầu chung của cả nhóm đã đổi thì sửa ở nơi cấu hình chung: cập nhật Project instructions sang ngôn ngữ và giọng mới. Bắt từng người thêm “please reply in Vietnamese” vào mỗi tin nhắn dễ quên, không đồng đều và vẫn va với chỉ dẫn cũ. Thêm file kiến thức mà giữ instructions cũ tạo hai tín hiệu mâu thuẫn; knowledge là tài liệu tham khảo, không phải nơi đặt quy tắc hành vi. Để nguyên thì instructions vẫn ghi luôn trả lời bằng tiếng Anh trang trọng, Claude sẽ theo chỉ dẫn đó chứ không tự đổi theo khách."
     ref: lessons/09-ccao-f.html#cau-hinh
+    reviewed: 2026-11-18
   - id: K36
     exams:
       CCAO-F: D6
-    stem: A colleague plans to publish a Claude-written article under their own name without mentioning AI assistance, although company policy requires disclosure. What is the appropriate action?
+    stem: Company policy requires disclosing AI assistance in published articles. A colleague heavily edited a Claude draft and now considers the article entirely their own work. What is the appropriate action?
     options:
-      - Follow the company policy and disclose AI assistance as required.
-      - Publish without disclosure; nobody will know.
-      - Rewrite a few words so it is no longer AI-generated.
-      - Ask Claude whether disclosure is necessary and follow its answer instead of the policy.
+      - Disclose the AI assistance when the article is published.
+      - Skip disclosure, since the heavy editing makes it the colleague's own work.
+      - Rewrite a few more paragraphs by hand so disclosure is no longer needed.
+      - Mention AI assistance only if a reader asks where the content came from.
     answer:
       - A
-    explanation: Minh bạch và tuân thủ chính sách tổ chức về việc dùng AI là một phần của sử dụng có trách nhiệm.
+    explanation: "Chính sách công ty yêu cầu công bố việc dùng AI trong bài đăng, và minh bạch là một phần của Diligence: người đăng chịu trách nhiệm về nội dung và nói rõ có AI hỗ trợ. Sửa nhiều không xoá được việc bản nháp do Claude viết, và chính sách trong tình huống không nêu ngoại lệ cho bản đã sửa nhiều. Viết lại thêm vài đoạn để né quy định là lách chính sách, không phải tuân thủ. Chỉ nói khi có người hỏi là không minh bạch, trái với yêu cầu công bố chủ động."
     ref: lessons/09-ccao-f.html#quan-tri
+    reviewed: 2026-11-18
   - id: K37
     exams:
       CCAO-F: D6
@@ -4056,8 +4109,9 @@ questions:
       - Switch off all formatting so the summary has more room for detail.
     answer:
       - A
-    explanation: Tài liệu dài dễ bị bỏ sót phần giữa; chia theo mục rồi tổng hợp giúp đầy đủ hơn.
+    explanation: "Với tài liệu dài, yêu cầu tóm tắt gộp một lần dễ khiến phần giữa bị lướt qua. Chia nhỏ việc (tóm tắt từng mục, hoặc từng phần rồi gộp lại) buộc Claude xử lý mọi phần và cho phép kiểm tra từng bước; hướng dẫn của Anthropic cũng khuyên với tài liệu dài nên cho Claude trích đoạn liên quan trước rồi mới làm. Yêu cầu bản tóm tắt còn ngắn hơn sẽ bỏ thêm chi tiết chứ không bớt. Dán tài liệu hai lần làm context dài gấp đôi mà không chỉ cho Claude phải chú ý phần nào. Định dạng không chiếm chỗ của chi tiết, nên tắt định dạng không giải quyết việc bỏ sót. Nguồn: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
     ref: lessons/09-ccao-f.html#xu-ly-su-co
+    reviewed: 2026-11-18
   - id: K39
     exams:
       CCAO-F: D1
@@ -4069,8 +4123,9 @@ questions:
       - Paste only the supplier names and ask for Claude's general opinion of each company.
     answer:
       - B
-    explanation: Đưa đủ dữ liệu, tiêu chí và mức ưu tiên, và nói rõ dạng kết quả mong muốn. Câu hỏi trống bối cảnh chỉ cho câu trả lời chung chung.
+    explanation: "Prompt hiệu quả đưa đủ dữ liệu (ba báo giá), tiêu chí kèm trọng số và nói rõ dạng kết quả (bảng so sánh, lựa chọn có lý do). Hỏi “nhà cung cấp nào tốt nhất” mà để Claude tự chọn tiêu chí thì kết quả không phản ánh ưu tiên của bạn. Ép chọn bản rẻ nhất bỏ qua chất lượng, thời hạn, điều khoản; quyết định đã có sẵn nên Claude không giúp so sánh được gì. Chỉ đưa tên nhà cung cấp thì Claude không có báo giá để phân tích, chỉ nói chung chung về từng công ty."
     ref: lessons/09-ccao-f.html#prompting
+    reviewed: 2026-11-18
   - id: K40
     exams:
       CCAO-F: D1
@@ -4082,21 +4137,23 @@ questions:
       - That every detail of the report must be kept so nothing is lost.
     answer:
       - B
-    explanation: Bản tóm tắt tốt phụ thuộc vào người đọc và mục đích. Nêu đối tượng, độ dài, trọng tâm và định dạng.
+    explanation: "Bản tóm tắt tốt phụ thuộc vào người đọc và mục đích: nêu đối tượng, độ dài, trọng tâm (quyết định, rủi ro, chi phí) và định dạng. Chỉ ghi “summarize this” là trông vào việc Claude tự đoán, trong khi tài liệu prompting của Anthropic khuyên nói rõ đầu ra mong muốn. Thêm “thật tốt, chuyên nghiệp” không cho Claude thông tin gì mới. Giữ mọi chi tiết của 50 trang đi ngược mục đích tóm tắt cho lãnh đạo."
     ref: lessons/09-ccao-f.html#prompting
+    reviewed: 2026-11-18
   - id: K41
     exams:
       CCAO-F: D2
     stem: Claude translated a product safety leaflet into Japanese for publication. Nobody on your team reads Japanese. What should happen before it is published?
     options:
-      - Publish it, because Claude's translations of technical text are always accurate.
+      - Publish it, since the English source text was already reviewed and approved.
       - Have a qualified reviewer fluent in Japanese check it, since safety errors carry real risk.
       - Ask Claude to translate it back into English, and publish it if the meaning looks about the same.
       - Publish it with a short note saying that it was machine-translated.
     answer:
       - B
-    explanation: Thông tin an toàn công bố ra ngoài là nội dung rủi ro cao, cần người có chuyên môn duyệt. Dịch ngược để so chỉ là cách kiểm tra thô, không thay được người duyệt.
+    explanation: "Thông tin an toàn công bố ra ngoài là nội dung rủi ro cao; khi không ai trong nhóm đọc được tiếng Nhật thì cần người thông thạo, đủ chuyên môn duyệt. Bản tiếng Anh đã được duyệt không bảo đảm bản dịch đúng, lỗi có thể phát sinh khi dịch. Dịch ngược để so chỉ là kiểm tra thô, có thể bỏ qua chính lỗi của bản dịch, không thay được người duyệt. Ghi chú “dịch máy” chuyển rủi ro sang người đọc chứ không sửa lỗi an toàn."
     ref: lessons/09-ccao-f.html#danh-gia
+    reviewed: 2026-11-18
   - id: K42
     exams:
       CCAO-F: D2
@@ -4105,11 +4162,12 @@ questions:
       - There is no real problem, because the positive comments clearly outweigh the negative ones.
       - It overgeneralizes from a small subset; correct it against the actual counts first.
       - The survey is too small to analyze, so no summary should be shared.
-      - Claude should have ignored the dashboard comments as off-topic.
+      - The wording is just too strong; changing “love” to “like” would make it accurate.
     answer:
       - B
-    explanation: Đánh giá output gồm kiểm tra kết luận có khớp quy mô dữ liệu không. Khái quát hoá quá mức là lỗi hay gặp.
+    explanation: "Đánh giá output gồm kiểm tra kết luận có khớp quy mô dữ liệu không: 5 nhận xét tích cực trên 200 câu trả lời không thể thành “phần lớn khách hàng”, nên phải sửa theo số đếm thực. Cho rằng không có vấn đề vì nhận xét tích cực áp đảo là bỏ qua 180 câu không nhắc tới dashboard. Khảo sát 200 câu vẫn phân tích được, chỉ cần kết luận đúng phạm vi. Đổi “love” thành “like” vẫn giữ chữ “most”, lỗi khái quát hoá quá mức còn nguyên."
     ref: lessons/09-ccao-f.html#danh-gia
+    reviewed: 2026-11-18
   - id: K43
     exams:
       CCAO-F: D3
@@ -4123,19 +4181,21 @@ questions:
       - B
     explanation: Việc một lần, đơn giản thì chat thường là đủ. Project, Research, connector dành cho nhu cầu lặp lại, nhiều nguồn hoặc cần dữ liệu thật.
     ref: lessons/09-ccao-f.html#san-pham
+    reviewed: 2026-11-18
   - id: K44
     exams:
       CCAO-F: D3
     stem: You need a careful analysis of how five interrelated policy documents conflict with each other, with step-by-step reasoning. Which model choice fits best?
     options:
       - The fastest, cheapest model, since it is only five documents of moderate length.
-      - The most capable model, such as Opus, for complex reasoning across documents.
-      - Any model at all, since every model reasons through documents the same way.
+      - A highly capable model, such as Opus, for complex reasoning across documents.
+      - A mid-tier model at its lowest effort setting, so the answer comes back sooner.
       - Split the work across five separate chats using the smallest model available.
     answer:
       - B
-    explanation: "Chọn model theo độ khó: suy luận phức tạp trên nhiều tài liệu thì dùng model mạnh; việc ngắn, lặp lại thì dùng model nhanh, rẻ."
+    explanation: "Chọn model theo độ khó: phân tích mâu thuẫn giữa nhiều tài liệu liên quan nhau, cần suy luận từng bước, hợp với model mạnh như Opus; tài liệu Anthropic xếp suy luận phức tạp và việc đòi hiểu sắc thái vào nhóm nên bắt đầu từ model mạnh. Model nhanh, rẻ hợp việc khối lượng lớn, đơn giản; ít tài liệu không làm việc suy luận dễ hơn. Hạ effort xuống thấp nhất để có kết quả sớm là đánh đổi đúng phần suy luận mà việc này cần. Tách năm chat với model nhỏ nhất làm mất góc nhìn chéo, trong khi mâu thuẫn nằm chính ở chỗ các tài liệu giao nhau. Nguồn: https://platform.claude.com/docs/en/about-claude/models/choosing-a-model"
     ref: lessons/09-ccao-f.html#san-pham
+    reviewed: 2026-11-18
   - id: K45
     exams:
       CCAO-F: D4
@@ -4158,25 +4218,27 @@ questions:
     options:
       - Say nothing for now and roll it out quietly, so that the change causes less worry in the team.
       - Explain Claude assists with drafts while people own decisions, and share pilot results.
-      - Promise that Claude will take over all of their routine work.
-      - Tell them the decision is final and not open to discussion.
+      - Reassure them that Claude will not change how anyone on the team works.
+      - Share the vendor's productivity benchmarks and let the numbers speak for themselves.
     answer:
       - B
-    explanation: Giải thích giá trị và giới hạn cho các bên liên quan một cách trung thực, dựa trên kết quả thí điểm.
+    explanation: "Truyền đạt trung thực cho các bên liên quan: Claude hỗ trợ phần soạn nháp, con người giữ quyết định, và dẫn chứng bằng kết quả thí điểm của chính nhóm. Im lặng triển khai làm mất lòng tin khi mọi người phát hiện ra. Hứa rằng Claude sẽ không thay đổi cách ai làm việc là hứa sai, vì đưa Claude vào quy trình chắc chắn đổi một phần công việc. Số liệu năng suất của nhà cung cấp không trả lời mối lo cụ thể của nhóm và không phản ánh quy trình của họ."
     ref: lessons/09-ccao-f.html#quy-trinh
+    reviewed: 2026-11-18
   - id: K47
     exams:
       CCAO-F: D4
     stem: You are planning a product launch with Claude's help. Which use is most effective?
     options:
-      - Ask Claude to pick the launch date itself and announce it to the whole company by email.
+      - Ask Claude for a complete launch plan and circulate it as the final plan right away.
       - Have Claude draft a timeline with dependencies and risks, then check it with each owner.
-      - Ask Claude to estimate the launch budget without any figures from you.
-      - Skip planning and let Claude handle issues as they come up.
+      - Ask Claude to estimate the launch budget from typical industry figures alone.
+      - Have each owner plan separately, then ask Claude to merge the plans the day before launch.
     answer:
       - B
-    explanation: Claude giúp lập kế hoạch và phát hiện phụ thuộc, rủi ro; người phụ trách từng mảng xác nhận vì họ nắm thực tế.
+    explanation: "Claude giúp lập kế hoạch: phác timeline, chỉ ra phụ thuộc và rủi ro; người phụ trách từng mảng xác nhận vì họ nắm thực tế nguồn lực và lịch. Gửi ngay kế hoạch của Claude như bản chính thức là bỏ bước kiểm, lỗi về ngày hay phụ thuộc lan ra cả công ty. Ước tính ngân sách chỉ từ số liệu chung của ngành không phản ánh chi phí thật của công ty. Để từng người lập riêng rồi gộp sát ngày ra mắt thì xung đột phụ thuộc bị phát hiện quá muộn để xử lý."
     ref: lessons/09-ccao-f.html#quy-trinh
+    reviewed: 2026-11-18
   - id: K48
     exams:
       CCAO-F: D4
@@ -4184,12 +4246,13 @@ questions:
     options:
       - Have Claude rewrite them as clear steps, then have the process owner verify each step.
       - Publish Claude's rewrite immediately as the new official procedure for the whole department.
-      - Ask Claude to invent missing steps so the procedure looks complete.
-      - Delete the old notes and start working without documentation.
+      - Ask Claude to fill any gaps with common industry practice so that the steps are complete.
+      - Ask Claude to combine every version word for word into one longer master document.
     answer:
       - A
-    explanation: Claude cấu trúc lại tốt, nhưng bước còn thiếu thì phải hỏi người nắm quy trình, không được bịa. Chủ quy trình duyệt trước khi ban hành.
+    explanation: "Claude cấu trúc lại ghi chú lộn xộn thành các bước rõ ràng rất tốt, nhưng chủ quy trình phải kiểm từng bước trước khi ban hành. Ban hành ngay bản viết lại là bỏ bước kiểm, chỗ Claude hiểu sai sẽ thành quy trình chính thức. Lấp chỗ trống bằng “thông lệ ngành” là đoán, có thể khác cách bộ phận thực sự làm; bước còn thiếu phải hỏi người nắm quy trình. Gộp nguyên văn mọi phiên bản chỉ làm tài liệu dài hơn mà vẫn mâu thuẫn."
     ref: lessons/09-ccao-f.html#quy-trinh
+    reviewed: 2026-11-18
   - id: K49
     exams:
       CCAO-F: D4
@@ -4203,19 +4266,21 @@ questions:
       - C
     explanation: Quyết định ảnh hưởng trực tiếp tới con người phải do người đưa ra. Claude hỗ trợ được các bước soạn thảo có người duyệt.
     ref: lessons/09-ccao-f.html#quy-trinh
+    reviewed: 2026-11-18
   - id: K50
     exams:
       CCAO-F: D5
     stem: A Project's knowledge base has grown to 40 files, including duplicates and old drafts, and Claude often cites the wrong document. What should you do?
     options:
-      - Add even more reference files to the knowledge base so Claude has more context to choose from.
+      - Use a more capable model so Claude can tell the current documents from the drafts.
       - "Clean up the knowledge base: remove duplicates and old drafts, and name files clearly."
       - Tell Claude in every chat which file it should use for the answer.
-      - Create a new Project for each question so only one file is relevant.
+      - Merge all 40 files into one large PDF so Claude reads everything at once.
     answer:
       - B
-    explanation: Kho tri thức cần gọn, cập nhật, đặt tên rõ. Tài liệu trùng và lỗi thời làm Claude trích nhầm.
+    explanation: "Kho tri thức có bản trùng và bản nháp cũ thì Claude dễ truy xuất nhầm; cách sửa tận gốc là dọn kho (gỡ bản trùng, bản nháp lỗi thời) và đặt tên file rõ, mô tả đúng nội dung, đúng như mẹo Anthropic nêu cho Project dùng RAG. Model mạnh hơn không biết bản nào là bản hiện hành khi chính kho chứa nội dung mâu thuẫn. Nêu tên tài liệu trong câu hỏi có giúp tập trung tìm kiếm, nhưng lặp lại ở mọi chat thì phụ thuộc từng người và không bỏ được nguồn nhiễu. Gộp 40 file thành một PDF vẫn giữ nguyên bản trùng và bản nháp, lại mất tên file mô tả giúp Claude tìm đúng nội dung."
     ref: lessons/09-ccao-f.html#cau-hinh
+    reviewed: 2026-11-18
   - id: K51
     exams:
       CCAO-F: D5
@@ -4238,38 +4303,41 @@ questions:
     options:
       - View the memory and edit or delete the outdated item.
       - Correct the preference again at the start of every new chat.
-      - Stop using Claude for reports.
-      - Create a new account so memory starts empty.
+      - Turn off memory entirely so Claude stops applying any saved preferences.
+      - Use incognito chats for reports so the old preference is not applied.
     answer:
       - A
-    explanation: Memory xem, sửa, xoá được. Thông tin nhớ đã lỗi thời thì cập nhật tại nguồn thay vì sửa lại ở mỗi chat.
+    explanation: "Memory xem, sửa, xoá được (Settings > Your Claude > Your memory, hoặc bảo Claude quên ngay trong chat). Sở thích đã lỗi thời thì sửa hoặc xoá đúng mục đó tại nguồn. Nhắc lại ở đầu mỗi chat chỉ chữa triệu chứng, mục cũ vẫn còn. Tắt hẳn memory làm mất cả những thông tin còn hữu ích chỉ vì một mục sai. Chat incognito không dùng memory nhưng cũng không lưu lịch sử, và mục sai vẫn nằm đó cho mọi chat thường."
     ref: lessons/09-ccao-f.html#cau-hinh
+    reviewed: 2026-11-18
   - id: K53
     exams:
       CCAO-F: D6
     stem: The marketing team asks Claude to write health benefit claims for a dietary supplement ad. What is the most important safeguard?
     options:
-      - Publish quickly, before competitors can launch similar claims for their own supplements.
+      - Ask Claude to cite studies for each claim, then publish once citations are added.
       - Have legal or compliance review the claims first, since health claims are regulated.
       - Ask Claude to add “results may vary” at the end of each claim.
-      - Use stronger wording so the ad stands out from the competition.
+      - Have the marketing manager approve the claims, since they know the product best.
     answer:
       - B
-    explanation: Lĩnh vực có quy định (y tế, tài chính) cần chuyên gia và bộ phận tuân thủ duyệt. Một câu miễn trừ không thay được kiểm chứng.
+    explanation: "Tuyên bố về lợi ích sức khoẻ thuộc lĩnh vực có quy định, và Usage Policy của Anthropic cấm tạo thông tin sai lệch về y tế, sức khoẻ; vì vậy bộ phận pháp lý hoặc tuân thủ phải duyệt trước khi đăng. Bảo Claude kèm trích dẫn nghiên cứu không phải kiểm chứng: trích dẫn có thể bị bịa hoặc không ủng hộ đúng tuyên bố, và vẫn chưa ai xét tính hợp quy. Thêm câu “results may vary” không làm một tuyên bố sai hay không được phép trở nên hợp lệ. Trưởng phòng marketing hiểu sản phẩm nhưng không có chuyên môn pháp lý, và chính họ có động cơ quảng bá."
     ref: lessons/09-ccao-f.html#quan-tri
+    reviewed: 2026-11-18
   - id: K54
     exams:
       CCAO-F: D6
     stem: A colleague wants Claude to reproduce a competitor's paid market research report in full so the team can circulate it internally. What is the appropriate response?
     options:
-      - Go ahead, since internal circulation of any purchased or found document is always allowed.
+      - Go ahead, since circulating it internally does not count as publishing the report.
       - Don't reproduce it in full; summarize what you may use, cite it, or buy a licence.
       - Ask Claude to change a few words so it no longer counts as a copy.
-      - Circulate it internally but remove the competitor's name first.
+      - Reproduce it in full, but credit the original publisher on the first page.
     answer:
       - B
-    explanation: Tôn trọng bản quyền và sở hữu trí tuệ là một phần của sử dụng có trách nhiệm; sửa vài chữ không biến bản sao thành hợp lệ.
+    explanation: "Tôn trọng bản quyền là một phần của dùng AI có trách nhiệm; Usage Policy của Anthropic cấm dùng sản phẩm để vi phạm quyền sở hữu trí tuệ của bên thứ ba. Cách đúng là không sao chép toàn văn: tóm tắt phần được phép dùng, trích nguồn, hoặc mua giấy phép. Lưu hành nội bộ vẫn là sao chép và phân phối, không được miễn chỉ vì không đăng công khai. Sửa vài chữ không biến bản sao thành tác phẩm khác. Ghi nguồn không thay cho quyền sao chép, nên chép toàn văn kèm ghi công vẫn vi phạm."
     ref: lessons/09-ccao-f.html#quan-tri
+    reviewed: 2026-11-18
   - id: K55
     exams:
       CCAO-F: D6
@@ -4281,8 +4349,9 @@ questions:
       - Wait to see whether a problem occurs before reporting anything.
     answer:
       - B
-    explanation: Sự cố dữ liệu cần báo theo quy trình để tổ chức đánh giá và xử lý. Xoá chat hay “bảo Claude quên” không phải biện pháp kiểm soát.
+    explanation: "Đưa dữ liệu cá nhân của khách vào công cụ chưa được duyệt là một sự cố dữ liệu. Cần báo ngay cho bộ phận bảo vệ dữ liệu hoặc bảo mật theo quy trình xử lý sự cố, để tổ chức đánh giá mức độ, làm việc với nhà cung cấp và thực hiện nghĩa vụ thông báo nếu có. Xoá chat rồi im lặng không bảo đảm dữ liệu đã bị xoá khỏi hệ thống của nhà cung cấp, và tước của tổ chức cơ hội xử lý. Bảo Claude “quên” rồi xác nhận không phải biện pháp kiểm soát: lời xác nhận của model không xoá được dữ liệu đã gửi đi. Chờ xem có chuyện gì rồi mới báo làm chậm việc xử lý, trong khi nhiều quy định bảo vệ dữ liệu đặt hạn báo sự cố rất ngắn."
     ref: lessons/09-ccao-f.html#quan-tri
+    reviewed: 2026-11-18
   - id: K56
     exams:
       CCAO-F: D7
@@ -4304,13 +4373,14 @@ questions:
     stem: You uploaded the company leave policy, but Claude answers a question with general information that contradicts it. What should you try first?
     options:
       - Check the file is readable, then ask for an answer only from it, citing the section.
-      - Assume the uploaded policy document is wrong and that Claude's general answer is correct.
+      - Ask Claude how confident it is in its general answer before deciding which to follow.
       - Switch to a different AI tool that reads documents more carefully.
       - Repeat the same question several times until the answer changes.
     answer:
       - A
-    explanation: "Chẩn đoán từ gốc: tài liệu có thực sự được đọc không, prompt có yêu cầu bám tài liệu và trích nguồn không."
+    explanation: "Chẩn đoán từ gốc: trước hết xem file có thực sự đọc được không (định dạng, bản scan, đúng phiên bản), rồi yêu cầu Claude chỉ trả lời dựa trên tài liệu và trích mục liên quan để kiểm chứng được; tài liệu Anthropic gọi đây là giới hạn vào tài liệu được cung cấp và xác minh bằng trích dẫn. Mức tự tin model tự nhận không phải bằng chứng; chính sách nội bộ của công ty mới là nguồn có thẩm quyền, không phải kiến thức chung. Đổi sang công cụ AI khác bỏ qua nguyên nhân (file không đọc được, prompt không yêu cầu bám tài liệu) nên lỗi có thể lặp lại. Hỏi lại y nguyên nhiều lần tới khi đáp án đổi là chọn đáp án mình thích, không phải kiểm chứng. Nguồn: https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations"
     ref: lessons/09-ccao-f.html#xu-ly-su-co
+    reviewed: 2026-11-18
   - id: K58
     exams:
       CCAO-F: D7
@@ -4318,12 +4388,13 @@ questions:
     options:
       - Check the Google Drive connector is enabled and your account can open that document.
       - Ask Claude to work out the document's contents from its title and from the chat so far.
-      - Paste the document link several more times in the same message.
+      - Switch to a more capable model, since smaller models cannot open shared documents.
       - Make the document public on the internet so Claude can open it.
     answer:
       - A
-    explanation: Connector đọc theo quyền tài khoản của bạn. Kiểm tra connector và quyền truy cập; công khai tài liệu ra internet là rủi ro không cần thiết.
+    explanation: "Connector Google Drive dùng đúng quyền của tài khoản Google đã kết nối: Claude chỉ mở được file mà tài khoản đó mở được; ở Team và Enterprise, Owner phải bật connector cho tổ chức trước rồi từng người mới xác thực. Vì vậy cần kiểm tra connector đã bật, đã kết nối chưa và tài khoản có quyền mở tài liệu chưa. Bảo Claude đoán nội dung từ tiêu đề là mời nó bịa. Quyền truy cập không phụ thuộc vào model, nên đổi model không giúp gì. Công khai tài liệu lên internet là rủi ro lộ dữ liệu không cần thiết, khi chỉ cần sửa kết nối hoặc quyền. Nguồn: https://support.claude.com/en/articles/10166901-use-google-workspace-connectors"
     ref: lessons/09-ccao-f.html#xu-ly-su-co
+    reviewed: 2026-11-18
   - id: C199
     exams:
       CCAR-F: D1
@@ -8308,12 +8379,13 @@ questions:
     options:
       - Ask for an engaging, persuasive tone that suits marketing copy.
       - Ask Claude to answer from memory without using any search tools.
-      - Ask for a single paragraph with no company names in it, so that it is easy to read quickly.
+      - Ask for a polished narrative summary that is ready to paste straight into the board deck.
       - Ask for sources and dates for each finding, and to flag what it could not verify.
     answer:
       - D
-    explanation: Việc nghiên cứu cần nguồn, ngày tháng và đánh dấu điều chưa kiểm chứng. Giọng thuyết phục là yêu cầu của việc soạn thảo, không phải nghiên cứu.
+    explanation: "Prompt nghiên cứu cần nguồn, ngày tháng và đánh dấu điều chưa kiểm chứng; tài liệu prompting của Anthropic khuyên yêu cầu Claude kiểm chứng thông tin qua nhiều nguồn khi nghiên cứu. Giọng thuyết phục là yêu cầu của việc soạn thảo, không phải nghiên cứu. Trả lời từ trí nhớ, không tìm kiếm, dễ thiếu các chương trình mới ra mắt trong năm nay. Bản tường thuật trau chuốt để dán thẳng vào slide là mục tiêu soạn thảo và che mất nguồn của từng phát hiện."
     ref: lessons/09-ccao-f.html#prompting
+    reviewed: 2026-11-18
   - id: K63
     exams:
       CCAO-F: D1
@@ -8321,16 +8393,17 @@ questions:
     options:
       - “Give 20 varied names in different styles; we will shortlist later.”
       - “Give the single best name for the program and explain why it is perfect.”
-      - “Give one name that has been proven to work at other companies.”
-      - “Analyze our training budget before suggesting any names.”
+      - “Give five names that follow the same pattern as our existing program names.”
+      - “Give three safe, conventional names that leadership will approve quickly.”
     answer:
       - A
-    explanation: Brainstorm cần số lượng và sự đa dạng, đánh giá để sau. Đòi một đáp án hoàn hảo ngay làm hẹp ý tưởng.
+    explanation: "Brainstorm cần số lượng và sự đa dạng, đánh giá để sau (Exam Guide CCAO-F D1: đổi chiến lược prompt theo loại việc). Đòi một cái tên “hoàn hảo” ngay làm hẹp ý tưởng. Bắt theo khuôn tên cũ khoá phong cách từ đầu, mất sự đa dạng. Chỉ xin vài tên an toàn cho dễ duyệt là lọc sớm theo tiêu chí duyệt, trong khi bước chọn lọc nên để sau khi đã có danh sách rộng."
     ref: lessons/09-ccao-f.html#prompting
+    reviewed: 2026-11-18
   - id: Q01
     exams:
-      CCAO-F: D1
-    stem: In the AI Fluency framework, which competency is about deciding which parts of a task to hand to Claude and which to keep yourself?
+      CCAO-F: D4
+    stem: Before a quarterly review, a manager decides that Claude will compile the data tables and draft the summary, while she keeps the conclusions and recommendations for herself. Which AI Fluency competency is she mainly exercising?
     options:
       - Diligence
       - Delegation
@@ -8338,8 +8411,9 @@ questions:
       - Discernment
     answer:
       - B
-    explanation: "4D: Delegation (giao phần nào cho AI), Description (mô tả yêu cầu rõ), Discernment (đánh giá output), Diligence (chịu trách nhiệm, minh bạch)."
+    explanation: "Chia phần nào giao cho Claude (tổng hợp bảng số, soạn nháp) và phần nào giữ cho mình (kết luận, khuyến nghị) là Delegation trong khung 4D. Description là cách mô tả yêu cầu cho AI (đầu ra, cách làm, cách cư xử), chưa diễn ra ở bước chia việc này. Discernment là đánh giá output sau khi nhận được. Diligence là chịu trách nhiệm và minh bạch về việc dùng AI; giữ quyết định cho người có liên quan tới trách nhiệm, nhưng hành động chính ở đây là chia việc."
     ref: lessons/15-claude-101-fluency.html#ai-fluency
+    reviewed: 2026-11-18
   - id: Q02
     exams:
       CCAO-F: D1
@@ -8351,8 +8425,9 @@ questions:
       - Delegation
     answer:
       - C
-    explanation: Description là kỹ năng truyền đạt rõ mục tiêu, bối cảnh, người đọc và định dạng mong muốn cho AI.
+    explanation: "Description là kỹ năng truyền đạt rõ cho AI: đầu ra cần gì, cho ai đọc, định dạng nào (Product Description), cách làm (Process Description) và cách cư xử (Performance Description). Đồng nghiệp không nói người đọc và định dạng nên thiếu đúng phần này. Discernment là đánh giá output nhận về, không chữa được yêu cầu mơ hồ từ đầu. Diligence là chịu trách nhiệm và minh bạch về việc dùng AI. Delegation là quyết định giao phần việc nào cho AI, không phải cách mô tả phần việc đã giao."
     ref: lessons/15-claude-101-fluency.html#ai-fluency
+    reviewed: 2026-11-18
   - id: K64
     exams:
       CCAO-F: D1
@@ -8360,12 +8435,13 @@ questions:
     options:
       - Describe the format as “our usual style” and let Claude work out the rest of it by itself.
       - Ask Claude to search the web for incident report templates from other firms.
-      - Ask for a creative new format so that the reports stand out more.
+      - Ask Claude to use the standard incident report structure it already knows.
       - Attach one or two past reports as examples and ask it to follow the same structure.
     answer:
       - D
-    explanation: Ví dụ cụ thể (one-shot, few-shot) truyền đạt định dạng chính xác hơn mô tả chung chung.
+    explanation: "Tài liệu prompting của Anthropic nêu ví dụ (few-shot, multishot) là một trong những cách đáng tin cậy nhất để điều khiển định dạng, giọng và cấu trúc output. Gọi là “kiểu quen thuộc của chúng tôi” giả định Claude biết quy ước nội bộ mà nó không có. Mẫu tìm trên web của công ty khác, hay khuôn “chuẩn” Claude tự biết, đều là định dạng của người khác chứ không phải định dạng của nhóm bạn."
     ref: lessons/09-ccao-f.html#prompting
+    reviewed: 2026-11-18
   - id: K65
     exams:
       CCAO-F: D1
@@ -8409,6 +8485,7 @@ questions:
       - D
     explanation: Phân rã thành phần việc và làm rõ giả định trước khi soạn giúp kế hoạch sát thực tế. Đòi tất cả trong một lần hay giấu ràng buộc làm kết quả chung chung.
     ref: lessons/09-ccao-f.html#prompting
+    reviewed: 2026-11-18
   - id: Q03
     exams:
       CCAO-F: D1
@@ -8417,37 +8494,40 @@ questions:
       - For rewording one sentence in a routine email so that it sounds a little friendlier to the reader.
       - For translating a short greeting card message into French for a client.
       - For listing this week's meeting times in chronological order.
-      - For multi-step reasoning, such as comparing pricing scenarios with several variables.
+      - For comparing three pricing scenarios that each depend on volume, discount and churn assumptions.
     answer:
       - D
-    explanation: Suy nghĩ từng bước có ích cho bài toán nhiều bước, nhiều biến; việc đơn giản thì không cần và chỉ chậm hơn.
+    explanation: "Trang hỗ trợ của Claude: với việc phức tạp thì nâng effort, bật thinking hoặc cả hai; với việc hằng ngày thì thiết lập mặc định là đủ, còn effort cao tốn thời gian và token hơn. So sánh ba kịch bản giá phụ thuộc nhiều giả định là bài toán nhiều bước nên đáng bật. Sửa một câu cho thân thiện hơn, dịch lời chúc ngắn, hay xếp giờ họp theo thứ tự đều là việc đơn giản, làm một bước; bật suy luận chỉ chậm hơn và tốn usage mà không tăng chất lượng."
     ref: lessons/15-claude-101-fluency.html#claude-101
+    reviewed: 2026-11-18
   - id: K68
     exams:
       CCAO-F: D1
     stem: Claude's second draft fixed the tone but dropped two key figures from the first draft. How should you respond?
     options:
       - Point out the missing figures and ask it to restore them while keeping the new tone.
-      - Start a brand-new chat and write the whole prompt again from the very beginning, word for word.
+      - Regenerate the second draft a few times until a version includes the figures again.
       - Accept the draft and add the figures somewhere at the end yourself.
       - Ask it to go back to the first draft and discard all of the changes.
     answer:
       - A
-    explanation: "Lặp có kiểm soát: nói rõ cái cần giữ và cái cần sửa. Làm lại từ đầu hay bỏ hết thay đổi đều phí phần đã đạt được."
+    explanation: "Lặp có kiểm soát: chỉ rõ cái cần giữ (giọng mới) và cái cần sửa (hai số liệu bị mất). Tạo lại nhiều lần mà không nói vấn đề là trông chờ may rủi, có thể mất luôn phần giọng đã sửa. Tự chèn số liệu vào cuối làm chúng rời khỏi chỗ lập luận cần chúng và không sửa được cách bạn hướng dẫn Claude. Quay về bản đầu bỏ phí phần giọng văn đã đạt được."
     ref: lessons/09-ccao-f.html#prompting
+    reviewed: 2026-11-18
   - id: K69
     exams:
       CCAO-F: D1
     stem: You upload quarterly sales data and want an analysis. Which instruction leads to the most trustworthy result?
     options:
-      - Ask it to round every figure to the nearest thousand without noting it anywhere in the text.
+      - Ask for a summary of the key trends only, leaving out the supporting numbers.
       - Ask it to show the calculations or data behind each conclusion it draws.
-      - Ask for a bold, confident headline that will impress leadership.
+      - Ask it to rate its confidence in each conclusion on a scale from 1 to 10.
       - Ask it to ignore any rows with unusual values to keep things simple.
     answer:
       - B
-    explanation: Phân tích đáng tin khi mỗi kết luận đi kèm số liệu, phép tính kiểm tra được. Bỏ dữ liệu bất thường hay làm tròn không ghi chú làm sai lệch kết quả.
+    explanation: "Phân tích đáng tin khi mỗi kết luận kèm số liệu, phép tính kiểm tra được; tài liệu Anthropic về giảm hallucination khuyên làm output kiểm chứng được bằng cách yêu cầu dẫn căn cứ cho từng nhận định. Chỉ tóm xu hướng mà bỏ số liệu thì không kiểm được gì. Điểm tự tin do Claude tự chấm không phải bằng chứng đúng. Bỏ các dòng bất thường làm sai lệch kết quả, và chính chúng thường là điều cần giải thích."
     ref: lessons/09-ccao-f.html#prompting
+    reviewed: 2026-11-18
   - id: Q04
     exams:
       CCAO-F: D4
@@ -8465,55 +8545,59 @@ questions:
   - id: K70
     exams:
       CCAO-F: D1
-    stem: Which instruction is clearest for a customer apology email?
+    stem: A customer's order arrived three days late because of a warehouse error, and your manager approved a 10% credit. Which instruction to Claude is clearest for the apology email?
     options:
-      - “Write something nice to the customer about the delivery delay last week.”
-      - “Make the customer happy again and make sure they do not leave us.”
-      - “Apologize as much as possible and in several ways so the customer does not complain further.”
+      - “Write a warm, formal apology email of about 300 words in our brand voice.”
+      - “Apologize for the delay and promise that it will never happen again.”
+      - “Apologize for the 3-day delay, explain every internal cause, and offer a discount.”
       - “Apologize for the 3-day delay, explain the cause in one sentence, offer a 10% credit.”
     answer:
       - D
-    explanation: Chỉ dẫn rõ nêu cụ thể nội dung (xin lỗi việc gì, nguyên nhân, bồi thường). Yêu cầu chung chung cho email chung chung.
+    explanation: "Chỉ dẫn rõ nêu cụ thể nội dung cần có: xin lỗi việc gì, nguyên nhân, bồi thường đã duyệt (tài liệu prompting của Anthropic: nói rõ đầu ra muốn có, đừng để Claude tự suy ra). Chỉ định giọng và độ dài mà không nói sự việc hay bồi thường thì Claude phải đoán nội dung. Hứa “không bao giờ lặp lại” là cam kết không giữ được và vẫn thiếu bồi thường. Kể mọi nguyên nhân nội bộ làm email dài, lộ chi tiết không cần, còn “a discount” không nêu mức 10% đã duyệt."
     ref: lessons/09-ccao-f.html#prompting
+    reviewed: 2026-11-18
   - id: K71
     exams:
       CCAO-F: D2
     stem: Claude summarizes a policy and says employees get 25 vacation days. The policy says 20. What does this show?
     options:
       - Even fluent summaries can contain errors, so key facts must be checked against the source.
-      - The policy document is probably out of date and should be changed to 25.
-      - Claude rounds numbers up on purpose to make summaries friendlier.
-      - Errors like this only happen with very long documents, so it can be ignored.
+      - Claude probably used a newer version of the policy, so 25 is likely the right figure.
+      - The summary is still fine for staff, since it gets the general idea of the policy across.
+      - Adding “be accurate” to the prompt would prevent this, so later summaries need no checks.
     answer:
       - A
-    explanation: Tóm tắt trôi chảy vẫn có thể sai số liệu; dữ kiện quan trọng phải đối chiếu với nguồn gốc.
+    explanation: "Tóm tắt trôi chảy vẫn có thể sai số liệu (tài liệu Anthropic: các kỹ thuật giảm hallucination không loại bỏ hẳn lỗi, luôn kiểm chứng thông tin quan trọng), nên dữ kiện chính phải đối chiếu với văn bản gốc. Không có căn cứ rằng Claude dùng bản chính sách mới hơn; tài liệu bạn đưa là nguồn có thẩm quyền. Số ngày phép là dữ kiện nhân viên sẽ dựa vào, sai 5 ngày không phải chuyện “ý chung”. Thêm “hãy chính xác” vào prompt không bảo đảm hết lỗi, nên vẫn phải kiểm."
     ref: lessons/09-ccao-f.html#danh-gia
+    reviewed: 2026-11-18
   - id: K72
     exams:
       CCAO-F: D2
     stem: Claude lists “all action items” from a meeting transcript. How can you best check that the list is complete?
     options:
-      - Check only that each item on the list starts with a verb.
+      - Ask Claude to reformat the list as a table with an owner and due date for each item.
       - Skim the transcript for decisions and owners, and compare them against the list.
-      - Count the items and accept the list as complete if there are more than five of them in total.
+      - Compare the list with the meeting agenda, since every action item comes from an agenda topic.
       - Ask Claude whether the list is complete and accept its answer.
     answer:
       - B
-    explanation: Kiểm tra độ đầy đủ bằng cách đối chiếu với nguồn (quyết định, người phụ trách). Số lượng hay định dạng không nói lên độ đầy đủ; hỏi lại Claude không phải kiểm chứng độc lập.
+    explanation: "Muốn biết danh sách có đủ hay không thì phải đối chiếu với nguồn: lướt transcript tìm các quyết định và người nhận việc rồi so với danh sách. Đổi sang bảng có người phụ trách, hạn chót chỉ làm đẹp định dạng, không phát hiện được việc bị sót. So với agenda không đủ, vì việc cần làm phát sinh từ thảo luận và có thể nằm ngoài agenda. Hỏi lại Claude rồi chấp nhận câu trả lời không phải kiểm chứng độc lập; Anthropic lưu ý các kỹ thuật giảm hallucination không loại bỏ hết lỗi, thông tin quan trọng luôn phải kiểm chứng."
     ref: lessons/09-ccao-f.html#danh-gia
+    reviewed: 2026-11-18
   - id: K73
     exams:
       CCAO-F: D2
     stem: Claude quotes a customer as saying “the new app is unusable”, but you cannot find that quote in the survey file. What is the most likely explanation?
     options:
-      - Quotes are always exact, so the survey file is probably incomplete.
+      - Your search probably missed it, so the quote can be used as written.
       - Claude has access to private customer messages outside the file.
       - The quote may be fabricated or paraphrased; check the source before using it.
       - The customer must have said it in a different survey or interview that you have not seen yet.
     answer:
       - C
-    explanation: Trích dẫn không tìm thấy trong nguồn có thể là bịa hoặc diễn giải lại; chỉ dùng trích dẫn đã đối chiếu được.
+    explanation: "Trích dẫn không tìm thấy trong file nguồn có thể do Claude bịa (hallucination) hoặc diễn giải lại rồi trình bày như nguyên văn; chỉ dùng trích dẫn đã đối chiếu được với nguồn. Cho rằng mình tìm sót rồi dùng nguyên văn là bỏ qua bước kiểm chứng. Claude chỉ làm việc với dữ liệu được cung cấp hoặc nguồn đã kết nối, không tự có tin nhắn riêng của khách ngoài file. Cho rằng khách đã nói ở một khảo sát khác là đoán, không có bằng chứng; trích dẫn không truy được nguồn thì không dùng được. Anthropic gợi ý yêu cầu Claude dẫn nguyên văn và rút lại nhận định không tìm được câu trích hỗ trợ."
     ref: lessons/09-ccao-f.html#danh-gia
+    reviewed: 2026-11-18
   - id: K74
     exams:
       CCAO-F: D2
@@ -8535,13 +8619,14 @@ questions:
     stem: Claude's draft job advert describes the ideal candidate as joining a “young and energetic team”. What is the issue?
     options:
       - The wording may discourage some applicants and could breach equal-opportunity rules.
-      - The advert is probably too short to attract enough qualified applicants.
+      - The tone is too casual; replace it with “youthful, high-energy colleagues” to sound professional.
       - There is no issue, because the phrase simply and accurately describes the team as it is today.
-      - The tone is too formal and serious for a modern job advert.
+      - The advert should state the team's average age instead, so applicants can judge their fit.
     answer:
       - A
-    explanation: "Nhận diện thiên lệch: cụm từ ngụ ý độ tuổi có thể loại trừ ứng viên và vi phạm quy định bình đẳng; cần sửa trước khi đăng."
+    explanation: "Nhận diện thiên lệch: cụm “young and energetic” ngụ ý ưu tiên theo độ tuổi, có thể khiến ứng viên lớn tuổi không nộp đơn và vi phạm quy định bình đẳng cơ hội, nên phải sửa trước khi đăng. Đổi sang “youthful, high-energy” chỉ đổi giọng văn, vẫn ngầm chọn người trẻ. Nói rằng cụm từ mô tả đúng đội hiện tại bỏ qua tác động loại trừ lên người đọc tin tuyển dụng. Ghi tuổi trung bình của đội còn làm tiêu chí tuổi tác lộ rõ hơn, không giải quyết vấn đề."
     ref: lessons/16-capabilities-enterprise.html#ai-capabilities
+    reviewed: 2026-11-18
   - id: K75
     exams:
       CCAO-F: D2
@@ -8555,6 +8640,8 @@ questions:
       - B
     explanation: Kiểm chứng tốt nhất là truy về nguồn gốc (báo cáo, dữ liệu chính thức). Hỏi lại AI hay tin trang đầu tiên không phải kiểm chứng độc lập.
     ref: lessons/09-ccao-f.html#danh-gia
+    status: retired
+    reviewed: 2026-11-18
   - id: K76
     exams:
       CCAO-F: D2
@@ -8576,14 +8663,15 @@ questions:
       CCAO-F: D2
     stem: Claude wrote a technical incident summary for engineers. You now need it for the executive team. What is the best edit request?
     options:
-      - Keep it exactly as it is, since executives should learn the technical terms too.
-      - Remove all of the numbers so the summary is easier to read.
+      - Ask Claude to add a glossary of the technical terms at the end, keeping the body unchanged.
+      - Ask Claude to cut it to half its length while keeping all of the technical detail.
       - Turn the summary into bullet points without changing any of the content.
       - "Rewrite it for executives: business impact, cost and next steps, in plain words."
     answer:
       - D
-    explanation: "Điều chỉnh theo người đọc: lãnh đạo cần tác động kinh doanh, chi phí, bước tiếp theo bằng ngôn ngữ thường."
+    explanation: "Điều chỉnh output theo người đọc: lãnh đạo cần tác động kinh doanh, chi phí và bước tiếp theo, viết bằng ngôn ngữ thường, nên yêu cầu viết lại theo đúng các điểm đó. Thêm bảng thuật ngữ mà giữ nguyên thân bài thì lãnh đạo vẫn phải tự suy ra tác động. Cắt nửa độ dài mà giữ đủ chi tiết kỹ thuật chỉ ngắn hơn, không đổi trọng tâm. Đổi sang gạch đầu dòng mà không đổi nội dung chỉ đổi hình thức, thông tin vẫn viết cho kỹ sư."
     ref: lessons/09-ccao-f.html#danh-gia
+    reviewed: 2026-11-18
   - id: K78
     exams:
       CCAO-F: D2
@@ -8592,11 +8680,12 @@ questions:
       - "Compare both against criteria set in advance: accuracy, coverage, tone and length."
       - Pick the longer of the two drafts, since it most likely contains more useful information.
       - Ask Claude which of its two drafts is better and simply go with its choice.
-      - Pick whichever draft was generated first.
+      - Pick the draft that reads most fluently, since polished writing usually signals accuracy.
     answer:
       - A
-    explanation: So sánh output theo tiêu chí đặt trước (chính xác, đầy đủ, giọng, độ dài). Dài hơn không có nghĩa là tốt hơn; AI tự chấm không đáng tin.
+    explanation: "So sánh hai bản theo tiêu chí đặt trước (chính xác, đủ câu hỏi, giọng văn, độ dài) giúp chọn khách quan và đúng mục đích. Bản dài hơn không chắc tốt hơn, có thể thừa hoặc sai. Để Claude tự chọn giữa hai bản của chính nó rồi làm theo không phải đánh giá độc lập. Văn trơn tru không chứng minh nội dung đúng; bản viết mượt vẫn có thể sai sự thật."
     ref: lessons/09-ccao-f.html#danh-gia
+    reviewed: 2026-11-18
   - id: K79
     exams:
       CCAO-F: D2
@@ -8632,27 +8721,29 @@ questions:
       CCAO-F: D2
     stem: Claude's research summary has 40 bullet points of mixed importance. Your director wants a quick decision brief. What should you ask for?
     options:
-      - Add another 20 bullet points to the summary so that nothing at all is missing.
+      - Keep all 40 bullets and add a one-line headline above them for the director.
       - Sort the bullets alphabetically so the director can scan them faster.
       - Convert all 40 points into one long paragraph that reads more smoothly.
       - Group the points by theme and keep the top three insights with their evidence.
     answer:
       - D
-    explanation: "Tổ chức, chọn lọc thông tin theo người đọc: gom nhóm, giữ ý chính kèm bằng chứng."
+    explanation: "Brief để ra quyết định cần thông tin được tổ chức và chọn lọc: gom theo chủ đề, giữ vài ý quan trọng nhất kèm bằng chứng. Giữ đủ 40 ý và chỉ thêm một dòng tiêu đề thì giám đốc vẫn phải tự lọc. Xếp theo bảng chữ cái không phản ánh mức quan trọng. Gộp thành một đoạn dài khó đọc lướt và vẫn không ưu tiên ý nào."
     ref: lessons/09-ccao-f.html#danh-gia
+    reviewed: 2026-11-18
   - id: K82
     exams:
       CCAO-F: D2
     stem: Claude states, “This regulation was updated last month.” Your Claude setup has no web search. How should you treat the statement?
     options:
       - "As unverified: Claude may lack recent information, so check an official source."
-      - As certain, because Claude always knows about the latest regulatory changes in every country.
+      - As reliable, because Claude's training data includes official government publications.
       - As certain, because the statement includes a specific time frame.
-      - As irrelevant, because regulations rarely change.
+      - As reliable once Claude confirms it again when you ask in the same chat.
     answer:
       - A
-    explanation: Không có tìm kiếm web thì thông tin gần đây có thể nằm ngoài dữ liệu huấn luyện; kiểm chứng với nguồn chính thức.
+    explanation: "Mỗi model có mốc reliable knowledge cutoff; không có web search thì Claude không biết thay đổi sau mốc đó, và câu như “cập nhật tháng trước” rất có thể sai hoặc bịa. Hãy coi là chưa kiểm chứng và tra nguồn chính thức. Dữ liệu huấn luyện có văn bản của chính phủ cũng chỉ tới mốc cutoff, không gồm thay đổi gần đây. Mốc thời gian cụ thể làm câu nghe chắc chắn, nhưng chi tiết cụ thể chính là chỗ hallucination hay xuất hiện. Hỏi lại Claude trong cùng chat chỉ là tự xác nhận, không phải kiểm chứng độc lập. Nguồn: https://platform.claude.com/docs/en/about-claude/models/overview"
     ref: lessons/09-ccao-f.html#danh-gia
+    reviewed: 2026-11-18
   - id: K83
     exams:
       CCAO-F: D2
@@ -8681,33 +8772,37 @@ questions:
       - C
     explanation: Claude không biết quy trình nội bộ trừ khi được cung cấp (tài liệu, connector); nó không tự đọc intranet.
     ref: lessons/16-capabilities-enterprise.html#ai-capabilities
+    status: retired
+    reviewed: 2026-11-18
   - id: K84
     exams:
       CCAO-F: D2
     stem: A Claude-written newsletter is accurate but 1,200 words long; your template allows 400. What is the best approach?
     options:
-      - Publish it as it is and ask readers to skim through only the parts that interest them most.
+      - Ask Claude to list the newsletter's topics as headlines only, without any details.
       - Delete the last two thirds of the text yourself.
       - Change the template to allow 1,200 words.
       - Ask Claude to cut it to 400 words, keeping the three most important updates.
     answer:
       - D
-    explanation: "Biên tập theo khuôn: yêu cầu rút gọn có tiêu chí (giữ ý quan trọng nhất). Cắt cơ học làm mất nội dung chính."
+    explanation: "Biên tập theo khuôn: yêu cầu Claude rút còn 400 từ với tiêu chí rõ (giữ ba cập nhật quan trọng nhất) để đúng giới hạn mà vẫn giữ ý chính. Chỉ giữ tiêu đề thì đủ ngắn nhưng mất nội dung người đọc cần. Tự xoá hai phần ba cuối là cắt cơ học, có thể bỏ mất ý quan trọng nằm ở cuối. Đổi khuôn sang 1.200 từ là phá chuẩn chung để chiều một bản nháp."
     ref: lessons/09-ccao-f.html#danh-gia
+    reviewed: 2026-11-18
   - id: K85
     exams:
       CCAO-F: D2
-    stem: Claude's answer about refund rules differs from your official policy page. Which TWO actions are appropriate?
+    stem: Claude's answer in your team's support Project about refund rules differs from your official policy page. Which TWO actions are appropriate?
     options:
       - Treat the official policy as authoritative and correct the answer.
-      - Check whether the knowledge files contain an outdated policy.
-      - Update the official policy page to match Claude's answer.
-      - Ignore the difference, since both versions are probably fine.
+      - Check whether the Project knowledge files contain an outdated policy.
+      - Ask Claude whether its answer or the policy page is correct, and follow its reply.
+      - Assume Claude's version reflects a recent change the policy page has not caught up with.
     answer:
       - A
       - B
-    explanation: Văn bản chính thức là chuẩn; kiểm tra kho tri thức có tài liệu lỗi thời không. Không sửa chính sách theo câu trả lời của AI.
+    explanation: "Văn bản chính sách chính thức là chuẩn, nên sửa câu trả lời theo nó; đồng thời kiểm tra knowledge của Project có còn bản chính sách cũ không, vì tài liệu lỗi thời là nguyên nhân gốc thường gặp và sẽ làm lỗi lặp lại. Hỏi Claude bên nào đúng rồi làm theo là để AI tự phán xử, không phải kiểm chứng. Giả định Claude biết thay đổi mới hơn trang chính thức là đảo ngược thứ tự thẩm quyền; Claude chỉ biết những gì có trong dữ liệu và tài liệu được cung cấp."
     ref: lessons/09-ccao-f.html#danh-gia
+    reviewed: 2026-11-18
   - id: K86
     exams:
       CCAO-F: D2
@@ -8716,24 +8811,26 @@ questions:
       - Remove the broken link but keep the guidance text in the document as if it had been verified.
       - Treat the reference as unverified and find the guidance on the official website.
       - Assume the page moved and keep the link in your document.
-      - Ask Claude to promise that the page exists.
+      - Ask Claude to confirm the guidance is accurate, then cite it without a link.
     answer:
       - B
-    explanation: Đường dẫn hỏng có thể là bịa; tìm lại trên trang chính thức. Giữ nội dung như đã kiểm chứng là sai.
+    explanation: "Đường dẫn hỏng có thể là link bịa hoặc trang đã đổi; coi tham chiếu là chưa kiểm chứng và tìm hướng dẫn trên trang chính thức của cơ quan. Xoá link nhưng giữ nội dung như đã kiểm chứng là che mất dấu hiệu cảnh báo. Giả định trang chỉ bị dời rồi giữ link khiến người đọc gặp link chết và nội dung vẫn không có nguồn. Nhờ Claude xác nhận rồi trích mà không kèm link chỉ là tự xác nhận, nội dung vẫn chưa được đối chiếu."
     ref: lessons/09-ccao-f.html#danh-gia
+    reviewed: 2026-11-18
   - id: T03
     exams:
       CCAO-F: D2
     stem: Claude's analysis of customer complaints mentions only urban branches, because the uploaded data covered only those. What is the correct interpretation?
     options:
-      - Claude chose to ignore rural branches on purpose to keep the analysis short.
+      - Claude filtered out the rural branches because their complaint volume was too low to analyze.
       - The analysis is complete and valid for every branch in the whole company.
       - The conclusions apply only to the data provided; rural branches are not represented.
-      - Rural branches clearly have no complaints at all, since none of them appear in the analysis.
+      - Rural branches have no recorded complaints, since none of them appear in the analysis.
     answer:
       - C
-    explanation: Kết luận chỉ đúng trong phạm vi dữ liệu đưa vào. Thiếu dữ liệu không có nghĩa là không có vấn đề.
+    explanation: "Kết luận chỉ có giá trị trong phạm vi dữ liệu được đưa vào; chi nhánh nông thôn không có trong dữ liệu nên chưa được đánh giá. Stem đã nói dữ liệu tải lên chỉ gồm chi nhánh thành thị, nên không phải Claude tự lọc bỏ nông thôn vì ít khiếu nại. Coi phân tích là đúng cho mọi chi nhánh là ngoại suy vượt dữ liệu. Không thấy chi nhánh nông thôn trong phân tích không có nghĩa là họ không có khiếu nại; thiếu dữ liệu khác với không có vấn đề."
     ref: lessons/16-capabilities-enterprise.html#ai-capabilities
+    reviewed: 2026-11-18
   - id: K87
     exams:
       CCAO-F: D2
@@ -8747,49 +8844,54 @@ questions:
       - D
     explanation: "Đổi người đọc là đổi mức thông tin được chia sẻ: loại chi tiết nội bộ trước khi gửi ra ngoài."
     ref: lessons/09-ccao-f.html#danh-gia
+    status: retired
+    reviewed: 2026-11-18
   - id: K88
     exams:
       CCAO-F: D2
     stem: "You ask a quick question: “What is the difference between a lease and a licence?” Which response format is most appropriate?"
     options:
-      - A short inline answer in the chat.
-      - A downloadable spreadsheet comparing both
-      - A 20-page artifact report.
-      - A JSON file.
+      - A short, direct answer inline in the chat reply.
+      - A downloadable Word document explaining both terms.
+      - An artifact containing a formatted comparison document.
+      - A structured JSON object with one field per difference.
     answer:
       - A
-    explanation: "Câu hỏi nhanh: trả lời ngắn ngay trong chat. Artifact hay dữ liệu có cấu trúc dành cho nội dung cần dùng lại."
+    explanation: "Câu hỏi nhanh, đọc xong là xong thì trả lời ngắn ngay trong chat. Artifact dành cho nội dung đáng kể, độc lập (thường hơn 15 dòng) mà bạn sẽ sửa, dùng lại hoặc chia sẻ. File Word tải về thêm bước thừa cho một câu hỏi dùng một lần. JSON là dữ liệu có cấu trúc để hệ thống khác xử lý, không phải để người đọc. Nguồn: https://support.claude.com/en/articles/17153992-what-are-artifacts-and-how-do-i-use-them"
     ref: lessons/09-ccao-f.html#danh-gia
+    reviewed: 2026-11-18
   - id: K89
     exams:
       CCAO-F: D2
     stem: Claude's budget summary says the five line items total €48,500. What is the quickest reliable check?
     options:
-      - Accept it if the number looks round.
+      - Check that the total matches the figure stated in the summary's introduction.
       - Add up the five line items yourself or in a spreadsheet.
       - Ask Claude whether it is completely sure the total is correct.
       - Compare it with last year's total.
     answer:
       - B
-    explanation: Phép tính kiểm tra được thì tự kiểm tra (tính lại, dùng bảng tính). Hỏi lại Claude không phải kiểm chứng.
+    explanation: "Phép cộng kiểm tra được thì tự tính lại (bằng tay hoặc bảng tính): nhanh và độc lập. Khớp với con số ở phần mở đầu chỉ cho thấy bản tóm tắt nhất quán với chính nó, không chứng tỏ phép cộng đúng. Hỏi Claude có chắc không là để nó tự đánh giá; độ tự tin không phải bằng chứng. So với tổng năm ngoái không kiểm được tổng năm nay vì hai năm có thể khác nhau."
     ref: lessons/09-ccao-f.html#danh-gia
+    reviewed: 2026-11-18
   - id: K90
     exams:
       CCAO-F: D2
     stem: A market summary Claude prepared for a neutral board review lists only your product's strengths. What should you ask for?
     options:
       - A shorter version with only the headline.
-      - A version written in a more enthusiastic tone.
+      - A version that adds a note saying the summary was drafted with AI.
       - A balanced view that includes weaknesses, risks and competitor strengths.
-      - Even more strengths, so that the case for the product is more convincing.
+      - A version that adds more data supporting each of the listed strengths.
     answer:
       - C
-    explanation: "Đánh giá output theo mục đích và người đọc: hội đồng cần góc nhìn cân bằng (điểm yếu, rủi ro, đối thủ)."
+    explanation: "Đánh giá output theo mục đích và người đọc: hội đồng cần bản đánh giá trung lập, nên phải yêu cầu góc nhìn cân bằng gồm điểm yếu, rủi ro và thế mạnh của đối thủ. Rút còn tiêu đề thì vẫn chỉ nói điểm mạnh. Ghi chú do AI soạn là minh bạch nhưng không sửa thiên lệch một chiều. Thêm số liệu cho từng điểm mạnh càng làm bản tóm tắt lệch hơn."
     ref: lessons/09-ccao-f.html#danh-gia
+    reviewed: 2026-11-18
   - id: Q05
     exams:
       CCAO-F: D2
-    stem: Which AI Fluency competency is a user practicing when they check Claude's output for accuracy, gaps and fitness for purpose?
+    stem: A marketing lead reviews Claude's campaign summary, notices that one region is missing and a claim does not fit the brief, and asks for a fix before using it. Which AI Fluency competency is she mainly practicing?
     options:
       - Delegation
       - Description
@@ -8797,8 +8899,9 @@ questions:
       - Discernment
     answer:
       - D
-    explanation: "Discernment là năng lực đánh giá output: đúng không, thiếu gì, có phù hợp mục đích không."
+    explanation: "Theo khung 4D của Anthropic, Discernment là đánh giá những gì AI trả về trước khi dùng: đúng không, thiếu gì, có hợp mục đích không. Delegation là quyết định việc nào giao cho AI, việc nào giữ lại. Description là truyền đạt rõ mình cần gì và muốn AI làm thế nào. Diligence là chịu trách nhiệm về cách dùng AI và kết quả cuối cùng (minh bạch, trách nhiệm khi đưa ra ngoài), rộng hơn việc soát một bản nháp. Nguồn: https://academy.claude.com/courses/ai-fluency-for-small-businesses/the-4d-framework"
     ref: lessons/15-claude-101-fluency.html#ai-fluency
+    reviewed: 2026-11-18
   - id: K91
     exams:
       CCAO-F: D2
@@ -8806,12 +8909,13 @@ questions:
     options:
       - Identify which five are missing and why, before using the results.
       - Use the 47 results as they are, since the rest are probably duplicates.
-      - Assume Claude skipped the five least important files.
-      - Report that the folder holds only 47 contracts.
+      - Rerun the extraction and use whichever run returns more contracts.
+      - Proceed with the 47, since about 90% coverage is enough for a summary.
     answer:
       - A
-    explanation: "Kiểm tra độ đầy đủ: số lượng không khớp thì tìm ra phần thiếu và lý do trước khi dùng."
+    explanation: "Số lượng không khớp là dấu hiệu output chưa đầy đủ: xác định năm file bị thiếu và lý do (file scan, định dạng lạ, lỗi đọc) trước khi dùng kết quả. Cho rằng phần còn lại là bản trùng là đoán khi chưa kiểm tra. Chạy lại rồi lấy lần nhiều hơn vẫn không biết file nào thiếu và vì sao. Chấp nhận khoảng 90% bỏ qua khả năng năm hợp đồng thiếu chính là những hợp đồng quan trọng."
     ref: lessons/09-ccao-f.html#danh-gia
+    reviewed: 2026-11-18
   - id: T04
     exams:
       CCAO-F: D2
@@ -8844,16 +8948,17 @@ questions:
   - id: K93
     exams:
       CCAO-F: D3
-    stem: Which model is a sensible default for everyday business work such as drafting, summarizing and analysis that needs good quality at reasonable speed?
+    stem: A team wants one model for everyday drafting, summarizing and analysis, with strong quality but faster responses than the top-tier models. Which model family fits best?
     options:
-      - Haiku, for every task without exception
-      - Opus, for every task without exception
-      - No model; these tasks should not use AI
-      - Sonnet
+      - Haiku, since it is the most capable family for multi-step analysis
+      - Opus, since it is the fastest and lowest-cost family in the lineup
+      - Any of them, since all current Claude models respond at the same speed
+      - Sonnet, since it balances speed and intelligence
     answer:
       - D
-    explanation: Sonnet là lựa chọn cân bằng chất lượng, tốc độ, chi phí cho việc thường ngày; Opus cho bài khó; Haiku cho việc nhanh, đơn giản.
+    explanation: "Anthropic mô tả Sonnet là “best combination of speed and intelligence” và gợi ý cho khối việc thường ngày như soạn nội dung, phân tích dữ liệu; nhanh hơn Opus và Fable mà vẫn mạnh. Haiku là model nhanh, rẻ nhất cho việc khối lượng lớn, cần độ trễ thấp (phân loại, trích xuất), không phải model mạnh nhất cho phân tích nhiều bước. Opus thuộc nhóm mạnh, độ trễ trung bình, giá cao hơn Sonnet, không phải nhanh và rẻ nhất. Các model hiện hành có độ trễ khác nhau (Haiku nhanh nhất, Sonnet nhanh, Opus và Fable trung bình). Lưu ý: trên claude.ai nhiều gói mặc định Opus cho phần lớn knowledge work; câu này chọn Sonnet vì stem đòi phản hồi nhanh hơn nhóm model mạnh nhất. Nguồn: https://platform.claude.com/docs/en/about-claude/models/overview"
     ref: lessons/09-ccao-f.html#san-pham
+    reviewed: 2026-11-18
   - id: K94
     exams:
       CCAO-F: D3
@@ -8887,29 +8992,31 @@ questions:
   - id: K96
     exams:
       CCAO-F: D3
-    stem: Which feature is best for building and iterating on a small interactive calculator to share with colleagues?
+    stem: An HR coordinator wants Claude to build a small interactive leave-balance calculator that she can refine over several turns and then share with colleagues. Which feature fits best?
     options:
       - Research
-      - Incognito chat
+      - Projects
       - Artifacts
-      - Memory
+      - Skills
     answer:
       - C
-    explanation: Artifact tạo nội dung độc lập (tài liệu, ứng dụng nhỏ) để xem, chỉnh và chia sẻ.
+    explanation: "Artifact là nội dung độc lập Claude tạo ra để xem, sửa và chia sẻ, gồm cả công cụ tương tác nhỏ; bạn chỉnh qua nhiều lượt rồi chia sẻ cho người khác. Research dùng để tìm hiểu sâu qua nhiều lượt tìm kiếm, không dựng công cụ. Project là không gian làm việc có chỉ dẫn và kho tài liệu chung, bản thân nó không tạo ra công cụ tương tác. Skill là gói chỉ dẫn, quy trình tái dùng mà Claude nạp khi liên quan, không phải nơi xây và chia sẻ một ứng dụng nhỏ. Nguồn: https://support.claude.com/en/articles/17153992-what-are-artifacts-and-how-do-i-use-them"
     ref: lessons/09-ccao-f.html#san-pham
+    reviewed: 2026-11-18
   - id: K97
     exams:
       CCAO-F: D3
-    stem: A team needs 5,000 product descriptions rewritten in a consistent tone. Quality on a sample is fine with the faster model. What should drive the choice?
+    stem: A team needs 5,000 product descriptions rewritten in a consistent tone. On a test sample, Haiku's output met the team's quality bar. Which approach is most appropriate?
     options:
-      - Use the most capable model for everything, because a more expensive model always means better.
-      - Use different models for each batch to compare them.
-      - Use the slowest model to make sure it reads carefully.
-      - Use the faster, cheaper model that met the quality bar on the sample.
+      - Use Opus for all 5,000, since customer-facing text justifies the higher cost.
+      - Use a different model for each batch to compare them.
+      - Rerun the sample on Opus and use whichever version reads slightly better.
+      - Use Haiku for the full job, spot-checking some outputs along the way.
     answer:
       - D
-    explanation: "Chọn model theo yêu cầu: đã đạt chất lượng trên mẫu thì model nhanh, rẻ hơn là hợp lý cho khối lượng lớn."
+    explanation: "Chọn model theo yêu cầu: Haiku đã đạt chuẩn chất lượng trên mẫu nên dùng cho cả khối 5.000 mô tả là cân bằng chi phí và tốc độ, kèm kiểm tra ngẫu nhiên. Tài liệu Anthropic xếp việc khối lượng lớn, đơn giản vào nhóm nên bắt đầu từ model nhanh, rẻ và chỉ nâng cấp khi thiếu năng lực. Dùng Opus cho toàn bộ tốn thêm chi phí và thời gian khi chất lượng đã đủ. Mỗi lô một model làm giọng văn thiếu nhất quán, trái yêu cầu. Chạy lại mẫu trên Opus để chọn bản hay hơn một chút là bỏ qua chuẩn đã đặt và đội chi phí. Nguồn: https://platform.claude.com/docs/en/about-claude/models/choosing-a-model"
     ref: lessons/09-ccao-f.html#san-pham
+    reviewed: 2026-11-18
   - id: K98
     exams:
       CCAO-F: D3
@@ -8938,6 +9045,8 @@ questions:
       - B
     explanation: Thông tin dùng lặp lại, ổn định nên lưu vào Project; chi tiết dùng một lần để trong chat.
     ref: lessons/09-ccao-f.html#san-pham
+    status: retired
+    reviewed: 2026-11-18
   - id: Q06
     exams:
       CCAO-F: D3
@@ -8979,19 +9088,22 @@ questions:
       - A
     explanation: Tính năng tạo file (chạy code) cho phép Claude tạo bảng tính, tài liệu, slide để tải về.
     ref: lessons/09-ccao-f.html#san-pham
+    status: retired
+    reviewed: 2026-11-18
   - id: K101
     exams:
-      CCAO-F: D3
+      CCAO-F: D5
     stem: Claude must answer questions using the latest version of documents your team edits daily in Google Drive. Which setup fits best?
     options:
-      - Describe the documents from memory.
+      - Turn on web search so Claude can find the latest versions online.
       - Connect Google Drive so Claude reads the current files with your permissions.
-      - Upload a copy of each document to the Project once and never update it again.
-      - Paste the document titles into the chat.
+      - Upload a copy of each document to Project knowledge at the start of each month.
+      - Ask Claude to save each document's key points to memory once a week.
     answer:
       - B
-    explanation: "Tài liệu thay đổi thường xuyên: dùng connector để đọc bản hiện hành theo quyền của bạn; bản sao tải lên sẽ lỗi thời."
-    ref: lessons/09-ccao-f.html#san-pham
+    explanation: "Tài liệu sửa hằng ngày cần đọc bản hiện hành: connector Google Drive đồng bộ trực tiếp từ Drive, Claude đọc lại tài liệu khi bạn gửi tin nhắn dùng tới nó, và chỉ thấy những gì tài khoản của bạn được phép xem. Web search tìm trên web công khai, không vào được tài liệu nội bộ trên Drive. Tải bản sao lên Project mỗi tháng thì giữa hai lần tải tài liệu đã lỗi thời. Memory lưu sở thích và bối cảnh, không phải kho tài liệu, và cập nhật hằng tuần vẫn chậm hơn thay đổi hằng ngày. Nguồn: https://support.claude.com/en/articles/10166901-use-google-workspace-connectors"
+    ref: lessons/09-ccao-f.html#cau-hinh
+    reviewed: 2026-11-18
   - id: T05
     exams:
       CCAO-F: D3
@@ -9044,25 +9156,27 @@ questions:
     options:
       - Signing off the quarterly accounts.
       - Drafting standard replies to supplier payment queries, reviewed before sending.
-      - Approving supplier invoices for payment automatically, without any human check.
-      - Changing supplier bank details whenever someone requests it.
+      - Approving supplier invoices under a set amount for payment automatically.
+      - Updating supplier bank details from change requests received by email.
     answer:
       - B
-    explanation: "Ca sử dụng tốt: lặp lại, có người duyệt, rủi ro thấp. Thanh toán, đổi thông tin ngân hàng là điểm dễ bị gian lận, cần kiểm soát của người."
+    explanation: "Ca sử dụng đầu tiên tốt là việc lặp lại, có người duyệt, rủi ro thấp: soạn trả lời mẫu cho câu hỏi thanh toán của nhà cung cấp. Ký duyệt báo cáo quý là trách nhiệm của người có thẩm quyền, không giao cho Claude. Tự động duyệt hoá đơn dưới một hạn mức vẫn là chi tiền không có người kiểm, dễ bị lợi dụng bằng nhiều hoá đơn giả nhỏ. Đổi thông tin ngân hàng theo yêu cầu qua email là kiểu gian lận kinh điển, cần người xác minh độc lập."
     ref: lessons/09-ccao-f.html#quy-trinh
+    reviewed: 2026-11-18
   - id: K105
     exams:
       CCAO-F: D4
     stem: Your team spends hours each week writing similar status emails. What is the best way to optimize this with Claude?
     options:
-      - Stop sending status emails altogether.
+      - Paste last week's emails into a new chat each week and ask for an update.
       - Ask each person to write their own prompt from scratch every week.
       - Create a reusable prompt template in a Project and have a person review each email.
       - Have Claude send all of the status emails automatically, with no one reviewing them.
     answer:
       - C
-    explanation: "Tối ưu quy trình: chuẩn hoá prompt dùng lại trong Project, giữ bước duyệt."
+    explanation: "Tối ưu quy trình: đưa khuôn mẫu, giọng văn và tài liệu nền vào một Project để mọi người dùng lại một prompt chuẩn, và giữ bước người duyệt trước khi gửi. Dán email tuần trước vào chat mới mỗi tuần vẫn là dựng lại bối cảnh thủ công lặp đi lặp lại. Mỗi người tự viết prompt từ đầu thì tốn công và kết quả không đồng nhất. Để Claude tự gửi mọi email không ai duyệt thì sai sót tới thẳng người nhận."
     ref: lessons/09-ccao-f.html#quy-trinh
+    reviewed: 2026-11-18
   - id: K106
     exams:
       CCAO-F: D4
@@ -9085,25 +9199,27 @@ questions:
     options:
       - Draft it, test it on a few colleagues, then refine it with Claude based on feedback.
       - Accept Claude's first draft as it is and send it to all of your customers straight away.
-      - Ask Claude to send the survey to customers directly.
+      - Ask Claude to score its own draft and send it if the score is high.
       - Ask for 50 questions so that nothing is missed.
     answer:
       - A
-    explanation: "Thiết kế giải pháp theo vòng lặp: nháp, thử nghiệm nhỏ, chỉnh theo phản hồi."
+    explanation: "Thiết kế giải pháp theo vòng lặp: soạn nháp với Claude, thử trên vài đồng nghiệp, rồi chỉnh theo phản hồi trước khi gửi rộng. Gửi ngay bản nháp đầu cho toàn bộ khách hàng là bỏ bước thử, câu hỏi khó hiểu chỉ lộ ra khi đã quá muộn. Để Claude tự chấm điểm bản nháp không phải là kiểm chứng: độ tự tin của model không phải bằng chứng. Hỏi 50 câu làm khảo sát quá dài, khách bỏ dở và dữ liệu kém."
     ref: lessons/09-ccao-f.html#quy-trinh
+    reviewed: 2026-11-18
   - id: K108
     exams:
       CCAO-F: D4
-    stem: A team reads every inbound email to route it to the right department. How could Claude redesign this workflow?
+    stem: A team reads every inbound email to route it to the right department. What is the best way to bring Claude into this workflow?
     options:
       - Staff stop reading emails entirely and Claude makes every routing decision alone.
       - Claude suggests a department for each email, and staff confirm or correct it.
-      - Claude deletes any emails it thinks are unimportant.
-      - Claude replies to every email without telling staff.
+      - Claude routes only the emails it feels sure about, and no one reviews those.
+      - Claude summarizes each email, and staff still read and route every one themselves.
     answer:
       - B
-    explanation: "Tái thiết kế quy trình: Claude gợi ý, người xác nhận; giữ kiểm soát và học từ chỉnh sửa."
+    explanation: "Bắt đầu bằng cách để Claude gợi ý bộ phận cho từng email, nhân viên xác nhận hoặc sửa: giữ kiểm soát, đồng thời có dữ liệu về độ chính xác trước khi giao thêm. Bỏ hẳn người khỏi khâu đọc và định tuyến thì email chuyển sai không ai phát hiện. Để Claude tự định tuyến những email nó “thấy chắc” mà không ai kiểm cũng vậy: độ tự tin của model không phải bằng chứng. Thêm bản tóm tắt mà nhân viên vẫn đọc và định tuyến từng email thì tăng việc chứ không giảm."
     ref: lessons/09-ccao-f.html#quy-trinh
+    reviewed: 2026-11-18
   - id: K109
     exams:
       CCAO-F: D4
@@ -9139,13 +9255,14 @@ questions:
     stem: Staff worry that Claude will be used to monitor their performance. What is the best way to address this?
     options:
       - Explain clearly what Claude will and will not be used for, in line with company policy.
-      - Ignore the concern, since worries like this usually pass on their own.
-      - Tell staff that how the company uses its tools is none of their business.
-      - Promise anything that will stop the questions.
+      - Tell staff the tool was approved by IT, so there is nothing for them to worry about.
+      - Promise staff that no one can see their chats, before checking the admin settings.
+      - Hold off on answering until the rollout is finished and staff have tried the tool.
     answer:
       - A
-    explanation: Minh bạch về phạm vi sử dụng AI, đúng chính sách, giúp xây dựng lòng tin.
+    explanation: "Minh bạch phạm vi sử dụng AI, đúng theo chính sách công ty, là cách xây lòng tin. Viện dẫn việc IT đã duyệt không trả lời câu hỏi công cụ sẽ được dùng vào việc gì. Hứa không ai xem được chat khi chưa kiểm cài đặt quản trị của tổ chức là có thể hứa sai, và mất lòng tin khi điều đó lộ ra. Chờ triển khai xong mới trả lời khiến mối lo lan rộng."
     ref: lessons/09-ccao-f.html#quy-trinh
+    reviewed: 2026-11-18
   - id: K111
     exams:
       CCAO-F: D4
@@ -9166,158 +9283,170 @@ questions:
       CCAO-F: D4
     stem: A business analyst wants to automate a weekly spreadsheet task but cannot code. How can Claude help?
     options:
-      - Tell the analyst that automation always requires a developer.
-      - Delete the old spreadsheet and build a new one from scratch.
+      - Log a request with IT and wait for a developer to build the automation.
+      - Ask Claude to do the task by hand in chat each week from pasted data.
       - Draft a formula or simple script and explain it, tested first on a copy of the file.
-      - Run the changes directly on the live finance spreadsheet without testing them on a copy first.
+      - Apply the new script straight to the live spreadsheet that the team works in.
     answer:
       - C
-    explanation: Claude hỗ trợ phát triển giải pháp nhỏ; thử trên bản sao trước khi dùng thật.
+    explanation: "Claude giúp người không biết code phát triển giải pháp nhỏ: soạn công thức hoặc script đơn giản, giải thích từng phần, và thử trên bản sao trước khi dùng thật. Chờ developer cho một việc bảng tính nhỏ là chuyển việc quá sớm; chỉ phần tích hợp, kỹ thuật phức tạp mới cần chuyển cho developer. Nhờ Claude làm tay trong chat mỗi tuần vẫn là việc thủ công lặp lại, không phải tự động hoá. Áp script thẳng vào bảng tính đang dùng mà chưa thử thì lỗi có thể làm hỏng dữ liệu thật."
     ref: lessons/09-ccao-f.html#quy-trinh
+    reviewed: 2026-11-18
   - id: K113
     exams:
       CCAO-F: D4
     stem: You want to find bottlenecks in your hiring process. Which use of Claude is most effective?
     options:
-      - Ask Claude to guess where hiring is slow without giving it any information about the process.
-      - Ask Claude to reject more candidates earlier so the process moves faster.
-      - Ask Claude to rewrite all of the job titles.
+      - Ask Claude to list the typical bottlenecks in hiring and apply that list.
+      - Ask Claude to screen out more candidates early so fewer reach interviews.
+      - Ask Claude to rewrite the job ads so that more people apply.
       - Share each step and its timing, and ask Claude to spot delays and suggest fixes.
     answer:
       - D
-    explanation: Tối ưu quy trình cần dữ liệu thực về các bước; Claude phân tích và gợi ý, không thay quyết định tuyển dụng.
+    explanation: "Tối ưu quy trình cần dữ liệu thực về các bước: đưa từng bước và thời gian để Claude chỉ ra chỗ chậm và gợi ý cách sửa. Danh sách nút thắt chung chung không cho biết quy trình của bạn chậm ở đâu. Loại thêm ứng viên sớm không tìm ra nút thắt, lại đẩy quyết định ảnh hưởng tới con người sang Claude. Viết lại tin tuyển dụng để có thêm hồ sơ có thể làm quy trình càng tắc nếu nút thắt nằm ở khâu sau."
     ref: lessons/09-ccao-f.html#quy-trinh
+    reviewed: 2026-11-18
   - id: T07
     exams:
       CCAO-F: D4
-    stem: In a workflow where Claude drafts and a person approves, what makes the handoff work well?
+    stem: A marketing team has Claude draft product FAQ answers, and a specialist approves each one before publication. Which practice makes this handoff work best?
     options:
-      - Claude flags uncertainties and sources so the reviewer knows what to check.
-      - Claude hides any uncertain parts of the draft so that the final version looks more polished.
-      - The reviewer approves without reading to save time.
-      - Claude approves its own drafts when the reviewer is busy.
+      - Claude flags uncertain claims and lists its sources so the reviewer knows what to check.
+      - Claude removes any claim it is unsure about, so the reviewer sees only confident content.
+      - The reviewer spot-checks one draft in ten, since Claude's drafts are usually accurate.
+      - Claude rates its confidence in each answer, and drafts rated above 90% skip review.
     answer:
       - A
-    explanation: "Bàn giao tốt: AI nêu chỗ chưa chắc và nguồn để người duyệt biết cần kiểm tra gì."
+    explanation: "Bàn giao tốt giữa AI và người là AI làm lộ ra chỗ cần kiểm: đánh dấu nhận định chưa chắc và nêu nguồn để chuyên gia tập trung kiểm đúng chỗ. Tự bỏ các ý chưa chắc làm bản nháp thiếu nội dung mà người duyệt không biết đã thiếu gì, và cảm giác chắc chắn của model không bảo đảm phần còn lại đúng. Kiểm ngẫu nhiên một bản trong mười bỏ qua đúng bước duyệt từng câu mà quy trình đặt ra cho nội dung công bố ra ngoài. Điểm tự tin do Claude tự chấm không phải bằng chứng đúng, nên không dùng làm ngưỡng để bỏ qua người duyệt."
     ref: lessons/16-capabilities-enterprise.html#human-agent-teams
+    reviewed: 2026-11-18
   - id: K114
     exams:
       CCAO-F: D4
     stem: Which TWO are signs that a workflow is a good candidate for Claude assistance?
     options:
-      - The task requires physical presence at a site.
+      - The task happens once a year and its format changes every time.
       - The task repeats often and follows a recognizable pattern.
       - A person can review the output before it has any effect.
       - Each decision is irreversible and carries legal liability.
     answer:
       - B
       - C
-    explanation: "Ứng viên tốt: lặp lại, có khuôn mẫu, có bước người duyệt. Quyết định không thể đảo ngược, mang trách nhiệm pháp lý thì cần người quyết."
+    explanation: "Dấu hiệu ứng viên tốt: việc lặp lại thường xuyên theo khuôn mẫu nhận ra được, và có người duyệt output trước khi nó gây tác động. Việc mỗi năm làm một lần, định dạng đổi mỗi lần thì khó chuẩn hoá prompt và ít lợi ích. Quyết định không thể đảo ngược, mang trách nhiệm pháp lý thì phải để người quyết."
     ref: lessons/09-ccao-f.html#quy-trinh
+    reviewed: 2026-11-18
   - id: K115
     exams:
       CCAO-F: D4
     stem: You use Claude to compare three project management tools for your team. What should you do with its comparison?
     options:
       - Share it with the team as final and verified.
-      - Ignore it, since AI comparisons are never useful.
+      - Ask Claude to double-check its own comparison, then share the revised version.
       - Verify key claims, such as pricing and features, on the vendors' official pages.
       - Buy whichever of the tools Claude ranks first, without doing any further checks of your own.
     answer:
       - C
-    explanation: Nghiên cứu với Claude là điểm xuất phát; giá và tính năng thay đổi nhanh, cần kiểm chứng trên nguồn chính thức.
+    explanation: "Nghiên cứu với Claude là điểm xuất phát; giá và tính năng thay đổi nhanh nên phải kiểm các thông tin then chốt trên trang chính thức của nhà cung cấp. Chia sẻ như bản đã kiểm chứng là đưa thông tin chưa kiểm tới cả nhóm. Để Claude tự soát lại so sánh của chính nó không phải kiểm chứng độc lập. Mua công cụ Claude xếp đầu mà không tự kiểm là giao quyết định cho output chưa xác minh."
     ref: lessons/09-ccao-f.html#quy-trinh
+    reviewed: 2026-11-18
   - id: K116
     exams:
       CCAO-F: D4
-    stem: A sales manager wants Claude to promise delivery dates to customers. Which limitation should you explain?
+    stem: A sales manager wants Claude to promise delivery dates in customer emails. What should you tell the manager?
     options:
-      - Claude cannot write emails about delivery or logistics topics at all.
-      - Claude only works in English, so it cannot reply to local customers.
-      - Claude always refuses sales tasks because they involve commitments.
+      - Claude can do this reliably once it has seen last year's delivery records.
+      - Claude can do this safely if the prompt tells it to choose cautious dates.
+      - Claude can do this as long as each email notes that AI helped write it.
       - Claude does not know real stock or schedules unless connected, so dates need checks.
     answer:
       - D
-    explanation: "Giới hạn: Claude không biết dữ liệu vận hành thực (tồn kho, lịch) nếu không được kết nối; cam kết với khách cần xác nhận."
+    explanation: "Giới hạn cần nói rõ: Claude không biết tồn kho hay lịch giao thực tế nếu không được kết nối tới dữ liệu đó, nên mọi ngày hứa với khách phải được xác nhận. Dữ liệu giao hàng năm ngoái không phản ánh tồn kho và lịch hiện tại. Dặn chọn ngày “thận trọng” vẫn là đoán, không dựa trên dữ liệu thật. Ghi chú có AI hỗ trợ viết là minh bạch, nhưng không làm ngày hứa trở nên đúng."
     ref: lessons/09-ccao-f.html#quy-trinh
+    reviewed: 2026-11-18
   - id: T08
     exams:
       CCAO-F: D4
     stem: Your company is rolling Claude out to 500 staff. Which step most improves adoption and safe use?
     options:
       - Provide short training on good prompting, review practices and the AI policy.
-      - Give everyone access without any guidance or training and simply see what people do with it.
-      - Allow access only to the IT department, permanently.
-      - Require every output to be approved by the CEO.
+      - Give everyone access with no guidance and see which uses emerge on their own.
+      - Send everyone the AI policy and require a signed acknowledgment before granting access.
+      - Have the IT team approve Claude outputs before staff use them in their work.
     answer:
       - A
-    explanation: "Triển khai rộng cần đào tạo: cách prompt, cách duyệt output, chính sách AI."
+    explanation: "Triển khai rộng thành công khi người dùng vừa biết dùng hiệu quả vừa biết dùng an toàn; đào tạo ngắn về cách viết prompt, cách duyệt output và chính sách AI giải quyết cả hai. Mở quyền mà không hướng dẫn khiến mỗi người tự mò, dễ dùng sai và dễ đưa dữ liệu nhạy cảm vào. Chỉ ký xác nhận đã đọc chính sách đáp ứng thủ tục nhưng không dạy cách prompt hay cách kiểm output, nên không tăng mức sử dụng hiệu quả. Bắt IT duyệt output tạo nút thắt cho 500 người và giao việc kiểm nội dung cho người không có chuyên môn nghiệp vụ; trách nhiệm duyệt nên nằm ở chính người dùng đã được đào tạo."
     ref: lessons/16-capabilities-enterprise.html#enterprise
+    reviewed: 2026-11-18
   - id: K117
     exams:
       CCAO-F: D4
     stem: Feedback says your Claude-assisted onboarding guide is too long. What is the best next step?
     options:
-      - Ask new hires to read only every other page.
+      - Ask Claude to make the guide shorter, without sharing the specific feedback.
       - Share the feedback with Claude and ask for a shorter version focused on the first week.
-      - Keep the guide unchanged, since longer guides are always more complete.
-      - Delete the guide entirely and go back to explaining things by word of mouth.
+      - Add a one-page summary at the front and keep the rest of the guide as it is.
+      - Ask Claude to regenerate the guide from scratch using the same original prompt.
     answer:
       - B
-    explanation: "Lặp theo phản hồi: đưa phản hồi cụ thể vào yêu cầu chỉnh sửa."
+    explanation: "Lặp theo phản hồi: đưa phản hồi cụ thể và mục tiêu rõ (bản ngắn tập trung vào tuần đầu) vào yêu cầu chỉnh sửa. Chỉ bảo “làm ngắn lại” mà không đưa phản hồi thì Claude không biết phần nào thừa với người mới. Thêm trang tóm tắt mà giữ nguyên phần còn lại không giải quyết việc hướng dẫn quá dài. Chạy lại prompt cũ y nguyên chỉ cho ra một bản tương tự vì yêu cầu không đổi."
     ref: lessons/09-ccao-f.html#quy-trinh
+    reviewed: 2026-11-18
   - id: K118
     exams:
       CCAO-F: D4
-    stem: Which description best fits augmenting a workflow with Claude, rather than replacing people?
+    stem: An insurance claims team adds Claude to its process. Which setup best fits augmenting the team's work, rather than replacing people?
     options:
       - Staff stop checking Claude's work once it has been running for a month.
-      - Claude is used only when staff are on holiday.
+      - Claude decides each claim, and staff only handle the customer complaints.
       - Claude does first drafts and research, so staff spend more time on judgment.
-      - Claude takes over the whole job and the staff are removed from the process altogether.
+      - Claude takes over the whole job, and the staff move on to other teams.
     answer:
       - C
-    explanation: "Tăng cường: AI làm phần soạn, tìm kiếm; con người tập trung vào phán đoán và quan hệ khách hàng."
+    explanation: "Tăng cường nghĩa là Claude làm phần soạn nháp, tìm kiếm, còn con người giữ phần phán đoán và quyết định. Ngừng kiểm sau một tháng là dần bỏ người khỏi vòng kiểm soát, tiến tới thay thế. Để Claude quyết từng hồ sơ bồi thường còn nhân viên chỉ xử lý khiếu nại là chuyển quyết định cốt lõi sang Claude. Claude nhận toàn bộ việc và nhân viên chuyển đi nơi khác là thay người, ngược với tăng cường."
     ref: lessons/09-ccao-f.html#quy-trinh
+    reviewed: 2026-11-18
   - id: K119
     exams:
       CCAO-F: D4
     stem: Before using Claude to automate a report, which question should you answer first?
     options:
-      - Which font and colors the report should use for the new branding.
-      - How many emojis the report should contain.
-      - Whether the report can be longer than last year's.
-      - Who uses the report, for what decision, and what accuracy level is required?
+      - Which Claude model will produce the report fastest each week.
+      - How long the report should be and which sections to keep.
+      - Whether Claude can reuse last year's file as the template.
+      - Who uses the report, for what decision, and what accuracy level is required.
     answer:
       - D
-    explanation: "Hiểu yêu cầu trước: ai dùng, để quyết định gì, cần độ chính xác bao nhiêu."
+    explanation: "Phân tích yêu cầu trước: ai dùng báo cáo, để ra quyết định gì, cần độ chính xác bao nhiêu; câu trả lời quyết định có nên tự động hoá không, cần kiểm chứng tới mức nào. Chọn model nhanh nhất là tối ưu sau khi đã biết yêu cầu. Độ dài và các mục cần giữ phụ thuộc vào người đọc và quyết định họ đưa ra. Dùng file năm ngoái làm khuôn mẫu là chi tiết thực hiện, dễ chép lại cả phần không còn ai cần."
     ref: lessons/09-ccao-f.html#quy-trinh
+    reviewed: 2026-11-18
   - id: K120
     exams:
       CCAO-F: D5
-    stem: Which is the most effective Project instruction for a customer support team?
+    stem: A customer support team is writing the instructions for its shared Project. Which instruction is most effective?
     options:
       - “Be friendly and concise, cite the policy section, escalate refunds over €200.”
-      - “Be helpful, warm and good with customers, and always try your best to keep every one of them happy.”
-      - “Do your best on every question and make sure customers are satisfied.”
-      - “Answer every question fully, whatever it takes, without escalating.”
+      - “Be helpful, warm and good with customers, and try your best to keep them happy.”
+      - “Be concise but explain each policy in full, and escalate when unsure but resolve cases yourself.”
+      - “Answer questions fully and resolve them yourself rather than escalating.”
     answer:
       - A
-    explanation: "Chỉ dẫn hệ thống hiệu quả phải cụ thể: giọng, cách trích nguồn, khi nào chuyển người. Chỉ dẫn chung chung không định hướng được."
+    explanation: "Project instructions hiệu quả phải cụ thể và làm theo được: giọng văn, cách trích nguồn, ngưỡng rõ ràng để chuyển cho người. Câu thân thiện, cố làm khách vui chỉ nêu mong muốn chung, không cho Claude biết phải làm gì khác đi. Chỉ dẫn vừa đòi ngắn gọn vừa đòi giải thích đầy đủ, vừa bảo chuyển người vừa bảo tự xử lý là mâu thuẫn, nên Claude áp dụng không nhất quán. Yêu cầu tự xử lý thay vì chuyển người bỏ điểm kiểm soát cho các ca như hoàn tiền lớn."
     ref: lessons/09-ccao-f.html#cau-hinh
+    reviewed: 2026-11-18
   - id: K121
     exams:
       CCAO-F: D5
-    stem: What should you upload to a Project that answers HR policy questions?
+    stem: An HR team is setting up a Project to answer employees' policy questions. What should it upload as Project knowledge?
     options:
-      - Personal employee records for extra context.
+      - Personal employee records, so answers can be tailored to each person.
       - The current, approved policy documents, with clear file names.
-      - Every HR email from the last ten years, so Claude has full history.
-      - Draft policies that were never approved.
+      - HR email threads from the last ten years, so Claude has the full history.
+      - The current policies plus last year's versions, so Claude can explain what changed.
     answer:
       - B
-    explanation: Kho tri thức nên là tài liệu chính thức, hiện hành, đặt tên rõ. Bản nháp chưa duyệt gây trả lời sai; hồ sơ cá nhân là dữ liệu nhạy cảm không cần thiết.
+    explanation: "Kho tri thức cho Project hỏi đáp chính sách nên chỉ gồm tài liệu chính thức, hiện hành, đã duyệt, đặt tên rõ để Claude truy xuất đúng. Hồ sơ cá nhân nhân viên là dữ liệu nhạy cảm, không cần cho việc trả lời chính sách và làm tăng rủi ro lộ dữ liệu. Email HR mười năm chứa nhiều thông tin cá nhân và quy định đã cũ, dễ khiến Claude trích nội dung lỗi thời. Đưa thêm bản năm trước tạo hai phiên bản mâu thuẫn trong cùng kho, Claude có thể trả lời theo quy định đã hết hiệu lực."
     ref: lessons/09-ccao-f.html#cau-hinh
+    reviewed: 2026-11-18
   - id: K122
     exams:
       CCAO-F: D5
@@ -9380,30 +9509,32 @@ questions:
   - id: K126
     exams:
       CCAO-F: D5
-    stem: Which item belongs in Project knowledge rather than Project instructions?
+    stem: You are setting up a Project for a product support team. Which item belongs in Project knowledge rather than in Project instructions?
     options:
-      - “Keep answers under 150 words.”
-      - “Ask a clarifying question if the request is ambiguous.”
+      - The rule that answers stay under 150 words.
+      - The rule to ask a clarifying question when a request is ambiguous.
       - The 40-page product manual that Claude should reference.
-      - “Always answer in British English.”
+      - The requirement that answers use British English.
     answer:
       - C
-    explanation: Knowledge là tài liệu tham khảo; instructions là quy tắc hành vi (ngôn ngữ, độ dài, cách hỏi lại).
+    explanation: "Project knowledge là tài liệu tham khảo để Claude tra cứu, như cuốn hướng dẫn sản phẩm 40 trang. Project instructions là quy tắc hành vi áp dụng cho mọi chat trong Project. Giới hạn 150 từ là quy tắc về độ dài câu trả lời, thuộc instructions. Hỏi lại khi yêu cầu mơ hồ là cách cư xử, cũng thuộc instructions. Dùng tiếng Anh kiểu Anh là quy tắc ngôn ngữ cho mọi câu trả lời, thuộc instructions. Đặt các quy tắc này vào knowledge thì chúng chỉ là nội dung tham khảo lẫn trong tài liệu, không được coi là chỉ dẫn luôn áp dụng."
     ref: lessons/09-ccao-f.html#cau-hinh
+    reviewed: 2026-11-18
   - id: K127
     exams:
       CCAO-F: D5
-    stem: Which TWO actions are appropriate for managing Claude's memory?
+    stem: You use Claude's memory across many client chats and want it to stay accurate and appropriate. Which TWO actions should you take? (Choose two.)
     options:
       - Turn memory off, or use an incognito chat, for conversations you do not want remembered.
-      - Store client passwords in memory so they are always available.
-      - Assume memory is shared with your whole company and can never be changed.
+      - Save client login details in memory so Claude can reuse them in later chats.
+      - Ask a Team owner to review and clean up your saved memories for you.
       - Review what Claude remembers and delete items that are wrong or outdated.
     answer:
       - A
       - D
-    explanation: Memory xem, sửa, xoá được; tắt hoặc dùng incognito khi không muốn lưu. Không lưu mật khẩu; memory không phải kho chung không đổi được.
+    explanation: "Memory do từng người tự quản lý: xem, sửa, xoá từng mục trong Settings, và tắt Memory cho một chat (menu “+”) hoặc dùng chat incognito khi không muốn chat đó được ghi nhớ. Lưu thông tin đăng nhập của khách vào memory là đưa bí mật vào nơi không dành cho việc đó; memory để giữ bối cảnh như vai trò, dự án, sở thích. Owner gói Team hay Enterprise chỉ bật hoặc tắt tính năng memory cho tổ chức, không xem hay sửa được memory của từng thành viên."
     ref: lessons/09-ccao-f.html#cau-hinh
+    reviewed: 2026-11-18
   - id: K128
     exams:
       CCAO-F: D5
@@ -9411,25 +9542,27 @@ questions:
     options:
       - Ask for the casual tone in that chat; a specific request can adjust it there.
       - Delete the formal-language instruction from the Project so that it no longer applies to anyone.
-      - Create a new company policy banning casual posts.
-      - Ask the user to write the post without Claude.
+      - Create a separate Project with casual instructions just for this one post.
+      - Add a casual sample post to the Project knowledge so Claude blends both tones.
     answer:
       - A
-    explanation: Chỉ dẫn Project là mặc định; yêu cầu cụ thể trong chat có thể điều chỉnh cho trường hợp riêng mà không phá cấu hình chung.
+    explanation: "Project instructions là mặc định cho mọi chat trong Project; với một việc riêng, nêu rõ yêu cầu giọng thân mật ngay trong chat đó là đủ, cấu hình chung giữ nguyên. Xoá chỉ dẫn trang trọng khỏi Project làm hỏng mặc định của cả nhóm chỉ vì một bài đăng. Tạo hẳn một Project mới cho một bài là quá tay so với một yêu cầu trong chat. Thêm bài mẫu thân mật vào knowledge ảnh hưởng mọi chat của nhóm và tạo tín hiệu mâu thuẫn với chỉ dẫn trang trọng."
     ref: lessons/09-ccao-f.html#cau-hinh
+    reviewed: 2026-11-18
   - id: K129
     exams:
       CCAO-F: D5
-    stem: Who should own updates to a shared team Project's instructions and knowledge files?
+    stem: A shared team Project's instructions and files have drifted out of date because nobody knows who maintains them. What is the best arrangement?
     options:
-      - Each user, in their own private copy.
-      - A named owner who reviews changes and keeps the content current.
-      - Nobody; anyone may change anything at any time without telling others.
-      - Claude, which updates the files automatically.
+      - Each user keeps a private copy of the Project and updates it as needed.
+      - A named owner reviews changes and keeps the content current.
+      - Give all members “Can edit” access so they can fix problems as they notice them.
+      - Ask Claude to flag outdated files in each chat so users decide what to replace.
     answer:
       - B
-    explanation: Cấu hình dùng chung cần người phụ trách cập nhật và duyệt thay đổi.
+    explanation: "Cấu hình dùng chung cần một người phụ trách rõ ràng để duyệt thay đổi và giữ instructions, tài liệu luôn cập nhật. Mỗi người giữ bản riêng làm cấu hình phân mảnh, mỗi người nhận câu trả lời khác nhau. Cho tất cả quyền “Can edit” thì ai cũng sửa được nhưng không ai chịu trách nhiệm, thay đổi chồng chéo và dễ mâu thuẫn. Claude không biết tài liệu nào đã lỗi thời so với thực tế bên ngoài Project, và để từng người tự quyết thì vẫn không có ai duy trì cấu hình."
     ref: lessons/09-ccao-f.html#cau-hinh
+    reviewed: 2026-11-18
   - id: K130
     exams:
       CCAO-F: D5
@@ -9448,16 +9581,17 @@ questions:
   - id: T09
     exams:
       CCAO-F: D5
-    stem: In a Claude Enterprise deployment, who should decide which connectors are available to employees?
+    stem: Your company is rolling out Claude Enterprise, and staff ask to connect Gmail, Google Drive and a CRM. Who should decide which connectors are available to employees?
     options:
-      - Each employee individually, for their own account, without any restrictions from the company.
-      - Claude, based on what seems useful.
-      - The external vendors who build the connectors.
+      - Each employee, for their own account, since connectors only use that person's permissions.
+      - Each team lead, enabling whatever connectors their own team requests.
+      - The connector vendors, since they control what data their connector exposes.
       - Administrators, in line with the organization's security and data policies.
     answer:
       - D
-    explanation: "Doanh nghiệp: quản trị viên quản lý connector và quyền truy cập theo chính sách bảo mật và dữ liệu."
+    explanation: "Trên gói Team và Enterprise, Owner hoặc Primary Owner phải bật connector cho tổ chức (Organization settings > Connectors) trước khi từng người xác thực, nên việc chọn connector nào được dùng thuộc về quản trị viên, theo chính sách bảo mật và dữ liệu. Connector đúng là chỉ dùng quyền của từng người, nhưng để mỗi nhân viên tự quyết thì tổ chức không kiểm soát được dữ liệu nào đi vào Claude. Để trưởng nhóm bật theo yêu cầu tạo chính sách rời rạc giữa các nhóm và bỏ qua đánh giá bảo mật chung. Nhà cung cấp quyết định connector làm được gì, không quyết định tổ chức của bạn cho phép gì."
     ref: lessons/16-capabilities-enterprise.html#enterprise
+    reviewed: 2026-11-18
   - id: K131
     exams:
       CCAO-F: D5
@@ -9465,12 +9599,13 @@ questions:
     options:
       - Consolidate them into a short, clear list and remove contradictions.
       - Add another page to the instructions that repeats the most important rules a second time.
-      - Write the rules in capital letters.
-      - Move the rules into a random knowledge file.
+      - Rewrite the most important rules in capital letters so Claude prioritizes them.
+      - Move the rules into a knowledge file so the instructions field stays short.
     answer:
       - A
-    explanation: Chỉ dẫn hệ thống ngắn, rõ, không mâu thuẫn hiệu quả hơn nhiều trang chồng chéo.
+    explanation: "Chỉ dẫn ngắn, rõ, không mâu thuẫn được áp dụng nhất quán hơn ba trang quy tắc chồng chéo; cách sửa là gộp lại và bỏ chỗ mâu thuẫn. Thêm một trang nhắc lại quy tắc quan trọng làm chỉ dẫn dài hơn và chồng chéo hơn. Viết hoa không giải quyết được việc các quy tắc mâu thuẫn nhau; Claude vẫn phải đoán quy tắc nào thắng. Chuyển quy tắc sang file knowledge chỉ dời chỗ vấn đề và biến quy tắc hành vi thành tài liệu tham khảo, nên càng khó áp dụng nhất quán."
     ref: lessons/09-ccao-f.html#cau-hinh
+    reviewed: 2026-11-18
   - id: K132
     exams:
       CCAO-F: D5
@@ -9484,6 +9619,8 @@ questions:
       - B
     explanation: "Nguyên tắc quyền tối thiểu: chỉ cấp quyền truy cập cần thiết theo chính sách."
     ref: lessons/09-ccao-f.html#cau-hinh
+    status: retired
+    reviewed: 2026-11-18
   - id: K133
     exams:
       CCAO-F: D6
@@ -9511,19 +9648,22 @@ questions:
       - D
     explanation: Dữ liệu nhạy cảm (sức khoẻ, số định danh) cần được tổ chức cho phép và có biện pháp bảo vệ.
     ref: lessons/09-ccao-f.html#quan-tri
+    status: retired
+    reviewed: 2026-11-18
   - id: K135
     exams:
       CCAO-F: D6
     stem: Your company operates under GDPR. What should you consider before uploading customer data to Claude?
     options:
       - Whether there is a lawful basis, an approved tool, and a way to minimize the data.
-      - Nothing at all, because AI tools are exempt from data protection law.
-      - Only whether the file size is small enough to upload in one go.
-      - Whether the customer data is in a spreadsheet or a PDF.
+      - Whether Claude has been told in the prompt not to retain or reuse the customer data.
+      - Whether the uploaded file will be deleted from the chat once the analysis is done.
+      - Whether the customer data is already stored in another cloud tool the company uses.
     answer:
       - A
-    explanation: "Quy định bảo vệ dữ liệu: cơ sở pháp lý, công cụ được duyệt, tối thiểu hoá dữ liệu."
+    explanation: "Theo GDPR, trước khi đưa dữ liệu khách hàng vào một công cụ cần có cơ sở pháp lý cho việc xử lý, dùng công cụ được tổ chức phê duyệt (có thoả thuận xử lý dữ liệu phù hợp) và chỉ đưa phần dữ liệu thật sự cần (tối thiểu hoá). Dặn Claude trong prompt đừng giữ hay dùng lại dữ liệu không phải biện pháp kiểm soát, vì dữ liệu vẫn đã được gửi đi. Xoá file khỏi chat sau khi phân tích là bước sau cùng, không tạo ra cơ sở pháp lý cho việc xử lý đã diễn ra. Dữ liệu đã nằm ở một dịch vụ đám mây khác không có nghĩa là được phép đưa sang một công cụ mới, cho một mục đích mới."
     ref: lessons/09-ccao-f.html#quan-tri
+    reviewed: 2026-11-18
   - id: K136
     exams:
       CCAO-F: D6
@@ -9535,12 +9675,13 @@ questions:
       - Ask Claude to review its own output instead.
     answer:
       - B
-    explanation: Tuân thủ chính sách AI của tổ chức kể cả khi gấp; AI tự đánh giá không thay được người duyệt.
+    explanation: "Chính sách yêu cầu người duyệt thì phải duyệt trước khi gửi, kể cả khi gấp. Coi chính sách chỉ là “gợi ý” để bỏ qua một lần chính là vi phạm chính sách. Gửi trước, chờ khách phàn nàn mới duyệt thì lỗi đã tới tay khách và không rút lại được. Bảo Claude tự duyệt output của chính nó không thay được người duyệt mà chính sách đòi hỏi: model có thể lặp lại đúng lỗi của mình, và không ai chịu trách nhiệm thay tổ chức."
     ref: lessons/09-ccao-f.html#quan-tri
+    reviewed: 2026-11-18
   - id: Q08
     exams:
       CCAO-F: D6
-    stem: Which AI Fluency competency covers taking responsibility for AI-assisted work and being transparent about AI's role?
+    stem: "After drafting a grant report with Claude, a program manager states Claude's role in the cover letter, as the funder requires, and signs off as personally accountable for the final content. Which AI Fluency competency is she mainly demonstrating?"
     options:
       - Description
       - Discernment
@@ -9548,21 +9689,23 @@ questions:
       - Delegation
     answer:
       - C
-    explanation: Diligence là chịu trách nhiệm với sản phẩm làm cùng AI, minh bạch vai trò của AI, cân nhắc đạo đức.
+    explanation: "Diligence là chịu trách nhiệm về những gì mình làm với AI: minh bạch vai trò của AI (ở đây là nêu Claude đã hỗ trợ, theo yêu cầu của nhà tài trợ) và đứng tên chịu trách nhiệm cho sản phẩm cuối. Delegation là quyết định có giao việc cho AI hay không và giao thế nào. Description là mô tả mục tiêu, bối cảnh để prompt ra output hữu ích. Discernment là đánh giá chất lượng, độ hữu ích của output. Ba chiều đó không nói tới việc công khai vai trò AI và nhận trách nhiệm cuối cùng."
     ref: lessons/15-claude-101-fluency.html#ai-fluency
+    reviewed: 2026-11-18
   - id: K137
     exams:
       CCAO-F: D6
     stem: A customer asks whether they are chatting with a person or an AI. Your support assistant is powered by Claude. What is the right response?
     options:
       - Say it is a person, so that the customer feels more comfortable and trusting.
-      - Avoid the question and change the subject.
-      - Say it depends on how they feel about AI.
+      - Keep the human-sounding persona and mention AI use only in the website's terms of service.
+      - Say it is “a member of the support team”, since the team configured the assistant.
       - Tell them honestly that it is an AI assistant, and offer a human if needed.
     answer:
       - D
-    explanation: Minh bạch về việc dùng AI với khách hàng; cho phép chuyển sang người khi cần.
+    explanation: "Usage Policy (Additional Use Case Guidelines) yêu cầu chatbot hướng tới người tiêu dùng phải cho người dùng biết họ đang tương tác với AI chứ không phải người, tối thiểu ở đầu mỗi phiên chat hoặc trong giao diện sản phẩm (https://www.anthropic.com/legal/aup). Khi khách hỏi thẳng thì càng phải trả lời thật, và nên cho chuyển sang nhân viên khi cần. Nói là người để khách yên tâm là lừa dối trực tiếp. Giữ persona như người thật và chỉ ghi chuyện dùng AI trong điều khoản dịch vụ không đạt yêu cầu công bố ở đầu phiên hoặc trong giao diện. Nói “là thành viên đội hỗ trợ” là né tránh gây hiểu lầm: khách vẫn tưởng mình đang nói chuyện với người."
     ref: lessons/09-ccao-f.html#quan-tri
+    reviewed: 2026-11-18
   - id: K138
     exams:
       CCAO-F: D6
@@ -9570,26 +9713,28 @@ questions:
     options:
       - Reusing their exact taglines may infringe their IP; write original wording instead.
       - There is no issue at all, because text that Claude writes for you cannot infringe on anything.
-      - The only issue is that the slogan might be too short.
-      - It is fine as long as the copy is only used online.
+      - It is fine as long as the copy credits the competitor as the source of the taglines.
+      - It is fine once Claude changes one or two words in each tagline to make them new.
     answer:
       - A
-    explanation: "Tôn trọng sở hữu trí tuệ: không dùng lại khẩu hiệu, nhãn hiệu của người khác; viết nội dung nguyên bản."
+    explanation: "Usage Policy cấm dùng Claude để xâm phạm quyền sở hữu trí tuệ của bên thứ ba (https://www.anthropic.com/legal/aup). Khẩu hiệu nổi tiếng của đối thủ thường được bảo hộ (nhãn hiệu, bản quyền), nên cách đúng là viết nội dung nguyên bản. Nội dung do Claude viết không vì thế mà miễn trách nhiệm: người xuất bản vẫn chịu trách nhiệm. Ghi nguồn cho đối thủ không phải là xin phép; quảng cáo dùng khẩu hiệu của họ vẫn có thể vi phạm và còn gây nhầm lẫn thương hiệu. Đổi một hai chữ thì khẩu hiệu vẫn dễ nhận ra, nên vẫn không phải nội dung nguyên bản."
     ref: lessons/09-ccao-f.html#quan-tri
+    reviewed: 2026-11-18
   - id: K139
     exams:
       CCAO-F: D6
     stem: You want Claude to analyze employee survey comments. Which TWO steps reduce privacy risk?
     options:
-      - Post the comments in a public channel so Claude can read them.
+      - Tell Claude at the start of the chat not to remember any names it sees.
       - Remove names and other identifying details before uploading.
       - Use only the approved company workspace for the analysis.
-      - Upload the comments together with each employee's HR file.
+      - Use a personal Claude account so the comments stay out of company systems.
     answer:
       - B
       - C
-    explanation: "Giảm rủi ro riêng tư: ẩn danh trước khi tải lên, dùng công cụ được phê duyệt. Gộp hồ sơ nhân sự hay đăng công khai làm tăng rủi ro."
+    explanation: "Hai bước thật sự giảm rủi ro là bỏ tên và chi tiết định danh trước khi tải lên (vẫn phân tích ý kiến được), và chỉ dùng workspace được công ty phê duyệt. Dặn Claude “đừng nhớ tên” không phải biện pháp kiểm soát: dữ liệu định danh vẫn đã được gửi đi. Dùng tài khoản cá nhân đưa dữ liệu nhân viên ra khỏi công cụ được duyệt và khỏi quyền quản trị của tổ chức, nên rủi ro tăng chứ không giảm."
     ref: lessons/09-ccao-f.html#quan-tri
+    reviewed: 2026-11-18
   - id: K140
     exams:
       CCAO-F: D6
@@ -9603,6 +9748,8 @@ questions:
       - C
     explanation: Tóm tắt tài liệu công khai cho bản tin nội bộ là việc rủi ro thấp; quyết định nhân sự, y tế, tín dụng cần người có thẩm quyền.
     ref: lessons/09-ccao-f.html#quan-tri
+    status: retired
+    reviewed: 2026-11-18
   - id: T10
     exams:
       CCAO-F: D6
@@ -9616,6 +9763,8 @@ questions:
       - D
     explanation: Quyết định ảnh hưởng tới con người cần người chịu trách nhiệm; output có thể mang thiên lệch.
     ref: lessons/16-capabilities-enterprise.html#ai-capabilities
+    status: retired
+    reviewed: 2026-11-18
   - id: K141
     exams:
       CCAO-F: D6
@@ -9648,16 +9797,17 @@ questions:
   - id: T11
     exams:
       CCAO-F: D6
-    stem: Why might an organization enable audit logs or compliance tools for its Claude deployment?
+    stem: A bank's compliance team asks the Primary Owner to export audit logs and enable the Compliance API for its Claude Enterprise organization. What need does this most directly serve?
     options:
-      - To make Claude respond faster by caching every conversation.
-      - To reduce the price of the subscription.
-      - To support oversight, investigations and regulatory obligations about AI usage.
-      - To let employees browse each other's private chats whenever they like.
+      - Blocking employees from pasting sensitive data into chats before it is ever sent.
+      - Keeping the organization's chats out of Anthropic's model training.
+      - Supporting oversight, investigations and regulatory obligations about AI usage.
+      - Letting any employee search colleagues' chats directly from the Claude sidebar.
     answer:
       - C
-    explanation: Nhật ký và công cụ tuân thủ phục vụ giám sát, điều tra, nghĩa vụ pháp lý.
+    explanation: "Audit log (chỉ có ở Enterprise, do Owner hoặc Primary Owner xuất) và Compliance API (Primary Owner bật) cho tổ chức lấy sự kiện hoạt động, dữ liệu chat và file để giám sát, điều tra sự cố và đáp ứng yêu cầu tuân thủ bằng công cụ của mình. Nhật ký ghi lại sau khi việc đã xảy ra, không chặn được việc dán dữ liệu nhạy cảm. Gói thương mại vốn mặc định không dùng input, output để huấn luyện, không cần bật nhật ký mới có điều đó. Audit log thậm chí không chứa tiêu đề hay nội dung chat (chỉ mã định danh), và quyền xuất thuộc về Owner, không phải để mọi nhân viên xem chat của nhau. Nguồn: https://support.claude.com/en/articles/9970975-access-audit-logs, https://support.claude.com/en/articles/13015708-access-the-compliance-api"
     ref: lessons/16-capabilities-enterprise.html#enterprise
+    reviewed: 2026-11-18
   - id: K143
     exams:
       CCAO-F: D6
@@ -9676,29 +9826,31 @@ questions:
   - id: K144
     exams:
       CCAO-F: D6
-    stem: Which factor most increases the need for human oversight of a Claude-assisted task?
+    stem: A team lead is deciding which Claude-assisted tasks need a second reviewer before the output is used. Which factor should weigh most in that decision?
     options:
       - The impact of an error on people, money or legal obligations.
-      - The number of words and paragraphs in the final output.
-      - Whether the output is formatted with bullet points or tables.
-      - The time of day the task is done.
+      - How confident Claude sounds when it presents the output.
+      - How many prompt revisions it took to get the output.
+      - Whether the most capable model or a faster one was used.
     answer:
       - A
-    explanation: "Mức giám sát tương xứng với tác động khi sai: con người, tiền bạc, pháp lý."
+    explanation: "Mức giám sát của con người nên tỉ lệ với hậu quả nếu output sai: ảnh hưởng tới người, tiền, nghĩa vụ pháp lý càng lớn thì càng cần người có chuyên môn duyệt. Giọng tự tin của Claude không phải bằng chứng đúng; lỗi nói rất chắc chắn vẫn xảy ra. Số lần sửa prompt chỉ nói về quá trình làm, không nói output sai thì gây hại tới đâu. Model mạnh hơn ít sai hơn nhưng vẫn có thể sai, nên không thay được việc đánh giá rủi ro."
     ref: lessons/09-ccao-f.html#quan-tri
+    reviewed: 2026-11-18
   - id: T12
     exams:
-      CCAO-F: D6
+      CCAO-F: D2
     stem: A colleague believes Claude's answers are always neutral and factual. What is the most accurate correction?
     options:
-      - Claude's answers are copied from a single encyclopedia.
+      - Claude is neutral by design, but its knowledge can be out of date on recent events.
       - Claude can be wrong or reflect biases in its training data, so outputs need judgment.
-      - Claude is always factually correct, although it can sometimes be too polite.
-      - Claude only gives opinions, never facts.
+      - Claude's claims that come with a cited source can be trusted, so check only uncited ones.
+      - Claude's answers can be trusted when it says it is confident, so check only hedged ones.
     answer:
       - B
-    explanation: AI có thể sai và mang thiên lệch từ dữ liệu; người dùng cần đánh giá output.
+    explanation: "Claude có thể tạo ra thông tin sai (hallucination) và có thể phản ánh thiên lệch trong dữ liệu huấn luyện, nên output cần được người dùng đánh giá, nhất là khi dùng cho quyết định hay nội dung gửi ra ngoài. Nói Claude trung lập theo thiết kế và chỉ lỗi thời với sự kiện mới là bỏ qua cả thiên lệch lẫn lỗi bịa thông tin. Có trích nguồn chưa chắc đã đúng: nguồn có thể không nói điều được gán cho nó, nên vẫn phải mở ra đối chiếu (tài liệu Anthropic nhắc rằng các kỹ thuật giảm hallucination không loại bỏ hẳn nó). Mức tự tin model tự nhận không phải bằng chứng đúng. Nguồn: https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations"
     ref: lessons/16-capabilities-enterprise.html#ai-capabilities
+    reviewed: 2026-11-18
   - id: K145
     exams:
       CCAO-F: D6
@@ -9712,32 +9864,36 @@ questions:
       - C
     explanation: Dùng dữ liệu khách hàng cho mục đích mới cần phù hợp thông báo quyền riêng tư, sự đồng ý và chính sách.
     ref: lessons/09-ccao-f.html#quan-tri
+    status: retired
+    reviewed: 2026-11-18
   - id: K146
     exams:
       CCAO-F: D6
     stem: An employee wants to keep chats containing client financial data in a personal account indefinitely. Which principle applies?
     options:
       - Keep everything forever in a personal account, in case any of the chats turns out to be useful later.
-      - Delete all company data from every system.
-      - Share the chats with friends for safekeeping.
+      - Keep them in the personal account, but delete the client names from the chat titles.
+      - Redo the work in incognito chats instead, which are erased the moment they end.
       - Follow the organization's data retention rules and approved tools for client data.
     answer:
       - D
-    explanation: Dữ liệu khách hàng tuân theo quy tắc lưu giữ và công cụ được phê duyệt của tổ chức.
+    explanation: "Dữ liệu tài chính của khách phải nằm trong công cụ được tổ chức phê duyệt và theo quy tắc lưu giữ của tổ chức. Tài khoản cá nhân nằm ngoài quyền quản trị, thời hạn lưu và khả năng xuất, xoá dữ liệu của tổ chức. Giữ mãi “phòng khi cần” trái nguyên tắc chỉ lưu khi có lý do. Xoá tên khách khỏi tiêu đề chat thì nội dung bên trong vẫn chứa dữ liệu khách, vẫn ở tài khoản cá nhân. Chat incognito không bị xoá ngay khi kết thúc: theo trang hỗ trợ, chúng vẫn được giữ 30 ngày, và vẫn là tài khoản cá nhân ngoài công cụ được duyệt (https://support.claude.com/en/articles/12260368-using-incognito-chats)."
     ref: lessons/09-ccao-f.html#quan-tri
+    reviewed: 2026-11-18
   - id: K147
     exams:
       CCAO-F: D7
-    stem: Claude's answers to your team's product questions are vague. You check and find the Project contains no product documents. What is the root cause?
+    stem: Your team's Claude Project gives vague, generic answers to product questions, even though the questions are specific and the chats are short. When you check the Project, you find its instructions are set up but no product documents have been added to its knowledge. What is the most likely root cause?
     options:
-      - "Missing knowledge: Claude has no product information to draw on."
-      - The model itself is broken and should be swapped for another one.
-      - The questions are too short.
-      - The chat history is too long.
+      - Claude has no product-specific information to draw on, so it falls back on general knowledge.
+      - The model is not capable enough, so the team should switch to the largest model available.
+      - The questions are too brief, so users should write longer questions with more words.
+      - The conversation history has grown too long for Claude to stay focused on the question.
     answer:
       - A
-    explanation: "Chẩn đoán từ gốc: thiếu nguồn tri thức thì câu trả lời chung chung; bổ sung tài liệu."
+    explanation: "Câu trả lời chung chung trong khi Project chưa có tài liệu sản phẩm nào cho thấy nguyên nhân gốc là thiếu tri thức. Claude không có thông tin riêng về sản phẩm nên chỉ dựa vào kiến thức chung. Project knowledge là nơi tải tài liệu lên để Claude hiểu bối cảnh của các chat trong Project (support.claude.com/en/articles/9517075). Tài liệu prompting của Anthropic cũng ví Claude như một nhân viên mới giỏi nhưng thiếu bối cảnh. Cách sửa là thêm tài liệu sản phẩm (spec, FAQ) vào knowledge. Đổi sang model lớn nhất không bù được phần thông tin còn thiếu, vì model mạnh hơn cũng không biết dữ liệu sản phẩm riêng của công ty. Bắt người dùng viết câu hỏi dài hơn không giúp gì khi câu hỏi vốn đã cụ thể, vì vấn đề nằm ở nguồn tri thức chứ không ở độ dài câu hỏi. Lịch sử chat quá dài cũng không phải nguyên nhân, vì các cuộc chat đều ngắn."
     ref: lessons/09-ccao-f.html#xu-ly-su-co
+    reviewed: 2026-11-18
   - id: K148
     exams:
       CCAO-F: D7
@@ -9745,12 +9901,13 @@ questions:
     options:
       - Switch to sending raw transcripts.
       - Update the prompt to require a “Decisions” section with owners and dates.
-      - Make the summaries longer so decisions are included by chance.
-      - Stop sending summaries.
+      - Make the summaries longer so more of each meeting is covered.
+      - Switch to the most capable model and keep the current prompt unchanged.
     answer:
       - B
-    explanation: "Điều chỉnh theo phản hồi: thêm yêu cầu cụ thể (mục Quyết định, người phụ trách, ngày)."
+    explanation: "Phản hồi chỉ ra đúng chỗ thiếu là các quyết định. Cách sửa trực tiếp là cập nhật prompt (tốt nhất trong Project instructions hoặc template) để yêu cầu một mục “Decisions” ghi rõ người phụ trách và ngày. Tài liệu Anthropic khuyên nói cụ thể output mong muốn thay vì để Claude tự suy ra từ prompt mơ hồ. Gửi transcript thô đẩy việc lọc quyết định sang người đọc và bỏ mất giá trị của bản tóm tắt. Làm bản tóm tắt dài hơn không bảo đảm các quyết định được nêu, chỉ thêm chữ cho người đọc. Đổi sang model mạnh nhất mà giữ nguyên prompt không sửa được nguyên nhân gốc, là chỉ dẫn chưa yêu cầu nêu quyết định."
     ref: lessons/09-ccao-f.html#xu-ly-su-co
+    reviewed: 2026-11-18
   - id: K149
     exams:
       CCAO-F: D7
@@ -9770,14 +9927,15 @@ questions:
       CCAO-F: D7
     stem: A team copies text from Claude into a template, then fixes the formatting by hand every day. How can the workflow be optimized?
     options:
-      - Hire an extra person whose only job is to fix the formatting every day.
-      - Switch to a smaller screen so the formatting problems are less visible.
-      - Stop using templates so there is nothing left to fix.
+      - Ask Claude for shorter answers so there is less text to reformat by hand.
+      - Regenerate each answer until one happens to match the template's layout.
+      - Paste Claude's text into the template as plain text so there is less cleanup.
       - Ask Claude to output directly in the template's structure, or create the file for you.
     answer:
       - D
-    explanation: "Tối ưu: yêu cầu output đúng khuôn hoặc tạo file trực tiếp, bỏ bước thủ công lặp lại."
+    explanation: "Bước sửa định dạng thủ công lặp lại mỗi ngày là dấu hiệu nên tối ưu từ gốc. Hãy yêu cầu Claude xuất thẳng theo cấu trúc của template (nên ghi vào Project instructions, kèm một mẫu), hoặc để Claude tạo luôn file bằng tính năng Code execution and file creation. Tài liệu Anthropic cho biết ví dụ là một trong những cách đáng tin cậy nhất để định hướng định dạng và cấu trúc output. Xin câu trả lời ngắn hơn chỉ giảm lượng chữ, còn cấu trúc vẫn lệch khuôn nên vẫn phải sửa tay. Tạo lại nhiều lần cho tới khi trùng khuôn là trông vào may rủi, tốn thời gian mà kết quả không ổn định. Dán dạng chữ thuần bớt được rác định dạng nhưng vẫn giữ nguyên bước sửa thủ công hằng ngày."
     ref: lessons/09-ccao-f.html#xu-ly-su-co
+    reviewed: 2026-11-18
   - id: K151
     exams:
       CCAO-F: D7
@@ -9785,26 +9943,28 @@ questions:
     options:
       - "Add a clear Project instruction: always reply in the language of the question."
       - Ask every user to write their questions only in English from now on.
-      - Delete the Project and then recreate it from scratch with exactly the same settings as before.
-      - Accept it as a limitation.
+      - Switch the Project to a more capable model before changing any instructions.
+      - Upload more Vietnamese documents to the Project knowledge without changing the instructions.
     answer:
       - A
-    explanation: "Hành vi chưa đúng kỳ vọng: thêm chỉ dẫn rõ ở cấp Project trước khi thay đổi lớn."
+    explanation: "Khi hành vi lệch kỳ vọng lặp lại trong một Project, nên thử trước cách nhỏ, bền và trực tiếp nhất là thêm một chỉ dẫn rõ ở cấp Project (luôn trả lời bằng ngôn ngữ của câu hỏi). Project instructions dùng để điều chỉnh cách Claude trả lời trong Project, và tài liệu Anthropic khuyên nói rõ, cụ thể điều mình muốn thay vì để Claude tự suy ra. Bắt mọi người chỉ hỏi bằng tiếng Anh là đẩy gánh nặng sang người dùng và bỏ qua nhu cầu dùng tiếng Việt. Đổi model trước khi sửa chỉ dẫn là thay đổi lớn hơn mà chưa chắc có tác dụng, vì chỉ dẫn hiện chưa nói gì về ngôn ngữ trả lời. Thêm tài liệu tiếng Việt vào knowledge chỉ tác động gián tiếp và không bảo đảm ngôn ngữ trả lời, trong khi một chỉ dẫn trực tiếp giải quyết đúng vấn đề."
     ref: lessons/09-ccao-f.html#xu-ly-su-co
+    reviewed: 2026-11-18
   - id: K152
     exams:
       CCAO-F: D7
     stem: A prompt for drafting sales proposals gives inconsistent results. Which TWO checks help diagnose the problem?
     options:
-      - Whether the proposals were generated on a weekday.
+      - Whether Claude rates its own proposals as high quality when asked to self-assess.
       - Whether the prompt states the audience, structure and key facts clearly.
       - Whether the inputs (product data, client notes) are complete and current.
-      - Whether the prompt is typed in a different font.
+      - Whether the proposals are reformatted into the company's slide template afterward.
     answer:
       - B
       - C
-    explanation: "Chẩn đoán prompt kém: kiểm tra chỉ dẫn có rõ không và dữ liệu đầu vào có đủ, mới không."
+    explanation: "Kết quả không nhất quán thường do chỉ dẫn mơ hồ hoặc đầu vào thiếu, cũ. Vì vậy cần kiểm tra prompt có nêu rõ đối tượng, cấu trúc và dữ kiện chính không (tài liệu Anthropic: càng nói cụ thể output mong muốn thì kết quả càng tốt). Cũng cần kiểm tra dữ liệu đầu vào như thông tin sản phẩm, ghi chú khách hàng có đầy đủ và cập nhật không. Hỏi Claude tự chấm bản đề xuất của chính nó không phải là chẩn đoán, vì lời tự đánh giá không chỉ ra nguyên nhân và không thay được việc đối chiếu chỉ dẫn với dữ liệu. Bước định dạng lại vào template slide diễn ra sau khi Claude đã viết xong, nên không giải thích được vì sao nội dung lúc tốt lúc kém."
     ref: lessons/09-ccao-f.html#xu-ly-su-co
+    reviewed: 2026-11-18
   - id: K153
     exams:
       CCAO-F: D7
@@ -9822,16 +9982,17 @@ questions:
   - id: K154
     exams:
       CCAO-F: D7
-    stem: Claude's answers about a 300-page manual are often incomplete. Which adjustment is most likely to help?
+    stem: Claude's answers about a 300-page manual uploaded to your Project are often incomplete. Which adjustment is most likely to help?
     options:
       - Ask the same broad question several times until the answer is complete.
-      - Upload the manual twice.
-      - Ask Claude to answer faster.
+      - Paste the full manual into each new chat as well as keeping it in the Project.
+      - Ask Claude to keep its answers short so it stays focused.
       - Ask about specific sections, or point Claude to the relevant chapter for each question.
     answer:
       - D
-    explanation: "Tài liệu rất dài: thu hẹp câu hỏi theo phần, chỉ rõ chương liên quan."
+    explanation: "Với tài liệu rất dài, câu hỏi quá rộng khiến Claude khó tìm đúng phần liên quan. Thu hẹp câu hỏi theo từng phần, hoặc chỉ rõ chương cần dùng, giúp Claude tập trung. Bài RAG cho Projects cho biết Claude tìm và lấy phần liên quan trong knowledge, và người dùng có thể nêu tên tài liệu cụ thể để Claude tập trung tìm kiếm (support.claude.com/en/articles/11473015). Tài liệu prompting cũng khuyên với tài liệu dài nên yêu cầu Claude trích phần liên quan trước. Hỏi lại cùng một câu hỏi rộng nhiều lần là chạy lại y nguyên và hy vọng kết quả khác. Dán thêm cả cuốn sổ tay vào mỗi chat chỉ lặp lại nội dung và tốn hạn mức, mà không cho Claude biết cần đọc phần nào. Yêu cầu trả lời ngắn còn làm câu trả lời thiếu hơn, ngược với mục tiêu."
     ref: lessons/09-ccao-f.html#xu-ly-su-co
+    reviewed: 2026-11-18
   - id: K155
     exams:
       CCAO-F: D7
@@ -9845,6 +10006,8 @@ questions:
       - A
     explanation: "Tối ưu: chọn model theo độ khó; việc nhanh dùng model nhanh."
     ref: lessons/09-ccao-f.html#xu-ly-su-co
+    status: retired
+    reviewed: 2026-11-18
   - id: K156
     exams:
       CCAO-F: D7
@@ -9863,16 +10026,17 @@ questions:
   - id: K157
     exams:
       CCAO-F: D7
-    stem: How can a team systematically improve its shared Claude prompts over time?
+    stem: A team shares a set of Claude prompts in a Project. Some prompts produce weak drafts, and people have started tweaking them based on whichever output they saw last. What is the most reliable way to improve the prompts over time?
     options:
-      - Never change prompts once they are written.
-      - Let each person keep their own private version with no sharing at all.
+      - Lock the prompts as they are, since any change could break outputs that already work.
+      - Let each person keep a private copy of each prompt tuned to their own style.
       - Collect examples of poor outputs, adjust the prompts, and re-test on the same examples.
-      - Change the prompts randomly each week and hope that results improve.
+      - Switch to the most capable model whenever a prompt produces a weak draft.
     answer:
       - C
-    explanation: "Cải thiện có hệ thống: thu thập ca kém, sửa prompt, kiểm tra lại trên cùng ví dụ."
+    explanation: "Muốn cải thiện có hệ thống thì cần một vòng lặp đo được: gom các ca output kém làm bộ ví dụ kiểm tra, sửa prompt, rồi chạy lại trên chính các ví dụ đó để biết thay đổi có thật sự tốt hơn không. Tài liệu Anthropic coi việc có tiêu chí thành công và cách kiểm tra thực nghiệm là điều kiện trước khi tối ưu prompt, với chu trình test case, prompt, kiểm tra và tinh chỉnh lặp lại. Khoá cứng prompt là bỏ qua phản hồi, nên các bản nháp kém vẫn tiếp diễn. Mỗi người giữ một bản riêng làm prompt bị phân mảnh, không ai biết bản nào tốt hơn và cải tiến không được chia sẻ. Đổi sang model mạnh nhất mỗi khi bản nháp kém không chỉ ra prompt sai ở đâu, tốn chi phí hơn và chưa chắc sửa được chỉ dẫn mơ hồ."
     ref: lessons/09-ccao-f.html#xu-ly-su-co
+    reviewed: 2026-11-18
   - id: K158
     exams:
       CCAO-F: D7
@@ -9894,13 +10058,14 @@ questions:
     options:
       - The client's goals and the budget range.
       - An example of a past proposal in the right tone.
-      - The word “urgent” written several times.
+      - A request to make the proposal as long and detailed as possible.
       - A request to make it “as good as possible”.
     answer:
       - A
       - B
-    explanation: Bối cảnh cụ thể (mục tiêu, ngân sách) và ví dụ giọng văn giúp bản nháp sát yêu cầu. Nhấn “gấp” hay khen chung chung không thêm thông tin.
+    explanation: "Bối cảnh cụ thể (mục tiêu của khách, khoảng ngân sách) và một đề xuất cũ làm ví dụ giọng văn giúp bản nháp sát yêu cầu; tài liệu prompting của Anthropic nêu ví dụ là cách đáng tin cậy để điều khiển giọng và cấu trúc. Đòi càng dài, càng chi tiết không cho Claude biết khách cần gì, dễ ra bản dàn trải. Yêu cầu “tốt nhất có thể” không thêm thông tin nào."
     ref: lessons/09-ccao-f.html#prompting
+    reviewed: 2026-11-18
   - id: K160
     exams:
       CCAO-F: D2
@@ -9952,7 +10117,7 @@ questions:
   - id: K163
     exams:
       CCAO-F: D3
-    stem: Which TWO situations call for starting a new chat with a short summary?
+    stem: Which TWO situations call for starting a new chat rather than continuing the current one?
     options:
       - The chat is very long and earlier details are getting confused.
       - You are switching to an unrelated task.
@@ -9961,22 +10126,24 @@ questions:
     answer:
       - A
       - B
-    explanation: Chat quá dài hoặc chuyển sang việc không liên quan thì mở chat mới kèm tóm tắt. Sửa nhỏ hay nhắc lại ý vừa nói thì tiếp tục chat hiện tại.
+    explanation: "Chat rất dài làm context đầy, chi tiết cũ dễ bị lẫn và tốn hạn mức hơn: nên tóm tắt các điểm đã chốt rồi mở chat mới kèm bản tóm tắt. Chuyển sang việc không liên quan thì mở chat mới để bối cảnh cũ không chen vào. Nhắc lại ý Claude vừa nói một phút trước hay sửa một từ trong câu trả lời cuối là việc nhỏ ngay trong bối cảnh hiện tại, tiếp tục chat đang mở là đủ."
     ref: lessons/09-ccao-f.html#san-pham
+    reviewed: 2026-11-18
   - id: K164
     exams:
       CCAO-F: D4
     stem: Which TWO elements belong in a sensible pilot of Claude for a team process?
     options:
-      - Removing the review step to save time.
+      - Testing first on the team's most complex, high-stakes cases.
       - A defined scope with a human review step.
       - Agreed measures compared before and after.
-      - Rolling it out to every team on day one.
+      - Letting each person choose how to use it, so the pilot feels natural.
     answer:
       - B
       - C
-    explanation: "Thí điểm tốt: phạm vi rõ, có bước người duyệt, đo trước–sau rồi mới mở rộng."
+    explanation: "Thí điểm tốt có phạm vi rõ kèm bước người duyệt, và số đo thống nhất từ đầu để so trước và sau, rồi mới quyết định mở rộng. Thử trước trên ca phức tạp, rủi ro cao nhất khiến sai sót gây hậu quả lớn ngay khi nhóm còn đang học cách dùng. Để mỗi người tự chọn cách dùng thì không có quy trình chung để đo, kết quả không so sánh được."
     ref: lessons/09-ccao-f.html#quy-trinh
+    reviewed: 2026-11-18
   - id: T13
     exams:
       CCAO-F: D4
@@ -11210,13 +11377,14 @@ questions:
     stem: A support team piloted Claude drafting ticket replies, with agents editing each draft. After three months, drafts need few edits, and agents spend most of their time sorting tickets into queues. What is the best next step?
     options:
       - Stop the pilot, because drafting replies did not remove the sorting work
-      - Let Claude send every reply automatically with no human review at all
+      - Let Claude send replies directly, now that its drafts need only a few edits
       - "Redesign the flow: Claude triages tickets and agents handle hard cases"
       - Keep the current flow and simply ask agents to edit drafts faster
     answer:
       - C
-    explanation: "Thí điểm tăng cường đã có số liệu tốt, và nút thắt giờ là khâu phân loại: đây là lúc thiết kế lại chuỗi bước, giữ người ở ca khó và kiểm mẫu. Dừng thí điểm bỏ lợi ích; gửi tự động hết bỏ điểm kiểm soát; giữ nguyên thì không chạm nút thắt."
+    explanation: "Thí điểm tăng cường đã có số liệu tốt, và nút thắt giờ là khâu phân loại: đây là lúc thiết kế lại chuỗi bước, giữ người ở ca khó và kiểm mẫu. Dừng thí điểm là bỏ lợi ích đã đo được ở khâu soạn. Cho Claude gửi thẳng vì nháp ít phải sửa là bỏ điểm kiểm soát (ít sửa không có nghĩa là không có lỗi), mà vẫn không chạm tới khâu phân loại. Giữ nguyên và bảo nhân viên sửa nhanh hơn cũng không chạm nút thắt."
     ref: lessons/09-ccao-f.html#quy-trinh
+    reviewed: 2026-11-18
   - id: K169
     exams:
       CCAO-F: D4
@@ -11230,6 +11398,7 @@ questions:
       - B
     explanation: "Nguyên mẫu artifact cho người dùng thật bấm thử rồi sửa theo phản hồi: học nhanh mà rẻ. Để Claude tự quyết bỏ qua các bên liên quan; đặc tả dài trước khi thử dễ sai hướng; nguyên mẫu chưa qua kiểm tra bảo mật và chủ sở hữu dữ liệu thì chưa dùng chính thức."
     ref: lessons/09-ccao-f.html#quy-trinh
+    reviewed: 2026-11-18
   - id: K170
     exams:
       CCAO-F: D1
@@ -11243,6 +11412,7 @@ questions:
       - B
     explanation: "Chia nhỏ thành chuỗi bước, kiểm đầu ra mỗi bước trước khi làm bước sau: lỗi ở bước thu thập không lan tới khuyến nghị. Một prompt cho cả việc khó kiểm; tìm dữ kiện để chống lưng kết luận có sẵn là thiên lệch xác nhận; giọng tự tin không phải bằng chứng."
     ref: lessons/09-ccao-f.html#prompting
+    reviewed: 2026-11-18
   - id: K171
     exams:
       CCAO-F: D4
@@ -11256,6 +11426,7 @@ questions:
       - C
     explanation: "Tăng cường giữ nguyên chuỗi bước, Claude chỉ làm nhanh một bước (soạn nháp), người vẫn sửa và ký. Ba phương án còn lại đổi chính chuỗi bước: đọc toàn bộ thay lấy mẫu, phân loại mọi yêu cầu, bỏ bước duyệt."
     ref: lessons/09-ccao-f.html#quy-trinh
+    reviewed: 2026-11-18
   - id: PA01
     exams:
       CCAR-P: D1
