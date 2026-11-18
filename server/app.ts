@@ -226,7 +226,8 @@ export async function startServer(opts: StartOptions): Promise<RunningServer> {
     }
   });
 
-  const host = opts.host ?? (loadConfig().server.lan ? '0.0.0.0' : '127.0.0.1');
+  // env CERT_HOST: cloud deploy binds 0.0.0.0 (every request then comes through the host's proxy = remote, needs the code)
+  const host = opts.host ?? (process.env.CERT_HOST || (loadConfig().server.lan ? '0.0.0.0' : '127.0.0.1'));
   await new Promise<void>((resolve, reject) => {
     server.once('error', reject);
     server.listen(opts.port, host, () => {

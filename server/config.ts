@@ -85,6 +85,8 @@ export function loadConfig(): AppConfig {
   if (value.sync.auto !== 'idle' && value.sync.auto !== 'off') value.sync.auto = 'idle';
   // CERT_SYNC=0: no git sync at all (smoke runs on a real checkout, sandboxes)
   if (process.env.CERT_SYNC === '0') value.sync = { ...value.sync, enabled: false };
+  // CERT_USE_API_KEY=1: cloud deploy has no claude.ai login, let Claude Code use ANTHROPIC_API_KEY
+  if (process.env.CERT_USE_API_KEY === '1') value.ai = { ...value.ai, use_api_key: true };
   cfgCache = { mtimeMs, value };
   return value;
 }
@@ -94,8 +96,10 @@ export function configuredPort(argv: string[] = process.argv): number {
   const i = argv.indexOf('--port');
   const fromArg = i >= 0 ? Number(argv[i + 1]) : NaN;
   if (Number.isInteger(fromArg) && fromArg >= 0) return fromArg;
-  const env = process.env.CERT_PORT;
-  if (env !== undefined && env !== '' && Number.isInteger(Number(env))) return Number(env);
+  // CERT_PORT, else PORT (set by cloud hosts such as Render)
+  for (const env of [process.env.CERT_PORT, process.env.PORT]) {
+    if (env !== undefined && env !== '' && Number.isInteger(Number(env))) return Number(env);
+  }
   return loadConfig().server.port;
 }
 

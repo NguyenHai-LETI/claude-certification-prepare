@@ -34,6 +34,21 @@ Cần Node.js 22.18 trở lên. Lần đầu chạy, app tự gọi `npm install
   - Nhập sai 10 lần trong 15 phút thì bị khóa tạm thời.
   - Đổi mã: xoá file `.local/access-code` rồi khởi động lại app.
 
+## Deploy online miễn phí (Render)
+
+Dùng `Dockerfile` + `render.yaml`. Ổ đĩa trên Render free bị xoá mỗi lần khởi động lại, nên khi khởi động container sẽ clone repo này và app tự đẩy `results/` lên GitHub qua ⇅ đồng bộ.
+
+1. Tạo GitHub fine-grained token: chỉ repo này, quyền **Contents: Read and write**.
+2. Trên [render.com](https://render.com): **New → Blueprint**, chọn repo này. Render đọc `render.yaml` và hỏi 3 biến:
+   - `CERT_ACCESS_CODE`: mã truy cập tự đặt (chữ + số, ≥ 6 ký tự).
+   - `GITHUB_TOKEN`: token ở bước 1. Thiếu token thì app vẫn chạy nhưng kết quả mất khi restart.
+   - `ANTHROPIC_API_KEY`: tuỳ chọn, để bật 🤖 AI (tính phí theo API). Bỏ trống thì phần AI không dùng được.
+3. Mở `https://<tên-service>.onrender.com` rồi nhập mã truy cập.
+
+- Gói free ngủ sau 15 phút không có ai truy cập. Lần mở đầu tiên sau đó mất khoảng 1 phút để khởi động.
+- Commit đồng bộ kết quả không kích hoạt deploy lại (`buildFilter` trong `render.yaml`).
+- Thử local: `docker build -t claude-cert . && docker run -p 10000:10000 -e CERT_ACCESS_CODE=TEST1234 claude-cert`.
+
 ## Tính năng
 
 - **✍️ Tạo bài test** có các chế độ:

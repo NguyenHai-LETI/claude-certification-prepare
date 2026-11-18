@@ -1,0 +1,7 @@
+node_modules
+dist
+.local
+.cache
+.git
+test-results
+coach/runs

@@ -1,0 +1,29 @@
+# Render Blueprint (https://render.com/docs/blueprint-spec): New → Blueprint → pick this repo.
+services:
+  - type: web
+    name: claude-cert
+    runtime: docker
+    plan: free
+    region: singapore
+    healthCheckPath: /api/meta
+    autoDeploy: true
+    # The app pushes results/ coach/ bank/ to this repo; only code changes should trigger a rebuild
+    buildFilter:
+      paths:
+        - server/**
+        - web/**
+        - shared/**
+        - scripts/**
+        - deploy/**
+        - index.html
+        - vite.config.ts
+        - package.json
+        - package-lock.json
+        - Dockerfile
+    envVars:
+      - key: CERT_ACCESS_CODE   # mã truy cập (chữ + số, ≥ 6 ký tự)
+        sync: false
+      - key: GITHUB_TOKEN       # fine-grained token, quyền Contents: Read and write trên repo này
+        sync: false
+      - key: ANTHROPIC_API_KEY  # tuỳ chọn: bật 🤖 AI (tính phí theo API)
+        sync: false
