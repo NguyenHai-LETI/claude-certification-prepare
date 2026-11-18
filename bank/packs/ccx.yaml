@@ -112,7 +112,6 @@ questions:
     ref: lessons/01-api-tich-hop.html#streaming
   - id: A09
     exams:
-      CCDV-F: D2
       CCAR-F: D4
     scenario: S6
     stem: You need to regenerate 50,000 product descriptions over the weekend. Nobody is waiting on the results and cost is the top priority. Which approach fits best?
@@ -181,6 +180,8 @@ questions:
       - A
     explanation: Claude có trên Amazon Bedrock, Google Vertex AI, Microsoft Foundry. Mỗi nền tảng có model ID, cách xác thực riêng và tính năng mới có thể đến chậm hơn. Trọng số model không được phát hành để tự host.
     ref: lessons/01-api-tich-hop.html#nen-tang
+    status: retired
+    reviewed: 2026-11-18
   - id: A14
     exams:
       CCDV-F: D2
@@ -207,6 +208,8 @@ questions:
       - A
     explanation: "Prompt là code: lưu trong git, gắn phiên bản, chạy eval khi đổi để truy được nguyên nhân hồi quy."
     ref: lessons/01-api-tich-hop.html#cau-hinh
+    status: retired
+    reviewed: 2026-11-18
   - id: A16
     exams:
       CCDV-F: D2
@@ -444,6 +447,8 @@ questions:
       - B
     explanation: Bản model mới có thể đổi hành vi hoặc tham số (breaking change). Đọc migration guide và chạy lại eval rồi mới đổi.
     ref: lessons/02-model-toi-uu.html#nang-cap
+    status: retired
+    reviewed: 2026-11-18
   - id: B14
     exams:
       CCDV-F: D5
@@ -461,7 +466,6 @@ questions:
   - id: B15
     exams:
       CCDV-F: D5
-      CCAO-F: D3
     stem: A marketing team needs 200 short social media post drafts this afternoon, quickly and cheaply. Drafts will be reviewed by a human. Which choice fits?
     options:
       - A faster, cheaper model such as Haiku.
@@ -540,6 +544,8 @@ questions:
       - C
     explanation: "Subagent làm đúng việc được giao mà kết quả vẫn thiếu thì lỗi ở người giao việc: coordinator phân rã quá hẹp."
     ref: lessons/03-agent.html#coordinator
+    status: retired
+    reviewed: 2026-11-18
   - id: C05
     exams:
       CCAR-F: D1
@@ -554,6 +560,8 @@ questions:
       - B
     explanation: Subagent có context riêng, không thừa kế lịch sử coordinator. Mọi thứ nó cần phải ghi rõ trong prompt; dùng dữ liệu có cấu trúc để giữ nguồn (URL, tài liệu, trang).
     ref: lessons/03-agent.html#task
+    status: retired
+    reviewed: 2026-11-18
   - id: C06
     exams:
       CCAR-F: D1
@@ -582,11 +590,11 @@ questions:
       - A
     explanation: Song song nghĩa là nhiều lời gọi Task trong cùng một response; chia ra nhiều lượt là chạy tuần tự.
     ref: lessons/03-agent.html#task
+    status: retired
+    reviewed: 2026-11-18
   - id: C08
     exams:
-      CCAR-F: D1
       CCDV-F: D1
-    scenario: S1
     stem: A support agent must verify customer identity before issuing refunds. Despite clear prompt instructions, 3% of conversations skip verification and refunds go to the wrong account. What is the most reliable fix?
     options:
       - Repeat the verification instruction in capital letters at the end of the system prompt.
@@ -611,6 +619,8 @@ questions:
       - B
     explanation: "PostToolUse biến đổi kết quả tool trước khi model đọc: chuẩn hoá một cách tất định, không phụ thuộc vào model."
     ref: lessons/03-agent.html#hook-sdk
+    status: retired
+    reviewed: 2026-11-18
   - id: C10
     exams:
       CCAR-F: D1
@@ -625,6 +635,8 @@ questions:
       - B
     explanation: "Quy tắc kinh doanh bắt buộc: dùng hook chặn lời gọi tool vi phạm và chuyển sang luồng khác. Prompt chỉ cho tuân thủ xác suất."
     ref: lessons/03-agent.html#hook-sdk
+    status: retired
+    reviewed: 2026-11-18
   - id: C11
     exams:
       CCAR-F: D1
@@ -639,6 +651,8 @@ questions:
       - B
     explanation: Nhân viên thường không đọc được transcript; bàn giao cần tóm tắt có cấu trúc để xử lý ngay.
     ref: lessons/03-agent.html#thu-tu
+    status: retired
+    reviewed: 2026-11-18
   - id: C12
     exams:
       CCAR-F: D1
@@ -653,6 +667,8 @@ questions:
       - B
     explanation: "Yêu cầu nhiều vấn đề: tách từng mục, điều tra song song, tổng hợp một câu trả lời."
     ref: lessons/03-agent.html#thu-tu
+    status: retired
+    reviewed: 2026-11-18
   - id: C13
     exams:
       CCAR-F: D1
@@ -695,6 +711,8 @@ questions:
       - A
     explanation: "`fork_session` tách nhánh độc lập từ cùng một phân tích gốc. Làm lại từ đầu thì lãng phí; cùng phiên thì hướng một ảnh hưởng hướng hai."
     ref: lessons/03-agent.html#phien
+    status: retired
+    reviewed: 2026-11-18
   - id: C16
     exams:
       CCDV-F: D1
@@ -721,6 +739,8 @@ questions:
       - B
     explanation: Context window chỉ là bộ nhớ ngắn hạn của một phiên. Bộ nhớ dài hạn phải lưu ra file hoặc store ngoài.
     ref: lessons/03-agent.html#memory
+    status: retired
+    reviewed: 2026-11-18
   - id: C18
     exams:
       CCAR-F: D1
@@ -794,6 +814,8 @@ questions:
       - B
     explanation: Lỗi nghiệp vụ không retry được; kèm lời giải thích để agent nói lại với khách.
     ref: lessons/04-tool-mcp.html#loi-tool
+    status: retired
+    reviewed: 2026-11-18
   - id: D05
     exams:
       CCAR-F: D2
@@ -808,6 +830,8 @@ questions:
       - B
     explanation: Phải phân biệt truy cập thất bại với truy vấn thành công nhưng rỗng; trả rỗng khi lỗi là “nuốt lỗi”.
     ref: lessons/04-tool-mcp.html#loi-tool
+    status: retired
+    reviewed: 2026-11-18
   - id: D06
     exams:
       CCAR-F: D2
@@ -836,6 +860,8 @@ questions:
       - B
     explanation: "Quyền tối thiểu: nhu cầu tần suất cao thì thêm một tool hẹp; việc phức tạp vẫn qua coordinator."
     ref: lessons/04-tool-mcp.html#phan-bo-tool
+    status: retired
+    reviewed: 2026-11-18
   - id: D08
     exams:
       CCAR-F: D2
@@ -895,9 +921,7 @@ questions:
     ref: lessons/04-tool-mcp.html#mcp-cau-hinh
   - id: D12
     exams:
-      CCAR-F: D2
       CCDV-F: D8
-    scenario: S4
     stem: Agents waste many tool calls exploring which issues exist before working on one. What MCP feature reduces this?
     options:
       - Expose a catalog of issue summaries as an MCP resource the agent reads first.
@@ -936,6 +960,8 @@ questions:
       - B
     explanation: Glob tìm đường dẫn theo mẫu; Grep tìm nội dung bên trong file.
     ref: lessons/04-tool-mcp.html#built-in
+    status: retired
+    reviewed: 2026-11-18
   - id: D15
     exams:
       CCAR-F: D2
@@ -950,6 +976,8 @@ questions:
       - B
     explanation: Tìm nội dung (tên hàm, chuỗi lỗi, import) dùng Grep, rồi Read theo kết quả, thay vì đọc hết mọi file.
     ref: lessons/04-tool-mcp.html#built-in
+    status: retired
+    reviewed: 2026-11-18
   - id: D16
     exams:
       CCAR-F: D2
@@ -1003,6 +1031,8 @@ questions:
       - B
     explanation: stdio cho server chạy cục bộ dưới dạng tiến trình con; Streamable HTTP cho server từ xa (thay cho HTTP+SSE cũ).
     ref: lessons/04-tool-mcp.html#mcp
+    status: retired
+    reviewed: 2026-11-18
   - id: D20
     exams:
       CCDV-F: D8
@@ -1016,6 +1046,8 @@ questions:
       - B
     explanation: "Nối hệ thống ngoài và dùng lại cho nhiều ứng dụng: MCP server. Built-in tool không tự gọi được API nội bộ theo cách bảo trì được."
     ref: lessons/04-tool-mcp.html#chon-cach
+    status: retired
+    reviewed: 2026-11-18
   - id: D21
     exams:
       CCDV-F: D8
@@ -1086,6 +1118,8 @@ questions:
       - B
     explanation: "Chia sẻ qua git thì để ở project: `.claude/commands/`. `~/` là cá nhân; `.claude/config.json` không tồn tại."
     ref: lessons/05-claude-code.html#command-skill
+    status: retired
+    reviewed: 2026-11-18
   - id: E03
     exams:
       CCAR-F: D3
@@ -1116,6 +1150,8 @@ questions:
       - A
     explanation: "`context: fork` chạy skill trong context subagent riêng, chỉ trả kết quả về. `/compact` chỉ chữa sau khi context đã bẩn; `allowed-tools` liên quan tới quyền dùng tool, không giảm output. (Tài liệu hiện hành: `allowed-tools` cấp quyền không cần hỏi, còn `disallowed-tools` mới loại tool.)"
     ref: lessons/05-claude-code.html#command-skill
+    status: retired
+    reviewed: 2026-11-18
   - id: E05
     exams:
       CCAR-F: D3
@@ -1159,11 +1195,11 @@ questions:
       - B
     explanation: "Phạm vi rõ, một file, có stack trace: làm trực tiếp. Plan mode dành cho việc lớn và mơ hồ."
     ref: lessons/05-claude-code.html#plan-mode
+    status: retired
+    reviewed: 2026-11-18
   - id: E08
     exams:
-      CCAR-F: D3
       CCDV-F: D3
-    scenario: S5
     stem: In a CI pipeline, `claude "review this diff"` hangs until the job times out. What is the correct fix?
     options:
       - Set the environment variable `CLAUDE_HEADLESS=true` before the command.
@@ -1188,6 +1224,8 @@ questions:
       - A
     explanation: "`--output-format json` kèm `--json-schema` cho kết quả máy đọc được theo schema, dễ đăng thành comment inline."
     ref: lessons/05-claude-code.html#ci-cd
+    status: retired
+    reviewed: 2026-11-18
   - id: E10
     exams:
       CCAR-F: D3
@@ -1202,6 +1240,8 @@ questions:
       - B
     explanation: Phiên đã sinh code ít nghi ngờ quyết định của chính nó; một phiên độc lập review tốt hơn.
     ref: lessons/05-claude-code.html#ci-cd
+    status: retired
+    reviewed: 2026-11-18
   - id: E11
     exams:
       CCAR-F: D3
@@ -1248,6 +1288,8 @@ questions:
       - B
     explanation: "`@import` và `.claude/rules/` giữ CLAUDE.md gọn, mỗi phần chỉ nạp chuẩn liên quan."
     ref: lessons/05-claude-code.html#claude-md
+    status: retired
+    reviewed: 2026-11-18
   - id: E14
     exams:
       CCAR-F: D3
@@ -1262,6 +1304,8 @@ questions:
       - B
     explanation: Lỗi tương tác nhau thì gửi chung để Claude thấy toàn cảnh; lỗi độc lập thì sửa lần lượt.
     ref: lessons/05-claude-code.html#tinh-chinh
+    status: retired
+    reviewed: 2026-11-18
   - id: E15
     exams:
       CCAR-F: D3
@@ -1276,6 +1320,8 @@ questions:
       - A
     explanation: "Interview pattern: để Claude hỏi lại nhằm lộ ra điều chưa nghĩ tới trước khi làm ở lĩnh vực lạ."
     ref: lessons/05-claude-code.html#tinh-chinh
+    status: retired
+    reviewed: 2026-11-18
   - id: E16
     exams:
       CCAR-F: D3
@@ -1290,6 +1336,8 @@ questions:
       - B
     explanation: Mô tả bằng lời bị hiểu không nhất quán thì đưa ví dụ vào/ra cụ thể.
     ref: lessons/05-claude-code.html#tinh-chinh
+    status: retired
+    reviewed: 2026-11-18
   - id: E17
     exams:
       CCDV-F: D2
@@ -1331,6 +1379,8 @@ questions:
       - A
     explanation: "`/init` quét repo và tạo CLAUDE.md ban đầu; sau đó chỉnh tay cho gọn."
     ref: lessons/05-claude-code.html#claude-md
+    status: retired
+    reviewed: 2026-11-18
   - id: E20
     exams:
       CCDV-F: D8
@@ -1358,6 +1408,8 @@ questions:
       - A
     explanation: Explore subagent cô lập phần dò tìm dài dòng, chỉ trả về tóm tắt, tránh cạn context phiên chính.
     ref: lessons/05-claude-code.html#plan-mode
+    status: retired
+    reviewed: 2026-11-18
   - id: E22
     exams:
       CCDV-F: D3
@@ -1371,6 +1423,8 @@ questions:
       - A
     explanation: Trong CI không có ai bấm duyệt, nên khai báo sẵn đúng những quyền cần (quyền tối thiểu).
     ref: lessons/05-claude-code.html#ci-cd
+    status: retired
+    reviewed: 2026-11-18
   - id: E23
     exams:
       CCDV-F: D2
@@ -1501,6 +1555,8 @@ questions:
       - C
     explanation: Bỏ dữ liệu định danh không cần cho phân tích và dùng gói được tổ chức phê duyệt. Lời dặn không phải kiểm soát; tài khoản cá nhân có thể vi phạm chính sách công ty; bỏ hẳn việc là cực đoan.
     ref: lessons/20-san-pham-du-lieu.html#du-lieu-goi
+    status: retired
+    reviewed: 2026-11-18
   - id: Y09
     exams:
       CCAO-F: D6
@@ -1791,6 +1847,8 @@ questions:
       - B
     explanation: "Chat quá dài làm chất lượng giảm: tóm tắt quyết định chính rồi mở chat mới kèm tóm tắt (hoặc đưa vào Project). Lặp lại mỗi tin tốn hạn mức; incognito không mang bối cảnh; không phải lỗi."
     ref: lessons/20-san-pham-du-lieu.html#gioi-han
+    status: retired
+    reviewed: 2026-11-18
   - id: Y31
     exams:
       CCAO-F: D2
@@ -1804,6 +1862,8 @@ questions:
       - D
     explanation: Model có thể bịa chi tiết trông rất cụ thể. Trích dẫn gửi cho bộ phận pháp lý phải đối chiếu với văn bản gốc. Độ tin cậy tự báo không phải kiểm chứng; định dạng lại không sửa nội dung.
     ref: lessons/20-san-pham-du-lieu.html#cau-mau
+    status: retired
+    reviewed: 2026-11-18
   - id: Y32
     exams:
       CCAO-F: D4
@@ -1843,6 +1903,8 @@ questions:
       - B
     explanation: "Việc lớn thì chia nhỏ: từng phần được làm và kiểm kỹ rồi mới ghép. Một prompt cho tất cả thiếu kiểm soát; bỏ phần căn cứ làm kết luận khó kiểm chứng; chép memo khác dễ sai bối cảnh."
     ref: lessons/20-san-pham-du-lieu.html#cau-mau
+    status: retired
+    reviewed: 2026-11-18
   - id: Y35
     exams:
       CCAO-F: D4
@@ -2080,6 +2142,8 @@ questions:
       - D
     explanation: Trả kết quả một phần kèm lỗi có cấu trúc để coordinator đi tiếp và ghi chú độ phủ trong báo cáo. Chờ đủ có thể không bao giờ xong; giả như đầy đủ là nuốt lỗi; dừng cả hệ vì một lỗi là anti-pattern.
     ref: lessons/21-lab-ccar-f.html#lab-ex4
+    status: retired
+    reviewed: 2026-11-18
   - id: Z13
     exams:
       CCAR-F: D5
@@ -2094,6 +2158,8 @@ questions:
       - B
     explanation: "Phiên dài bị suy giảm: ghi phát hiện chính vào scratchpad, giao câu hỏi cụ thể cho subagent, tóm tắt giữa các giai đoạn. Vector database, streaming, rate limit đều nằm ngoài phạm vi CCAR-F và không chữa vấn đề chú ý."
     ref: lessons/21-lab-ccar-f.html#pham-vi
+    status: retired
+    reviewed: 2026-11-18
   - id: Z14
     exams:
       CCAR-F: D3
@@ -2822,6 +2888,8 @@ questions:
       - A
     explanation: tool_use + JSON schema là cách tin cậy nhất để có JSON đúng cú pháp, nhưng vẫn phải kiểm tra ngữ nghĩa.
     ref: lessons/06-prompt-output.html#schema
+    status: retired
+    reviewed: 2026-11-18
   - id: F05
     exams:
       CCAR-F: D4
@@ -2879,6 +2947,8 @@ questions:
       - B
     explanation: Retry vô ích khi thông tin nằm ở tài liệu ngoài chưa được cung cấp; sẽ chỉ dẫn tới bịa.
     ref: lessons/06-prompt-output.html#validate-retry
+    status: retired
+    reviewed: 2026-11-18
   - id: F09
     exams:
       CCAR-F: D4
@@ -2907,6 +2977,8 @@ questions:
       - C
     explanation: "Một tài liệu có thể chờ tối đa bằng khoảng cách gửi, cộng 24 giờ xử lý: 6 + 24 = 30. 12 giờ cho 36 giờ, vượt SLA."
     ref: lessons/06-prompt-output.html#batch-lo
+    status: retired
+    reviewed: 2026-11-18
   - id: F11
     exams:
       CCAR-F: D4
@@ -2921,6 +2993,8 @@ questions:
       - B
     explanation: Chỉ gửi lại phần lỗi theo `custom_id`, có điều chỉnh. Và nên thử prompt trên mẫu nhỏ trước khi chạy khối lớn.
     ref: lessons/06-prompt-output.html#batch-lo
+    status: retired
+    reviewed: 2026-11-18
   - id: F12
     exams:
       CCAR-F: D4
@@ -2935,6 +3009,8 @@ questions:
       - B
     explanation: Context lớn hơn không chữa được loãng sự chú ý; bỏ phiếu 2/3 sẽ bỏ sót lỗi thật; đẩy việc cho người là né tránh.
     ref: lessons/06-prompt-output.html#review
+    status: retired
+    reviewed: 2026-11-18
   - id: F13
     exams:
       CCDV-F: D6
@@ -2948,6 +3024,8 @@ questions:
       - B
     explanation: "Tài liệu dài đặt trước, câu hỏi đặt sau cùng: chất lượng trả lời tốt hơn."
     ref: lessons/06-prompt-output.html#cau-truc-prompt
+    status: retired
+    reviewed: 2026-11-18
   - id: F14
     exams:
       CCDV-F: D6
@@ -3071,6 +3149,8 @@ questions:
       - C
     explanation: Chính sách mơ hồ hoặc không nói tới thì escalate; không tự diễn giải chính sách.
     ref: lessons/07-context.html#escalation
+    status: retired
+    reviewed: 2026-11-18
   - id: G06
     exams:
       CCAR-F: D5
@@ -3099,6 +3179,8 @@ questions:
       - A
     explanation: Bước đầu tương xứng là tiêu chí rõ kèm few-shot. Điểm tự tin model tự báo và sentiment không đáng tin; classifier riêng là quá sớm.
     ref: lessons/07-context.html#escalation
+    status: retired
+    reviewed: 2026-11-18
   - id: G08
     exams:
       CCAR-F: D5
@@ -3173,6 +3255,8 @@ questions:
       - A
     explanation: Độ chính xác tổng có thể che một loại tài liệu hoặc một trường kém. Kiểm theo loại và theo trường trước khi giảm human review.
     ref: lessons/07-context.html#human-review
+    status: retired
+    reviewed: 2026-11-18
   - id: G13
     exams:
       CCAR-F: D5
@@ -3215,6 +3299,8 @@ questions:
       - A
     explanation: Tóm tắt làm mất liên kết nhận định–nguồn. Cần ngày xuất bản để khác biệt theo thời gian không bị hiểu nhầm là mâu thuẫn.
     ref: lessons/07-context.html#nguon-goc
+    status: retired
+    reviewed: 2026-11-18
   - id: G16
     exams:
       CCDV-F: D4
@@ -3228,6 +3314,8 @@ questions:
       - B
     explanation: "Tách lỗi tầng tích hợp (HTTP 4xx/5xx, parse lỗi, thiếu `tool_use_id`: sửa bằng code) khỏi lỗi đầu ra model (chọn sai tool, bịa: sửa bằng prompt, mô tả, schema)."
     ref: lessons/07-context.html#debug
+    status: retired
+    reviewed: 2026-11-18
   - id: G17
     exams:
       CCDV-F: D4
@@ -3268,6 +3356,8 @@ questions:
       - B
     explanation: Nội dung từ bên ngoài là dữ liệu, không phải lệnh. Lời dặn không phải cơ chế bảo vệ; model lớn hơn không tự an toàn hơn.
     ref: lessons/08-bao-mat.html#injection
+    status: retired
+    reviewed: 2026-11-18
   - id: H02
     exams:
       CCDV-F: D7
@@ -3334,6 +3424,8 @@ questions:
       - B
     explanation: Mỗi môi trường một key, tách bằng workspace, giữ trong secrets manager, xoay vòng định kỳ, theo dõi bất thường.
     ref: lessons/08-bao-mat.html#secret
+    status: retired
+    reviewed: 2026-11-18
   - id: H07
     exams:
       CCDV-F: D7
@@ -3374,6 +3466,8 @@ questions:
       - A
     explanation: PII không cần thiết thì ẩn hoặc che trước khi gửi. Lời dặn không phải biện pháp kiểm soát; bỏ hẳn dự án là cực đoan.
     ref: lessons/08-bao-mat.html#pii
+    status: retired
+    reviewed: 2026-11-18
   - id: H10
     exams:
       CCDV-F: D7
@@ -3400,6 +3494,8 @@ questions:
       - A
     explanation: "Ranh giới nội dung: tách rõ chỉ dẫn và dữ liệu bằng thẻ XML. Giúp model hiểu đúng và giảm rủi ro injection (không loại bỏ hoàn toàn)."
     ref: lessons/08-bao-mat.html#injection
+    status: retired
+    reviewed: 2026-11-18
   - id: H12
     exams:
       CCDV-F: D7
@@ -3452,6 +3548,8 @@ questions:
       - A
     explanation: Prompt nghiệp vụ tốt nêu bối cảnh, đối tượng, mục đích, định dạng, kèm ví dụ nếu có.
     ref: lessons/09-ccao-f.html#prompting
+    status: retired
+    reviewed: 2026-11-18
   - id: K02
     exams:
       CCAO-F: D1
@@ -3465,6 +3563,8 @@ questions:
       - A
     explanation: "Chia nhỏ yêu cầu lớn, kiểm tra từng bước: kết quả chính xác hơn và dễ sửa hơn."
     ref: lessons/09-ccao-f.html#prompting
+    status: retired
+    reviewed: 2026-11-18
   - id: K03
     exams:
       CCAO-F: D1
@@ -3478,6 +3578,8 @@ questions:
       - A
     explanation: Lặp có phản hồi cụ thể (cái gì đổi, cái gì giữ) nhanh hơn làm lại từ đầu.
     ref: lessons/09-ccao-f.html#prompting
+    status: retired
+    reviewed: 2026-11-18
   - id: K04
     exams:
       CCAO-F: D1
@@ -3504,6 +3606,8 @@ questions:
       - A
     explanation: Output tự tin vẫn phải kiểm chứng với nguồn gốc, nhất là khi gửi cho bộ phận tuân thủ. Hỏi Claude tự chấm không phải là kiểm chứng.
     ref: lessons/09-ccao-f.html#danh-gia
+    status: retired
+    reviewed: 2026-11-18
   - id: K06
     exams:
       CCAO-F: D2
@@ -3556,6 +3660,8 @@ questions:
       - A
     explanation: Nội dung độc lập để sửa và chia sẻ thì dùng artifact; câu hỏi nhanh thì trả lời trực tiếp; dữ liệu để đưa vào bảng tính thì dạng có cấu trúc.
     ref: lessons/09-ccao-f.html#danh-gia
+    status: retired
+    reviewed: 2026-11-18
   - id: K10
     exams:
       CCAO-F: D2
@@ -3596,6 +3702,8 @@ questions:
       - A
     explanation: Projects giữ instructions và kho tài liệu dùng chung cho mọi cuộc chat trong project.
     ref: lessons/09-ccao-f.html#san-pham
+    status: retired
+    reviewed: 2026-11-18
   - id: K13
     exams:
       CCAO-F: D3
@@ -3609,6 +3717,8 @@ questions:
       - A
     explanation: Research tìm kiếm nhiều bước trên web và nguồn đã kết nối, kèm trích dẫn.
     ref: lessons/09-ccao-f.html#san-pham
+    status: retired
+    reviewed: 2026-11-18
   - id: K14
     exams:
       CCAO-F: D3
@@ -3622,6 +3732,8 @@ questions:
       - A
     explanation: "Chat quá dài thì chất lượng giảm: mở chat mới kèm tóm tắt hoặc lưu thông tin quan trọng vào Project."
     ref: lessons/09-ccao-f.html#san-pham
+    status: retired
+    reviewed: 2026-11-18
   - id: K15
     exams:
       CCAO-F: D4
@@ -3675,6 +3787,8 @@ questions:
       - A
     explanation: Viết chỉ dẫn hệ thống ở cấp Project để mọi cuộc chat trong nhóm nhất quán.
     ref: lessons/09-ccao-f.html#cau-hinh
+    status: retired
+    reviewed: 2026-11-18
   - id: K19
     exams:
       CCAO-F: D5
@@ -3714,6 +3828,8 @@ questions:
       - A
     explanation: Ẩn danh trước khi tải lên theo chính sách. “Dặn Claude đừng lưu” không phải biện pháp kiểm soát; bỏ hẳn việc là không cần thiết.
     ref: lessons/09-ccao-f.html#quan-tri
+    status: retired
+    reviewed: 2026-11-18
   - id: K22
     exams:
       CCAO-F: D6
@@ -3740,6 +3856,8 @@ questions:
       - A
     explanation: Quyết định có hệ quả lớn tới con người cần giám sát của người; đó là ca sử dụng không phù hợp nếu tự động hoàn toàn.
     ref: lessons/09-ccao-f.html#quan-tri
+    status: retired
+    reviewed: 2026-11-18
   - id: K24
     exams:
       CCAO-F: D7
@@ -3766,6 +3884,8 @@ questions:
       - A
     explanation: "Tối ưu quy trình: thông tin dùng lại nhiều lần thì đưa vào Project thay vì dán lại."
     ref: lessons/09-ccao-f.html#xu-ly-su-co
+    status: retired
+    reviewed: 2026-11-18
   - id: K26
     exams:
       CCAO-F: D3
@@ -3870,6 +3990,8 @@ questions:
       - A
     explanation: "Đưa Claude vào quy trình sẵn có: Claude soạn, người chịu trách nhiệm duyệt; không bỏ bước kiểm soát."
     ref: lessons/09-ccao-f.html#quy-trinh
+    status: retired
+    reviewed: 2026-11-18
   - id: K34
     exams:
       CCAO-F: D4
@@ -4027,6 +4149,8 @@ questions:
       - B
     explanation: Ứng viên tốt là việc lặp lại, có bước người duyệt, rủi ro thấp. Quyết định cuối và trách nhiệm pháp lý vẫn ở người có thẩm quyền.
     ref: lessons/09-ccao-f.html#quy-trinh
+    status: retired
+    reviewed: 2026-11-18
   - id: K46
     exams:
       CCAO-F: D4
@@ -4105,6 +4229,8 @@ questions:
       - A
     explanation: Project instructions dành cho quy tắc dùng chung, lâu dài; chi tiết của từng việc để trong chat.
     ref: lessons/09-ccao-f.html#cau-hinh
+    status: retired
+    reviewed: 2026-11-18
   - id: K52
     exams:
       CCAO-F: D5
@@ -4170,6 +4296,8 @@ questions:
       - A
     explanation: Định dạng không ổn định thì đưa mẫu cụ thể hoặc ví dụ đầu ra vào chỉ dẫn dùng chung.
     ref: lessons/09-ccao-f.html#xu-ly-su-co
+    status: retired
+    reviewed: 2026-11-18
   - id: K57
     exams:
       CCAO-F: D7
@@ -4749,6 +4877,8 @@ questions:
       - C
     explanation: "Thay đổi nhỏ, phạm vi rõ: làm trực tiếp. Plan mode dành cho việc lớn, nhiều cách làm, ảnh hưởng kiến trúc."
     ref: lessons/05-claude-code.html#plan-mode
+    status: retired
+    reviewed: 2026-11-18
   - id: E34
     exams:
       CCAR-F: D3
@@ -4777,6 +4907,8 @@ questions:
       - A
     explanation: "Kết hợp: plan mode để điều tra và thống nhất cách làm, sau đó thực thi trực tiếp theo kế hoạch."
     ref: lessons/05-claude-code.html#plan-mode
+    status: retired
+    reviewed: 2026-11-18
   - id: E36
     exams:
       CCAR-F: D3
@@ -4934,6 +5066,8 @@ questions:
       - D
     explanation: Nói rõ file nào đã đổi để Claude đọc lại có chọn lọc thay vì khám phá lại toàn bộ hay đoán.
     ref: lessons/07-context.html#codebase-lon
+    status: retired
+    reviewed: 2026-11-18
   - id: G29
     exams:
       CCAR-F: D5
@@ -5033,6 +5167,8 @@ questions:
       - C
     explanation: Few-shot là cách hiệu quả nhất để có định dạng nhất quán khi chỉ dẫn bằng lời không đủ.
     ref: lessons/06-prompt-output.html#few-shot
+    status: retired
+    reviewed: 2026-11-18
   - id: F21
     exams:
       CCAR-F: D4
@@ -5316,6 +5452,8 @@ questions:
       - A
     explanation: Subagent tự xử lý lỗi tạm thời tại chỗ, chỉ báo lên coordinator lỗi không giải quyết được kèm việc đã thử và kết quả một phần. Nuốt lỗi hay dừng toàn bộ đều là anti-pattern.
     ref: lessons/04-tool-mcp.html#loi-tool
+    status: retired
+    reviewed: 2026-11-18
   - id: M01
     exams:
       CCAR-F: D2
@@ -5372,6 +5510,8 @@ questions:
       - A
     explanation: Khi bước sau có ngân sách context hạn chế, bước trước nên trả dữ liệu có cấu trúc (ý chính, trích dẫn, độ liên quan) thay vì nội dung dài dòng.
     ref: lessons/07-context.html#case-facts
+    status: retired
+    reviewed: 2026-11-18
   - id: G32
     exams:
       CCAR-F: D5
@@ -5597,6 +5737,8 @@ questions:
       - A
     explanation: "Mô tả tool cần nêu rõ ranh giới: khi nào dùng tool này thay cho tool tương tự, kèm ví dụ truy vấn. Bỏ Grep làm mất công cụ hữu ích cho tìm kiếm chính xác."
     ref: lessons/04-tool-mcp.html#mcp
+    status: retired
+    reviewed: 2026-11-18
   - id: D44
     exams:
       CCAR-F: D2
@@ -5754,6 +5896,8 @@ questions:
       - D
     explanation: "Việc lặp lại có quy trình và tài nguyên đi kèm: đóng gói thành skill (SKILL.md cùng file mẫu) để dùng chung và bảo trì một chỗ."
     ref: lessons/11-platform-subagents-skills.html#agent-skills
+    status: retired
+    reviewed: 2026-11-18
   - id: E48
     exams:
       CCAR-F: D3
@@ -5782,6 +5926,8 @@ questions:
       - B
     explanation: "Việc mở: lập bản đồ cấu trúc trước, tập trung vào phần quan trọng, điều chỉnh khi phát hiện thêm."
     ref: lessons/03-agent.html#phan-ra
+    status: retired
+    reviewed: 2026-11-18
   - id: C232
     exams:
       CCAR-F: D1
@@ -6109,6 +6255,8 @@ questions:
       - C
     explanation: Tiêu chí cụ thể theo loại (báo gì, bỏ qua gì) hiệu quả hơn lời dặn chung như “thận trọng” hay lọc theo độ tự tin.
     ref: lessons/06-prompt-output.html#tieu-chi
+    status: retired
+    reviewed: 2026-11-18
   - id: F25
     exams:
       CCAR-F: D4
@@ -6235,6 +6383,8 @@ questions:
       - D
     explanation: Việc không chặn, chịu được trễ (audit hằng tuần) dùng Batches cho rẻ; việc chặn merge cần API đồng bộ vì batch không cam kết độ trễ.
     ref: lessons/01-api-tich-hop.html#batch
+    status: retired
+    reviewed: 2026-11-18
   - id: A22
     exams:
       CCAR-F: D4
@@ -6964,6 +7114,8 @@ questions:
       - B
     explanation: Cắt bỏ kết quả tool cũ (context editing, pruning) hoặc compact để giữ context gọn. `max_tokens` chỉ giới hạn output; batch không giải quyết chuyện context.
     ref: lessons/03-agent.html#memory
+    status: retired
+    reviewed: 2026-11-18
   - id: C255
     exams:
       CCDV-F: D1
@@ -7122,6 +7274,8 @@ questions:
       - B
     explanation: "Model ngừng hỗ trợ có ngày cụ thể: theo dõi, chạy eval với model kế nhiệm, đọc migration guide, chuyển trước hạn."
     ref: lessons/01-api-tich-hop.html#cau-hinh
+    status: retired
+    reviewed: 2026-11-18
   - id: A27
     exams:
       CCDV-F: D2
@@ -7162,6 +7316,8 @@ questions:
       - A
     explanation: Muốn người dùng thấy chữ dần thì chuyển tiếp từng sự kiện hoặc delta tới trình duyệt. Gom hết rồi gửi thì mất lợi ích streaming; API không có kiểu polling bản tạm.
     ref: lessons/01-api-tich-hop.html#streaming
+    status: retired
+    reviewed: 2026-11-18
   - id: B17
     exams:
       CCDV-F: D2
@@ -7175,6 +7331,8 @@ questions:
       - B
     explanation: Khi dùng thinking với tool use, thinking block của lượt assistant phải được gửi lại nguyên vẹn (kèm chữ ký); sửa hay bỏ đi gây lỗi hoặc làm model mất mạch suy luận. Thinking không phải câu trả lời cuối.
     ref: lessons/02-model-toi-uu.html#thinking
+    status: retired
+    reviewed: 2026-11-18
   - id: A30
     exams:
       CCDV-F: D2
@@ -7293,6 +7451,8 @@ questions:
       - C
     explanation: "Refactor lớn: lập kế hoạch, làm theo đợt có thể review, chạy test sau mỗi đợt. Đổi tên vẫn có thể làm hỏng hành vi (reflection, chuỗi động, API công khai)."
     ref: lessons/13-evals-sdlc.html#sdlc-playbook
+    status: retired
+    reviewed: 2026-11-18
   - id: A36
     exams:
       CCDV-F: D2
@@ -7306,6 +7466,8 @@ questions:
       - D
     explanation: "Prompt là code: lưu trong git, review qua PR, gắn phiên bản để truy vết và rollback."
     ref: lessons/01-api-tich-hop.html#cau-hinh
+    status: retired
+    reviewed: 2026-11-18
   - id: F56
     exams:
       CCDV-F: D2
@@ -7437,6 +7599,8 @@ questions:
       - B
     explanation: "`.claude/settings.json` commit cho cả đội; `settings.local.json` là cá nhân, không commit; `~/.claude/settings.json` là cấp user; CLAUDE.md là chỉ dẫn, không phải cấu hình quyền."
     ref: lessons/05-claude-code.html#settings
+    status: retired
+    reviewed: 2026-11-18
   - id: A41
     exams:
       CCDV-F: D2
@@ -7633,6 +7797,8 @@ questions:
       - A
     explanation: API stream bằng server-sent events. Backend chuyển tiếp tới trình duyệt qua SSE hoặc WebSocket; không bao giờ đưa API key ra trình duyệt.
     ref: lessons/01-api-tich-hop.html#streaming
+    status: retired
+    reviewed: 2026-11-18
   - id: C259
     exams:
       CCDV-F: D6
@@ -7778,6 +7944,8 @@ questions:
       - D
     explanation: "Bộ tool gọn: gộp tool chồng chéo, chỉ cấp tool cần cho vai trò. Nhiều tool na ná nhau làm model dễ chọn nhầm."
     ref: lessons/04-tool-mcp.html#phan-bo-tool
+    status: retired
+    reviewed: 2026-11-18
   - id: D55
     exams:
       CCDV-F: D8
@@ -7883,6 +8051,8 @@ questions:
       - D
     explanation: "Kiến thức hoặc quy trình dùng lại, chỉ nạp khi liên quan: Skill. MCP để kết nối hệ thống; ép gọi tool mỗi lần là thừa; dán tay thì dễ quên."
     ref: lessons/04-tool-mcp.html#chon-cach
+    status: retired
+    reviewed: 2026-11-18
   - id: P01
     exams:
       CCDV-F: D3
@@ -8056,6 +8226,8 @@ questions:
       - D
     explanation: "Parse phòng thủ: validate theo schema, lỗi thì retry kèm thông báo lỗi cụ thể. Giọng tự tin không phải bằng chứng; bỏ qua lặng lẽ làm mất dữ liệu."
     ref: lessons/06-prompt-output.html#validate-retry
+    status: retired
+    reviewed: 2026-11-18
   - id: H16
     exams:
       CCDV-F: D7
@@ -8097,6 +8269,8 @@ questions:
       - A
     explanation: Prompt hiệu quả nêu rõ người đọc, phạm vi, nội dung chính, độ dài. Lời khen hay chỉ đặt vai không thay được thông tin cụ thể.
     ref: lessons/09-ccao-f.html#prompting
+    status: retired
+    reviewed: 2026-11-18
   - id: K60
     exams:
       CCAO-F: D1
@@ -8110,6 +8284,8 @@ questions:
       - B
     explanation: Chia việc lớn thành bước có thể kiểm tra (chủ đề → khuyến nghị) cho kết quả chính xác, truy được nguồn. Làm ngược (kết luận trước, tìm bằng chứng sau) dễ thiên lệch.
     ref: lessons/09-ccao-f.html#prompting
+    status: retired
+    reviewed: 2026-11-18
   - id: K61
     exams:
       CCAO-F: D1
@@ -8123,6 +8299,8 @@ questions:
       - C
     explanation: Phản hồi lặp hiệu quả nêu cụ thể người đọc và thay đổi cần làm. “Thử lại”, “làm tốt hơn” không cho Claude biết sửa gì; yêu cầu mâu thuẫn cho kết quả lưng chừng.
     ref: lessons/09-ccao-f.html#prompting
+    status: retired
+    reviewed: 2026-11-18
   - id: K62
     exams:
       CCAO-F: D1
@@ -8201,6 +8379,8 @@ questions:
       - A
     explanation: Ràng buộc cụ thể (số ý, số từ) cho kết quả vừa khuôn hơn yêu cầu chung chung.
     ref: lessons/09-ccao-f.html#prompting
+    status: retired
+    reviewed: 2026-11-18
   - id: K66
     exams:
       CCAO-F: D1
@@ -8347,6 +8527,8 @@ questions:
       - D
     explanation: "Mâu thuẫn nội tại là dấu hiệu lỗi: xác định số đúng từ dữ liệu gốc rồi sửa cho nhất quán."
     ref: lessons/09-ccao-f.html#danh-gia
+    status: retired
+    reviewed: 2026-11-18
   - id: T01
     exams:
       CCAO-F: D2
@@ -8387,6 +8569,8 @@ questions:
       - D
     explanation: Nội dung y tế, pháp lý, gửi cơ quan quản lý là rủi ro cao, cần người có chuyên môn duyệt. Ý tưởng nội bộ, ghi chú cá nhân thì rủi ro thấp.
     ref: lessons/09-ccao-f.html#danh-gia
+    status: retired
+    reviewed: 2026-11-18
   - id: K77
     exams:
       CCAO-F: D2
@@ -8426,6 +8610,8 @@ questions:
       - B
     explanation: "Nội dung độc lập để dùng lại, chia sẻ: artifact. Đoạn văn trong chat khó tái sử dụng."
     ref: lessons/09-ccao-f.html#danh-gia
+    status: retired
+    reviewed: 2026-11-18
   - id: K80
     exams:
       CCAO-F: D2
@@ -8439,6 +8625,8 @@ questions:
       - C
     explanation: Dữ liệu để đưa vào hệ thống khác cần định dạng có cấu trúc (bảng, CSV) với cột cố định.
     ref: lessons/09-ccao-f.html#danh-gia
+    status: retired
+    reviewed: 2026-11-18
   - id: K81
     exams:
       CCAO-F: D2
@@ -8478,6 +8666,8 @@ questions:
       - B
     explanation: Số liệu gửi nhà đầu tư là rủi ro cao, cần kiểm chứng. Nội dung nội bộ nhẹ thì không cần mức kiểm tra đó.
     ref: lessons/09-ccao-f.html#danh-gia
+    status: retired
+    reviewed: 2026-11-18
   - id: T02
     exams:
       CCAO-F: D2
@@ -8649,6 +8839,8 @@ questions:
       - C
     explanation: Haiku nhanh, rẻ cho việc đơn giản khối lượng lớn; Sonnet cân bằng; Opus cho suy luận phức tạp.
     ref: lessons/09-ccao-f.html#san-pham
+    status: retired
+    reviewed: 2026-11-18
   - id: K93
     exams:
       CCAO-F: D3
@@ -8675,6 +8867,8 @@ questions:
       - A
     explanation: Projects gom instructions và kho tài liệu dùng chung cho mọi cuộc chat trong project.
     ref: lessons/09-ccao-f.html#san-pham
+    status: retired
+    reviewed: 2026-11-18
   - id: K95
     exams:
       CCAO-F: D3
@@ -8688,6 +8882,8 @@ questions:
       - B
     explanation: Research tìm nhiều bước trên nhiều nguồn và trích dẫn; chat không truy cập web chỉ dựa vào dữ liệu huấn luyện.
     ref: lessons/09-ccao-f.html#san-pham
+    status: retired
+    reviewed: 2026-11-18
   - id: K96
     exams:
       CCAO-F: D3
@@ -8727,6 +8923,8 @@ questions:
       - A
     explanation: "Chat quá dài làm chất lượng giảm: tóm tắt rồi mở chat mới, hoặc lưu thông tin bền vững vào Project."
     ref: lessons/09-ccao-f.html#san-pham
+    status: retired
+    reviewed: 2026-11-18
   - id: K99
     exams:
       CCAO-F: D3
@@ -8822,6 +9020,8 @@ questions:
       - D
     explanation: Model mạnh nhất đáng chi khi cần suy luận phức tạp trên nhiều tài liệu; việc đơn giản thì lãng phí.
     ref: lessons/09-ccao-f.html#san-pham
+    status: retired
+    reviewed: 2026-11-18
   - id: K103
     exams:
       CCAO-F: D4
@@ -8835,6 +9035,8 @@ questions:
       - A
     explanation: Claude giúp phân tích yêu cầu (cấu trúc hoá ghi chú, nêu câu hỏi mở); quyết định cuối vẫn qua các bên liên quan.
     ref: lessons/09-ccao-f.html#quy-trinh
+    status: retired
+    reviewed: 2026-11-18
   - id: K104
     exams:
       CCAO-F: D4
@@ -8874,6 +9076,8 @@ questions:
       - D
     explanation: Claude hỗ trợ lập kế hoạch; người phụ trách xác nhận, ra quyết định và ký kết.
     ref: lessons/09-ccao-f.html#quy-trinh
+    status: retired
+    reviewed: 2026-11-18
   - id: K107
     exams:
       CCAO-F: D4
@@ -8955,6 +9159,8 @@ questions:
       - B
     explanation: Quyết định mở rộng dựa trên số đo trước–sau (thời gian, chất lượng), không dựa vào lượt dùng hay cảm nhận lẻ.
     ref: lessons/09-ccao-f.html#quy-trinh
+    status: retired
+    reviewed: 2026-11-18
   - id: K112
     exams:
       CCAO-F: D4
@@ -9125,6 +9331,8 @@ questions:
       - C
     explanation: Connector đọc dữ liệu theo quyền tài khoản; chỉ bật khi cần và được phép. Không bao giờ chia sẻ mật khẩu trong chat.
     ref: lessons/09-ccao-f.html#cau-hinh
+    status: retired
+    reviewed: 2026-11-18
   - id: K123
     exams:
       CCAO-F: D5
@@ -9138,6 +9346,8 @@ questions:
       - D
     explanation: "Cấu hình phải được bảo trì: cập nhật instructions và tài liệu khi sự thật thay đổi."
     ref: lessons/09-ccao-f.html#cau-hinh
+    status: retired
+    reviewed: 2026-11-18
   - id: K124
     exams:
       CCAO-F: D5
@@ -9165,6 +9375,8 @@ questions:
       - B
     explanation: Tài liệu mâu thuẫn trong kho tri thức gây câu trả lời không nhất quán; giữ một bản hiện hành.
     ref: lessons/09-ccao-f.html#cau-hinh
+    status: retired
+    reviewed: 2026-11-18
   - id: K126
     exams:
       CCAO-F: D5
@@ -9231,6 +9443,8 @@ questions:
       - C
     explanation: Loại tài liệu lỗi thời khỏi kho tri thức; dựa vào lời dặn mỗi lần là không bền.
     ref: lessons/09-ccao-f.html#cau-hinh
+    status: retired
+    reviewed: 2026-11-18
   - id: T09
     exams:
       CCAO-F: D5
@@ -9415,6 +9629,8 @@ questions:
       - A
     explanation: Dữ liệu mật chỉ xử lý trong công cụ được phê duyệt, theo phân loại dữ liệu.
     ref: lessons/09-ccao-f.html#quan-tri
+    status: retired
+    reviewed: 2026-11-18
   - id: K142
     exams:
       CCAO-F: D6
@@ -9455,6 +9671,8 @@ questions:
       - D
     explanation: Đánh giá giả là lừa dối, có thể vi phạm luật bảo vệ người tiêu dùng; không thực hiện.
     ref: lessons/09-ccao-f.html#quan-tri
+    status: retired
+    reviewed: 2026-11-18
   - id: K144
     exams:
       CCAO-F: D6
@@ -9640,6 +9858,8 @@ questions:
       - B
     explanation: "Giảm bịa: yêu cầu bám tài liệu, trích dẫn, và cho phép nói “không có trong tài liệu”."
     ref: lessons/09-ccao-f.html#xu-ly-su-co
+    status: retired
+    reviewed: 2026-11-18
   - id: K157
     exams:
       CCAO-F: D7
@@ -9695,6 +9915,8 @@ questions:
       - C
     explanation: Nguồn không tìm thấy hoặc link hỏng là dấu hiệu có thể bịa; cần kiểm chứng trước khi dùng. Định dạng hay vị trí trích dẫn không nói lên độ thật.
     ref: lessons/09-ccao-f.html#danh-gia
+    status: retired
+    reviewed: 2026-11-18
   - id: K161
     exams:
       CCAO-F: D2
@@ -9709,6 +9931,8 @@ questions:
       - D
     explanation: "Kiểm chứng độc lập: đối chiếu số liệu chính và soi kỹ một phần với bản gốc. Hỏi lại Claude hay so độ dài không phải kiểm chứng."
     ref: lessons/09-ccao-f.html#danh-gia
+    status: retired
+    reviewed: 2026-11-18
   - id: K162
     exams:
       CCAO-F: D2
@@ -9723,6 +9947,8 @@ questions:
       - D
     explanation: Dữ liệu để xử lý tiếp cần định dạng có cấu trúc (CSV, bảng có cột cố định); văn xuôi hay slide khó nhập.
     ref: lessons/09-ccao-f.html#danh-gia
+    status: retired
+    reviewed: 2026-11-18
   - id: K163
     exams:
       CCAO-F: D3
@@ -9780,6 +10006,8 @@ questions:
       - D
     explanation: Kho tri thức gọn, hiện hành, đặt tên rõ giúp Claude trích đúng; bản nháp và nhiều phiên bản cùng một tài liệu gây trả lời mâu thuẫn.
     ref: lessons/09-ccao-f.html#cau-hinh
+    status: retired
+    reviewed: 2026-11-18
   - id: K166
     exams:
       CCAO-F: D6
@@ -10217,6 +10445,8 @@ questions:
       - B
     explanation: Bước chặn có hạn hai phút cần API đồng bộ; audit hằng tuần không gấp hợp với Batches (rẻ 50%, tối đa 24 giờ, không cam kết độ trễ). Batches không bảo đảm thứ tự, ghép kết quả theo `custom_id`.
     ref: lessons/19-api-nang-cao.html#cau-mau
+    status: retired
+    reviewed: 2026-11-18
   - id: X32
     exams:
       CCDV-F: D8
@@ -10230,6 +10460,8 @@ questions:
       - A
     explanation: "Hệ thống nội bộ dùng lại ở nhiều ứng dụng là đúng trường hợp của MCP server: một chỗ bảo trì. Tài liệu trong prompt không thực thi được; Bash rộng quyền và khó kiểm soát; skill sao chép vẫn trôi phiên bản và không dành cho ứng dụng API."
     ref: lessons/19-api-nang-cao.html#cau-mau
+    status: retired
+    reviewed: 2026-11-18
   - id: G51
     exams:
       CCDV-F: D4
@@ -10269,6 +10501,8 @@ questions:
       - B
     explanation: Đọc trace của các lần lỗi để tìm chặng đầu tiên sai, rồi mới chọn cách sửa (schema, strict tool, validate). Hỏi Claude tự giải thích là đoán; chỉnh temperature hay thêm lời dặn là sửa mò trước khi biết nguyên nhân.
     ref: lessons/07-context.html#debug
+    status: retired
+    reviewed: 2026-11-18
   - id: G54
     exams:
       CCDV-F: D4
@@ -11313,6 +11547,8 @@ questions:
       - A
     explanation: "Tài liệu nhỏ, ít đổi, hỏi đáp: một lời gọi kèm tài liệu trong prompt có cache là đủ. Nhiều agent, agent duyệt web hay fine-tuning đều quá tay."
     ref: lessons/22-thiet-ke-giai-phap.html#chon-mau
+    status: retired
+    reviewed: 2026-11-18
   - id: PA23
     exams:
       CCAR-P: D2
@@ -11909,6 +12145,8 @@ questions:
       - A
     explanation: "Nhiều tool, nhiều quy trình, thay đổi thường xuyên: khám phá dần (skill, tool search) và đầu tư vào mô tả để tìm đúng. Prompt nguyên khối phình và loãng; tách deployment khó dùng; bỏ mô tả làm chọn sai."
     ref: lessons/23-tich-hop.html#context-chien-luoc
+    status: retired
+    reviewed: 2026-11-18
   - id: PB26
     exams:
       CCAR-P: D4
@@ -12106,6 +12344,8 @@ questions:
       - B
     explanation: "Sự kiện kích hoạt là làm mới tài liệu, model và độ trễ không đổi: nghi retrieval, index trước (re-index hỏng, embedding lệch). Trọng số không tự đổi; temperature, context window không bị ảnh hưởng bởi việc làm mới tài liệu."
     ref: lessons/24-danh-gia-governance.html#chan-doan
+    status: retired
+    reviewed: 2026-11-18
   - id: PC12
     exams:
       CCAR-P: D4
@@ -12198,6 +12438,8 @@ questions:
       - A
     explanation: Song song hoá bước độc lập và cache tiền tố tĩnh giảm độ trễ mà giữ chất lượng. Cắt system prompt, cắt max_tokens hay bỏ validate đều có thể giảm chất lượng hoặc an toàn.
     ref: lessons/24-danh-gia-governance.html#toi-uu
+    status: retired
+    reviewed: 2026-11-18
   - id: PC19
     exams:
       CCAR-P: D4
@@ -12383,6 +12625,8 @@ questions:
       - A
     explanation: Đo thiên lệch bằng eval theo nhóm, cặp hồ sơ chỉ khác thuộc tính nhạy cảm. Lời dặn không đo được; bỏ tên giúp một phần nhưng thiên lệch có thể qua đặc điểm khác; trung bình tổng che giấu chênh lệch.
     ref: lessons/24-danh-gia-governance.html#dao-duc
+    status: retired
+    reviewed: 2026-11-18
   - id: PC33
     exams:
       CCAR-P: D5
@@ -12409,6 +12653,8 @@ questions:
       - A
     explanation: "Quyền tối thiểu, sandbox: bỏ quyền không cần. Log là phát hiện sau; lời dặn là xác suất; chạy ít hơn vẫn giữ rủi ro."
     ref: lessons/24-danh-gia-governance.html#guardrail
+    status: retired
+    reviewed: 2026-11-18
   - id: PC35
     exams:
       CCAR-P: D5
@@ -12540,6 +12786,8 @@ questions:
       - B
     explanation: "Rủi ro hậu quả nặng thì kiểm soát phải nằm ngoài model: lọc quyền ở tầng truy xuất để model không bao giờ nhận dữ liệu người hỏi không được xem. Lời dặn trong prompt có thể bị vượt qua; disclaimer và model lớn không ngăn rò rỉ."
     ref: lessons/24-danh-gia-governance.html#rui-ro
+    status: retired
+    reviewed: 2026-11-18
   - id: PD01
     exams:
       CCAR-P: D6
@@ -12553,6 +12801,8 @@ questions:
       - B
     explanation: Discovery tập trung vào quy trình hiện tại, khối lượng, chỉ số thành công, dữ liệu, ràng buộc và giá của lỗi. Model, số agent, màu giao diện là quyết định sau.
     ref: lessons/25-ben-lien-quan-van-hanh.html#discovery
+    status: retired
+    reviewed: 2026-11-18
   - id: PD02
     exams:
       CCAR-P: D6
