@@ -11693,45 +11693,49 @@ questions:
       - B
     explanation: Thiết kế bắt đầu từ chỉ số thành công đo được, quy trình hiện tại, ràng buộc và giá của lỗi. Chọn model, framework hay số subagent trước khi có tiêu chí là làm ngược thứ tự.
     ref: lessons/22-thiet-ke-giai-phap.html#bai-toan
+    reviewed: 2026-11-19
   - id: PA02
     exams:
       CCAR-P: D1
-    stem: A task is simple, high-volume, and errors cannot be detected before they reach customers. What does this imply for the design?
+    stem: A task is simple and high-volume, and in the current process nothing catches an error before it reaches the customer. Which design direction fits best?
     options:
       - Use a fully autonomous multi-agent system, because volume justifies the investment.
       - Prefer a simpler tier with output validation and human review where errors are costly.
-      - Skip evaluation, since simple tasks rarely fail in production environments.
-      - Use the largest model at maximum effort so that errors become impossible.
+      - Rely on a detailed system prompt that warns the model to be extra careful with every answer.
+      - Use the most capable model at maximum effort, so output validation becomes unnecessary.
     answer:
       - B
-    explanation: Việc đơn giản không cần agent; khi lỗi khó phát hiện và tốn kém thì thêm kiểm tra đầu ra và người duyệt. Agent nhiều tầng tăng chi phí và rủi ro; bỏ eval nguy hiểm; model lớn không làm lỗi biến mất.
+    explanation: "Việc đơn giản, khối lượng lớn thì chọn bậc đơn giản (một lời gọi hoặc workflow). Vì hiện chưa có gì chặn lỗi trước khi tới khách, phải thêm khâu kiểm đầu ra (schema, quy tắc) và đưa ca có giá lỗi cao cho người duyệt. Hệ nhiều agent tự động tăng chi phí, độ trễ và rủi ro mà việc đơn giản không cần, lại không thêm khâu chặn lỗi nào. Lời dặn trong system prompt chỉ mang tính xác suất, không phải cơ chế kiểm soát. Model mạnh nhất ở effort cao vẫn có thể sai, nên không thay được khâu kiểm đầu ra."
     ref: lessons/22-thiet-ke-giai-phap.html#bai-toan
+    reviewed: 2026-11-19
   - id: PA03
     exams:
       CCAR-P: D1
-    stem: Which business-value framing best supports approving a Claude-based invoice-processing solution?
+    stem: An architect is writing the business case that a CFO will use to approve a Claude-based invoice-processing solution. Which value framing best supports approval?
     options:
       - “It uses the newest model, so it will be the most advanced system in the industry.”
       - “It reduces average processing time from 12 to 3 minutes at a cost per invoice below today's.”
-      - “It will replace the finance team entirely within the first month of deployment.”
+      - “It scored 98% on a public document-extraction benchmark, ahead of competing models.”
       - “It is AI-powered, which customers and investors increasingly expect from us.”
     answer:
       - B
-    explanation: Giá trị gắn với trụ đo được (hiệu suất, chi phí). Model mới nhất hay "có AI" không phải giá trị kinh doanh; hứa thay thế toàn bộ đội là không thực tế.
+    explanation: "Trụ giá trị phải đo được trên chính quy trình của doanh nghiệp: hiệu suất (12 xuống 3 phút mỗi hoá đơn) và chi phí mỗi hoá đơn so với hiện tại. “Dùng model mới nhất” và “có AI” là đặc điểm công nghệ, không phải lợi ích kinh doanh. Điểm benchmark công khai không cho biết kết quả trên hoá đơn thật của công ty, cũng không gắn với thời gian hay chi phí xử lý."
     ref: lessons/22-thiet-ke-giai-phap.html#bai-toan
+    reviewed: 2026-11-19
   - id: PA04
     exams:
       CCAR-P: D1
     stem: A proposed design covers the prompt, model and tools in detail but has no logging, evaluation or user-feedback path. What is the main risk?
     options:
-      - The system cannot call tools reliably without a dedicated logging service.
+      - Prompt injection will succeed more often, because logging is what blocks malicious inputs.
       - Quality drift and failures will go undetected because there is no feedback loop.
-      - The model will refuse to answer because it requires telemetry to be enabled.
+      - Claude's model weights will drift after launch, and only telemetry can prevent that drift.
       - Prompt caching will not work unless every request is logged centrally.
     answer:
       - B
-    explanation: Thiếu vòng phản hồi (log, eval, phản hồi người dùng) thì không biết khi chất lượng trượt hay lỗi xảy ra. Các phương án khác mô tả phụ thuộc không có thật.
+    explanation: "Thiếu vòng phản hồi (log, eval, phản hồi người dùng) thì chất lượng trượt do dữ liệu đầu vào hay cách dùng thay đổi, và lỗi trong production, đều không ai thấy. Log là kiểm soát phát hiện, không chặn được prompt injection. Mỗi model ID là một snapshot cố định, trọng số không tự đổi sau khi triển khai; chất lượng trượt đến từ dữ liệu, prompt và cách dùng (https://platform.claude.com/docs/en/about-claude/models/model-ids-and-versions). Prompt caching không phụ thuộc vào việc log request."
     ref: lessons/22-thiet-ke-giai-phap.html#kien-truc
+    reviewed: 2026-11-19
   - id: PA05
     exams:
       CCAR-P: D1
@@ -11740,11 +11744,12 @@ questions:
       - At the input stage, before content reaches the model or is logged
       - Only in the final output, after the model has produced a response
       - Inside the system prompt, by instructing the model to ignore PII
-      - Nowhere, since the model provider handles PII automatically
+      - In a nightly job that scrubs PII from the logs after requests complete
     answer:
       - A
-    explanation: Xử lý PII và đánh dấu nội dung không tin cậy ở khâu đầu vào, trước khi tới model và log. Chỉ xử lý ở đầu ra là quá muộn (đã vào log); lời dặn không phải kiểm soát; nhà cung cấp không tự che PII thay bạn.
+    explanation: "Che PII và đánh dấu nội dung không tin cậy (bọc tài liệu khách tải lên trong thẻ riêng, coi là dữ liệu chứ không phải chỉ dẫn) phải làm ở khâu đầu vào, trước khi tới model và trước khi ghi log. Chỉ xử lý ở đầu ra là quá muộn vì PII đã vào model và log, nội dung độc đã tác động tới bước xử lý. Lời dặn trong system prompt không phải cơ chế kiểm soát. Job dọn log hằng đêm vẫn để PII đi qua model và nằm trong log nhiều giờ."
     ref: lessons/22-thiet-ke-giai-phap.html#kien-truc
+    reviewed: 2026-11-19
   - id: PA06
     exams:
       CCAR-P: D1
@@ -11758,6 +11763,7 @@ questions:
       - B
     explanation: "Bước cố định, biết trước, cần kiểm toán: workflow do code điều khiển, gọi model ở bước cần phán đoán. Agent tự quyết khó dự đoán; A2A thừa; một prompt gộp năm bước khó kiểm và khó tách lỗi."
     ref: lessons/22-thiet-ke-giai-phap.html#chon-mau
+    reviewed: 2026-11-19
   - id: PA07
     exams:
       CCAR-P: D1
@@ -11771,46 +11777,50 @@ questions:
       - B
     explanation: "Số bước không biết trước, cần phản ứng theo kết quả: agent hợp, kèm quyền chỉ đọc và giới hạn bước. Chuỗi cố định quá cứng; phân loại một lần không điều tra được; batch qua đêm quá chậm cho sự cố."
     ref: lessons/22-thiet-ke-giai-phap.html#chon-mau
+    reviewed: 2026-11-19
   - id: PA08
     exams:
       CCAR-P: D1
-    stem: Which TWO are core principles Anthropic recommends when building agents? (Choose two.)
+    stem: A team is preparing its first customer-facing agent for production. Which TWO practices follow the core principles in Anthropic's guidance on building effective agents? (Choose two.)
     options:
       - Keep the agent's design as simple as possible.
       - Carefully design and test the agent-computer interface, including tool documentation.
-      - Start with the most complex multi-agent architecture and simplify later.
+      - Add framework abstraction layers early, so the agent can grow without redesign later.
       - Hide the agent's planning steps from users to keep the interface clean.
     answer:
       - A
       - B
-    explanation: "Ba nguyên tắc: đơn giản, minh bạch (hiện bước lập kế hoạch), và chăm chút giao diện agent với máy (tài liệu, kiểm thử tool). Bắt đầu phức tạp và giấu bước lập kế hoạch ngược với khuyến nghị."
+    explanation: "Building effective agents nêu ba nguyên tắc: giữ thiết kế agent đơn giản; minh bạch, hiện rõ các bước lập kế hoạch; chăm chút giao diện agent–máy (ACI) qua tài liệu và kiểm thử tool. Thêm lớp trừu tượng framework sớm đi ngược lời khuyên giảm lớp trừu tượng và dựng từ thành phần cơ bản khi lên production. Giấu bước lập kế hoạch ngược với nguyên tắc minh bạch."
     ref: lessons/22-thiet-ke-giai-phap.html#chon-mau
+    reviewed: 2026-11-19
   - id: PA09
     exams:
       CCAR-P: D1
     stem: A due-diligence task requires researching 40 independent companies across many sources, and the results are high value. Why might a multi-agent design outperform a single agent here?
     options:
-      - Subagents share one context window, so they never repeat the same work.
+      - Subagents share one context window, so each one sees what the others have found.
       - Parallel subagents each bring their own context, covering more ground simultaneously.
       - Multi-agent systems use fewer tokens than single agents on the same task.
-      - A coordinator removes the need for any evaluation of the final report.
+      - Parallel subagents remove the need for a lead agent to synthesize the final report.
     answer:
       - B
-    explanation: "Việc rộng, chia được thành hướng độc lập: mỗi subagent có context riêng, chạy song song, phủ rộng hơn. Subagent không dùng chung context; hệ nhiều agent tốn nhiều token hơn (khoảng 15 lần chat); vẫn cần eval."
+    explanation: "Việc rộng, chia được thành hướng độc lập: mỗi subagent chạy song song với context window riêng, khám phá một nhánh rồi nén kết quả về cho agent dẫn dắt, nên phủ rộng hơn. Subagent không dùng chung một context window; chính sự tách biệt này là điểm mạnh. Hệ nhiều agent tốn nhiều token hơn, khoảng 15 lần so với chat, nên chỉ đáng khi giá trị việc cao. Agent dẫn dắt vẫn phải tổng hợp kết quả của các subagent thành báo cáo."
     ref: lessons/22-thiet-ke-giai-phap.html#multi-agent
+    reviewed: 2026-11-19
   - id: PA10
     exams:
       CCAR-P: D1
     stem: A team proposes splitting a tightly coupled code refactor across five parallel coding subagents that all need the same detailed context. What is the best assessment?
     options:
-      - Good idea, since parallelism always reduces total time and token usage.
+      - Good idea, since five agents in parallel will finish roughly five times faster.
       - Poor fit, because heavy shared context and dependencies limit parallel gains.
-      - Good idea, as long as each subagent uses a different model family.
-      - Poor fit, only because subagents cannot run code in any environment.
+      - Good idea, as long as each subagent receives a full copy of the shared context.
+      - Poor fit, because subagents can only read code and cannot edit files.
     answer:
       - B
-    explanation: Nhiều agent không hợp khi các phần phụ thuộc chặt và cần chung bối cảnh chi tiết (phần lớn việc lập trình). Song song không luôn giảm token; đổi họ model không giải quyết phụ thuộc; subagent chạy được code.
+    explanation: "Theo bài viết về hệ nghiên cứu nhiều agent, việc cần mọi agent chung một bối cảnh hoặc có nhiều phụ thuộc giữa các agent không hợp với nhiều agent; phần lớn việc lập trình có ít phần thực sự song song hoá được. Kỳ vọng nhanh gấp năm bỏ qua phụ thuộc chặt vì các phần phải chờ và khớp với nhau. Chép đủ bối cảnh cho từng subagent nhân chi phí token mà không gỡ phụ thuộc giữa các thay đổi. Subagent sửa được file và chạy được code, nên lý do “chỉ đọc được” là sai."
     ref: lessons/22-thiet-ke-giai-phap.html#multi-agent
+    reviewed: 2026-11-19
   - id: PA11
     exams:
       CCAR-P: D1
@@ -11833,11 +11843,12 @@ questions:
       - The subagents run on a model that is too small to handle open-ended research tasks well.
       - The lead agent's delegation lacks clear objectives, boundaries and output formats.
       - The web search tool returns too many low-quality results for each query the subagents send.
-      - The final report is written in the wrong format for stakeholders.
+      - Each subagent has its own isolated context, and that isolation itself causes the overlap.
     answer:
       - B
-    explanation: "Trùng lặp và bỏ sót do giao việc không rõ: thiếu mục tiêu, ranh giới phạm vi, định dạng kết quả cho từng subagent. Đổi model hay số kết quả search không sửa cách giao việc."
+    explanation: "Bài viết về hệ nghiên cứu nhiều agent: mỗi subagent cần mục tiêu, định dạng đầu ra, hướng dẫn dùng tool và nguồn, và ranh giới việc rõ; giao việc mơ hồ thì subagent làm trùng và bỏ sót. Model nhỏ hay search trả nhiều kết quả kém không giải thích việc nhiều subagent cùng tìm một hướng. Context riêng là thiết kế có chủ đích; trùng lặp hết khi agent dẫn dắt chia việc rõ, không cần bỏ sự tách biệt."
     ref: lessons/22-thiet-ke-giai-phap.html#multi-agent
+    reviewed: 2026-11-19
   - id: PA13
     exams:
       CCAR-P: D1
@@ -11851,6 +11862,7 @@ questions:
       - A
     explanation: "Đầu vào chia loại rõ, mỗi loại cần xử lý riêng và có thể khác model: routing. Bỏ phiếu và chuỗi cố định chạy thừa; evaluator-optimizer giải bài khác."
     ref: lessons/22-thiet-ke-giai-phap.html#phan-ra
+    reviewed: 2026-11-19
   - id: PA14
     exams:
       CCAR-P: D1
@@ -11858,12 +11870,13 @@ questions:
     options:
       - Add a fourth reviewer so the majority threshold becomes three of four.
       - Union all findings, then filter them with explicit validation criteria.
-      - Lower the temperature of each reviewer to make their findings agree more.
+      - Give all three reviewers the same prompt so that their findings agree more often.
       - Replace the three reviewers with one reviewer using the largest model.
     answer:
       - B
-    explanation: Bỏ phiếu đa số lọc mất phát hiện đúng nhưng chỉ một lượt thấy. Với việc tìm lỗi, gộp hợp rồi lọc bằng tiêu chí rõ. Thêm người bỏ phiếu hay làm chúng giống nhau hơn càng lọc mất; một reviewer mất độ phủ.
+    explanation: "Building effective agents mô tả voting cho soát lỗ hổng: nhiều prompt khác nhau cùng soát và gắn cờ nếu bất kỳ prompt nào thấy vấn đề. Ngưỡng đa số lọc mất phát hiện đúng nhưng hiếm mà chỉ một reviewer thấy, nên gộp hợp mọi phát hiện rồi lọc bằng tiêu chí kiểm chứng rõ. Thêm reviewer thứ tư nâng ngưỡng lên ba phiếu, càng lọc mất. Dùng chung một prompt làm các reviewer giống nhau, mất đa dạng nên càng ít bắt được lỗi hiếm. Một reviewer duy nhất, kể cả model lớn nhất, mất độ phủ từ nhiều góc nhìn."
     ref: lessons/22-thiet-ke-giai-phap.html#phan-ra
+    reviewed: 2026-11-19
   - id: PA15
     exams:
       CCAR-P: D1
@@ -11871,12 +11884,13 @@ questions:
     options:
       - Prompt chaining with a fixed list of files decided before the task starts
       - Orchestrator-workers, where an orchestrator decides subtasks dynamically
-      - Routing every file to the same prompt regardless of its role in the bug
+      - Routing that classifies the bug type and sends it to one specialized fix prompt
       - Voting across five identical runs and keeping the most common patch
     answer:
       - B
-    explanation: "Không biết trước số phần việc: orchestrator-workers chia việc động theo đầu vào. Danh sách file cố định không biết trước được; routing và voting không phù hợp bài toán này."
+    explanation: "Building effective agents: orchestrator-workers hợp khi không đoán trước được subtask; ví dụ chính là sản phẩm lập trình sửa nhiều file, số file và kiểu thay đổi tuỳ từng việc. Chuỗi prompt với danh sách file cố định đòi biết trước số phần việc. Routing chỉ chọn một nhánh xử lý, không chia việc thành nhiều phần động. Voting chạy cùng một việc nhiều lần để lấy đa dạng, không chia việc theo file."
     ref: lessons/22-thiet-ke-giai-phap.html#phan-ra
+    reviewed: 2026-11-19
   - id: PA16
     exams:
       CCAR-P: D1
@@ -11885,24 +11899,26 @@ questions:
       - Evaluator-optimizer, with a grader giving targeted feedback for each draft
       - Parallel sectioning, translating each paragraph independently and joining them
       - Routing translations by language pair to different models
-      - A single call with a higher max_tokens value to allow longer output
+      - Prompt chaining with one fixed polishing pass after the first translation
     answer:
       - A
-    explanation: "Tiêu chí rõ, phản hồi cụ thể giúp bản sau tốt hơn: evaluator-optimizer. Dịch từng đoạn rời mất mạch văn; routing theo cặp ngôn ngữ không nâng chất lượng; max_tokens không liên quan."
+    explanation: "Building effective agents: evaluator-optimizer hợp khi có tiêu chí đánh giá rõ và vòng sửa tạo giá trị đo được; ví dụ chính là dịch văn học, model chấm đưa nhận xét giúp bản dịch sau tốt hơn. Dịch từng đoạn rời mất mạch văn và giọng thống nhất. Routing theo cặp ngôn ngữ chỉ chọn model, không có vòng nhận xét. Một lượt trau chuốt cố định không có bước chấm theo tiêu chí và không lặp lại, nên không tận dụng việc chất lượng tăng qua từng bản."
     ref: lessons/22-thiet-ke-giai-phap.html#phan-ra
+    reviewed: 2026-11-19
   - id: PA17
     exams:
       CCAR-P: D1
     stem: A bank already runs all workloads on AWS under strict IAM, networking and procurement rules, and wants Claude for an internal assistant. Which deployment fits these constraints best?
     options:
-      - The Claude API directly, since it always receives new features first
+      - The Claude API directly, since new features usually arrive there first
       - Claude through Amazon Bedrock, within the bank's existing AWS controls
-      - Consumer Claude Pro accounts purchased individually by each employee
-      - A self-trained open model, because cloud providers cannot host Claude
+      - Individual Claude Pro plans expensed by each employee to skip procurement
+      - Claude Models on Google Cloud, to add a second cloud for redundancy
     answer:
       - B
-    explanation: Ràng buộc hợp đồng, IAM, mạng nằm ở AWS thì Bedrock hợp. API trực tiếp có tính năng sớm hơn nhưng không khớp ràng buộc; tài khoản cá nhân không đạt yêu cầu doanh nghiệp; Claude có trên Bedrock.
+    explanation: "Ràng buộc IAM, mạng và mua sắm đều nằm ở AWS. Claude trong Amazon Bedrock chạy trên hạ tầng AWS, xác thực bằng IAM, tính tiền qua AWS, ghi log vào CloudWatch và CloudTrail, nằm trong ranh giới bảo mật AWS (https://platform.claude.com/docs/en/build-with-claude/claude-in-amazon-bedrock). Claude API trực tiếp thường có tính năng sớm hơn nhưng nằm ngoài các kiểm soát AWS sẵn có. Gói Pro cá nhân né quy trình mua sắm và không có quản trị doanh nghiệp. Thêm Google Cloud đi ngược yêu cầu chạy mọi workload trên AWS."
     ref: lessons/22-thiet-ke-giai-phap.html#trien-khai
+    reviewed: 2026-11-19
   - id: PA18
     exams:
       CCAR-P: D1
@@ -11922,18 +11938,19 @@ questions:
       CCAR-P: D1
     stem: Which consideration most often argues for self-hosting an agent with the Agent SDK rather than using a fully managed option?
     options:
-      - The need to control the execution environment, data location and custom tooling
-      - The desire to avoid writing any agent code, configuration or deployment scripts at all
-      - The expectation that self-hosting is always cheaper to operate than any managed option
+      - The need to own and customize the agent loop inside your own application and infrastructure
+      - The wish to avoid building and operating sandboxes, session storage and scaling yourself
+      - The expectation that self-hosting removes token costs, since you pay only for containers
       - The fact that managed options cannot use MCP servers or skills
     answer:
       - A
-    explanation: Tự host khi cần kiểm soát môi trường chạy, nơi dữ liệu nằm, công cụ riêng. Tự host vẫn cần code và vận hành, không luôn rẻ hơn; tuỳ chọn managed có dùng được MCP và skill.
+    explanation: "Trang Hosting the Agent SDK nói: nếu không cần tự chạy vòng lặp agent trên hạ tầng của mình thì cân nhắc Managed Agents (https://code.claude.com/docs/en/agent-sdk/hosting). Vậy lý do chính để tự host bằng Agent SDK là cần sở hữu và tuỳ biến chính vòng lặp agent trong ứng dụng của mình. Muốn khỏi dựng sandbox, lưu session, mở rộng quy mô là lý do chọn Managed Agents, không phải tự host. Tự host vẫn trả tiền token, và chi phí token thường lớn hơn chi phí container cả bậc. Managed Agents khai báo được MCP server và skill trong định nghĩa agent. Kiểm soát nơi chạy tool hay nơi dữ liệu nằm không còn là lý do riêng, vì Managed Agents có sandbox tự host."
     ref: lessons/22-thiet-ke-giai-phap.html#trien-khai
+    reviewed: 2026-11-19
   - id: PA20
     exams:
       CCAR-P: D1
-    stem: A proposed AI solution targets a process with an SLA of 2-second responses at the 95th percentile. Which design element addresses this pillar most directly?
+    stem: A proposed AI solution targets a process with an SLA of 2-second responses at the 95th percentile. Which design element addresses this performance SLA most directly?
     options:
       - Adding more subagents to verify each answer before it is returned
       - Measuring p95 latency in evals and choosing model, effort and caching to meet it
@@ -11943,6 +11960,7 @@ questions:
       - B
     explanation: SLA độ trễ cần đo p95 trong eval và chọn model, effort, cache để đạt. Thêm subagent tăng độ trễ; Batches không có cam kết thời gian; max_tokens không giúp tốc độ.
     ref: lessons/22-thiet-ke-giai-phap.html#bai-toan
+    reviewed: 2026-11-19
   - id: PA21
     exams:
       CCAR-P: D1
@@ -11978,14 +11996,15 @@ questions:
       CCAR-P: D2
     stem: A classification route must handle 2 million short messages a day with modest accuracy needs. How should the model be chosen?
     options:
-      - Use the most capable model, since accuracy should always be maximized.
+      - Use the most capable model, so accuracy has headroom if requirements tighten later.
       - Evaluate small and fast models first and pick the cheapest that meets the bar.
-      - Use whichever model the team used for its previous project.
-      - Pick the model with the longest context window available.
+      - Start with a cascade that escalates uncertain messages to a larger model.
+      - Run a frontier model in fast mode so throughput keeps up with the volume.
     answer:
       - B
-    explanation: Đặt tiêu chí, thử model nhỏ, nhanh trước, chọn cấu hình rẻ nhất vẫn đạt trên eval. Model mạnh nhất lãng phí ở khối lượng lớn; thói quen hay context dài không phải tiêu chí.
+    explanation: "Choosing a model: cách efficiency-first (bắt đầu với model nhanh, rẻ như Haiku, kiểm trên eval, chỉ nâng khi thiếu năng lực) hợp với việc khối lượng lớn, đơn giản, nhạy chi phí. Chọn model mạnh nhất để dự phòng là trả giá cao cho từng tin nhắn trong 2 triệu tin mỗi ngày mà yêu cầu không cần. Dựng cascade ngay từ đầu là phức tạp hoá sớm; hướng dẫn tối ưu chi phí khuyên chỉnh một model trước, chỉ ghép model khi đo được lợi. Fast mode tăng tốc độ output với giá premium, không giảm chi phí."
     ref: lessons/22-thiet-ke-giai-phap.html#chon-model
+    reviewed: 2026-11-19
   - id: PA24
     exams:
       CCAR-P: D2
@@ -11993,12 +12012,13 @@ questions:
     options:
       - Running the most capable model at a lower effort setting on the same tasks
       - Running the cheapest model with a longer system prompt on every task
-      - Running both models in parallel and always returning the longer answer
-      - Running the expensive model only on weekends when traffic is lower
+      - Adding a mid-sized model as a third tier between the cheap and expensive ones
+      - Routing requests by prompt length, sending long prompts to the expensive model
     answer:
       - A
-    explanation: Model mạnh ở effort thấp thường đạt hoặc vượt model đời trước ở effort cao, và một model giữ được cache chung. Đo phương án đơn giản này trước khi dựng tầng routing nhiều model.
+    explanation: "Optimizing for cost and intelligence: chỉnh một model trước khi thêm model thứ hai; quét effort trên model hiện tại, nếu thiếu thì định giá model mạnh hơn chạy một mình ở effort thấp; chỉ ghép nhiều model khi cấu hình đó thắng cả đường cong điểm–chi phí của một model. Model rẻ với system prompt dài hơn không đo được phương án model mạnh ở effort thấp. Thêm tầng thứ ba hay định tuyến theo độ dài prompt đều là kiến trúc nhiều model phức tạp hơn, không phải phương án đơn giản hơn."
     ref: lessons/22-thiet-ke-giai-phap.html#chon-model
+    reviewed: 2026-11-19
   - id: PA25
     exams:
       CCAR-P: D2
@@ -12007,24 +12027,26 @@ questions:
       - By cost per request, so model A is clearly the cheaper option.
       - By cost per completed task, including retries and correction turns.
       - By list price per million input tokens only.
-      - By context window size, since larger windows reduce total cost.
+      - By output price per million tokens, since output costs more than input.
     answer:
       - B
-    explanation: So chi phí trên mỗi việc hoàn thành, gồm cả lượt sửa và retry. Model rẻ mỗi request nhưng cần nhiều lượt có thể đắt hơn.
+    explanation: "Optimizing for cost and intelligence: so model theo chi phí trên mỗi việc hoàn thành, không theo token hay request, vì việc thất bại vẫn tính token rồi thêm lượt retry. Ở đây model rẻ cần trung bình 4 request (1 lượt đầu và 3 lượt sửa), mỗi request bằng nửa giá, tổng gấp đôi model đắt chỉ cần 1 request. So theo giá mỗi request, giá input hay giá output mỗi triệu token đều bỏ qua số lượt cần để xong việc."
     ref: lessons/22-thiet-ke-giai-phap.html#chon-model
+    reviewed: 2026-11-19
   - id: PA26
     exams:
       CCAR-P: D2
-    stem: A production system references a model alias that silently moved to a newer version, and output formats changed overnight. What practice prevents this?
+    stem: Every service reads its model from one shared setting, which a platform team switched to a newer Claude model; one service's output format changed overnight. What practice prevents this?
     options:
-      - Pin a specific model ID and upgrade deliberately after running evals.
+      - Pin a specific model ID per service and upgrade it deliberately after evals.
       - Add “never change your output format” to the system prompt.
-      - Lower the temperature so the new model behaves like the old one.
+      - Add few-shot examples of the expected format and keep following the shared setting.
       - Increase max_tokens so the new model has room for the old format.
     answer:
       - A
-    explanation: Ghim model ID cụ thể, nâng cấp có chủ đích sau khi chạy eval. Lời dặn, temperature hay max_tokens không ngăn thay đổi hành vi khi model đổi.
+    explanation: "Mỗi model ID là một snapshot cố định, trọng số không đổi trong suốt vòng đời ID, nên hành vi chỉ đổi khi chính bạn đổi ID (https://platform.claude.com/docs/en/about-claude/models/model-ids-and-versions). Vì vậy ghim model ID cho từng service và chỉ nâng cấp sau khi chạy eval trên model mới. Lời dặn trong prompt hay few-shot giúp giữ định dạng nhưng không ngăn service bị chuyển sang model chưa kiểm thử. max_tokens chỉ là giới hạn độ dài output, không liên quan tới định dạng."
     ref: lessons/22-thiet-ke-giai-phap.html#chon-model
+    reviewed: 2026-11-19
   - id: PA27
     exams:
       CCAR-P: D2
@@ -12032,12 +12054,13 @@ questions:
     options:
       - Stream the response so text appears as it is generated.
       - Switch to Message Batches for all chat requests.
-      - Increase the effort level to produce better answers.
+      - Lower max_tokens so that every response finishes sooner.
       - Add more retrieved documents to each request.
     answer:
       - A
-    explanation: Streaming cho người dùng thấy chữ sớm, cải thiện độ trễ cảm nhận. Batches không dành cho tương tác; effort cao và thêm tài liệu làm chậm hơn.
+    explanation: "Reducing latency: streaming gửi dần output trước khi xong toàn bộ, cải thiện đáng kể độ phản hồi cảm nhận; thước đo liên quan là time to first token. Message Batches xử lý bất đồng bộ, phần lớn xong trong vòng 1 giờ, không dành cho chat tương tác. Giảm max_tokens cắt cụt câu trả lời và chỉ rút ngắn tổng thời gian, trong khi vấn đề là lúc bắt đầu. Thêm tài liệu vào mỗi request làm prompt dài hơn nên chậm hơn."
     ref: lessons/22-thiet-ke-giai-phap.html#chon-model
+    reviewed: 2026-11-19
   - id: PA28
     exams:
       CCAR-P: D2
@@ -12071,14 +12094,15 @@ questions:
       CCAR-P: D2
     stem: A risk-assessment task requires weighing several factors before concluding, and accuracy suffers when the model answers immediately. Which technique fits?
     options:
-      - Chain-of-thought or extended thinking so the model reasons before concluding
+      - Chain-of-thought prompting or adaptive thinking so the model reasons before concluding
       - Zero-shot prompting with a request for a one-word answer only
       - Few-shot examples that show only final answers without reasoning
-      - Prefilling the answer with the most common conclusion
+      - A system prompt requiring the final verdict on the first line, before any analysis
     answer:
       - A
-    explanation: Suy luận nhiều bước hưởng lợi từ chain-of-thought hoặc thinking. Ép trả lời một từ hay ví dụ chỉ có đáp án bỏ mất bước suy luận; prefill kết luận làm lệch kết quả.
+    explanation: "Việc cần cân nhắc nhiều yếu tố hưởng lợi từ suy luận trước khi kết luận: chain-of-thought trong prompt, hoặc adaptive thinking (model hiện tại dùng adaptive thinking; extended thinking với budget_tokens đã deprecated hoặc không còn được nhận trên model mới). Ép trả lời một từ hay few-shot chỉ có đáp án bỏ mất bước suy luận. Bắt nêu kết luận ở dòng đầu khiến model chốt trước rồi mới phân tích, nên phần phân tích chỉ hợp lý hoá kết luận đã chọn."
     ref: lessons/22-thiet-ke-giai-phap.html#prompt-he-thong
+    reviewed: 2026-11-19
   - id: PA31
     exams:
       CCAR-P: D2
@@ -12086,12 +12110,13 @@ questions:
     options:
       - Modular, versioned prompt components in a shared repository, with evals on change
       - A weekly email reminding teams to update their copies of the prompt
-      - A larger model that infers current policy without needing the prompt
-      - Removing the policy text and trusting the model's general knowledge
+      - A version comment in each team's copy, so drift becomes visible in code review
+      - Prompt caching, so that every service reads the same cached copy of the prompt
     answer:
       - A
-    explanation: Prompt module hoá, có phiên bản, lưu chung, chạy eval khi đổi. Email nhắc không bền; model lớn không biết chính sách nội bộ; bỏ chính sách làm sai.
+    explanation: "Prompt module hoá, có phiên bản, lưu ở một nơi chung và chạy eval mỗi khi đổi: cập nhật chính sách tới mọi service cùng lúc, có kiểm thử. Email nhắc phụ thuộc trí nhớ từng đội, không bền. Ghi chú phiên bản trong từng bản chép chỉ giúp thấy lệch, vẫn còn nhiều bản phải sửa tay. Prompt caching tái dùng tiền tố giống hệt nhau giữa các request để giảm chi phí và độ trễ; mỗi service vẫn gửi bản prompt của mình, nên cache không phải cơ chế phân phối nội dung."
     ref: lessons/22-thiet-ke-giai-phap.html#prompt-he-thong
+    reviewed: 2026-11-19
   - id: PA32
     exams:
       CCAR-P: D2
@@ -12113,13 +12138,14 @@ questions:
     stem: Prompt caching shows almost no cache reads, although the system prompt “never changes.” Which cause is most likely?
     options:
       - The system prompt includes a timestamp or request ID that changes every request.
-      - Prompt caching only works for system prompts shorter than about one hundred tokens.
+      - Reads require the 1-hour TTL, because the default 5-minute cache is not shared across requests.
       - The model ignores cache_control on system prompts.
-      - Cached prefixes always expire immediately after the first request that created them.
+      - A cache hit also requires the user's question to match the previous request.
     answer:
       - A
-    explanation: Cache khớp theo tiền tố; một byte thay đổi (timestamp, ID, JSON không sắp thứ tự) phía trước làm mất cache phía sau. Các phương án khác mô tả giới hạn không có thật.
+    explanation: "Prompt caching đòi phần tiền tố tới breakpoint giống hệt 100%; một giá trị đổi mỗi request (timestamp, request ID, JSON đổi thứ tự key) nằm trong tiền tố khiến mỗi request ghi cache mới mà không bao giờ đọc được. TTL mặc định 5 phút vẫn được các request sau đọc và được làm mới mỗi lần dùng; 1 giờ chỉ là tuỳ chọn dài hơn. Phần sau breakpoint, như câu hỏi người dùng, không cần giống nhau. System prompt cache được bằng cache_control."
     ref: lessons/22-thiet-ke-giai-phap.html#context-token
+    reviewed: 2026-11-19
   - id: PA34
     exams:
       CCAR-P: D2
@@ -12133,33 +12159,36 @@ questions:
       - A
     explanation: "Progressive disclosure: skill nạp khi khớp việc, giữ context gọn. Nén mất chi tiết; context lớn hơn vẫn loãng chú ý; 40 bản triển khai khó vận hành."
     ref: lessons/22-thiet-ke-giai-phap.html#context-token
+    reviewed: 2026-11-19
   - id: PA35
     exams:
       CCAR-P: D2
     stem: A coding agent loads every file in a large repository into context at the start of each task. What context strategy would Anthropic's guidance favor?
     options:
       - "Just-in-time retrieval: keep lightweight references and load files as needed."
-      - Pre-load even more files so the agent never needs to search later.
+      - Keep loading the whole repository, and rely on compaction when the window fills.
       - Summarize the entire repository into one paragraph at the start.
-      - Restrict the agent to reading only the first file in each directory.
+      - Keep the full repository in context, but mark it with cache_control to cut cost.
     answer:
       - A
-    explanation: Giữ định danh nhẹ (đường dẫn, truy vấn) và tải nội dung khi cần, tìm tập token nhỏ nhất có tín hiệu cao. Nạp thêm càng loãng; tóm tắt cả repo mất chi tiết; giới hạn cứng bỏ sót.
+    explanation: "Effective context engineering: giữ định danh nhẹ (đường dẫn file, truy vấn, link) và dùng tool nạp dữ liệu vào context lúc cần; mục tiêu là tập token nhỏ nhất có tín hiệu cao. Claude Code làm vậy: CLAUDE.md nạp sẵn, còn file thì tìm bằng glob và grep. Nạp cả repo rồi trông vào compaction vẫn làm context loãng ngay từ đầu; compaction chỉ là cách xử lý khi gần đầy. Cache giảm chi phí nhưng context vẫn đầy token ít liên quan. Tóm cả repo thành một đoạn mất chi tiết cần để sửa code."
     ref: lessons/22-thiet-ke-giai-phap.html#context-token
+    reviewed: 2026-11-19
   - id: PA36
     exams:
       CCAR-P: D2
-    stem: Which TWO techniques help an agent sustain quality over a task lasting many hours? (Choose two.)
+    stem: A coding agent runs a codebase migration that lasts many hours, and its output quality drops as the context window fills. Which TWO techniques best help it sustain quality? (Choose two.)
     options:
       - Compaction that summarizes earlier context near the window limit
       - Structured notes written to files and re-read when needed
-      - Appending every raw tool output to the context without trimming
-      - Restarting the agent every few minutes with no saved state
+      - Moving to a model with a larger context window and keeping the full history
+      - Lowering the effort setting so each step consumes fewer tokens
     answer:
       - A
       - B
-    explanation: Compaction và ghi chú có cấu trúc ra file (cùng subagent) là kỹ thuật cho agent chạy dài. Giữ nguyên mọi output làm context phình và loãng; khởi động lại không lưu trạng thái mất tiến độ.
+    explanation: "Bài Effective context engineering nêu ba kỹ thuật cho tác vụ dài: compaction (tóm tắt hội thoại khi gần chạm giới hạn context), ghi chú có cấu trúc lưu ngoài context rồi đọc lại khi cần, và subagent có context sạch. Chuyển sang context window lớn hơn mà giữ nguyên lịch sử không chữa được gốc: bài viết nói context ở mọi kích thước đều bị ô nhiễm, và càng nhiều token thì khả năng nhớ chính xác càng giảm (context rot). Hạ effort chỉ bớt token mỗi bước bằng cách suy luận sơ sài hơn; context vẫn đầy dần, còn chất lượng tệ thêm. Nguồn: https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents"
     ref: lessons/22-thiet-ke-giai-phap.html#context-token
+    reviewed: 2026-11-19
   - id: PA37
     exams:
       CCAR-P: D2
@@ -12167,38 +12196,41 @@ questions:
     options:
       - Simplify the prompt to goals, criteria and constraints, then re-run evals.
       - Add even more step-by-step rules to cover the new model's behavior.
-      - Roll back permanently, since newer models are less capable.
-      - Raise the temperature so the new model explores more options.
+      - Add few-shot examples of the old model's outputs for every rule.
+      - Emphasize each rule with CRITICAL and MUST so the new model obeys it.
     answer:
       - A
-    explanation: Prompt quá chi tiết từng bước viết cho model cũ có thể làm model mới kém đi; nêu mục tiêu, tiêu chí, ràng buộc rồi đo lại. Thêm quy tắc càng cứng; model mới không kém hơn; temperature không phải nguyên nhân.
+    explanation: "Prompt viết cho model cũ thường bù điểm yếu cũ bằng quy tắc cứng từng bước. Với model mới, tài liệu khuyên ưu tiên chỉ dẫn tổng quát hơn các bước kê sẵn, và bài context engineering cảnh báo việc mã hoá logic phức tạp, dễ gãy vào prompt. Rút gọn còn mục tiêu, tiêu chí, ràng buộc rồi chạy lại eval là bước thử đầu tiên hợp lý. Thêm quy tắc từng bước là làm nặng đúng nguyên nhân. Few-shot chép output của model cũ kéo model mới về hành vi cũ và càng bó cứng. Nhấn mạnh bằng CRITICAL/MUST phản tác dụng: model mới bám system prompt sát hơn nên ngôn từ gắt dễ gây làm quá (overtrigger), tài liệu khuyên làm dịu lại. Nguồn: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices ; https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents"
     ref: lessons/22-thiet-ke-giai-phap.html#prompt-he-thong
+    reviewed: 2026-11-19
   - id: PA38
     exams:
       CCAR-P: D2
     stem: A research assistant sometimes invents citations when it cannot find support for a claim. Which prompt-level guardrail helps most?
     options:
       - Explicitly allow the model to say it does not know and require quotes from sources first.
-      - Tell the model it will be penalized for any answer shorter than 500 words.
-      - Ask the model to sound more confident so users trust its citations.
-      - Remove the source documents so the model relies on its own knowledge.
+      - Add few-shot examples that show a correctly formatted citation for each claim.
+      - Instruct the model that every claim in its answer must include a citation.
+      - Ask the model to list its sources at the end instead of citing inline.
     answer:
       - A
-    explanation: Cho phép "không biết" và yêu cầu trích nguồn trước khi kết luận giảm bịa. Ép dài, ép tự tin, bỏ nguồn đều làm bịa nhiều hơn.
+    explanation: "Tài liệu Reduce hallucinations nêu đúng hai kỹ thuật này: cho phép Claude nói không biết (giảm mạnh thông tin sai), và yêu cầu trích nguyên văn trước rồi chỉ phân tích dựa trên các trích dẫn đó. Có thể thêm bước tự kiểm từng nhận định, rút lại nhận định nào không tìm được trích dẫn. Few-shot định dạng trích dẫn chỉ dạy hình thức; model vẫn có thể bịa một trích dẫn đúng định dạng. Bắt mọi nhận định phải có trích dẫn mà không cho lối thoát 'không biết' lại tăng áp lực bịa khi không tìm được nguồn. Dời danh sách nguồn xuống cuối chỉ đổi cách trình bày, không gắn nhận định với bằng chứng. Nguồn: https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations"
     ref: lessons/22-thiet-ke-giai-phap.html#prompt-he-thong
+    reviewed: 2026-11-19
   - id: PA39
     exams:
-      CCAR-P: D2
+      CCAR-P: D4
     stem: A nightly analysis of 50,000 documents has no latency requirement but a tight budget. Which configuration choice saves the most without reducing quality?
     options:
       - Use Message Batches for the same model and prompt.
       - Use streaming so each document finishes faster.
-      - Use fast mode to complete the job before midnight.
-      - Use a smaller model regardless of eval results.
+      - Use fast mode, since finishing sooner means fewer billed hours.
+      - Switch every document to the smallest model to cut the price per token.
     answer:
       - A
-    explanation: "Không cần độ trễ: Batches giảm 50% chi phí, cùng model và prompt nên giữ chất lượng. Streaming, fast mode không giảm chi phí (fast mode còn đắt hơn); model nhỏ có thể giảm chất lượng."
-    ref: lessons/22-thiet-ke-giai-phap.html#chon-model
+    explanation: "Không ai chờ kết quả: Message Batches API giảm 50% chi phí, phần lớn batch xong dưới 1 giờ, và vẫn dùng đúng model, prompt nên chất lượng không đổi. Streaming chỉ đổi cách nhận dữ liệu, giá token như cũ. Fast mode chạy cùng model nhanh hơn nhưng tính giá premium (bội số trên giá chuẩn) và không dùng được với Batch API; API tính tiền theo token chứ không theo thời gian chạy. Chuyển hết sang model nhỏ nhất thì rẻ hơn mỗi token, nhưng chưa có eval thì không bảo đảm giữ chất lượng như stem yêu cầu. Nguồn: https://platform.claude.com/docs/en/build-with-claude/batch-processing ; https://platform.claude.com/docs/en/build-with-claude/fast-mode"
+    ref: lessons/24-danh-gia-governance.html#toi-uu
+    reviewed: 2026-11-19
   - id: PA40
     exams:
       CCAR-P: D1
@@ -12207,11 +12239,12 @@ questions:
       - A larger model for the extraction step, so that fewer fields are extracted wrongly
       - A longer system prompt that lists every possible document layout in full detail
       - Schema validation and review routing before writing, plus logged corrections fed back into evals
-      - A second upload channel so that customers can resend documents more easily
+      - Streaming extracted fields straight into the core system so records update faster
     answer:
       - C
-    explanation: "Kiến trúc đầu cuối cần khâu kiểm đầu ra trước khi ghi vào hệ thống lõi và vòng phản hồi: sửa của người duyệt quay lại thành ca eval. Model lớn hơn hay prompt dài hơn chỉ chỉnh khâu xử lý; kênh upload thứ hai không liên quan."
+    explanation: "Kiến trúc đầu cuối gồm đầu vào, xử lý, đầu ra và vòng phản hồi. Thiết kế hiện thiếu khâu kiểm đầu ra trước khi ghi vào hệ thống lõi (kiểm schema, chuyển ca nghi ngờ cho người duyệt) và thiếu vòng phản hồi (bản sửa của người duyệt thành ca eval). Model lớn hơn hay prompt dài hơn chỉ chỉnh khâu xử lý, vẫn ghi thẳng kết quả chưa kiểm. Đẩy trường trích xuất thẳng vào hệ thống lõi càng bỏ qua bước kiểm."
     ref: lessons/22-thiet-ke-giai-phap.html#kien-truc
+    reviewed: 2026-11-19
   - id: PA41
     exams:
       CCAR-P: D1
@@ -12223,21 +12256,23 @@ questions:
       - "Efficiency: reducing the time of an existing step"
     answer:
       - A
-    explanation: "Trước đây chỉ kiểm mẫu, nay xem được toàn bộ: đó là chuyển đổi (làm được việc trước đây không khả thi). Hiệu suất là làm nhanh một bước sẵn có; chi phí và SLA là các trụ khác."
+    explanation: "Trước đây chỉ kiểm mẫu, nay xem được mọi điều khoản của mọi hợp đồng: đó là chuyển đổi, làm được việc trước đây không khả thi. Hiệu suất là làm nhanh hơn một bước vốn đã làm. Tình huống không nói giá mỗi hợp đồng giảm (xem toàn bộ có khi còn tốn hơn kiểm mẫu), nên không phải trụ chi phí. Cũng không có cam kết thời gian phản hồi nào, nên không phải SLA."
     ref: lessons/22-thiet-ke-giai-phap.html#bai-toan
+    reviewed: 2026-11-19
   - id: PA42
     exams:
       CCAR-P: D2
     stem: A classifier must sort short emails into three clearly defined categories, and a zero-shot prompt with precise definitions already reaches the accuracy target. What should the architect do about few-shot examples?
     options:
-      - Add ten examples anyway, because few-shot always improves accuracy
+      - Replace the definitions with examples, since examples teach categories better
       - Keep zero-shot, and add examples only if evals show ambiguous misses
       - Switch to chain-of-thought for every email so the reasoning is visible
-      - Fine-tune a custom model, since prompting has reached its limits
+      - Move the definitions into a Skill so they load only when needed
     answer:
       - B
-    explanation: Zero-shot đủ cho việc rõ ràng; ví dụ tốn token và có thể làm model bám mẫu. Chỉ thêm few-shot khi eval cho thấy lỗi ở ca mơ hồ. Chain-of-thought cho mọi email tốn thêm mà không cần; fine-tune là quá tay khi đã đạt mục tiêu.
+    explanation: "Prompt zero-shot với định nghĩa rõ đã đạt mục tiêu. Thêm ví dụ tốn token ở mọi request, và ví dụ không đủ đa dạng có thể khiến model bắt chước những mẫu ngoài ý muốn. Nguyên tắc là bắt đầu từ cách đơn giản nhất đạt mục tiêu, chỉ thêm few-shot khi eval cho thấy lỗi ở ca mơ hồ. Thay định nghĩa bằng ví dụ là bỏ đi phần đang chạy tốt, buộc model tự suy ra ranh giới giữa các nhóm. Chain-of-thought cho mọi email ngắn chỉ thêm token và độ trễ cho một việc đã đạt độ chính xác. Đưa định nghĩa vào Skill vô ích vì request nào cũng cần chúng; Skill hợp với quy trình chỉ dùng thỉnh thoảng. Nguồn: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
     ref: lessons/22-thiet-ke-giai-phap.html#prompt-he-thong
+    reviewed: 2026-11-19
   - id: PB01
     exams:
       CCAR-P: D3
@@ -12266,6 +12301,7 @@ questions:
       - A
     explanation: Tool search với defer_loading chỉ nạp tool cần, giảm token và tăng độ chính xác chọn tool. Mô tả quá ngắn làm chọn sai hơn; context lớn hơn không chữa loãng; một tool chung mất ràng buộc và an toàn.
     ref: lessons/23-tich-hop.html#tool-bloat
+    reviewed: 2026-11-19
   - id: PB03
     exams:
       CCAR-P: D3
@@ -12274,38 +12310,41 @@ questions:
       - Keep `fetch_url` and add “only fetch public websites” to the system prompt.
       - Replace it with a constrained tool that validates URLs against an allowlist.
       - Log every fetched URL so the security team can review them weekly.
-      - Increase the agent's timeout so fetches of internal pages fail more often.
+      - Have a second model review each requested URL and block any that look internal.
     answer:
       - B
-    explanation: Thay tool chung bằng tool hẹp có kiểm tra (allowlist, chặn dải nội bộ) là phòng ngừa, đồng thời chặn SSRF. Lời dặn là xác suất; log là phát hiện sau; timeout không phải kiểm soát.
+    explanation: "Thay tool đa năng bằng tool hẹp kiểm URL theo allowlist trong code (chặn cả dải IP nội bộ, kiểm cả đích chuyển hướng) là kiểm soát phòng ngừa tất định. Đây cũng là hướng chống SSRF mà tài liệu bảo mật MCP khuyên: chặn dải private và link-local, kiểm redirect, dùng egress proxy. Lời dặn trong system prompt chỉ mang tính xác suất, và prompt injection từ trang đã tải có thể vượt qua. Log rồi xem hằng tuần chỉ phát hiện sau khi dữ liệu nội bộ đã bị đọc. Model thứ hai duyệt URL vẫn là phán đoán xác suất, không thấy được tên miền trông vô hại nhưng trỏ về IP nội bộ (DNS rebinding) hay chuỗi redirect. Nguồn: https://modelcontextprotocol.io/specification/latest/basic/security_best_practices"
     ref: lessons/23-tich-hop.html#tool-bloat
+    reviewed: 2026-11-19
   - id: PB04
     exams:
       CCAR-P: D3
-    stem: Which TWO are signs of capability bloat in an agent configuration? (Choose two.)
+    stem: Before launch, an architect audits the configuration of an internal reporting agent for capability bloat. Which TWO findings are signs of it? (Choose two.)
     options:
       - Several tools with overlapping descriptions that the agent confuses
       - Write permissions on systems the agent's role only needs to read
-      - Tool descriptions that state inputs, outputs and when to use each tool
-      - A small set of tools each matched to one well-defined responsibility
+      - Long tool descriptions that cover edge cases and include usage examples
+      - Tool responses trimmed to return only the fields the agent needs
     answer:
       - A
       - B
-    explanation: Tool chồng chéo và quyền ghi thừa là dấu hiệu phình năng lực. Mô tả rõ và bộ tool nhỏ đúng trách nhiệm là thiết kế tốt.
+    explanation: "Capability bloat là năng lực vượt nhu cầu của vai trò. Tool chồng chéo khiến agent chọn nhầm, còn quyền ghi trên hệ thống mà vai trò chỉ cần đọc mở rộng bề mặt rủi ro (least privilege nghĩa là gỡ hẳn quyền đó). Mô tả tool dài, có ca biên và ví dụ không phải là phình năng lực: tài liệu khuyên mô tả cực kỳ chi tiết (tool làm gì, khi nào dùng và không dùng, ý nghĩa tham số, giới hạn), ít nhất 3–4 câu mỗi tool. Response chỉ trả các field agent cần cũng là thực hành được khuyên, vì response phình làm tốn context. Nguồn: https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools"
     ref: lessons/23-tich-hop.html#tool-bloat
+    reviewed: 2026-11-19
   - id: PB05
     exams:
       CCAR-P: D3
     stem: An internal agent queries the HR database through a single service account with full read access, for any employee who asks. What is the main security gap?
     options:
-      - The service account password may be too short to meet the company's compliance standards for HR.
+      - Queries are not logged per employee, so HR cannot audit who viewed which record later.
       - Users can see records beyond their own permissions, since the agent ignores per-user authorization.
-      - The HR database may respond too slowly when many employees send questions at the same time.
-      - The agent cannot cache results because each employee asks different questions.
+      - The service account credential is not rotated often enough to meet the compliance policy.
+      - The system prompt does not list which employees are allowed to see which records.
     answer:
       - B
-    explanation: "Tài khoản dịch vụ dùng chung làm mất phân quyền theo người dùng: ai hỏi cũng thấy mọi bản ghi. Cần hành động theo danh tính và quyền của người hỏi. Mật khẩu, tốc độ, cache không phải lỗ hổng chính."
+    explanation: "Một service account toàn quyền đọc, dùng chung cho mọi người hỏi, làm mất phân quyền theo người dùng: ai hỏi cũng đọc được mọi bản ghi. Agent hành động thay người dùng phải dùng danh tính và quyền của chính người hỏi (token theo người dùng, lọc ở tầng dữ liệu). Thiếu log theo nhân viên là khoảng trống kiểm toán, chỉ giúp phát hiện sau chứ không ngăn được việc xem trái phép. Xoay vòng credential chậm là vấn đề vệ sinh secret, nhưng credential mới vẫn toàn quyền như cũ. Liệt kê quyền trong system prompt không phải kiểm soát truy cập: model có thể bị thuyết phục hoặc bị prompt injection, còn credential vẫn đọc được tất cả. Nguồn: notes/exams/CCAR-P.md (D3, AuthN/AuthZ) ; https://modelcontextprotocol.io/specification/latest/basic/security_best_practices"
     ref: lessons/23-tich-hop.html#xac-thuc
+    reviewed: 2026-11-19
   - id: PB06
     exams:
       CCAR-P: D3
@@ -12313,12 +12352,13 @@ questions:
     options:
       - Nothing is wrong, since forwarding the token avoids a second, slower authorization flow for users.
       - "Token passthrough: the server must accept only tokens issued to it and use its own downstream tokens."
-      - The server may forward the token, as long as it also logs the token in plain text for later audits.
+      - The server may forward the token, as long as every hop uses HTTPS and the token is short-lived.
       - The client should send its API key instead of an access token.
     answer:
       - B
-    explanation: "Token passthrough là anti-pattern: server không được chuyển tiếp token nhận từ client, phải kiểm token được cấp cho chính nó (audience) và dùng token riêng cho API phía sau. Log token dạng rõ là lộ secret."
+    explanation: "Token passthrough là anti-pattern bị đặc tả cấm. MCP server phải kiểm token được cấp cho chính nó (audience) và MUST NOT chuyển tiếp token nhận từ client; khi gọi API phía sau, server đóng vai OAuth client và dùng token riêng do authorization server phía sau cấp. Tiết kiệm một luồng ủy quyền không bù được rủi ro: vượt các kiểm soát dựa trên audience, mất dấu vết kiểm toán, kẻ có token bị đánh cắp dùng server làm proxy. HTTPS và token ngắn hạn giảm rủi ro bị lấy trộm trên đường truyền nhưng không sửa lỗi sai audience. Đổi sang API key không phải điều đặc tả quy định: với HTTP, client dùng access token OAuth cấp cho đúng MCP server. Nguồn: https://modelcontextprotocol.io/specification/latest/basic/security_best_practices ; https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/security-considerations"
     ref: lessons/23-tich-hop.html#xac-thuc
+    reviewed: 2026-11-19
   - id: PB07
     exams:
       CCAR-P: D3
@@ -12326,13 +12366,14 @@ questions:
     options:
       - Use PKCE in the OAuth authorization code flow.
       - Include a resource indicator naming the MCP server the token is for.
-      - Embed long-lived API keys in the client's source code.
+      - Register through Dynamic Client Registration with every server.
       - Reuse a single token across all MCP servers the client connects to.
     answer:
       - A
       - B
-    explanation: "Đặc tả dựa trên OAuth 2.1: client phải dùng PKCE và resource indicator (RFC 8707). Key trong mã nguồn và dùng chung token cho mọi server là lỗ hổng."
+    explanation: "Đặc tả ủy quyền MCP (2026-07-28) yêu cầu client MUST triển khai PKCE (dùng S256 khi có thể, từ chối tiếp tục nếu authorization server không công bố hỗ trợ PKCE), và MUST gửi tham số `resource` (RFC 8707) chứa URI chuẩn của MCP server trong cả yêu cầu ủy quyền lẫn yêu cầu token. Dynamic Client Registration chỉ là MAY và đã bị deprecate từ bản 2026-07-28; cách được ưu tiên là Client ID Metadata Documents hoặc đăng ký trước. Dùng một token cho mọi server đi ngược việc gắn token với đúng audience: server phải từ chối token không cấp cho chính nó. Nguồn: https://modelcontextprotocol.io/specification/latest/basic/authorization ; https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/security-considerations"
     ref: lessons/23-tich-hop.html#xac-thuc
+    reviewed: 2026-11-19
   - id: PB08
     exams:
       CCAR-P: D3
@@ -12355,11 +12396,12 @@ questions:
       - In the system prompt, so the agent can copy it into each payment tool call it makes.
       - In a secrets manager or vault, injected at call time outside the model's context.
       - In a CLAUDE.md file committed to the repository, so every session can read it easily.
-      - In the first user message of each session, sent by the client.
+      - In a .env file in the workspace, which the agent reads before each call.
     answer:
       - B
-    explanation: Secret nằm ở secrets manager hoặc vault, được gắn vào lời gọi ngoài context của model. Đặt trong prompt, CLAUDE.md hay tin nhắn làm lộ qua log và transcript.
+    explanation: "Secret phải nằm trong secrets manager hoặc vault và được gắn vào lời gọi ở ngoài context của model. Ví dụ, vault của Managed Agents giữ credential ngoài sandbox, chỉ để placeholder bên trong và thay bằng secret thật ở egress, nên agent không bao giờ thấy giá trị. Đặt trong system prompt đưa secret vào context, lộ qua log, transcript và có thể bị prompt injection moi ra. CLAUDE.md commit vào repo lộ cho mọi người đọc được repo và lịch sử git. File .env mà agent đọc trước mỗi lời gọi cũng đưa giá trị vào context, không khác gì dán vào prompt. Nguồn: https://platform.claude.com/docs/en/managed-agents/vaults"
     ref: lessons/23-tich-hop.html#xac-thuc
+    reviewed: 2026-11-19
   - id: PB10
     exams:
       CCAR-P: D3
@@ -12368,11 +12410,12 @@ questions:
       - An MCP server for the inventory service, reused by all four clients
       - A custom tool written separately inside each of the four applications
       - A2A, so each client negotiates with the inventory service as an agent
-      - Pasting inventory exports into each conversation when needed
+      - A nightly inventory export uploaded to a claude.ai Project's knowledge
     answer:
       - A
-    explanation: "Một hệ thống dùng lại ở nhiều client: MCP server. Viết tool riêng ở bốn nơi khó bảo trì; A2A dành cho agent với agent; dán dữ liệu thủ công không cập nhật."
+    explanation: "MCP là chuẩn mở để xây tích hợp một lần rồi dùng ở nhiều client: Claude Code, claude.ai (custom connector) và ứng dụng Claude API (MCP connector hoặc MCP client tự quản) đều kết nối được cùng một MCP server. Viết tool riêng trong bốn ứng dụng là nhân bốn việc bảo trì, dễ lệch nhau. A2A dành cho việc giao việc giữa các agent độc lập; dịch vụ kho là hệ thống cung cấp dữ liệu và thao tác, không phải agent. Export hằng đêm lên knowledge của Project chỉ dùng được trong claude.ai, dữ liệu cũ tới một ngày và không có thao tác. Nguồn: https://modelcontextprotocol.io/docs/getting-started/intro ; notes/exams/CCAR-P.md (D3)"
     ref: lessons/23-tich-hop.html#giao-thuc
+    reviewed: 2026-11-19
   - id: PB11
     exams:
       CCAR-P: D3
@@ -12380,12 +12423,13 @@ questions:
     options:
       - MCP, exposing the supplier's agent as a set of tools on your server
       - A2A, where each agent publishes its capabilities and exchanges tasks
-      - Direct database access to the supplier's systems
-      - A shared prompt that both companies edit together
+      - A fixed REST endpoint that accepts your agent's offers as JSON
+      - Your orchestrator, with the supplier's agent added as a subagent
     answer:
       - B
-    explanation: Giao việc giữa các agent hộp đen của các tổ chức khác nhau là trường hợp của A2A. MCP dành cho agent dùng tool; truy cập DB đối tác không khả thi; prompt chung không phải giao thức.
+    explanation: "Giao việc cho agent của tổ chức khác mà mình không thấy bên trong là đúng bài toán agent-to-agent: mỗi agent công bố năng lực, hai bên trao đổi tác vụ, trạng thái và kết quả qua một giao thức chung. Bọc agent nhà cung cấp thành tool MCP là coi nó như một hàm thụ động, không hợp với cuộc đàm phán nhiều lượt, có trạng thái, do agent bên kia tự quyết. Endpoint REST cố định chỉ nhận đề nghị theo một schema cứng, không có cơ chế khám phá năng lực hay theo dõi tác vụ dài. Subagent chạy trong runtime của chính mình, nên không thể là agent hộp đen do nhà cung cấp vận hành. Nguồn: notes/exams/CCAR-P.md (D3: MCP, API/CLI, agent-to-agent)"
     ref: lessons/23-tich-hop.html#giao-thuc
+    reviewed: 2026-11-19
   - id: PB12
     exams:
       CCAR-P: D3
@@ -12393,12 +12437,13 @@ questions:
     options:
       - Let Claude Code call the existing CLI through Bash with scoped permissions.
       - Build a new MCP server that wraps every CLI command before any use.
-      - Use A2A so Claude Code negotiates with the CLI as another agent.
-      - Copy CLI documentation into every prompt and let Claude infer the API.
+      - Give Claude Code admin cloud credentials to call the cloud APIs directly.
+      - Write a Skill that reimplements each task as scripts calling the cloud SDK.
     answer:
       - A
-    explanation: Trong môi trường developer, CLI tốt sẵn có thường là cách đơn giản nhất, kèm quyền giới hạn. Viết MCP bọc mọi lệnh là thừa ở bước đầu; A2A không áp dụng; dán tài liệu không cho Claude chạy được.
+    explanation: "Tài liệu Claude Code nói: nếu hệ thống có CLI thì đó thường là đường vào dễ nhất (vd. `gh` đã đăng nhập), chỉ hệ thống không có CLI mới cần MCP. Gọi CLI sẵn có qua Bash với quyền đã giới hạn giữ nguyên phạm vi credential đã thiết kế. Viết MCP server bọc mọi lệnh trước khi dùng là thêm một lớp phải bảo trì mà chưa có lợi ích đo được. Cấp credential admin để gọi thẳng API cloud bỏ mất phạm vi quyền, trái least privilege. Skill viết lại từng tác vụ bằng SDK là làm lại thứ CLI đã có sẵn và đã có tài liệu. Nguồn: https://code.claude.com/docs/en/best-practices"
     ref: lessons/23-tich-hop.html#giao-thuc
+    reviewed: 2026-11-19
   - id: PB13
     exams:
       CCAR-P: D3
@@ -12406,39 +12451,42 @@ questions:
     options:
       - Include the whole knowledge base in the prompt with prompt caching.
       - Fine-tune a model on the knowledge base every month.
-      - Build a multi-agent system with one agent per document.
-      - Use web search to find answers instead of internal documents.
+      - Split the knowledge base into smaller vector indexes by department.
+      - Summarize the knowledge base into a short digest in the system prompt.
     answer:
       - A
-    explanation: Kho nhỏ hơn khoảng 200.000 token có thể đưa toàn bộ vào prompt kèm caching, không cần RAG. Fine-tune, nhiều agent, web search đều không phù hợp hoặc quá tay.
+    explanation: "Anthropic gợi ý: kho kiến thức dưới 200.000 token (khoảng 500 trang) có thể đưa toàn bộ vào prompt, không cần RAG; prompt caching giảm độ trễ hơn 2 lần và chi phí tới 90%. Kho 120.000 token đổi mỗi tháng thì chỉ cần làm mới nội dung khi kho đổi. Fine-tune hằng tháng tốn kém, chậm và không thay được việc tra cứu nội dung chính xác. Chia nhiều vector index theo phòng ban vẫn là RAG, còn thêm việc định tuyến giữa các index. Tóm tắt thành bản rút gọn làm mất chi tiết cần cho câu trả lời chính xác. Nguồn: https://www.anthropic.com/engineering/contextual-retrieval"
     ref: lessons/23-tich-hop.html#rag
+    reviewed: 2026-11-19
   - id: PB14
     exams:
       CCAR-P: D3
     stem: Retrieved chunks often lack the context needed to match queries; for example a chunk says “revenue grew 3%” without naming the company or quarter. Which technique addresses this?
     options:
       - "Contextual retrieval: prepend a short chunk-specific context before embedding and BM25 indexing."
-      - Increase chunk size to whole documents so that no surrounding context is ever lost in retrieval.
+      - Increase chunk size to whole documents so each chunk carries its full context.
       - Remove BM25 and rely only on embeddings, which capture semantic meaning better than keywords.
-      - Lower the similarity threshold so more unrelated chunks are returned.
+      - Add a reranker that reorders the retrieved chunks by relevance to the query.
     answer:
       - A
-    explanation: Contextual retrieval thêm ngữ cảnh cho từng chunk trước khi index (embedding và BM25), giảm truy xuất thất bại khoảng 49%, khoảng 67% khi thêm rerank. Chunk cả tài liệu làm retrieval kém chính xác; bỏ BM25 mất khớp từ khoá; hạ ngưỡng tăng nhiễu.
+    explanation: "Contextual retrieval dùng Claude sinh một đoạn ngữ cảnh ngắn (thường 50–100 token) cho từng chunk dựa trên cả tài liệu, rồi ghép vào đầu chunk trước khi embedding và lập chỉ mục BM25; vd. chunk 'revenue grew by 3%' được thêm tên công ty và quý. Theo Anthropic, contextual embeddings cộng contextual BM25 giảm 49% số lần truy xuất thất bại, thêm rerank thì giảm 67%. Chunk bằng cả tài liệu làm embedding loãng, truy xuất kém chính xác và tốn context. Bỏ BM25 mất khả năng khớp từ khoá và mã chính xác. Reranker chỉ sắp lại các chunk đã lấy được: chunk thiếu tên công ty, quý vẫn không khớp truy vấn nên có thể không lọt vào tập ứng viên, vì vậy rerank là phần bổ sung chứ không chữa gốc. Nguồn: https://www.anthropic.com/engineering/contextual-retrieval"
     ref: lessons/23-tich-hop.html#rag
+    reviewed: 2026-11-19
   - id: PB15
     exams:
       CCAR-P: D3
-    stem: Which TWO additions most improve retrieval quality in a production RAG pipeline? (Choose two.)
+    stem: A production RAG assistant over policy documents often misses passages that contain exact clause numbers, or ranks the right passage just outside the top results. Which TWO additions most improve retrieval quality? (Choose two.)
     options:
       - Hybrid retrieval combining embeddings with BM25 keyword search
       - A reranking step that selects the best chunks from a larger candidate set
-      - Removing document metadata to keep the index smaller
-      - Using the same chunk size for code, tables and prose without testing
+      - Splitting documents into single-sentence chunks for finer matching
+      - Switching to a larger generation model to make up for weak chunks
     answer:
       - A
       - B
-    explanation: Truy xuất lai và rerank là hai cải tiến chính. Bỏ metadata mất khả năng lọc và phân quyền; một cỡ chunk cho mọi loại nội dung mà không thử là kém.
+    explanation: "Truy xuất lai (embedding cộng BM25) bắt được cả nghĩa lẫn chuỗi chính xác như số điều khoản; rerank chấm lại một tập ứng viên lớn hơn để đưa đoạn liên quan nhất vào top. Anthropic đo được hai kỹ thuật này, cùng contextual retrieval, giảm tỉ lệ truy xuất thất bại tới 67%. Chunk một câu làm mất ngữ cảnh xung quanh, khiến chunk càng khó khớp truy vấn. Model sinh lớn hơn không cải thiện bước truy xuất: đoạn đúng không được lấy về thì model nào cũng không thấy. Nguồn: https://www.anthropic.com/engineering/contextual-retrieval"
     ref: lessons/23-tich-hop.html#rag
+    reviewed: 2026-11-19
   - id: PB16
     exams:
       CCAR-P: D3
@@ -12452,6 +12500,7 @@ questions:
       - B
     explanation: Phân quyền phải áp ở bước truy xuất bằng metadata quyền truy cập của từng người. Lời dặn không phải kiểm soát; xoá tài liệu mất giá trị; giảm số chunk chỉ giảm xác suất.
     ref: lessons/23-tich-hop.html#rag
+    reviewed: 2026-11-19
   - id: PB17
     exams:
       CCAR-P: D3
@@ -12459,12 +12508,13 @@ questions:
     options:
       - Embed every table row and retrieve the most similar rows
       - Give Claude a tool that runs governed SQL queries and returns results
-      - Ask Claude to estimate totals from its general knowledge
+      - Retrieve quarterly report PDFs and let Claude add up the figures
       - Use BM25 keyword search over exported CSV files
     answer:
       - B
-    explanation: Câu hỏi tổng hợp trên dữ liệu có cấu trúc cần truy vấn SQL (qua tool có kiểm soát). Embedding từng dòng không tính tổng được; ước lượng từ kiến thức chung sai; BM25 trên CSV không tổng hợp.
+    explanation: "Câu hỏi tổng hợp (tính tổng, nhóm theo vùng, lọc theo kỳ) trên dữ liệu có cấu trúc cần truy vấn trực tiếp: cho Claude một tool chạy SQL có kiểm soát (chỉ đọc, giới hạn bảng, theo quyền người hỏi) rồi trả kết quả. Embedding từng dòng chỉ tìm các dòng giống câu hỏi, không cộng dồn được hàng nghìn dòng. Lấy PDF báo cáo quý rồi để Claude tự cộng dễ sai số học, có thể không khớp độ chi tiết của kho dữ liệu, và không trả lời được truy vấn nằm ngoài báo cáo. BM25 trên CSV cũng chỉ trả về đoạn khớp từ khoá, không tính tổng. Nguồn: notes/exams/CCAR-P.md (D3: dữ liệu bảng, có cấu trúc thì truy vấn trực tiếp)"
     ref: lessons/23-tich-hop.html#truy-xuat
+    reviewed: 2026-11-19
   - id: PB18
     exams:
       CCAR-P: D3
@@ -12478,6 +12528,7 @@ questions:
       - A
     explanation: Mã định danh chính xác hợp với tìm kiếm từ khoá hoặc khớp chính xác. Model embedding lớn hơn vẫn yếu với chuỗi mã; bắt người dùng đổi cách hỏi đẩy việc cho họ; thêm kết quả thêm nhiễu.
     ref: lessons/23-tich-hop.html#truy-xuat
+    reviewed: 2026-11-19
   - id: PB19
     exams:
       CCAR-P: D3
@@ -12486,50 +12537,54 @@ questions:
       - Semantic search over every service's README and design documents
       - A dependency graph or structural index queried by relationship
       - BM25 keyword search over commit messages from the past year
-      - Random sampling of code files from each microservice repository
+      - Loading every service's full source into one long-context prompt
     answer:
       - B
-    explanation: Câu hỏi về quan hệ phụ thuộc hợp với đồ thị hoặc chỉ mục cấu trúc. Tìm theo nghĩa hay từ khoá trong README, commit dễ bỏ sót quan hệ thật.
+    explanation: "Câu hỏi 'đổi API billing thì service nào hỏng' là câu hỏi về quan hệ phụ thuộc (kể cả gián tiếp), hợp với đồ thị phụ thuộc hoặc chỉ mục cấu trúc truy vấn theo quan hệ. Tìm theo nghĩa trong README, tài liệu thiết kế chỉ thấy service có nhắc tới billing, dễ sót lời gọi thật và phụ thuộc bắc cầu. BM25 trên commit message chỉ thấy lịch sử có chữ khớp, không phản ánh phụ thuộc hiện tại. Nhồi toàn bộ mã nguồn vào một prompt sẽ vượt context với hệ thống lớn, và kể cả vừa thì context rot cũng làm sót quan hệ. Nguồn: notes/exams/CCAR-P.md (D3: retrieval khớp hình dạng dữ liệu) ; https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents"
     ref: lessons/23-tich-hop.html#truy-xuat
+    reviewed: 2026-11-19
   - id: PB20
     exams:
       CCAR-P: D3
     stem: A RAG assistant meets its 92% accuracy target but misses the 3-second p95 latency SLA; profiling shows the reranker and 20 retrieved chunks dominate latency. What is the best first adjustment?
     options:
-      - Remove retrieval entirely and rely on the model's built-in knowledge to answer faster.
+      - Drop the reranker and send all 20 retrieved chunks straight to the model to answer.
       - Tune the candidate count and reranker settings, then verify both SLA and accuracy on evals.
-      - Switch to the largest model and add more chunks to compensate for any accuracy loss.
-      - Quietly raise the SLA to 10 seconds in the documentation without telling stakeholders.
+      - Switch to a smaller generation model to offset the time spent in the reranker stage.
+      - Cache final answers for repeated questions and leave the retrieval pipeline unchanged.
     answer:
       - B
-    explanation: Điều chỉnh đúng nút gây trễ (số chunk, cấu hình rerank) rồi đo lại cả độ trễ lẫn độ chính xác trên eval. Bỏ retrieval làm sai; model lớn chậm hơn; đổi SLA âm thầm là sai quy trình.
+    explanation: "Profiling đã chỉ ra nút thắt (reranker và 20 chunk), nên chỉnh đúng nút đó (giảm số ứng viên, cấu hình hoặc model rerank nhẹ hơn) rồi đo lại cả p95 lẫn độ chính xác trên eval, vì mức 92% đang đạt có thể bị tụt. Bỏ hẳn reranker giảm trễ nhưng là thay đổi lớn chưa kiểm, dễ kéo độ chính xác xuống dưới mục tiêu, và 20 chunk chưa lọc còn làm prompt dài hơn. Đổi sang model sinh nhỏ hơn đụng vào khâu không phải nút thắt và có thể hạ chất lượng. Cache câu trả lời chỉ giúp câu hỏi lặp lại; p95 của câu hỏi mới vẫn vượt SLA. Nguồn: notes/exams/CCAR-P.md (D3: đánh đổi độ chính xác – độ trễ)"
     ref: lessons/23-tich-hop.html#tre-chinh-xac
+    reviewed: 2026-11-19
   - id: PB21
     exams:
       CCAR-P: D3
     stem: An agent performs three independent lookups sequentially before answering, and users wait too long. Which change reduces latency without reducing accuracy?
     options:
       - Run the independent lookups in parallel.
-      - Skip two of the lookups to save time.
+      - Enable prompt caching on the system prompt.
       - Use a smaller model for the final answer.
       - Reduce max_tokens to shorten every response.
     answer:
       - A
-    explanation: Bước độc lập chạy song song giảm độ trễ mà giữ độ chính xác. Bỏ lookup hay hạ model có thể giảm chất lượng; max_tokens có thể cắt cụt câu trả lời.
+    explanation: "Ba lookup độc lập thì chạy song song: thời gian chờ chỉ còn bằng lookup lâu nhất thay vì tổng của cả ba, còn kết quả không đổi. Model Claude mới tự gọi các tool độc lập song song, và có thể nhắc thêm trong prompt để tăng tỉ lệ này. Prompt caching chỉ rút ngắn việc xử lý phần tiền tố lặp lại, không bỏ được ba vòng chờ lookup nối tiếp. Model nhỏ hơn cho câu trả lời cuối có thể giảm chất lượng mà phần chờ chính vẫn còn. Hạ max_tokens không làm câu trả lời vốn ngắn hơn giới hạn nhanh hơn, còn có thể cắt cụt câu trả lời dài. Nguồn: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
     ref: lessons/23-tich-hop.html#tre-chinh-xac
+    reviewed: 2026-11-19
   - id: PB22
     exams:
       CCAR-P: D3
     stem: A multi-step agent in production occasionally gives wrong answers, and logs show only final outputs. Which observability change helps diagnose these failures?
     options:
       - Step-level tracing of requests, tool calls and tool results with a shared request ID
-      - Daily screenshots of the usage dashboard showing total request counts per model
+      - Aggregate dashboards of token usage, latency and request counts per model
       - Logging only the HTTP status codes returned by the model API for each request
       - Asking users to describe what went wrong in a free-text form
     answer:
       - A
-    explanation: Trace từng bước gắn mã yêu cầu xuyên suốt cho biết lỗi bắt đầu ở đâu. Số request tổng, mã HTTP hay mô tả của người dùng không đủ để chẩn đoán agent nhiều bước.
+    explanation: "Muốn biết agent nhiều bước sai từ đâu thì cần trace từng bước (request, tool call, tool result) nối bằng một request ID xuyên suốt. Anthropic gọi bản ghi đầy đủ này là transcript (trace) và khuyên đọc transcript để chẩn đoán. Dashboard tổng hợp token, độ trễ, số request cho biết hệ có chạy và tốn bao nhiêu, không cho biết bước nào sinh ra câu sai. Mã HTTP chỉ báo lời gọi thành công hay lỗi; câu trả lời sai vẫn trả 200. Mô tả tự do của người dùng thưa, chậm và thiếu chi tiết kỹ thuật để tái hiện lỗi. Nguồn: https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents"
     ref: lessons/23-tich-hop.html#quan-sat
+    reviewed: 2026-11-19
   - id: PB23
     exams:
       CCAR-P: D3
@@ -12537,12 +12592,13 @@ questions:
     options:
       - Alerting on HTTP 5xx error rates and timeouts returned by the model API
       - "Online evaluation: periodically sampling transcripts and scoring them with graders"
-      - Monitoring CPU and memory usage on the application servers that call the API
-      - Checking the model provider's status page daily
+      - Tracking the average output token count per response across all routes
+      - Running the fixed offline eval suite once before each release
     answer:
       - B
-    explanation: Trượt chất lượng không sinh lỗi HTTP; cần eval online lấy mẫu transcript và chấm định kỳ, kèm các tín hiệu như tỷ lệ escalation. CPU hay trang trạng thái không đo chất lượng.
+    explanation: "Chất lượng trượt dần mà không có lỗi hay thay đổi độ trễ thì chỉ phát hiện được bằng cách đo chính chất lượng trên lưu lượng thật: định kỳ lấy mẫu transcript và chấm bằng grader (eval online), kèm tín hiệu như tỉ lệ escalation. Anthropic nói giám sát production dùng để phát hiện trôi phân phối và lỗi thực tế chưa lường trước. Cảnh báo 5xx, timeout không bắt được vì câu trả lời kém vẫn là lời gọi thành công. Độ dài output trung bình chỉ là chỉ số gián tiếp; câu trả lời có thể sai mà độ dài không đổi. Bộ eval offline cố định chạy trước mỗi release không thấy được trôi giữa các lần release, và có thể tạo tự tin giả nếu không khớp cách dùng thật. Nguồn: https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents"
     ref: lessons/23-tich-hop.html#quan-sat
+    reviewed: 2026-11-19
   - id: PB24
     exams:
       CCAR-P: D3
@@ -12550,12 +12606,13 @@ questions:
     options:
       - Stop logging entirely so no PII is ever stored.
       - Redact PII before logging, restrict access, and set a retention period.
-      - Keep full logs indefinitely in a shared bucket for future analysis.
-      - Encrypt the logs and share the key with every engineer.
+      - Keep full logs but restrict the bucket to the on-call team.
+      - Encrypt the logs at rest and leave everything else unchanged.
     answer:
       - B
-    explanation: Che PII trước khi ghi, giới hạn người đọc, đặt thời hạn lưu giữ được khả năng debug mà vẫn bảo vệ dữ liệu. Bỏ log mất khả năng chẩn đoán; lưu vô hạn hay chia khoá cho mọi người là rủi ro.
+    explanation: "Che PII trước khi ghi (tối thiểu hoá dữ liệu), giới hạn người đọc và đặt thời hạn lưu giữ thì vẫn debug được mà giảm thiệt hại khi log bị lộ. Ngừng log hẳn làm mất khả năng chẩn đoán sự cố. Chỉ giới hạn bucket cho đội trực thì vẫn lưu PII thô vô thời hạn. Mã hoá khi lưu chỉ chống lộ ở tầng lưu trữ: ai được đọc log vẫn thấy đầy đủ PII, và dữ liệu không bao giờ bị xoá. Nguồn: notes/exams/CCAR-P.md (D3 observability, D5 tuân thủ)"
     ref: lessons/23-tich-hop.html#quan-sat
+    reviewed: 2026-11-19
   - id: PB25
     exams:
       CCAR-P: D3
@@ -12576,14 +12633,15 @@ questions:
       CCAR-P: D4
     stem: Which set of signals gives the most useful production dashboard for a Claude-based support agent?
     options:
-      - Server CPU and memory usage only, since the model runs on Anthropic's side
-      - Total monthly invoice from Anthropic, reviewed once at the end of each month
-      - The number of deployments per week, and the number of open pull requests
+      - Request volume, HTTP error rates and p95 latency for each route
+      - Token spend per model and cache hit rate, reviewed every week
+      - User thumbs-up ratings and the weekly escalation rate
       - Cost per route, cache hits, p95 latency, error rates and sampled quality
     answer:
       - D
-    explanation: Giám sát hệ LLM cần cả chi phí (token theo route, cache hit), hiệu năng (p95, lỗi 429/529) và chất lượng (eval online trên mẫu transcript). CPU, hoá đơn cuối tháng hay số lần deploy không cho biết hệ có đang trả lời tốt không.
+    explanation: "Dashboard production cho hệ LLM cần đủ ba nhóm tín hiệu: chi phí (token theo route, cache hit), hiệu năng (p95, tỉ lệ lỗi như 429/529) và chất lượng (chấm mẫu transcript). Chỉ có lưu lượng, lỗi, độ trễ thì không thấy chi phí tăng hay câu trả lời kém đi. Chỉ có chi tiêu và cache hit thì không thấy hệ chậm, lỗi hay trả lời sai. Đánh giá của người dùng và tỉ lệ escalation là tín hiệu chất lượng hữu ích, nhưng thưa, đến chậm và thiếu hẳn chiều chi phí, hiệu năng. Nguồn: https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents ; notes/exams/CCAR-P.md (D4)"
     ref: lessons/23-tich-hop.html#quan-sat
+    reviewed: 2026-11-19
   - id: PB27
     exams:
       CCAR-P: D4
@@ -12605,38 +12663,41 @@ questions:
     options:
       - Switch to the smallest model, since generation is usually the slowest stage
       - Trace each stage and build a latency budget, then cut the stage that takes most
-      - Remove the reranker entirely, because rerankers always add the most latency
-      - Ask users to accept 5 seconds, since accuracy matters more than latency
+      - Remove the reranker first, since rerankers are a common source of latency
+      - Add more replicas of the API service so requests queue for less time
     answer:
       - B
-    explanation: "Đo trước khi sửa: trace theo khâu (truy xuất, rerank, chờ token đầu, sinh) cho biết khâu nào vượt ngân sách. Đổi model nhỏ hay bỏ reranker khi chưa đo có thể hạ độ chính xác mà không chạm khâu chậm; tự nới SLA không phải quyết định của kiến trúc sư."
+    explanation: "Đo trước khi sửa: trace theo khâu (truy xuất, rerank, chờ token đầu, sinh) và lập ngân sách độ trễ cho biết khâu nào vượt, rồi mới cắt đúng khâu đó. Đổi sang model nhỏ nhất hay bỏ reranker khi chưa đo là đoán mò: có thể hạ độ chính xác mà không chạm vào khâu chậm thật. Thêm replica chỉ giúp khi chậm là do xếp hàng vì tải; chưa đo thì không biết đó có phải nguyên nhân. Nguồn: notes/exams/CCAR-P.md (D3: đánh đổi độ chính xác – độ trễ, observability)"
     ref: lessons/23-tich-hop.html#tre-chinh-xac
+    reviewed: 2026-11-19
   - id: PB29
     exams:
       CCAR-P: D3
     stem: After moving 40 procedures into Skills, token use dropped sharply, but the assistant often answers without applying the right procedure. What is the most likely cause?
     options:
       - Skills cannot hold procedures, so they must go back in the system prompt
-      - The context window is too small to hold even one full skill at a time
+      - Skills load only when the user names them explicitly in the request
       - Skill descriptions are too vague for Claude to match them to requests
-      - Progressive discovery always lowers accuracy compared with monolithic context
+      - Claude loads all 40 skill bodies at startup, crowding out the right one
     answer:
       - C
-    explanation: Với Skills, chỉ tên và description nằm sẵn trong context; description mơ hồ thì Claude không biết khi nào nạp skill. Sửa description cho rõ khi nào dùng và đo tỷ lệ chọn đúng skill. Khám phá dần không tự làm giảm chính xác nếu tìm đúng.
+    explanation: "Với Skills, lúc khởi động chỉ name và description (khoảng 100 token mỗi skill) nằm trong system prompt. Claude so yêu cầu với description để quyết định có nạp SKILL.md hay không, nên description phải nói rõ skill làm gì và khi nào dùng; description mơ hồ thì skill không được kích hoạt và Claude trả lời không theo quy trình. Cách sửa: viết lại description rồi đo tỉ lệ chọn đúng skill. Skills sinh ra chính là để đóng gói quy trình. Claude tự dùng skill khi yêu cầu khớp description, người dùng không cần gọi tên. Nạp cả 40 skill lúc khởi động trái với cơ chế progressive disclosure và mâu thuẫn với việc token đã giảm mạnh. Nguồn: https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview"
     ref: lessons/23-tich-hop.html#context-chien-luoc
+    reviewed: 2026-11-19
   - id: PC01
     exams:
       CCAR-P: D4
-    stem: A document-extraction system reports 97% overall accuracy, but one customer complains that invoice dates are often wrong. What should the evaluation report include?
+    stem: A document-extraction system reports 97% overall accuracy against a 95% target, but one customer complains that invoice dates are often wrong. What should the evaluation report include to surface problems like this?
     options:
       - Only the overall accuracy, since it already exceeds the 95% target.
       - Accuracy broken down by document type and by field, not just the overall average.
-      - The number of tokens processed per day as the main quality indicator.
-      - A survey of how satisfied engineers are with the extraction prompts.
+      - The overall accuracy with a confidence interval, computed across all documents.
+      - A manual review of the complaining customer's most recent invoices only.
     answer:
       - B
-    explanation: Trung bình tổng có thể che giấu lỗi tập trung ở một loại tài liệu hay một trường. Chia theo loại và theo trường. Token mỗi ngày hay khảo sát kỹ sư không đo chất lượng.
+    explanation: "Trung bình tổng có thể che giấu lỗi tập trung ở một loại tài liệu hay một trường (ở đây là trường ngày trên hoá đơn), nên báo cáo cần chia độ chính xác theo loại tài liệu và theo trường. Chỉ nêu độ chính xác tổng vì đã vượt mục tiêu chính là cách che lỗi; thêm khoảng tin cậy cho con số tổng chỉ cho biết con số tổng chắc đến đâu, không chỉ ra lỗi nằm ở trường nào; chỉ xem hoá đơn của một khách hàng là mẫu quá hẹp, không cho biết lỗi có ở khách khác hay loại tài liệu khác. Nguồn: https://platform.claude.com/docs/en/test-and-evaluate/develop-tests"
     ref: lessons/24-danh-gia-governance.html#chi-so
+    reviewed: 2026-11-19
   - id: PC02
     exams:
       CCAR-P: D4
@@ -12644,26 +12705,28 @@ questions:
     options:
       - pass@3, the probability that at least one of three attempts succeeds
       - pass^3, the probability that all three attempts succeed
-      - Average tokens per attempt across the three attempts
+      - The average per-attempt success rate across the three attempts
       - The fastest of the three attempts' latencies
     answer:
       - B
-    explanation: "Khi cần nhất quán mỗi lần, đo pass^k (cả k lần đều đạt): 0,8^3 ≈ 51%. pass@k hợp khi được thử nhiều cách và chỉ cần một lần đúng. Token hay độ trễ nhanh nhất không đo độ tin cậy."
+    explanation: "Khi khách hàng cần agent đúng mỗi lần, đo pass^k (cả k lần đều đạt): 0,8^3 ≈ 51%. pass@k (ít nhất một trong k lần đạt, ở đây 1 − 0,2^3 ≈ 99%) hợp khi chỉ cần một lần đúng, nên dùng ở đây sẽ làm số liệu đẹp sai hướng. Tỷ lệ thành công trung bình mỗi lần vẫn là 80%, không phản ánh xác suất cả ba lần liên tiếp đều đúng; độ trễ nhanh nhất không đo độ tin cậy. Nguồn: https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents"
     ref: lessons/24-danh-gia-governance.html#chi-so
+    reviewed: 2026-11-19
   - id: PC03
     exams:
       CCAR-P: D4
-    stem: Which TWO metrics belong in an evaluation plan for a customer-support agent with financial actions? (Choose two.)
+    stem: An evaluation plan for a customer-support agent that can issue refunds must cover both safety and service performance. Which TWO metrics should it include? (Choose two.)
     options:
       - Rate of policy-violating actions attempted, measured on adversarial test cases
       - p95 time to resolution for typical requests
-      - The number of lines in the system prompt
-      - How many tools are defined in the agent configuration
+      - The number of new test cases added to the eval set each sprint
+      - The average length of the agent's replies, in words
     answer:
       - A
       - B
-    explanation: Kế hoạch eval đo cả an toàn (hành động vi phạm trên ca đối kháng) lẫn hiệu năng (p95 thời gian giải quyết). Số dòng prompt hay số tool không phải chỉ số kết quả.
+    explanation: "Kế hoạch eval cần chỉ số kết quả cho cả an toàn (tỷ lệ hành động vi phạm chính sách trên ca đối kháng) lẫn hiệu năng phục vụ (p95 thời gian giải quyết). Số ca test thêm mỗi sprint đo hoạt động của đội, không đo hành vi của agent; độ dài trả lời trung bình không cho biết agent giải quyết đúng hay giữ đúng chính sách, trả lời dài hơn không đồng nghĩa tốt hơn. Nguồn: https://platform.claude.com/docs/en/test-and-evaluate/develop-tests"
     ref: lessons/24-danh-gia-governance.html#chi-so
+    reviewed: 2026-11-19
   - id: PC04
     exams:
       CCAR-P: D4
@@ -12675,8 +12738,9 @@ questions:
       - It should contain only synthetic data generated by the model.
     answer:
       - B
-    explanation: Bộ eval toàn ca dễ đã đạt không phát hiện được lỗi. Cần mẫu lưu lượng thật, ca biên, ca từng lỗi, ca đối kháng. Bộ 50 ca không quá lớn; dữ liệu tổng hợp hữu ích nhưng không thay hoàn toàn dữ liệu thật.
+    explanation: "Bộ eval toàn ca dễ mà prompt hiện tại đã đạt thì không phát hiện được lỗi. Cần mẫu theo phân bố lưu lượng thật, ca biên, ca từng lỗi, ca đối kháng. Bộ 50 ca không quá lớn (Anthropic gợi ý bắt đầu với 20–50 ca lấy từ lỗi thật); ca chọn tay vẫn chấm tự động được bằng code hoặc bằng model theo rubric, vấn đề là chúng không đại diện chứ không phải không chấm được; dữ liệu tổng hợp hữu ích để bổ sung ca biên nhưng không thay hoàn toàn dữ liệu thật. Nguồn: https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents"
     ref: lessons/24-danh-gia-governance.html#bo-du-lieu
+    reviewed: 2026-11-19
   - id: PC05
     exams:
       CCAR-P: D4
@@ -12690,19 +12754,21 @@ questions:
       - A
     explanation: "Tiêu chí chủ quan ở quy mô lớn: model chấm theo rubric rõ, hiệu chỉnh so với mẫu người chấm. Khớp chính xác không chấm được giọng văn; một người đọc 5.000 câu không bền; tự chấm thiên lệch."
     ref: lessons/24-danh-gia-governance.html#bo-du-lieu
+    reviewed: 2026-11-19
   - id: PC06
     exams:
       CCAR-P: D4
-    stem: How should capability evals and regression evals differ?
+    stem: A team runs two eval suites for its agent. Leadership is alarmed that the capability suite passes only 30% of tasks while the regression suite passes 99%. How should the architect explain the difference?
     options:
       - Capability evals target hard tasks with low pass rates; regression evals must stay near 100%.
-      - Capability evals run only in production; regression evals run only on developer laptops.
-      - Capability evals always use human graders; regression evals never use any graders at all.
-      - There is no difference; both terms describe the same evaluation suite.
+      - Capability evals run on live production traffic; regression evals run offline before each release.
+      - Capability evals are graded by humans; regression evals are graded by code-based checks.
+      - Both suites should pass near 100%, so the 30% result means the capability graders are broken.
     answer:
       - A
-    explanation: Eval năng lực nhắm việc khó, tỷ lệ đạt thấp để leo dần; eval hồi quy giữ những gì đã làm được gần 100%. Môi trường chạy hay loại grader không phải điểm phân biệt.
+    explanation: "Eval năng lực nhắm việc khó, nên khởi điểm tỷ lệ đạt thấp để có “đồi để leo”; eval hồi quy giữ những gì đã làm được và phải gần 100%. Vì vậy 30% ở bộ năng lực là bình thường, không tự nó chứng tỏ grader hỏng (vẫn nên đọc transcript để chắc grader công bằng). Nơi chạy (production hay offline) và loại grader (người, code, model) không phải điểm phân biệt: cả hai loại đều có thể chạy offline và kết hợp nhiều loại grader. Nguồn: https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents"
     ref: lessons/24-danh-gia-governance.html#bo-du-lieu
+    reviewed: 2026-11-19
   - id: PC07
     exams:
       CCAR-P: D4
@@ -12716,6 +12782,7 @@ questions:
       - A
     explanation: "Điểm cao nhưng người dùng vẫn gặp lỗi: đọc transcript để kiểm grader có đo đúng thứ cần đo. Nâng ngưỡng không sửa grader sai; bỏ phản hồi người dùng mất tín hiệu; tự chấm không tin cậy."
     ref: lessons/24-danh-gia-governance.html#bo-du-lieu
+    reviewed: 2026-11-19
   - id: PC08
     exams:
       CCAR-P: D4
@@ -12723,38 +12790,41 @@ questions:
     options:
       - Replace the old prompt for all users immediately, since the offline evals already passed.
       - Canary to a small share of traffic, compare primary and guardrail metrics, then expand or roll back.
-      - Deploy to all users at once on a Friday evening, when traffic and attention are lowest.
+      - Deploy to all users behind a feature flag and roll back only if error rates spike.
       - Ask users whether they prefer the new prompt before measuring anything.
     answer:
       - B
-    explanation: Eval offline rồi canary, A/B so chỉ số chính và chỉ số bảo vệ, mở rộng dần hoặc rollback. Thay toàn bộ ngay bỏ qua rủi ro thực tế; triển khai tối thứ Sáu không phải kiểm soát; hỏi cảm nhận trước khi đo không đủ.
+    explanation: Eval offline rồi canary cho một phần nhỏ lưu lượng, A/B so chỉ số chính và chỉ số bảo vệ, mở rộng dần hoặc rollback. Thay toàn bộ ngay bỏ qua những rủi ro chỉ lộ ra với lưu lượng thật; bật cho mọi người sau feature flag tuy có đường lui nhưng vẫn phơi toàn bộ người dùng, và tỷ lệ lỗi không bắt được suy giảm chất lượng câu trả lời; hỏi cảm nhận trước khi đo không cho dữ liệu so sánh.
     ref: lessons/24-danh-gia-governance.html#ab-test
+    reviewed: 2026-11-19
   - id: PC09
     exams:
       CCAR-P: D4
-    stem: A team changes the model, the system prompt and the retrieval settings at the same time, and quality drops. What process mistake made diagnosis hard?
+    stem: A team changes the model, the system prompt and the retrieval settings at the same time, and quality drops. Which process mistake makes it hardest to tell which change caused the drop?
     options:
       - Changing several variables at once, so the cause cannot be attributed.
-      - Running the change through offline evals before deployment.
-      - Keeping a rollback path to the previous configuration.
-      - Measuring guardrail metrics alongside the primary metric.
+      - Releasing to all traffic at once instead of starting with a canary.
+      - Grading quality with an LLM judge instead of human reviewers.
+      - Running the offline eval on only 100 cases before deployment.
     answer:
       - A
-    explanation: Đổi nhiều biến cùng lúc thì không biết thay đổi nào gây ra kết quả. Eval offline, đường rollback, chỉ số bảo vệ đều là thực hành tốt.
+    explanation: Đổi model, prompt và retrieval cùng lúc thì không quy được suy giảm cho thay đổi nào; cần đổi từng biến và đo riêng. Phát hành toàn bộ thay vì canary làm tăng phạm vi ảnh hưởng, nhưng canary với cả ba thay đổi gộp lại vẫn không tách được nguyên nhân; dùng LLM judge (đã hiệu chỉnh với người chấm) thay người chấm ảnh hưởng độ tin của điểm, không ảnh hưởng việc quy nguyên nhân; bộ eval 100 ca có thể ít, nhưng dù lớn hơn cũng chỉ cho biết chất lượng giảm chứ không cho biết do biến nào.
     ref: lessons/24-danh-gia-governance.html#ab-test
+    reviewed: 2026-11-19
   - id: PC10
     exams:
       CCAR-P: D4
     stem: An A/B test shows the new configuration resolves 3% more tickets but costs 40% more per ticket. How should the decision be made?
     options:
-      - Always ship whichever variant improves the primary metric, regardless of other metrics.
+      - Ship the new configuration, since ticket resolution is the primary metric and it improved.
       - Weigh the primary gain against guardrail metrics like cost using agreed business criteria.
-      - Reject any change that increases cost per ticket, regardless of the benefit it brings.
-      - Run the test indefinitely until both metrics improve together.
+      - Keep the current configuration, since a 40% cost increase clearly outweighs a 3% gain.
+      - Extend the test until a variant improves both metrics at the same time.
     answer:
       - B
-    explanation: Quyết định theo tiêu chí kinh doanh đã thống nhất, cân lợi ích chỉ số chính với chỉ số bảo vệ (chi phí). Luôn chọn chỉ số chính hay luôn từ chối khi tăng chi phí đều cứng nhắc; chạy mãi không ra quyết định.
+    explanation: Quyết định theo tiêu chí kinh doanh đã thống nhất từ trước (vd. chi phí tối đa chấp nhận cho mỗi ticket giải quyết thêm), cân lợi ích chỉ số chính với chỉ số bảo vệ là chi phí. Ship chỉ vì chỉ số chính tăng là bỏ qua chỉ số bảo vệ; giữ cấu hình cũ vì cho rằng chi phí “rõ ràng” lớn hơn là phán đoán cảm tính, vì 3% ticket tự giải quyết thêm có thể tiết kiệm nhiều hơn phần chi phí tăng; kéo dài test chờ một biến thể tốt hơn ở cả hai chỉ số có thể không bao giờ xảy ra và chỉ trì hoãn quyết định.
     ref: lessons/24-danh-gia-governance.html#ab-test
+    reviewed: 2026-11-19
   - id: PC11
     exams:
       CCAR-P: D4
@@ -12773,7 +12843,7 @@ questions:
   - id: PC12
     exams:
       CCAR-P: D4
-    stem: Right after switching the model alias to a newer version, the agent starts producing a different JSON layout that breaks downstream parsing. What is the most likely cause category?
+    stem: Right after the team changes the model ID in its configuration to a newer Claude model, the agent starts producing a different JSON layout that breaks downstream parsing. What is the most likely cause category?
     options:
       - "Model mismatch: behavior changed with the new model version."
       - "Retrieval failure: the index returns stale chunks."
@@ -12781,21 +12851,23 @@ questions:
       - "Network failure: responses are truncated in transit."
     answer:
       - A
-    explanation: "Thay đổi trùng thời điểm đổi model: hành vi model khác. Chạy eval hai phiên bản, ghim model ID, dùng structured output. Retrieval, rate limit, mạng không giải thích việc đổi layout."
+    explanation: "Thay đổi trùng thời điểm đổi model: hành vi của model mới khác, prompt và parser cũ không còn khớp. Từ thế hệ 4.6 mọi model ID là snapshot cố định, nên hành vi chỉ đổi khi chính đội đổi ID; trước khi đổi cần chạy eval trên cả hai model và dùng structured outputs để khoá schema. Retrieval trả chunk cũ làm sai nội dung chứ không đổi bố cục JSON; rate limit trả lỗi 429 chứ không trả JSON khác dạng; mạng cắt cụt cho JSON dở dang ngẫu nhiên, không phải một bố cục mới ổn định. Nguồn: https://platform.claude.com/docs/en/about-claude/models/overview"
     ref: lessons/24-danh-gia-governance.html#chan-doan
+    reviewed: 2026-11-19
   - id: PC13
     exams:
       CCAR-P: D4
     stem: An assistant cites specific regulation numbers that do not exist, even though the relevant regulations are in its retrieved context. Which fix targets this hallucination best?
     options:
       - Enable citations on the source documents and require answers to quote supporting text.
-      - Increase the temperature so the model explores more possible numbers.
+      - Retrieve more chunks per query so the correct regulation numbers appear more often.
       - Remove the retrieved context so the model uses its training knowledge.
-      - Switch to a smaller model, which invents fewer details.
+      - Ask the model to append a confidence score to each regulation it cites.
     answer:
       - A
-    explanation: Buộc câu trả lời dựa trên đoạn trích từ nguồn và bật citations để kiểm chứng. Tăng temperature, bỏ nguồn hay model nhỏ không giảm bịa.
+    explanation: "Tài liệu đúng đã có trong context mà model vẫn bịa số hiệu, nên cần buộc câu trả lời bám đoạn trích nguyên văn và bật citations để mỗi số hiệu kiểm chứng được (không tìm được trích dẫn thì rút lại). Lấy thêm chunk không giúp vì quy định liên quan đã có sẵn trong context; bỏ context buộc model dựa vào trí nhớ huấn luyện nên càng dễ bịa; yêu cầu model tự chấm độ tin cậy không kiểm chứng được gì, model vẫn có thể tự tin vào số bịa. Nguồn: https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations"
     ref: lessons/24-danh-gia-governance.html#chan-doan
+    reviewed: 2026-11-19
   - id: PC14
     exams:
       CCAR-P: D4
@@ -12810,6 +12882,7 @@ questions:
       - B
     explanation: 529, timeout và lỗi parse do code là lỗi tầng tích hợp, sửa bằng code. Chọn sai tool là lỗi đầu ra (sửa mô tả tool); trả lời mơ hồ trong hội thoại dài là context drift.
     ref: lessons/24-danh-gia-governance.html#chan-doan
+    reviewed: 2026-11-19
   - id: PC15
     exams:
       CCAR-P: D4
@@ -12823,6 +12896,7 @@ questions:
       - A
     explanation: "Thứ tự: miễn phí trước (cache, cắt token thừa, Batches cho việc không gấp), đánh đổi sau (hạ model, hạ effort). Model nhỏ nhất có thể giảm chất lượng; max_tokens quá thấp cắt cụt; bớt eval tăng rủi ro."
     ref: lessons/24-danh-gia-governance.html#toi-uu
+    reviewed: 2026-11-19
   - id: PC16
     exams:
       CCAR-P: D4
@@ -12836,6 +12910,7 @@ questions:
       - A
     explanation: Programmatic tool calling cho code xử lý kết quả trung gian trong sandbox, chỉ kết quả cuối vào context. Context lớn hơn vẫn tốn token; tóm tắt mỗi kết quả thêm lượt gọi; model nhanh không giảm số vòng.
     ref: lessons/24-danh-gia-governance.html#toi-uu
+    reviewed: 2026-11-19
   - id: PC17
     exams:
       CCAR-P: D4
@@ -12849,6 +12924,7 @@ questions:
       - A
     explanation: Định tuyến phần đơn giản sang cấu hình rẻ hơn, đo bằng eval, là đánh đổi hợp lý (cân thêm việc mất cache). Model mạnh nhất cho mọi thứ lãng phí; từ chối câu khó mất giá trị; batch qua đêm không hợp hỏi đáp.
     ref: lessons/24-danh-gia-governance.html#toi-uu
+    reviewed: 2026-11-19
   - id: PC18
     exams:
       CCAR-P: D4
@@ -12877,6 +12953,7 @@ questions:
       - A
     explanation: Bằng chứng bảo mật đến từ bộ thử đối kháng có đo tỷ lệ tấn công thành công. Tuyên bố của nhà cung cấp, từ khoá trong prompt hay vài hội thoại bình thường không đo được rủi ro.
     ref: lessons/24-danh-gia-governance.html#chi-so
+    reviewed: 2026-11-19
   - id: PC20
     exams:
       CCAR-P: D4
@@ -12890,6 +12967,7 @@ questions:
       - A
     explanation: Đưa lỗi thật từ production vào bộ eval để chặn hồi quy. Đóng băng mãi thì lỗi thời; xoá ca đã đạt mất eval hồi quy; thay toàn bộ mỗi tuần mất khả năng so sánh.
     ref: lessons/24-danh-gia-governance.html#bo-du-lieu
+    reviewed: 2026-11-19
   - id: PC21
     exams:
       CCAR-P: D4
@@ -12903,6 +12981,7 @@ questions:
       - A
     explanation: Chạy đủ eval năng lực và hồi quy trên model thay thế, xem khác biệt, rồi đổi có chủ đích. Chờ người dùng báo lỗi là phát hiện muộn; hỏi model hay xem benchmark công khai không thay eval của bài toán.
     ref: lessons/24-danh-gia-governance.html#ab-test
+    reviewed: 2026-11-19
   - id: PC22
     exams:
       CCAR-P: D5
@@ -12910,12 +12989,13 @@ questions:
     options:
       - Input screening with a lightweight classifier, a clear system prompt, output checks and monitoring
       - A single strongly worded sentence in the system prompt forbidding all harmful content
-      - Switching to the largest available model, which is assumed to be impossible to jailbreak
+      - Switching to the largest available model and relying on its built-in safety training
       - Disabling the chatbot whenever a jailbreak attempt is detected
     answer:
       - A
-    explanation: "Guardrail nhiều lớp: sàng lọc đầu vào (có thể bằng model nhỏ), system prompt rõ, kiểm đầu ra, giám sát. Một câu dặn hay model lớn không đủ; tắt cả dịch vụ là cực đoan."
+    explanation: "Guardrail nhiều lớp theo tài liệu Anthropic: sàng lọc đầu vào bằng model nhẹ (như Haiku), system prompt nêu rõ ranh giới và cách từ chối, kiểm đầu ra, giám sát liên tục. Một câu dặn trong system prompt chỉ là một lớp, dễ bị vượt; model lớn có huấn luyện an toàn tốt nhưng tài liệu vẫn khuyên thêm các lớp bảo vệ, không model nào miễn nhiễm; tắt cả chatbot mỗi khi phát hiện một lần thử làm hỏng dịch vụ cho mọi người dùng, trong khi tài liệu chỉ khuyên hạn chế hoặc chặn người vi phạm lặp lại. Nguồn: https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/mitigate-jailbreaks"
     ref: lessons/24-danh-gia-governance.html#guardrail
+    reviewed: 2026-11-19
   - id: PC23
     exams:
       CCAR-P: D5
@@ -12929,6 +13009,7 @@ questions:
       - A
     explanation: Quy tắc bắt buộc có hậu quả tài chính cần cơ chế tất định bằng code. Prompt và few-shot chỉ là xác suất; kiểm toán hằng tháng phát hiện sau khi đã mất tiền.
     ref: lessons/24-danh-gia-governance.html#guardrail
+    reviewed: 2026-11-19
   - id: PC24
     exams:
       CCAR-P: D5
@@ -12942,20 +13023,22 @@ questions:
       - A
     explanation: Prompt injection cần cả đọc nội dung không tin cậy lẫn quyền hành động; bỏ quyền gửi hoặc bắt duyệt cắt điều kiện thứ hai. Lời dặn và model lớn chỉ giảm xác suất; log là phát hiện sau.
     ref: lessons/24-danh-gia-governance.html#rui-ro
+    reviewed: 2026-11-19
   - id: PC25
     exams:
       CCAR-P: D5
-    stem: Which TWO are failure modes that a governance review of an LLM system should explicitly cover? (Choose two.)
+    stem: A governance review of a new RAG assistant with long-term memory must focus on risks specific to LLM systems; general IT risks are already covered by an existing process. Which TWO failure modes should the review explicitly cover? (Choose two.)
     options:
       - Overreliance, where users accept outputs without verification
       - Data leakage across users through retrieval or memory
-      - The model's preference for certain fonts in generated documents
-      - The color scheme of the user interface
+      - Hardware failure of the primary database server
+      - Expired TLS certificates on the public web front end
     answer:
       - A
       - B
-    explanation: Phụ thuộc quá mức và rò rỉ dữ liệu giữa người dùng là kiểu thất bại cần kiểm soát. Font chữ hay màu giao diện không phải rủi ro governance.
+    explanation: "Review governance cho hệ LLM phải nêu rõ các kiểu thất bại riêng của LLM: phụ thuộc quá mức (người dùng nhận đầu ra không kiểm chứng) và rò rỉ dữ liệu giữa người dùng qua retrieval hay memory (vd. index hoặc bộ nhớ không tách theo người dùng và quyền truy cập). Hỏng phần cứng máy chủ cơ sở dữ liệu và chứng chỉ TLS hết hạn là rủi ro vận hành CNTT chung, theo stem đã thuộc quy trình hiện có, không phải failure mode đặc thù của hệ LLM."
     ref: lessons/24-danh-gia-governance.html#rui-ro
+    reviewed: 2026-11-19
   - id: PC26
     exams:
       CCAR-P: D5
@@ -12983,6 +13066,7 @@ questions:
       - A
     explanation: "Tín dụng là lĩnh vực rủi ro cao: cần người có chuyên môn duyệt, có quyền sửa, và công bố có AI tham gia. Không bị cấm; không cần nêu phiên bản model."
     ref: lessons/24-danh-gia-governance.html#hitl
+    reviewed: 2026-11-19
   - id: PC28
     exams:
       CCAR-P: D5
@@ -12990,26 +13074,28 @@ questions:
     options:
       - Use a HIPAA-ready offering with a signed BAA, and confirm which features are covered.
       - Use consumer accounts and tell clinicians to avoid patient names.
-      - Enable incognito chats for clinicians, which makes any plan HIPAA compliant automatically.
+      - Enable incognito chats for clinicians so that conversations are not saved to their history.
       - Add a HIPAA compliance disclaimer to the system prompt of each clinician conversation.
     answer:
       - A
-    explanation: PHI cần dịch vụ HIPAA-ready có BAA, và kiểm tra tính năng nào thuộc phạm vi BAA (không phải mọi tính năng). Tài khoản consumer, incognito hay câu tuyên bố trong prompt không đáp ứng HIPAA.
+    explanation: "PHI cần dịch vụ HIPAA-ready có BAA đã ký, và phải kiểm tra tính năng nào thuộc phạm vi BAA (vd. với API, việc dùng qua Console, Claude Code và tính năng beta nằm ngoài; tổ chức HIPAA gọi tính năng không đủ điều kiện sẽ nhận lỗi 400). Tài khoản consumer không có BAA, và dặn tránh tên bệnh nhân không loại được các PHI khác; incognito chỉ không lưu cuộc trò chuyện vào lịch sử, không tạo BAA hay biện pháp bảo vệ theo HIPAA; câu tuyên bố trong system prompt không phải biện pháp tuân thủ. Nguồn: https://platform.claude.com/docs/en/manage-claude/api-and-data-retention"
     ref: lessons/24-danh-gia-governance.html#tuan-thu
+    reviewed: 2026-11-19
   - id: PC29
     exams:
       CCAR-P: D5
     stem: A European company must honor data subjects' rights and minimize personal data under GDPR when using Claude via the API. Which TWO design choices support this? (Choose two.)
     options:
       - Redact or pseudonymize personal data that is not needed for the task before sending it.
-      - Sign a data processing agreement and configure retention and processing region appropriately.
+      - Sign Anthropic's data processing addendum and limit retention to what the task requires.
       - Store all prompts indefinitely in case they are needed for future analysis.
       - Rely on the model to forget personal data after each response.
     answer:
       - A
       - B
-    explanation: Tối thiểu hoá dữ liệu (che, bí danh hoá) và cơ sở hợp đồng, thời hạn lưu, vùng xử lý phù hợp hỗ trợ GDPR. Lưu vô hạn ngược nguyên tắc; "model tự quên" không phải biện pháp.
+    explanation: "Tối thiểu hoá dữ liệu (che, bí danh hoá trước khi gửi) cùng cơ sở hợp đồng với bên xử lý (DPA của Anthropic, có SCC) và thời hạn lưu giới hạn hỗ trợ GDPR. Lưu mọi prompt vô thời hạn trái nguyên tắc giới hạn lưu trữ và làm khó thực hiện quyền xoá; trông chờ model tự quên không phải biện pháp, vì dữ liệu nằm ở log và kho lưu của hệ thống chứ không ở trọng số model. Nguồn: https://www.anthropic.com/legal/data-processing-addendum"
     ref: lessons/24-danh-gia-governance.html#tuan-thu
+    reviewed: 2026-11-19
   - id: PC30
     exams:
       CCAR-P: D5
@@ -13021,21 +13107,23 @@ questions:
       - ZDR is enabled automatically for every API key without any agreement.
     answer:
       - B
-    explanation: ZDR áp cho Messages API và tính năng đủ điều kiện; Console, Managed Agents, giao diện Team, Enterprise và một số model nằm ngoài. Nội dung bị gắn cờ, giữ theo luật vẫn có quy định riêng; ZDR cần thoả thuận.
+    explanation: "ZDR áp cho Messages API, Token Counting API và các tính năng đủ điều kiện; Console, Managed Agents (trừ bản tự host), giao diện Claude Team và Enterprise, cùng các Covered Models (vd. Fable, Mythos, bắt buộc lưu 30 ngày) nằm ngoài, nên phát biểu “mọi sản phẩm” sai. Ngay cả khi có ZDR, nội dung bị hệ thống trust & safety gắn cờ có thể bị giữ tới 2 năm và dữ liệu luật yêu cầu vẫn bị giữ, nên “không bao giờ giữ” sai. ZDR bật theo từng tổ chức qua đội sales, không tự động cho mọi API key. Nguồn: https://platform.claude.com/docs/en/manage-claude/api-and-data-retention"
     ref: lessons/24-danh-gia-governance.html#tuan-thu
+    reviewed: 2026-11-19
   - id: PC31
     exams:
       CCAR-P: D5
     stem: A US federal agency requires FedRAMP-authorized services for an AI assistant. What should the architect do?
     options:
       - Deploy through an environment holding the required FedRAMP authorization, and verify it.
-      - Use any public API endpoint, since FedRAMP requirements apply only to physical hardware.
+      - Use the commercial Claude API directly, since the agency's own network is FedRAMP-authorized.
       - Ask Claude in the system prompt to follow all FedRAMP requirements during each session.
-      - Build an on-premise clone of Claude from public documentation.
+      - Use the commercial Claude API under a zero data retention agreement, which satisfies FedRAMP.
     answer:
       - A
-    explanation: Hệ thống liên bang chỉ dùng dịch vụ đã được cấp phép FedRAMP ở mức cần; chọn môi trường triển khai đạt yêu cầu và kiểm chứng. FedRAMP không chỉ về phần cứng; lời dặn không phải tuân thủ; không thể tự dựng Claude.
+    explanation: "Hệ thống liên bang phải chạy trên dịch vụ đã được cấp phép FedRAMP ở mức yêu cầu, ví dụ Claude for Government, Claude qua Amazon Bedrock trong AWS GovCloud hoặc Claude trên Google Cloud với Assured Workloads (FedRAMP High), rồi kiểm chứng và lấy ATO của cơ quan. Claude API thương mại gọi trực tiếp từ Anthropic hiện chưa có FedRAMP, và mạng nội bộ của cơ quan đạt FedRAMP không phủ dịch vụ bên ngoài mà nó gọi tới; ZDR là thoả thuận lưu giữ dữ liệu, không phải chứng nhận FedRAMP; lời dặn trong system prompt không phải biện pháp kiểm soát tuân thủ. Nguồn: https://claude.com/solutions/government"
     ref: lessons/24-danh-gia-governance.html#tuan-thu
+    reviewed: 2026-11-19
   - id: PC32
     exams:
       CCAR-P: D5
@@ -13064,6 +13152,7 @@ questions:
       - A
     explanation: "Minh bạch: công bố có AI, hiện nguồn, chỉ đường tới người hỗ trợ. Giả là nhân viên viết là lừa dối; giấu nguồn giảm khả năng kiểm chứng; phơi toàn bộ system prompt không phải minh bạch có ích."
     ref: lessons/24-danh-gia-governance.html#dao-duc
+    reviewed: 2026-11-19
   - id: PC34
     exams:
       CCAR-P: D5
@@ -13085,39 +13174,42 @@ questions:
     stem: An internal assistant with memory occasionally surfaces one employee's personal details to another employee. What is the root issue to fix?
     options:
       - Memory and retrieval are not scoped per user, so data crosses user boundaries.
-      - The model is too creative and should use a much lower temperature setting.
-      - The employees are asking questions that are too personal.
+      - The system prompt lacks an instruction telling the assistant never to share one user's details with another.
+      - Memories are kept too long, so adding a 30-day expiry to stored memories would stop the leak.
       - The context window is too large and should be reduced to limit what it recalls.
     answer:
       - A
-    explanation: Rò rỉ giữa người dùng do memory, retrieval không được giới hạn theo người dùng. Temperature, cách hỏi hay độ lớn context không phải nguyên nhân.
+    explanation: "Gốc rễ là memory và retrieval không được giới hạn theo người dùng: dữ liệu của người này nằm trong cùng kho mà truy vấn của người khác lấy ra được. Phải tách kho hoặc lọc theo danh tính người hỏi ở tầng lưu trữ, trước khi dữ liệu tới model. Thêm lời dặn vào system prompt chỉ là kiểm soát mềm: model vẫn nhận được dữ liệu của người khác nên vẫn có thể làm lộ. Đặt hạn 30 ngày chỉ rút ngắn thời gian lưu; trong 30 ngày đó dữ liệu vẫn chéo giữa người dùng. Thu nhỏ context window không thay đổi việc kho memory trả về dữ liệu của ai."
     ref: lessons/24-danh-gia-governance.html#rui-ro
+    reviewed: 2026-11-19
   - id: PC36
     exams:
       CCAR-P: D5
     stem: Which action by an autonomous operations agent most clearly needs a human approval gate?
     options:
       - Deleting a production database after detecting duplicate records
-      - Reading recent error logs to summarize an ongoing incident
-      - Searching internal documentation for a runbook
-      - Drafting a status update for the team's incident channel
+      - Restarting a crashed stateless service that its health check reports as down
+      - Adding a temporary read replica within the team's pre-approved budget
+      - Posting a status update to the team's internal incident channel
     answer:
       - A
-    explanation: Hành động không đảo ngược, hậu quả lớn (xoá DB production) cần cổng duyệt. Đọc log, tìm tài liệu, soạn nháp có rủi ro thấp.
+    explanation: "Cổng duyệt của con người nên đặt theo khả năng đảo ngược, phạm vi ảnh hưởng và chi phí khi sai. Xoá database production không đảo ngược được (cùng lắm khôi phục từ backup, mất dữ liệu và thời gian), và nhận định 'bản ghi trùng' là phán đoán của agent có thể sai, nên đây là hành động cần người duyệt rõ nhất. Khởi động lại một service không trạng thái là thao tác chuẩn, đảo ngược được, ảnh hưởng nhỏ. Thêm read replica trong ngân sách đã duyệt trước là thay đổi có giới hạn và gỡ lại được. Đăng cập nhật lên kênh sự cố nội bộ có rủi ro thấp, sai thì sửa bằng tin nhắn sau."
     ref: lessons/24-danh-gia-governance.html#hitl
+    reviewed: 2026-11-19
   - id: PC37
     exams:
       CCAR-P: D5
     stem: A model sometimes refuses legitimate requests from a medical-information app, frustrating users. How should the team respond?
     options:
       - Measure the false refusal rate on legitimate cases and adjust prompts and scope within policy.
-      - Remove all safety-related instructions from the prompt so the model never refuses again.
-      - Ignore refusals, since any refusal is a sign the system is safe.
-      - Switch to a different model provider automatically whenever any refusal occurs.
+      - State in the system prompt that every user is a verified physician, so the model answers clinical questions freely.
+      - Show users a tip asking them to rephrase their question whenever the model refuses.
+      - Send each refused request to a second model and return whichever answer comes back.
     answer:
       - A
-    explanation: Từ chối sai cũng là chỉ số an toàn cần đo; điều chỉnh prompt, phạm vi trong giới hạn chính sách. Bỏ hết hướng dẫn an toàn là rủi ro; coi mọi từ chối là tốt bỏ qua trải nghiệm; đổi nhà cung cấp là phản ứng thái quá.
+    explanation: "Từ chối nhầm (false refusal) là chỉ số cần đo như tỷ lệ lỗi: lập bộ ca hợp lệ, đo tỷ lệ bị từ chối, rồi chỉnh system prompt (nêu rõ bối cảnh ứng dụng thông tin y khoa, đối tượng người dùng, phạm vi được trả lời) trong giới hạn chính sách và đo lại. Khai rằng mọi người dùng là bác sĩ đã xác minh là thông tin sai về bối cảnh; nó có thể giảm từ chối nhưng khiến model trả lời người dùng phổ thông như trả lời chuyên gia, tạo rủi ro mới. Bảo người dùng tự diễn đạt lại đẩy gánh nặng sang họ mà không đo hay sửa nguyên nhân. Chuyển yêu cầu bị từ chối sang model khác để lấy bất kỳ câu trả lời nào là lách kiểm soát an toàn, không phân biệt ca từ chối đúng với ca từ chối nhầm."
     ref: lessons/24-danh-gia-governance.html#guardrail
+    reviewed: 2026-11-19
   - id: PC38
     exams:
       CCAR-P: D5
@@ -13125,25 +13217,27 @@ questions:
     options:
       - Consult Anthropic's published retention documentation and contract, and design logging to match policy.
       - Assume data is never stored anywhere, because the Messages API itself is stateless.
-      - Assume all data is stored forever and therefore avoid using the API for any purpose.
+      - Tell legal that retention follows the claude.ai privacy settings the developers chose for their personal accounts.
       - Ask the model how long Anthropic retains its own inputs.
     answer:
       - A
-    explanation: Trả lời bằng tài liệu chính thức và hợp đồng, rồi thiết kế log phù hợp. API không lưu trạng thái hội thoại nhưng phía nhà cung cấp có chính sách lưu; giả định cực đoan sai; hỏi model không đáng tin.
+    explanation: "Câu hỏi pháp lý phải trả lời bằng tài liệu chính thức và hợp đồng, rồi thiết kế log của chính hệ thống cho khớp. Theo Privacy Center, với khách hàng thương mại, Anthropic mặc định xoá input và output của API trong vòng 30 ngày, có ngoại lệ: thoả thuận zero data retention, dữ liệu bị gắn cờ vi phạm Usage Policy, dữ liệu feedback, yêu cầu pháp luật (https://privacy.claude.com/en/articles/7996866-how-long-do-you-store-my-organization-s-data). Messages API không giữ trạng thái hội thoại giữa các request, nhưng điều đó không có nghĩa phía nhà cung cấp không lưu gì. Cài đặt quyền riêng tư của tài khoản claude.ai cá nhân thuộc điều khoản tiêu dùng, không chi phối dữ liệu API theo điều khoản thương mại. Model không biết chính sách lưu trữ hiện hành và có thể bịa, nên không phải nguồn cho câu trả lời pháp lý."
     ref: lessons/24-danh-gia-governance.html#tuan-thu
+    reviewed: 2026-11-19
   - id: PC39
     exams:
       CCAR-P: D5
-    stem: Who should be accountable for decisions made with a Claude-based system in a regulated process?
+    stem: A bank uses a Claude-based system to recommend whether to deny loan applications, and the regulator asks who is accountable for each decision. Who should that be?
     options:
       - A named human owner and process, with decision logs and an escalation path
       - The model itself, since it produced each recommendation
       - The model provider, since it trained, hosts and updates the underlying model
-      - No one in particular, because the system is fully automated
+      - The applicant, who accepted the AI-processing terms when applying
     answer:
       - A
-    explanation: Trách nhiệm giải trình thuộc về người và quy trình được chỉ định, có nhật ký và đường leo thang. Model hay nhà cung cấp không thay được trách nhiệm của tổ chức sử dụng.
+    explanation: "Trong quy trình chịu quản lý, trách nhiệm giải trình thuộc về tổ chức triển khai, cụ thể là một người chủ sở hữu và một quy trình được chỉ định, có nhật ký quyết định để kiểm tra lại và đường leo thang khi cần người xem xét. Model chỉ đưa khuyến nghị, không thể chịu trách nhiệm pháp lý. Nhà cung cấp model cung cấp công cụ, không thay được trách nhiệm của tổ chức dùng công cụ đó để ra quyết định với khách hàng. Việc người nộp đơn đồng ý điều khoản xử lý bằng AI là minh bạch với họ, không chuyển trách nhiệm quyết định sang họ."
     ref: lessons/24-danh-gia-governance.html#dao-duc
+    reviewed: 2026-11-19
   - id: PC40
     exams:
       CCAR-P: D4
@@ -13155,21 +13249,23 @@ questions:
       - Send each request through the Batches API so that caching applies automatically
     answer:
       - A
-    explanation: Cache chỉ trúng khi phần đầu giống hệt từng byte. Dấu thời gian ở dòng đầu làm mọi request khác nhau ngay từ đầu. Đưa phần thay đổi xuống sau phần tĩnh. Context lớn hơn hay Batches không sửa được lỗi thứ tự.
+    explanation: "Cache chỉ trúng khi tiền tố tới breakpoint giống hệt 100%. Dấu thời gian ở dòng đầu làm mọi request khác nhau ngay từ đầu, nên lần nào cũng ghi cache mới mà không bao giờ đọc. Đưa phần thay đổi xuống sau phần tĩnh (và đặt breakpoint ở khối tĩnh cuối cùng). Bỏ caching là sai hướng: không có giới hạn độ dài tối đa nào khiến 8.000 token không cache được, chỉ có độ dài tối thiểu; context window lớn hơn không đổi cách so khớp tiền tố; Batches API không tự sửa thứ tự, tiền tố khác nhau thì vẫn không trúng cache. Nguồn: https://platform.claude.com/docs/en/build-with-claude/prompt-caching"
     ref: lessons/24-danh-gia-governance.html#toi-uu
+    reviewed: 2026-11-19
   - id: PC41
     exams:
       CCAR-P: D5
     stem: An extraction system routes cases with model-reported confidence below 0.9 to humans. Audits show many auto-approved 0.95 cases are wrong. What should be done?
     options:
-      - Trust the reported confidence more, since the model knows its own accuracy
-      - Remove human review entirely, because the confidence score is unreliable
+      - Have the model score each case twice and average the two confidence values
+      - Switch to a larger model, since larger models report better-calibrated confidence
       - Raise the threshold to 0.99 without checking how often those cases are right
       - Calibrate the scores on labeled data and pick the threshold from measured accuracy
     answer:
       - D
-    explanation: "Độ tin cậy model tự báo phải được hiệu chỉnh: đo trên tập có nhãn xem các ca báo 0,95 đúng bao nhiêu, rồi chọn ngưỡng theo số liệu. Nâng ngưỡng mù quáng vẫn không biết đúng sai; bỏ người duyệt làm rủi ro tăng."
+    explanation: "Độ tin cậy model tự báo không tự động phản ánh xác suất đúng, nên phải hiệu chỉnh: đo trên tập có nhãn xem các ca báo 0,95 thực sự đúng bao nhiêu phần trăm, rồi chọn ngưỡng định tuyến theo độ chính xác đo được. Chấm hai lần rồi lấy trung bình chỉ làm điểm ổn định hơn, không làm điểm khớp với tỷ lệ đúng thực tế. Đổi sang model lớn hơn là giả định chưa kiểm chứng; điểm của model nào cũng phải đo trên dữ liệu có nhãn trước khi dùng làm ngưỡng. Nâng ngưỡng lên 0,99 mà không đo thì vẫn không biết các ca 0,99 đúng bao nhiêu, có thể vẫn sai nhiều."
     ref: lessons/24-danh-gia-governance.html#hitl
+    reviewed: 2026-11-19
   - id: PC42
     exams:
       CCAR-P: D5
@@ -13178,11 +13274,12 @@ questions:
       - The model is nearly perfect, so the review step can safely be removed
       - Possible automation bias; show evidence, limit queue load, and audit approvals
       - The reviewers are highly skilled and need no change to their workflow
-      - The queue is too short, and more cases should be routed to human review
+      - Reviewers need a faster interface so they can approve even more cases per hour
     answer:
       - B
-    explanation: "Tỷ lệ chấp thuận gần tuyệt đối với thời gian rất ngắn là dấu hiệu automation bias: người duyệt thành con dấu. Cần hiện bằng chứng, giữ hàng chờ vừa sức, kiểm tra lại các ca đã duyệt. Chưa thể kết luận model hoàn hảo."
+    explanation: "Tỷ lệ chấp thuận gần tuyệt đối với khoảng 10 giây mỗi ca là dấu hiệu automation bias: người duyệt thành con dấu, không thực sự kiểm tra. Cần hiện bằng chứng để người duyệt đối chiếu, giữ hàng chờ vừa sức, và kiểm toán lại một mẫu ca đã duyệt (có thể chèn ca sai có chủ đích) để đo xem người duyệt có bắt được lỗi không. Chưa thể kết luận model gần hoàn hảo, vì 99,8% chấp thuận có thể chỉ phản ánh việc không ai kiểm tra; bỏ bước duyệt dựa trên con số đó là mất lớp bảo vệ. Cũng không thể kết luận người duyệt giỏi khi không có bằng chứng họ phát hiện được lỗi. Giao diện nhanh hơn để duyệt nhiều ca hơn mỗi giờ chỉ làm automation bias nặng thêm."
     ref: lessons/24-danh-gia-governance.html#hitl
+    reviewed: 2026-11-19
   - id: PC43
     exams:
       CCAR-P: D5
@@ -13232,27 +13329,29 @@ questions:
       CCAR-P: D6
     stem: A project reaches deployment and is blocked by the security and legal teams, who were never consulted. Which discovery step was missed?
     options:
-      - Identifying all stakeholders and approvers, including security and legal
-      - Selecting the fastest available model for the use case
-      - Writing the system prompt before any requirements were gathered
-      - Choosing a vector database for retrieval
+      - Mapping every stakeholder with approval or veto power over the launch
+      - Defining success metrics and a baseline with the business sponsor
+      - Documenting the current process and case volumes with end users
+      - Running a technical feasibility test on a sample of real data
     answer:
       - A
-    explanation: Discovery phải xác định mọi bên liên quan và người phê duyệt, gồm bảo mật và pháp chế. Các phương án khác không giải thích việc bị chặn ở bước phê duyệt.
+    explanation: "Bị chặn ở bước triển khai bởi những nhóm chưa từng được hỏi ý kiến là dấu hiệu discovery thiếu bước lập bản đồ bên liên quan: xác định mọi người có quyền phê duyệt hoặc phủ quyết (bảo mật, pháp chế, compliance, vận hành) và đưa yêu cầu của họ vào từ đầu. Xác định chỉ số thành công với nhà tài trợ, ghi lại quy trình hiện tại với người dùng, và thử khả thi kỹ thuật trên dữ liệu thật đều là bước discovery cần thiết, nhưng làm đủ cả ba vẫn không đưa bảo mật và pháp chế vào cuộc, nên không giải thích được việc bị chặn."
     ref: lessons/25-ben-lien-quan-van-hanh.html#discovery
+    reviewed: 2026-11-19
   - id: PD03
     exams:
       CCAR-P: D6
-    stem: What should the primary output of a structured discovery phase be?
+    stem: After two weeks of discovery workshops for a claims-triage assistant, the sponsor asks which deliverable should close the phase. What should it be?
     options:
       - A requirements document with functional and non-functional needs, success metrics, scope and risks
-      - A finished production system that is already deployed and ready for all users
-      - A list of every Claude feature and integration the client might ever want to use
-      - A marketing announcement about the upcoming AI launch
+      - A working prototype that the sponsor can demonstrate to the board
+      - A vendor shortlist that compares model providers by public benchmark scores
+      - A detailed sprint plan listing every engineering task through to launch
     answer:
       - A
-    explanation: "Đầu ra của discovery là tài liệu yêu cầu: chức năng, phi chức năng, chỉ số thành công, phạm vi, rủi ro, kế hoạch thí điểm. Hệ thống hoàn chỉnh hay thông báo marketing là giai đoạn sau."
+    explanation: "Đầu ra chính của discovery là tài liệu yêu cầu: nhu cầu chức năng và phi chức năng, chỉ số thành công, phạm vi, rủi ro, làm cơ sở cho thiết kế và nghiệm thu. Prototype có thể hữu ích để thử ý tưởng nhưng không thay được yêu cầu đã thống nhất; demo đẹp mà chưa rõ chỉ số thành công thì chưa biết phải xây gì. So sánh nhà cung cấp theo benchmark công khai không nói gì về yêu cầu của bài toán này. Kế hoạch sprint chi tiết tới ngày ra mắt thuộc giai đoạn sau, khi đã có thiết kế; lập ngay sau discovery là đoán trước công việc."
     ref: lessons/25-ben-lien-quan-van-hanh.html#discovery
+    reviewed: 2026-11-19
   - id: PD04
     exams:
       CCAR-P: D6
@@ -13260,12 +13359,13 @@ questions:
     options:
       - An architecture decision record capturing context, options, criteria and consequences
       - The full chat history of the original team's project messaging channel
-      - The model's own explanation when it is asked about the design afterwards
+      - The current system prompt and retrieval configuration in the repository
       - A screenshot of the final architecture diagram
     answer:
       - A
-    explanation: ADR ghi bối cảnh, phương án, tiêu chí, quyết định và hệ quả. Lịch sử chat khó tìm và không đầy đủ; model không biết quyết định của đội; sơ đồ không nói lý do.
+    explanation: "ADR (architecture decision record) ghi bối cảnh, các phương án đã cân nhắc, tiêu chí, quyết định và hệ quả, nên trả lời được câu hỏi 'vì sao' sau nhiều tháng. Lịch sử chat của nhóm khó tìm, rời rạc và thường thiếu kết luận cuối. System prompt và cấu hình retrieval trong repo cho biết hệ thống đang làm gì, không nói vì sao chọn retrieval thay vì fine-tune. Sơ đồ kiến trúc cho thấy cấu trúc, không ghi phương án bị loại và lý do."
     ref: lessons/25-ben-lien-quan-van-hanh.html#truyen-dat
+    reviewed: 2026-11-19
   - id: PD05
     exams:
       CCAR-P: D6
@@ -13273,52 +13373,56 @@ questions:
     options:
       - “It meets the agreed accuracy and latency targets at 60% lower cost per case; we will re-evaluate quarterly.”
       - “The mid-sized model has fewer parameters, which reduces the attention head count per layer.”
-      - “The largest model is always worse, so we never recommend it.”
-      - “The vendor suggested it in a blog post, so it must be correct.”
+      - “Most companies in our industry use mid-sized models, so it is the safe choice.”
+      - “It is cheaper, and switching models later is easy if users complain.”
     answer:
       - A
-    explanation: "Với lãnh đạo: nói theo chỉ số đã thống nhất, chi phí, kế hoạch xem lại. Chi tiết kiến trúc model không hữu ích với người nghe này; khẳng định tuyệt đối hay dựa vào bài blog không phải lập luận."
+    explanation: "Với ban điều hành, trình bày tradeoff bằng ngôn ngữ ra quyết định: đạt chỉ số đã thống nhất (độ chính xác, độ trễ), chi phí giảm bao nhiêu, và kế hoạch đánh giá lại. Số tham số hay số attention head là chi tiết kỹ thuật không giúp người nghe này quyết định. 'Công ty khác cũng dùng' là lập luận theo đám đông, không chứng minh model đáp ứng yêu cầu của chính dự án. 'Rẻ hơn, có phàn nàn thì đổi' bỏ qua việc đo theo mục tiêu đã thống nhất và đẩy rủi ro sang người dùng."
     ref: lessons/25-ben-lien-quan-van-hanh.html#truyen-dat
+    reviewed: 2026-11-19
   - id: PD06
     exams:
       CCAR-P: D6
-    stem: Which TWO topics matter most when presenting an AI design to the legal and security teams? (Choose two.)
+    stem: An architect is presenting the design of an assistant that reads customer emails to the company's legal and security teams. Which TWO topics matter most to this audience? (Choose two.)
     options:
       - Where data flows, where it is stored, and for how long
       - Access controls, audit logs and how incidents are handled
       - The exact wording of every few-shot example in the prompt
-      - The number of GPUs used to train the underlying model
+      - How the chosen model compares with competing models on public benchmarks
     answer:
       - A
       - B
-    explanation: Pháp chế và bảo mật quan tâm luồng dữ liệu, nơi lưu, thời hạn, kiểm soát truy cập, nhật ký, xử lý sự cố. Ví dụ few-shot và phần cứng huấn luyện không phải trọng tâm.
+    explanation: "Pháp chế và bảo mật cần biết dữ liệu khách hàng đi đâu, lưu ở đâu và bao lâu (để đối chiếu nghĩa vụ như GDPR), ai truy cập được, có nhật ký kiểm toán không, và sự cố được xử lý thế nào. Câu chữ từng ví dụ few-shot là chi tiết kỹ thuật của prompt, không ảnh hưởng tới quyết định pháp lý hay bảo mật. Điểm benchmark so với model khác là câu hỏi về chất lượng, thuộc về nhóm sản phẩm hoặc kỹ thuật, không phải mối quan tâm chính của hai nhóm này."
     ref: lessons/25-ben-lien-quan-van-hanh.html#truyen-dat
+    reviewed: 2026-11-19
   - id: PD07
     exams:
       CCAR-P: D6
     stem: The business sponsor asks for “100% accuracy” before approving launch. What is the best response?
     options:
-      - Agree to the target and promise the sponsor that the system will never make any mistake.
+      - Agree to 100% on the pilot test set, since the team can tune the prompt until every case passes.
       - Explain non-determinism, propose an accuracy target measured on evals, and describe safeguards for errors.
-      - Refuse to launch any AI system until it reaches 100% accuracy on every possible input.
-      - Hide the measured error rate from the sponsor to avoid delaying the project's approval.
+      - Promise 100% once the system moves to the most capable model, which removes the risk of errors.
+      - Accept the target but define accuracy as the share of answers that users do not complain about.
     answer:
       - B
-    explanation: Giải thích tính không tất định, đề xuất ngưỡng đo trên eval và cơ chế xử lý lỗi (duyệt, rollback). Hứa 100%, từ chối mãi hay giấu tỷ lệ lỗi đều sai.
+    explanation: "Hệ thống dùng LLM không tất định và không đạt 100% trên mọi đầu vào, nên cần đề xuất ngưỡng chính xác đo được trên bộ eval đại diện, kèm cơ chế xử lý khi sai (người duyệt ca rủi ro, rollback, kênh báo lỗi). Đạt 100% trên tập thử thí điểm bằng cách chỉnh prompt tới khi mọi ca qua là overfit vào tập đó, không nói gì về dữ liệu thật. Model mạnh nhất vẫn có thể sai, nên hứa 100% khi đổi model là hứa điều không giữ được. Định nghĩa độ chính xác là 'không bị phàn nàn' biến chỉ số thành thứ không đo lỗi thật, vì phần lớn câu trả lời sai không ai báo."
     ref: lessons/25-ben-lien-quan-van-hanh.html#truyen-dat
+    reviewed: 2026-11-19
   - id: PD08
     exams:
       CCAR-P: D6
     stem: Which SLA definition for an AI document-summary service is the most appropriate?
     options:
-      - “Summaries are always perfect, complete and instantaneous for every document submitted.”
+      - “Average latency under 5 seconds and accuracy above 90%, checked whenever customers report problems.”
       - “p95 under 5 seconds, 99.5% availability of our service, and ≥90% eval accuracy measured monthly.”
       - “The service will be fast and accurate most of the time for most of our users.”
-      - “Latency and accuracy depend entirely on the model provider, not on our own system.”
+      - “Our availability will match the model provider's published availability, with accuracy reviewed yearly.”
     answer:
       - B
-    explanation: SLA tốt có chỉ số cụ thể, cách đo, chu kỳ đo. "Luôn hoàn hảo" không thực tế; mô tả mơ hồ không kiểm được; đẩy hết trách nhiệm cho nhà cung cấp bỏ qua phần hệ thống của bạn.
+    explanation: "SLA tốt có chỉ số cụ thể, cách đo và chu kỳ đo: p95 độ trễ, availability của chính dịch vụ, độ chính xác trên eval đo hằng tháng. Độ trễ trung bình che mất phần đuôi chậm mà người dùng cảm nhận, còn chỉ kiểm khi khách phàn nàn thì không có chu kỳ đo nên không kiểm chứng được. 'Nhanh và chính xác phần lớn thời gian' mơ hồ, không kiểm được. Gắn availability vào con số của nhà cung cấp bỏ qua phần hệ thống của bạn (retrieval, hàng đợi, fallback), và xem độ chính xác mỗi năm một lần là quá thưa để phát hiện suy giảm."
     ref: lessons/25-ben-lien-quan-van-hanh.html#ky-vong
+    reviewed: 2026-11-19
   - id: PD09
     exams:
       CCAR-P: D6
@@ -13326,51 +13430,55 @@ questions:
     options:
       - Run a scoped pilot with agreed success metrics and a decision date for expansion.
       - Launch to everyone at once and let the usage data settle the disagreement later.
-      - Cancel the project until every stakeholder agrees unanimously on the full rollout.
-      - Let the engineering team decide without stakeholder input.
+      - Hold more workshops until every stakeholder agrees on the full rollout plan.
+      - Launch in the most enthusiastic department and expand once complaints stop.
     answer:
       - A
-    explanation: Thí điểm có phạm vi, chỉ số đã thống nhất và ngày quyết định giúp các bên đồng thuận dựa trên số liệu. Ra mắt toàn bộ là rủi ro; huỷ dự án hay bỏ qua bên liên quan đều không tốt.
+    explanation: "Thí điểm có phạm vi, chỉ số thành công thống nhất trước và ngày quyết định mở rộng biến bất đồng thành câu hỏi kiểm chứng được bằng số liệu. Ra mắt toàn công ty rồi để dữ liệu tự giải quyết là chấp nhận rủi ro lớn khi chưa thống nhất thế nào là thành công. Họp thêm tới khi mọi người đồng ý dễ kéo dài vô hạn, vì không có dữ liệu mới để thay đổi ý kiến. Thí điểm ở phòng ban hào hứng nhất mà không có chỉ số đã thống nhất thì kết quả bị lệch, và 'hết phàn nàn' không phải tiêu chí mở rộng mà các bên đã đồng ý."
     ref: lessons/25-ben-lien-quan-van-hanh.html#ky-vong
+    reviewed: 2026-11-19
   - id: PD10
     exams:
       CCAR-P: D6
     stem: Users of a deployed assistant report wrong answers through informal chat messages that get lost. What lifecycle practice should be added?
     options:
       - A structured feedback channel whose reports are triaged and added to the eval set
-      - A policy that users must not report errors outside quarterly reviews
+      - Asking users to email the project manager, who keeps a running list of reported issues
       - A larger model so that users have fewer errors to report
-      - Removing the assistant until a perfect version is available
+      - A thumbs-up/down button whose weekly satisfaction score is shown on a dashboard
     answer:
       - A
-    explanation: Kênh phản hồi có cấu trúc, phân loại và đưa ca lỗi vào bộ eval khép vòng cải tiến. Hạn chế báo lỗi, đổi model hay gỡ hệ thống không giải quyết việc mất phản hồi.
+    explanation: "Kênh phản hồi có cấu trúc, có người phân loại, và đưa ca lỗi đã xác nhận vào bộ eval sẽ khép vòng cải tiến: lỗi được ghi lại, được sửa, và được kiểm tra để không tái diễn. Email cho quản lý dự án vẫn là kênh phi chính thức, phụ thuộc một người, dễ thất lạc và không đi vào eval. Model lớn hơn có thể giảm lỗi nhưng không giải quyết việc phản hồi bị mất. Nút thích/không thích cho ra điểm hài lòng tổng hợp nhưng mất chi tiết từng ca sai, nên không biến thành ca kiểm thử được."
     ref: lessons/25-ben-lien-quan-van-hanh.html#ky-vong
+    reviewed: 2026-11-19
   - id: PD11
     exams:
       CCAR-P: D6
     stem: An AI system is being handed off from a consulting team to the client's operations team. Which package enables them to run it?
     options:
       - Architecture and data-flow diagrams, ADRs, versioned prompts and configs, eval reports and runbooks
-      - The source code only, since an experienced operations team can infer everything else
+      - The source code and a README, plus three months of on-call support from the consultants
       - A detailed slide deck summarizing the project's business value and the launch timeline
-      - Access to the consultants' personal chat histories with Claude
+      - A recorded walkthrough video of the system and admin access to every environment
     answer:
       - A
-    explanation: "Bàn giao khả năng vận hành: sơ đồ, ADR, prompt và cấu hình có phiên bản, báo cáo eval, runbook. Chỉ code hay slide không đủ; lịch sử chat cá nhân không phải tài liệu."
+    explanation: "Bàn giao phải chuyển được khả năng vận hành để đội nhận tự chạy khi tư vấn rời đi: sơ đồ kiến trúc và luồng dữ liệu, ADR, prompt và cấu hình có phiên bản, báo cáo eval, runbook. Code kèm README và ba tháng hỗ trợ trực của tư vấn chỉ hoãn sự phụ thuộc; hết hỗ trợ thì đội nhận vẫn thiếu lý do thiết kế, eval và quy trình xử lý sự cố. Slide về giá trị kinh doanh và lịch ra mắt dành cho lãnh đạo, không giúp vận hành. Video hướng dẫn và quyền admin cho phép truy cập nhưng không thay được runbook, eval và cấu hình có phiên bản để tra cứu và tái lập."
     ref: lessons/25-ben-lien-quan-van-hanh.html#tai-lieu
+    reviewed: 2026-11-19
   - id: PD12
     exams:
       CCAR-P: D6
-    stem: What should an operations runbook for a Claude-based service include?
+    stem: The on-call engineer for a Claude-based claims service is paged at 2 a.m. and finds no guidance on what to do. Which content should the team's runbook add first?
     options:
       - Alerts, diagnosis steps, rollback, handling of 429 and 529 errors, and escalation contacts
-      - The full text of every conversation the system has handled since it was launched
-      - A complete history of all model releases and price changes from the provider
-      - Marketing guidelines for describing the AI to customers
+      - The ADRs explaining why each component and model was chosen during design
+      - The full history of every prompt version the team tried before launch
+      - A link to the provider's API reference and its public status page
     answer:
       - A
-    explanation: "Runbook cho người vận hành: cảnh báo, cách chẩn đoán, rollback, xử lý lỗi thường gặp, liên hệ leo thang. Toàn bộ hội thoại, lịch sử phát hành model hay hướng dẫn marketing không phải runbook."
+    explanation: "Runbook là hướng dẫn hành động cho người trực: cảnh báo nào nghĩa là gì, các bước chẩn đoán, cách rollback, cách xử lý lỗi thường gặp như 429 (rate limit hoặc chạm trần chi tiêu) và 529 (API quá tải), và liên hệ leo thang (https://platform.claude.com/docs/en/api/errors). ADR giải thích lý do thiết kế, hữu ích khi thay đổi kiến trúc chứ không giúp xử lý sự cố lúc 2 giờ sáng. Lịch sử các phiên bản prompt là tư liệu phát triển, không nói phải làm gì khi có sự cố. Link tài liệu API và trang trạng thái có ích khi tra cứu, nhưng thiếu các bước chẩn đoán, rollback và leo thang dành riêng cho hệ thống của bạn."
     ref: lessons/25-ben-lien-quan-van-hanh.html#tai-lieu
+    reviewed: 2026-11-19
   - id: PD13
     exams:
       CCAR-P: D6
@@ -13378,12 +13486,13 @@ questions:
     options:
       - "Plan a migration: evaluate the replacement, review migration notes, switch before retirement."
       - Wait until the retirement date arrives, then switch over when requests start failing.
-      - Ignore the notice, since deprecated models remain available indefinitely.
+      - Keep the current model ID pinned in config, since a pinned snapshot keeps working after retirement.
       - Switch production to the replacement immediately, without running any evaluations.
     answer:
       - A
-    explanation: Deprecated vẫn chạy nhưng có ngày retire, sau đó request lỗi. Lên kế hoạch, chạy eval trên model thay thế, đọc ghi chú migration, đổi có chủ đích trước hạn. Chờ, bỏ qua hay đổi không test đều rủi ro.
+    explanation: "Model deprecated vẫn chạy nhưng không còn được khuyến nghị và đã có ngày retire; sau ngày đó request tới model sẽ lỗi. Anthropic báo trước ít nhất 60 ngày và khuyên test kỹ model thay thế trên tác vụ của bạn trước ngày retire (https://platform.claude.com/docs/en/about-claude/model-deprecations). Vì vậy cần lên kế hoạch: chạy eval trên model thay thế, đọc migration guide, đổi có chủ đích trước hạn. Chờ tới khi request lỗi là để sự cố production xảy ra rồi mới xử lý. Ghim model ID không giúp gì: khi model retire, mọi request tới ID đó đều lỗi, dù là snapshot cố định. Đổi ngay mà không eval có thể làm giảm chất lượng hoặc phá hành vi mà không ai biết."
     ref: lessons/25-ben-lien-quan-van-hanh.html#vong-doi
+    reviewed: 2026-11-19
   - id: PD14
     exams:
       CCAR-P: D6
@@ -13397,6 +13506,8 @@ questions:
       - A
     explanation: "Blueprint nêu các giai đoạn: discovery, design, handoff, monitoring, iteration, và đây là vòng lặp. Các chuỗi khác thiếu discovery, giám sát hoặc là vòng đời huấn luyện model."
     ref: lessons/25-ben-lien-quan-van-hanh.html#vong-doi
+    status: retired
+    reviewed: 2026-11-19
   - id: PD15
     exams:
       CCAR-P: D6
@@ -13404,25 +13515,27 @@ questions:
     options:
       - Return to discovery for the new scope, update evals, and release through the normal process.
       - Add the new product documents straight into the production prompt without any testing.
-      - Build a completely separate system from scratch just for the new product line.
-      - Tell users to avoid asking about the new product line.
+      - Spin up a second assistant dedicated to the new product line so the existing one stays untouched.
+      - Add the new documents to the retrieval index now and rerun the evals at the next quarterly review.
     answer:
       - A
-    explanation: Yêu cầu mới đưa vòng đời về discovery cho phạm vi mới, cập nhật eval, phát hành qua quy trình chuẩn. Sửa thẳng production không test là rủi ro; xây lại từ đầu lãng phí; bảo người dùng tránh hỏi là bỏ yêu cầu.
+    explanation: "Phạm vi mới đưa vòng đời quay lại discovery cho phần mới (yêu cầu, dữ liệu, rủi ro), cập nhật eval với ca của dòng sản phẩm mới, rồi phát hành qua quy trình chuẩn có cổng eval. Đưa tài liệu thẳng vào prompt production mà không test có thể làm hỏng câu trả lời cho sản phẩm cũ. Dựng trợ lý thứ hai nhân đôi chi phí vận hành, tài liệu và eval, lại buộc người dùng phải chọn đúng trợ lý. Đưa tài liệu vào index ngay rồi đợi tới kỳ review quý mới chạy eval là phát hành trước, kiểm tra sau; lỗi có thể tồn tại hàng tháng."
     ref: lessons/25-ben-lien-quan-van-hanh.html#vong-doi
+    reviewed: 2026-11-19
   - id: PD16
     exams:
       CCAR-P: D6
     stem: A product manager wants a feature that would require sending customer PII to a third-party tool, which conflicts with policy. How should the architect handle it?
     options:
       - Explain the conflict, present compliant alternatives with their trade-offs, and record the decision.
-      - Build the feature quietly as requested, since the product manager owns the decision.
+      - Build the feature with a contract clause requiring the third party to delete the data after use.
       - Refuse to discuss the feature at all and escalate the product manager to leadership.
-      - Ask the model to decide whether the policy applies.
+      - Remove customer names from the records and send the rest, since that makes the data anonymous.
     answer:
       - A
-    explanation: Nêu xung đột, đưa phương án tuân thủ kèm đánh đổi, ghi lại quyết định. Làm âm thầm vi phạm chính sách; từ chối trao đổi phá hợp tác; để model quyết định chính sách là sai trách nhiệm.
+    explanation: "Kiến trúc sư nêu rõ xung đột với chính sách, đưa các phương án tuân thủ kèm đánh đổi (xử lý nội bộ, che hoặc giảm dữ liệu, xin ngoại lệ qua quy trình chính thức), và ghi lại quyết định. Điều khoản hợp đồng yêu cầu bên thứ ba xoá dữ liệu không thay được việc chính sách cấm gửi PII; quyết định ngoại lệ thuộc về người sở hữu chính sách, không phải nhóm dự án tự làm. Từ chối bàn luận và leo thang ngay phá hợp tác trong khi có thể còn phương án tuân thủ. Bỏ tên vẫn để lại email, số điện thoại, địa chỉ hay mã khách hàng có thể định danh lại, nên dữ liệu chưa ẩn danh và vẫn là PII."
     ref: lessons/25-ben-lien-quan-van-hanh.html#truyen-dat
+    reviewed: 2026-11-19
   - id: PD17
     exams:
       CCAR-P: D6
@@ -13430,26 +13543,28 @@ questions:
     options:
       - Regular reports on the agreed metrics, including failures and costs
       - A clear process for prioritizing feedback and change requests
-      - Reporting only positive results to maintain enthusiasm
-      - Changing success metrics whenever results fall short
+      - Monthly demos of newly shipped features to keep momentum visible
+      - Adding new success metrics each quarter as stakeholders request them
     answer:
       - A
       - B
-    explanation: Báo cáo đều theo chỉ số đã thống nhất (cả lỗi và chi phí) và quy trình ưu tiên phản hồi giữ các bên thống nhất. Chỉ báo tin tốt hay đổi chỉ số khi không đạt làm mất niềm tin.
+    explanation: "Báo cáo đều đặn theo chỉ số đã thống nhất, kể cả lỗi và chi phí, cùng một quy trình rõ ràng để ưu tiên phản hồi và yêu cầu thay đổi, giúp các bên nhìn cùng một số liệu và biết yêu cầu của mình được xử lý thế nào. Demo tính năng mới cho thấy tiến độ nhưng không cho biết hệ thống có đạt mục tiêu không, và dễ thành chỉ trình diễn phần tốt. Thêm chỉ số mới mỗi quý theo yêu cầu làm mục tiêu trôi dần và mất mốc so sánh đã thống nhất."
     ref: lessons/25-ben-lien-quan-van-hanh.html#ky-vong
+    reviewed: 2026-11-19
   - id: PD18
     exams:
       CCAR-P: D6
-    stem: Where should production system prompts, tool definitions and model IDs be documented and controlled?
+    stem: An unreviewed system prompt edit caused a production incident, and nobody can tell who changed what or when. Where should production system prompts, tool definitions and model IDs be controlled?
     options:
       - In version control, with change review and evals on each change
-      - In a shared spreadsheet that anyone can edit without history
-      - Only inside the running application's memory
-      - In each engineer's personal notes
+      - In an admin panel where product managers edit prompts live, with an audit log of changes
+      - In environment variables on the production servers, updated by the on-call engineer
+      - In a shared wiki page that engineers copy from when they deploy
     answer:
       - A
-    explanation: "Prompt, tool definition, model ID là cấu hình như code: lưu trong git, review, chạy eval khi đổi. Bảng tính không lịch sử, bộ nhớ ứng dụng hay ghi chú cá nhân không kiểm soát được."
+    explanation: "Prompt, tool definition và model ID là cấu hình quyết định hành vi như code: lưu trong version control, mỗi thay đổi qua review và chạy eval trước khi lên production, có lịch sử để biết ai đổi gì và rollback được. Admin panel có audit log cho biết ai đổi, nhưng sửa trực tiếp trên production không qua review hay eval, nên vẫn để lọt lỗi như sự cố này. Biến môi trường do người trực sửa không có review, khó truy lịch sử và dễ lệch giữa các máy. Trang wiki mà kỹ sư chép khi deploy dễ chép sai, không có cổng kiểm tra và không gắn với phiên bản đang chạy."
     ref: lessons/25-ben-lien-quan-van-hanh.html#tai-lieu
+    reviewed: 2026-11-19
   - id: PD19
     exams:
       CCAR-P: D7
@@ -13458,11 +13573,12 @@ questions:
       - Managed settings deployed by administrators, which take precedence over all other levels
       - Each repository's CLAUDE.md, as a firm instruction that Claude should always follow
       - Each developer's personal settings file, configured by IT during their onboarding
-      - A team wiki page describing which commands are forbidden
+      - Deny rules in each repository's committed .claude/settings.json file
     answer:
       - A
-    explanation: Managed settings do admin triển khai có ưu tiên cao nhất và không ghi đè được; deny luôn thắng. CLAUDE.md và wiki là lời dặn; cài đặt cá nhân có thể bị sửa.
+    explanation: "Managed settings do admin triển khai (file managed-settings.json, MDM hoặc server-managed settings) đứng đầu thứ tự ưu tiên; không file cài đặt nào của người dùng hay --settings ghi đè được, và một tool bị deny ở bất kỳ mức nào thì không mức nào khác allow được (https://code.claude.com/docs/en/settings ; https://code.claude.com/docs/en/permissions). CLAUDE.md chỉ là hướng dẫn, Claude có thể quyết định một hướng dẫn không áp dụng; điều phải xảy ra mọi lúc thuộc về deny rule, hook hoặc managed setting (https://code.claude.com/docs/en/best-practices). File cài đặt cá nhân nằm trên máy developer nên họ tự sửa được. Deny rule trong .claude/settings.json của repo có hiệu lực, nhưng chỉ ở repo có file đó và developer có thể sửa file trong bản checkout của mình, nên không đáp ứng yêu cầu 'bất kể cài đặt cục bộ'."
     ref: lessons/25-ben-lien-quan-van-hanh.html#claude-code-doi
+    reviewed: 2026-11-19
   - id: PD20
     exams:
       CCAR-P: D7
@@ -13470,12 +13586,13 @@ questions:
     options:
       - Package them as a plugin in an internal plugin marketplace.
       - Copy the files into each repository and update them manually.
-      - Email the configuration files to every developer each quarter.
+      - Keep them in a template repository that every new repository is created from.
       - Put everything into one very long CLAUDE.md in each repository.
     answer:
       - A
-    explanation: Plugin gói skill, command, hook, MCP để cài cho nhiều repo, phân phối qua marketplace nội bộ. Chép tay hay email dễ lệch phiên bản; CLAUDE.md không chứa hook hay MCP.
+    explanation: "Plugin đóng gói skill, agent, hook và MCP server thành một đơn vị cài bằng một lệnh và cập nhật qua marketplace; docs khuyên dùng plugin khi muốn đưa cùng một bộ cấu hình cho đồng đội và cài vào nhiều dự án, và tổ chức có thể quản lý marketplace qua managed settings (https://code.claude.com/docs/en/plugins). Chép tay vào từng repo sẽ lệch phiên bản ngay khi có thay đổi. Template repository chỉ sao chép một lần lúc tạo repo: mười repo hiện có không nhận được, và bản cập nhật sau đó không tự lan tới các repo đã tạo. CLAUDE.md chỉ chứa chỉ dẫn dạng văn bản, không chứa được hook hay MCP server."
     ref: lessons/25-ben-lien-quan-van-hanh.html#claude-code-doi
+    reviewed: 2026-11-19
   - id: PD21
     exams:
       CCAR-P: D7
@@ -13483,12 +13600,13 @@ questions:
     options:
       - OpenTelemetry export of Claude Code metrics and events to the company's observability stack
       - A weekly survey asking every developer how often and how heavily they use Claude Code
-      - Screen recordings of developers' terminals during working hours
-      - A rule that developers must paste every Claude Code session into a shared team document
+      - The monthly API invoice, split across teams in proportion to their headcount
+      - A hook in each repository that appends every tool call to a log file on the developer's machine
     answer:
       - A
-    explanation: Claude Code xuất metric và event qua OpenTelemetry để theo dõi sử dụng, chi phí, hoạt động tool. Khảo sát không chính xác; quay màn hình hay dán phiên xâm phạm và không bền.
+    explanation: "Claude Code xuất metric (chi phí, token, phiên, dòng code, commit, PR) và event (prompt, API request, kết quả tool) qua OpenTelemetry để theo dõi sử dụng, chi phí và hoạt động tool trên toàn tổ chức; admin bật và khoá cấu hình này qua managed settings (https://code.claude.com/docs/en/monitoring-usage). Khảo sát dựa vào trí nhớ, không chính xác và không có dữ liệu về tool. Hoá đơn chia theo số người chỉ là ước lượng chi phí, không cho biết đội nào dùng gì hay hoạt động tool ra sao. Hook ghi log trên máy từng người không gom về một chỗ để lãnh đạo xem, và repo nào không có hook thì không ghi."
     ref: lessons/25-ben-lien-quan-van-hanh.html#claude-code-doi
+    reviewed: 2026-11-19
   - id: PD22
     exams:
       CCAR-P: D7
@@ -13496,29 +13614,31 @@ questions:
     options:
       - A GitHub Actions workflow running Claude Code headlessly with pre-declared, minimal permissions
       - An interactive Claude Code session left permanently open on a shared build server
-      - Developers manually pasting diffs into claude.ai before each merge
+      - A local pre-commit hook on each developer's machine that runs Claude Code on staged changes
       - A nightly batch job that reviews all of the merged code and reports the next morning
     answer:
       - A
-    explanation: GitHub Actions chạy Claude Code headless, quyền khai sẵn ở mức tối thiểu. Phiên tương tác để mở không bền và rủi ro; dán tay không tự động; review sau khi merge là quá muộn cho cổng trước merge.
+    explanation: "Claude Code GitHub Actions chạy Claude Code không tương tác trong workflow, kích hoạt khi PR được mở hoặc cập nhật, đăng nhận xét lên PR, và chỉ cấp đúng tool cần thiết qua --allowedTools trong claude_args cùng quyền workflow tối thiểu (https://code.claude.com/docs/en/github-actions). Một phiên tương tác để mở thường trực trên build server không gắn với sự kiện PR, dễ dừng giữa chừng và giữ quyền rộng lâu dài. Hook pre-commit chạy trên máy từng người: không đăng nhận xét lên PR, người dùng bỏ qua được, và mỗi máy cấu hình một kiểu. Review hằng đêm sau khi merge là quá muộn để làm cổng trước khi merge."
     ref: lessons/25-ben-lien-quan-van-hanh.html#claude-code-doi
+    reviewed: 2026-11-19
   - id: PD23
     exams:
       CCAR-P: D7
-    stem: "A developer has three independent tasks: a bug fix, a dependency upgrade and a new endpoint. How can Claude Code help without the tasks interfering with each other?"
+    stem: "A developer has three independent tasks: a bug fix, a dependency upgrade and a new endpoint. They want Claude Code to work on all three at the same time. How should they set this up so the tasks do not interfere with each other?"
     options:
       - Run separate sessions in parallel git worktrees, one per task.
       - Ask one session to work on all three tasks in the same directory at once.
       - Complete the tasks strictly one after another to avoid any parallelism.
-      - Disable version control so Claude can edit files freely.
+      - Run three sessions in the same checkout, each switching to its own branch before it edits.
     answer:
       - A
-    explanation: Worktree song song cho mỗi việc độc lập giúp không giẫm chân nhau và tăng thông lượng. Một phiên làm ba việc cùng chỗ dễ xung đột; tắt version control là nguy hiểm.
+    explanation: "Mỗi git worktree là một thư mục làm việc riêng với file và branch riêng, dùng chung lịch sử repo; chạy mỗi phiên Claude Code trong worktree riêng (claude --worktree <tên>) giúp các thay đổi không va nhau (https://code.claude.com/docs/en/worktrees). Một phiên làm cả ba việc trong cùng thư mục trộn thay đổi của ba việc vào nhau. Làm lần lượt tránh được xung đột nhưng không đáp ứng yêu cầu làm cả ba cùng lúc. Ba phiên trong cùng một checkout dùng chung một thư mục làm việc: một phiên đổi branch là đổi file dưới chân hai phiên kia, nên vẫn giẫm chân nhau."
     ref: lessons/25-ben-lien-quan-van-hanh.html#quy-trinh-dev
+    reviewed: 2026-11-19
   - id: PD24
     exams:
       CCAR-P: D7
-    stem: Which metric best measures whether AI-assisted tooling improves a team's productivity?
+    stem: Three months after rolling out Claude Code to a team, leadership asks whether it has improved the team's productivity. Which metric best answers this?
     options:
       - Lead time from request to production, together with post-release defect rate
       - The number of lines of code generated by Claude across the team each week
@@ -13528,6 +13648,7 @@ questions:
       - A
     explanation: "Năng suất đo bằng kết quả: thời gian từ yêu cầu tới production, tỷ lệ lỗi sau phát hành, thời gian review. Số dòng code, số prompt, số phiên là chỉ số hoạt động, dễ đánh lừa."
     ref: lessons/25-ben-lien-quan-van-hanh.html#quy-trinh-dev
+    reviewed: 2026-11-19
   - id: PD25
     exams:
       CCAR-P: D7
@@ -13550,12 +13671,13 @@ questions:
     options:
       - The request-id from the response, timestamp, model and steps to reproduce
       - Your API key, so that support can replay the failing request directly
-      - A screenshot of the application's home page showing the error banner
-      - The full text of all conversations from the past month
+      - The HTTP status code and the SDK version, which identify the failing call
+      - Your organization ID and the hour of the failure, so support can search that window's traffic
     answer:
       - A
-    explanation: request-id, thời điểm, model, cách tái hiện giúp nhà cung cấp tìm đúng request. Không bao giờ gửi API key; ảnh trang chủ hay toàn bộ hội thoại không hữu ích và có thể lộ dữ liệu.
+    explanation: "Mỗi response của API có header request-id (cũng nằm trong trường request_id của body lỗi), và docs khuyên đưa ID này khi liên hệ support về một request cụ thể (https://platform.claude.com/docs/en/api/errors). Kèm thời điểm, model và cách tái hiện, support tìm đúng request ngay. Không bao giờ gửi API key cho ai, kể cả support; key đã lộ phải thu hồi. Mã HTTP và phiên bản SDK giúp phân loại lỗi, nhưng rất nhiều request có cùng mã nên không chỉ ra được request nào. Organization ID cùng khung giờ buộc support dò toàn bộ lưu lượng của bạn trong giờ đó, chậm và có thể không tìm ra một request lỗi chập chờn."
     ref: lessons/25-ben-lien-quan-van-hanh.html#van-hanh
+    reviewed: 2026-11-19
   - id: PD27
     exams:
       CCAR-P: D7
@@ -13563,12 +13685,13 @@ questions:
     options:
       - Usage by route and model, cache hit rate, and whether the agent loop stops correctly
       - Whether the model provider raised its prices without any notice that morning
-      - Whether the developers' laptops have enough memory to run the agent locally
-      - Whether the user interface colors changed in the release
+      - Whether the organization was moved to a different rate-limit usage tier overnight
+      - Whether more users signed up for the product after the release
     answer:
       - A
-    explanation: "Chi phí tăng mà lưu lượng không đổi: xem usage theo route, model, tỷ lệ cache hit, và vòng lặp agent có dừng đúng không (lặp vô hạn, cache bị phá). Giá, máy developer, màu giao diện không phải nghi vấn đầu."
+    explanation: "Chi phí tăng mà lưu lượng không đổi nghĩa là mỗi request tốn hơn: xem usage theo route và model (có chuyển sang model đắt hơn không), tỷ lệ cache hit (cache có bị phá không), và vòng lặp agent có dừng đúng không (lặp thêm lượt là thêm token). Giá tăng sẽ ảnh hưởng mọi route chứ không riêng route vừa deploy, nên không phải nghi vấn đầu. Usage tier quyết định rate limit và trần chi tiêu tháng, không đổi giá mỗi token (https://platform.claude.com/docs/en/api/rate-limits). Thêm người dùng thì lưu lượng phải tăng, trái với dữ kiện lưu lượng không đổi."
     ref: lessons/25-ben-lien-quan-van-hanh.html#van-hanh
+    reviewed: 2026-11-19
   - id: PD28
     exams:
       CCAR-P: D7
@@ -13576,12 +13699,13 @@ questions:
     options:
       - Ask the writing session to double-check its own work before finishing
       - Use a separate reviewer subagent or session, plus tests as an automatic gate
-      - Generate more code per session so that reviewers see the full picture
+      - Add a CLAUDE.md line telling Claude to run the tests before it finishes
       - Switch to a larger model so that fewer bugs are written in the first place
     answer:
       - B
-    explanation: Kiểm tra độc lập (subagent hoặc phiên review riêng không mang context của phiên viết) cùng test làm cổng tự động bắt lỗi mà phiên viết bỏ qua. Tự kiểm trong cùng phiên dễ lặp lại cùng giả định; diff lớn khó review; model lớn hơn không thay cổng kiểm.
+    explanation: "Kiểm tra độc lập (subagent hoặc phiên review riêng chưa thấy cuộc hội thoại tạo ra code, nên không bị lập luận của phiên viết dẫn dắt) cùng test làm cổng tự động sẽ bắt lỗi mà phiên viết bỏ qua (https://code.claude.com/docs/en/best-practices). Tự kiểm trong cùng phiên dễ lặp lại đúng giả định đã sinh ra lỗi. Dòng CLAUDE.md chỉ là hướng dẫn, có tác dụng phần lớn thời gian chứ không phải mọi lần; muốn bắt buộc chạy test thì dùng Stop hook hoặc CI, và chạy test vẫn không thay được người review độc lập. Model lớn hơn có thể viết ít lỗi hơn nhưng vẫn tự duyệt code của chính mình, nên không thay được cổng kiểm."
     ref: lessons/25-ben-lien-quan-van-hanh.html#quy-trinh-dev
+    reviewed: 2026-11-19
   - id: PD29
     exams:
       CCAR-P: D6
@@ -13595,29 +13719,32 @@ questions:
       - D
     explanation: "Bàn giao thành công là đội nhận vận hành được một mình: tự chạy lại eval ra cùng số, tự xử lý sự cố diễn tập theo runbook. Link repo, độ dày tài liệu hay lời hứa hỗ trợ không chứng minh được điều đó."
     ref: lessons/25-ben-lien-quan-van-hanh.html#tai-lieu
+    reviewed: 2026-11-19
   - id: PD30
     exams:
       CCAR-P: D7
-    stem: Costs for an agent route tripled after a Friday deployment that added a new tool in the middle of the tool list. Traffic is flat and there are no errors. What is the most likely cause?
+    stem: Costs for an agent route tripled after a Friday deployment that now builds the tool list from an unordered set, so the tools arrive in a different order on each request. Traffic is flat and there are no errors. What is the most likely cause?
     options:
-      - The new tool changed the prompt prefix, so cached reads dropped to near zero
+      - The changing tool order alters the prompt prefix, so cached reads dropped to near zero
       - Anthropic raised its prices over the weekend without any prior notice
       - The route is now hitting 529 errors that are retried silently many times
-      - The model alias was moved to a smaller and cheaper model over the weekend
+      - The deployment switched the route to a smaller and cheaper model to cut latency
     answer:
       - A
-    explanation: Định nghĩa tool nằm ở phần đầu prompt; chèn tool vào giữa làm phần đầu thay đổi nên cache không trúng. Kiểm cache_read_input_tokens để xác nhận; đặt tool mới ở cuối. Không có lỗi nên không phải 529; model rẻ hơn thì chi phí giảm chứ không tăng.
+    explanation: "Cache theo tiền tố được tạo theo thứ tự tools, system, rồi messages, và chỉ trúng khi phần đầu giống hệt; sửa định nghĩa tool làm mất hiệu lực toàn bộ cache (https://platform.claude.com/docs/en/build-with-claude/prompt-caching). Thứ tự tool đổi ở mỗi request nên tiền tố không bao giờ lặp lại: request nào cũng ghi cache mới thay vì đọc, cache_read_input_tokens gần bằng 0 và chi phí tăng vọt dù lưu lượng không đổi. Cách sửa là sắp xếp tool theo thứ tự cố định. Giá tăng sẽ ảnh hưởng mọi route và không trùng khớp với một lần deploy. Không có lỗi nên không phải lỗi 529 bị retry ngầm. Chuyển sang model nhỏ, rẻ hơn thì chi phí giảm chứ không tăng."
     ref: lessons/25-ben-lien-quan-van-hanh.html#van-hanh
+    reviewed: 2026-11-19
   - id: PD31
     exams:
       CCAR-P: D7
     stem: Requests start failing with HTTP 429, and the responses have no retry-after header. Retrying with backoff does not help. What should the on-call engineer suspect?
     options:
       - A temporary overload on Anthropic's side that will clear within minutes
-      - A malformed request body that the API is rejecting with the wrong code
+      - A ramp limit triggered by a sudden spike in the organization's traffic
       - The organization reached its usage tier's monthly spend cap
-      - An expired API key that needs to be rotated immediately
+      - A workspace spend limit that the team set below the tier's cap
     answer:
       - C
-    explanation: 429 do chạm trần chi tiêu tháng của tier không có retry-after và retry không giúp; cần nâng tier hoặc chờ chu kỳ mới. Quá tải là 529; request sai là 400; key hết hạn là 401.
+    explanation: "Khi tổ chức chạm trần chi tiêu tháng của usage tier, API trả 429 rate_limit_error với error_code enforced_spend_limit_reached, không có header retry-after, và retry (kể cả retry tự động của SDK) tiếp tục lỗi tới 00:00 UTC ngày đầu tháng sau hoặc tới khi nâng tier (https://platform.claude.com/docs/en/api/rate-limits). Quá tải tạm thời phía Anthropic trả 529 overloaded_error, không phải 429. Ramp limit cũng trả 429 nhưng kèm retry-after và hết khi giữ lưu lượng ổn định rồi tăng dần, nên backoff có tác dụng. Spend limit do đội tự đặt (cho tổ chức hoặc workspace) trả 400 invalid_request_error, không phải 429 (https://platform.claude.com/docs/en/api/errors)."
     ref: lessons/25-ben-lien-quan-van-hanh.html#van-hanh
+    reviewed: 2026-11-19
