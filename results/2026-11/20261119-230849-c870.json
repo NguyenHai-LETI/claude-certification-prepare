@@ -1,0 +1,57 @@
+{
+  "id": "20261119-230849-c870",
+  "exam": "CCDV-F",
+  "mode": "random",
+  "title": "Ngẫu nhiên CCDV-F",
+  "feedback": "practice",
+  "device": "remote",
+  "startedAt": "2026-11-19T23:02:45.546Z",
+  "finishedAt": "2026-11-19T23:08:49.989Z",
+  "durationSec": 362,
+  "minutes": null,
+  "items": [
+    {
+      "qid": "AI-CCDVF-002",
+      "domain": "D1",
+      "chosen": [
+        "C"
+      ],
+      "answer": [
+        "C"
+      ],
+      "correct": true,
+      "timeSec": 89
+    },
+    {
+      "qid": "DV06",
+      "domain": "D2",
+      "chosen": [
+        "D"
+      ],
+      "answer": [
+        "C"
+      ],
+      "correct": false,
+      "timeSec": 273
+    }
+  ],
+  "score": {
+    "correct": 1,
+    "total": 2,
+    "pct": 50,
+    "scaled": 530,
+    "pass": false
+  },
+  "byDomain": [
+    {
+      "domain": "D1",
+      "correct": 1,
+      "total": 1
+    },
+    {
+      "domain": "D2",
+      "correct": 0,
+      "total": 1
+    }
+  ]
+}
