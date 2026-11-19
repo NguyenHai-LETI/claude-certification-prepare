@@ -2,13 +2,13 @@
 <header class="cover">
   <div class="eyebrow">Luyện thi chứng chỉ Claude · Bài 12</div>
   <h1>Model Context Protocol (MCP) <span class="ja">Introduction to MCP · MCP Advanced Topics</span></h1>
-  <p class="lead">MCP architecture (local/remote), ba capability (Tools/Resources/Prompts), Python FastMCP server, Field descriptions, MCPClient, tool filtering (per_tool_config), Sampling (deprecated), Roots (is_path_allowed), StreamableHTTP transport, security best practices.</p>
+  <p class="lead">MCP architecture (local/remote), ba capability (Tools/Resources/Prompts), Python FastMCP server (SDK mới gọi là MCPServer), Field descriptions, MCPClient, tool filtering (per_tool_config), Sampling và Roots (is_path_allowed), cả hai deprecated từ đặc tả MCP 2026-07-28, StreamableHTTP transport, security best practices.</p>
   <dl class="meta">
     <dt>Kỳ thi</dt><dd>CCAR-F D2 (18%) · CCDV-F D8 (10,6%)</dd>
     <dt>Phục vụ</dt><dd><span class="tag xt1">CCDV-F</span> 2 mục · <span class="tag xt3">CCAR-F</span> 2 mục · <a href="#xsum">bảng nhãn từng mục</a></dd>
 
     <dt>Nguồn</dt><dd>academy.claude.com · Introduction to Model Context Protocol, Model Context Protocol – Advanced Topics · Crawl 2026-11-17</dd>
-    <dt>Cập nhật</dt><dd><span class="status">v0.22 · 2026-11-18</span> · theo exam guide v1.0</dd>
+    <dt>Cập nhật</dt><dd><span class="status">v0.23 · 2026-11-19</span> · theo exam guide v1.0 · đối chiếu đặc tả MCP 2026-07-28</dd>
   </dl>
 </header>
 
@@ -31,7 +31,7 @@
 <thead><tr><th>Mục</th><th>Bài thi</th><th>Ghi chú</th></tr></thead>
 <tbody>
 <tr><td><a href="#intro-mcp">2. Introduction to MCP — 10 bài</a></td><td><span class="tag xt3">CCAR-F D2</span> <span class="tag xt1">CCDV-F D8</span></td><td>Phần tự viết MCP server bằng FastMCP là nâng cao với CCAR-F (đề không hỏi cách triển khai server).</td></tr>
-<tr><td><a href="#mcp-advanced">3. MCP Advanced Topics — 11 bài</a></td><td><span class="tag xt1">CCDV-F D8</span> <span class="tag xt3">CCAR-F D2</span></td><td>Sampling (deprecated), Roots, transport là nâng cao; đề chỉ cần biết chúng tồn tại.</td></tr>
+<tr><td><a href="#mcp-advanced">3. MCP Advanced Topics — 11 bài</a></td><td><span class="tag xt1">CCDV-F D8</span> <span class="tag xt3">CCAR-F D2</span></td><td>Sampling, Roots (cả hai deprecated từ đặc tả MCP 2026-07-28), transport là nâng cao; đề chỉ cần biết chúng tồn tại.</td></tr>
 </tbody></table></div>
 </details>
 
@@ -194,6 +194,7 @@ if __name__ == "__main__":
   <li><code>@mcp.prompt()</code> tạo <strong>prompt</strong> mẫu có tham số <code>city</code> và <code>days</code>.</li>
   <li><code>mcp.run()</code> chạy server (mặc định qua stdio) để client kết nối.</li>
 </ul>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Khóa Academy (và ví dụ trên) dùng tên <code>FastMCP</code> (<code>from mcp.server.fastmcp import FastMCP</code>) của Python SDK <code>mcp</code> bản 1.x. Quickstart chính thức hiện hành đã đổi sang lớp <code>MCPServer</code>: <code>from mcp.server import MCPServer</code>, <code>mcp = MCPServer("weather")</code>; cách gắn <code>@mcp.tool()</code> và <code>mcp.run(transport="stdio")</code> vẫn như cũ. Với server stdio, đừng <code>print()</code> ra stdout (làm hỏng JSON-RPC), hãy log ra stderr. Nguồn: <a href="https://modelcontextprotocol.io/docs/develop/build-server" target="_blank" rel="noopener">MCP Docs, Build an MCP server</a>.</div>
 <div class="insight"><strong>Field descriptions là bắt buộc</strong> — Claude dùng mô tả parameter để biết truyền giá trị gì. Thiếu mô tả = Claude đoán sai input.</div>
 <div class="split wrongright">
   <div class="box wrong"><div class="hd">Sai</div><ul>
@@ -399,14 +400,14 @@ async with mcp_client.connect_stdio("python", ["weather_server.py"]) as session:
 <div class="alert"><strong>Bẫy.</strong> Ghi token thẳng vào code (<code>"authorization_token": "abc123"</code>). Hãy đọc từ <code>os.environ</code> như ví dụ trên. Xem thêm ghi chú “Thực tế 11/2026” ở mục 2.4 về việc connector chỉ nhận server remote.</div>
 
 <h2 id="mcp-advanced">3. MCP Advanced Topics — 11 bài</h2>
-<p class="xtags"><span class="tag xt1">CCDV-F D8</span> <span class="tag xt3">CCAR-F D2</span> <span class="xnote">Sampling (deprecated), Roots, transport là nâng cao; đề chỉ cần biết chúng tồn tại.</span></p>
+<p class="xtags"><span class="tag xt1">CCDV-F D8</span> <span class="tag xt3">CCAR-F D2</span> <span class="xnote">Sampling, Roots (cả hai deprecated từ đặc tả MCP 2026-07-28), transport là nâng cao; đề chỉ cần biết chúng tồn tại.</span></p>
 <div class="analogy"><div class="hd">Hình dung đời thường</div>
   Bạn thuê một nhân viên văn phòng (server) làm việc trong tòa nhà của công ty bạn (client). Có bốn vấn đề nâng cao. Nhân viên xin sếp viết giúp một đoạn văn (<strong>sampling</strong>). Thẻ ra vào cho biết nhân viên được vào tầng nào (<strong>roots</strong>). Họ làm việc qua đường dây riêng hay tổng đài chung (<strong>transport</strong>). Và ai đó có thể gài một tờ giấy ghi lệnh giả vào hồ sơ để lừa nhân viên (<strong>bảo mật</strong>).
 </div>
 <h3>3.1 Sampling: LLM Requests từ Server (Bài 1–3)</h3>
 <p><strong>Sampling</strong> cho phép MCP server yêu cầu Claude tạo text — server gửi <code>sampling/createMessage</code> request lên client, client xử lý và trả kết quả. Dùng cho các use case như: server cần phân tích dữ liệu, server cần tóm tắt kết quả tool call.</p>
 <p>Điểm đáng chú ý: server <strong>không cần API key</strong> của model. Client giữ quyền gọi model, chọn model và quyết định có cho phép hay không.</p>
-<div class="alert"><strong>Deprecated 2026-07-28:</strong> Sampling là tính năng legacy. Nếu build server mới, dùng <strong>Elicitation</strong> thay thế (phương pháp mới hơn để server request thêm thông tin từ user).</div>
+<div class="alert"><strong>Deprecated từ đặc tả MCP 2026-07-28 (SEP-2577):</strong> Sampling là tính năng legacy, server mới không nên dùng. Khóa Academy gợi ý <strong>Elicitation</strong> thay thế, nhưng đặc tả hiện hành ghi đường chuyển đổi khác: server <strong>gọi thẳng API của nhà cung cấp LLM</strong>. Elicitation (server xin thêm thông tin từ <em>người dùng</em>) vẫn là tính năng client đang hoạt động, không phải bản thay thế của sampling.</div>
 <figure class="fig">
   <div class="sc"><svg viewBox="0 0 640 318" role="img" aria-label="Sampling: server gửi sampling/createMessage lên client, client hỏi người dùng duyệt, gọi Claude, rồi trả kết quả cho server">
     <defs>
@@ -426,7 +427,7 @@ async with mcp_client.connect_stdio("python", ["weather_server.py"]) as session:
     <g><path class="ln-good flow" d="M238,246 H82" marker-end="url(#m1207)"/><text x="160" y="240" class="tm halo" text-anchor="middle">kết quả text</text></g>
     <rect x="10" y="272" width="620" height="38" rx="8" class="b-warn"/>
     <text x="320" y="288" class="t tb" text-anchor="middle">Deprecated 2026-07-28</text>
-    <text x="320" y="303" class="ts" text-anchor="middle">Legacy: server mới dùng Elicitation thay thế (theo khóa Academy)</text>
+    <text x="320" y="303" class="ts" text-anchor="middle">Legacy: đặc tả khuyên server mới gọi thẳng API nhà cung cấp LLM</text>
   </svg></div>
   <ol class="anim-steps">
     <li>Giữa lúc chạy một tool, server cần một đoạn text do LLM tạo và gửi <code>sampling/createMessage</code> lên client.</li>
@@ -464,7 +465,7 @@ async def sampling_callback(params):
 
 session.set_sampling_callback(sampling_callback)</code></pre>
 <p>Đọc code theo hai phía: phía <strong>server</strong>, tool <code>analyze_data</code> gọi <code>ctx.sample(...)</code> thay vì tự gọi API. Phía <strong>client</strong>, <code>sampling_callback</code> nhận yêu cầu đó và gọi Claude (ở đây là <code>claude-haiku-4-5</code>) rồi trả kết quả.</p>
-<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Việc deprecate được ghi trong SEP-2577 (đặc tả bản 2026-07-28): Sampling, Roots và Logging đều bị deprecate. Chúng vẫn hoạt động ít nhất mười hai tháng, nhưng bản mới khuyên server gọi thẳng API của nhà cung cấp LLM. Elicitation không bị deprecate mà được xây lại trên cơ chế mới. Đặc tả cũng ghi sampling nên luôn có người duyệt (human in the loop). Nguồn: <a href="https://modelcontextprotocol.io/seps/2577-deprecate-roots-sampling-and-logging" target="_blank" rel="noopener">SEP-2577</a>, <a href="https://modelcontextprotocol.io/specification/2025-11-25/client/sampling" target="_blank" rel="noopener">MCP spec, Sampling</a>.</div>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Đặc tả MCP bản <strong>2026-07-28</strong> (bản hiện hành) deprecate cùng lúc <strong>Roots, Sampling và Logging</strong> (SEP-2577), và deprecate <strong>Dynamic Client Registration</strong> của OAuth (PR #2858, thay bằng <em>Client ID Metadata Documents</em>). Tính năng deprecated vẫn hoạt động và còn trong đặc tả ít nhất mười hai tháng (sớm nhất bị gỡ ở bản phát hành từ 2027-07-28), nhưng triển khai mới không nên dùng. Đường chuyển đổi đặc tả ghi: Sampling → tích hợp thẳng API nhà cung cấp LLM; Logging → log ra <code>stderr</code> (stdio) hoặc dùng OpenTelemetry. Bản này cũng bỏ kiểu server tự gửi request: <code>sampling/createMessage</code> giờ nằm trong <code>InputRequiredResult</code> (mẫu Multi Round-Trip Requests) và client trả lời bằng cách gửi lại request gốc kèm <code>inputResponses</code>. Elicitation không bị deprecate. Đặc tả vẫn ghi sampling nên luôn có người duyệt (human in the loop). Đề thi theo khóa Academy có thể vẫn hỏi Sampling như một capability. Nguồn: <a href="https://modelcontextprotocol.io/specification/latest/changelog" target="_blank" rel="noopener">MCP spec, Changelog 2026-07-28</a>, <a href="https://modelcontextprotocol.io/specification/latest/client/sampling" target="_blank" rel="noopener">MCP spec, Sampling</a>, <a href="https://modelcontextprotocol.io/specification/2026-07-28/deprecated" target="_blank" rel="noopener">Deprecated features registry</a>.</div>
 <div class="gloss"><div class="hd">Thuật ngữ</div><dl>
   <dt>Sampling</dt><dd>Server nhờ client gọi LLM giúp để tạo text.</dd>
   <dt>Callback</dt><dd>Hàm bạn đăng ký sẵn để thư viện gọi lại khi có sự kiện, ở đây là khi server xin sampling.</dd>
@@ -477,6 +478,7 @@ session.set_sampling_callback(sampling_callback)</code></pre>
   Thẻ ra vào khách của tòa nhà ghi rõ: “được vào tầng 3 và 4”. Bảo vệ kiểm thẻ mỗi khi bạn bấm thang máy. Roots là tấm thẻ đó: client nói với server “bạn chỉ được làm việc trong những thư mục này”.
 </div>
 <p><strong>Roots</strong> cho phép client khai báo danh sách URI (thường là file paths) mà server <em>được phép</em> truy cập. Server không được tự động truy cập ngoài roots — đây là cơ chế bảo vệ filesystem.</p>
+<div class="alert"><strong>Deprecated từ đặc tả MCP 2026-07-28 (SEP-2577).</strong> Đoạn trên là cách khóa Academy trình bày. Đặc tả hiện hành nói roots chỉ là <em>hướng dẫn mang tính thông tin, không phải cơ chế kiểm soát truy cập</em>: giao thức không ép server ở trong roots. Ranh giới chỉ có hiệu lực khi chính server tự kiểm tra (như <code>is_path_allowed()</code> bên dưới) hoặc khi host/OS giới hạn quyền. Server mới nên nhận thư mục, file qua tham số tool, URI resource hoặc cấu hình server thay vì Roots.</div>
 <pre><code class="language-python">from mcp.server.fastmcp import FastMCP
 from pathlib import Path
 
@@ -534,10 +536,10 @@ await session.update_roots([
     <li>Đường dẫn <code>/etc/passwd</code> nằm ngoài root. Hàm trả <code>False</code> và tool ném <code>ValueError</code>.</li>
     <li>Server phải tự kiểm tra trước khi đọc. <code>resolve()</code> đưa đường dẫn về dạng tuyệt đối để <code>../</code> không lọt qua.</li>
   </ol>
-  <figcaption>Hình 6. Roots giới hạn vùng file server được phép đọc.</figcaption>
+  <figcaption>Hình 6. Roots khai báo vùng file server được đọc; việc chặn do code server tự làm. Roots deprecated từ đặc tả 2026-07-28.</figcaption>
 </figure>
 <div class="insight"><strong>Cốt lõi.</strong> Roots khai báo “vùng được phép”. Việc kiểm tra trước mỗi lần đọc (<code>is_path_allowed()</code>) nằm trong code của server.</div>
-<div class="note"><span class="tag t-new">Thực tế 11/2026</span> SEP-2577 cũng đánh dấu <strong>Roots deprecated</strong> (cùng Sampling và Logging) từ bản 2026-07-28. Đặc tả mô tả roots chỉ là hướng dẫn thông tin, server không bắt buộc phải tuân theo, nên server vẫn phải tự kiểm tra đường dẫn. <code>uri</code> của root phải là URI <code>file://</code>. Server xin danh sách bằng <code>roots/list</code>, client báo thay đổi bằng <code>notifications/roots/list_changed</code> khi khai báo <code>listChanged</code>. Đề thi theo khóa Academy vẫn coi Roots là cách giới hạn file access. Nguồn: <a href="https://modelcontextprotocol.io/specification/2025-11-25/client/roots" target="_blank" rel="noopener">MCP spec, Roots</a>.</div>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> SEP-2577 đánh dấu <strong>Roots deprecated</strong> (cùng Sampling và Logging) từ đặc tả bản <strong>2026-07-28</strong>; vẫn dùng được ít nhất mười hai tháng. Đường chuyển đổi đặc tả ghi: truyền thư mục hoặc file qua tham số tool, URI resource hoặc cấu hình server. Đặc tả mô tả roots là “informational guidance rather than an access-control mechanism”, giao thức không ép server ở trong roots, nên server vẫn phải tự kiểm tra đường dẫn. <code>uri</code> của root phải là URI <code>file://</code>. Ở bản 2026-07-28, server xin danh sách bằng <code>roots/list</code> đặt trong <code>InputRequiredResult</code> (client trả lời khi gửi lại request gốc), và notification <code>notifications/roots/list_changed</code> đã bị bỏ (bản 2025-11-25 còn dùng nó cùng cờ <code>listChanged</code>). Khóa Academy, và đề thi soạn theo khóa, vẫn coi Roots là cách giới hạn file access; khi làm đề cứ chọn theo cách đó, khi thiết kế thật thì đừng coi Roots là lớp bảo mật. Nguồn: <a href="https://modelcontextprotocol.io/specification/latest/client/roots" target="_blank" rel="noopener">MCP spec, Roots</a>, <a href="https://modelcontextprotocol.io/specification/latest/changelog" target="_blank" rel="noopener">MCP spec, Changelog</a>.</div>
 <div class="gloss"><div class="hd">Thuật ngữ</div><dl>
   <dt>Root</dt><dd>Một URI (thường <code>file://…</code>) đánh dấu vùng server được làm việc.</dd>
   <dt>Path traversal</dt><dd>Dùng <code>../</code> hoặc symlink để chui ra ngoài thư mục được phép.</dd>
@@ -585,7 +587,7 @@ if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)</code></pre>
 <p>Chạy từng bước: <code>stateless_http=True</code> bật chế độ không lưu phiên. <code>mcp.streamable_http_app()</code> trả về một app web (Starlette) để <code>uvicorn</code> phục vụ ở cổng 8000. Mỗi request tới được xử lý độc lập, nên bạn đặt nhiều bản sao server sau một load balancer mà không cần giữ phiên.</p>
 <p><strong>Limitations của HTTP transport:</strong> Không hỗ trợ server-initiated notifications (server không thể push updates tới client). Nếu cần real-time updates từ server, dùng SSE hoặc WebSocket.</p>
-<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Đặc tả Streamable HTTP cho phép server dùng SSE tùy chọn để stream nhiều thông điệp, và hỗ trợ cả thông báo, yêu cầu từ server tới client. Giới hạn “không push” trong bài đúng với chế độ stateless hoặc <code>json_response</code>. Đặc tả cũng yêu cầu server kiểm tra header <code>Origin</code> (chống DNS rebinding), khi chạy local nên bind <code>127.0.0.1</code> thay vì <code>0.0.0.0</code>, và nên có xác thực. Ví dụ trên bind <code>0.0.0.0</code> chỉ để minh họa. Nguồn: <a href="https://modelcontextprotocol.io/specification/2025-11-25/basic/transports" target="_blank" rel="noopener">MCP spec, Transports</a>.</div>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Đặc tả Streamable HTTP cho phép server trả mỗi request bằng một JSON hoặc một luồng SSE riêng cho request đó (mang notification như <code>notifications/progress</code> trước kết quả cuối). Giới hạn “không push” trong bài đúng với chế độ <code>json_response</code>. Từ bản <strong>2026-07-28</strong>, giao thức bỏ hẳn session (<code>Mcp-Session-Id</code>), bỏ endpoint GET và khả năng nối lại luồng SSE (<code>Last-Event-ID</code>); server không còn tự gửi request cho client (sampling, elicitation, roots đi qua <code>InputRequiredResult</code>), còn thông báo thay đổi dài hạn (list_changed, resource updated) đi qua request <code>subscriptions/listen</code>. Transport HTTP+SSE cũ deprecated từ bản 2025-03-26. Đặc tả vẫn yêu cầu server kiểm tra header <code>Origin</code> (chống DNS rebinding), khi chạy local nên bind <code>127.0.0.1</code> thay vì <code>0.0.0.0</code>, và nên có xác thực. Ví dụ trên bind <code>0.0.0.0</code> chỉ để minh họa. Nguồn: <a href="https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/streamable-http" target="_blank" rel="noopener">MCP spec 2026-07-28, Streamable HTTP</a>.</div>
 <div class="gloss"><div class="hd">Thuật ngữ</div><dl>
   <dt>Stateless</dt><dd>Server không nhớ request trước. Mỗi request mang đủ thông tin.</dd>
   <dt>SSE (Server-Sent Events)</dt><dd>Kênh một chiều để server đẩy dữ liệu liên tục cho client qua HTTP.</dd>
@@ -601,7 +603,7 @@ if __name__ == "__main__":
   <thead><tr><th>Rủi ro</th><th>Cách phòng tránh</th></tr></thead>
   <tbody>
     <tr><td>Tool description injection</td><td>Chỉ dùng server từ trusted sources; review source code</td></tr>
-    <tr><td>Path traversal</td><td>Dùng Roots, luôn gọi <code>is_path_allowed()</code> trước khi đọc file</td></tr>
+    <tr><td>Path traversal</td><td>Dùng Roots, luôn gọi <code>is_path_allowed()</code> trước khi đọc file (Roots deprecated từ đặc tả 2026-07-28 và chỉ mang tính thông tin, nên phần kiểm tra trong server mới là lớp chặn thật)</td></tr>
     <tr><td>Secret leak qua tool results</td><td>Không log tool results chứa credentials; dùng env vars</td></tr>
     <tr><td>SSRF qua URL tools</td><td>Whitelist domain được phép; block internal IPs (169.254.x.x, 10.x.x.x)</td></tr>
     <tr><td>Excessive permissions</td><td>Filter tools với <code>per_tool_config</code>; principle of least privilege</td></tr>
@@ -658,7 +660,7 @@ if __name__ == "__main__":
 <div class="analogy"><div class="hd">Hình dung đời thường</div>
   Trong nhà hàng, ai là người “khởi xướng” khác nhau. Bếp tự quyết định nấu thêm món gì (Claude gọi tool). Quản lý lấy sẵn nguyên liệu vào bếp (app nạp resource). Khách chọn combo trong thực đơn (user chọn prompt). Đề thi hay hỏi đúng chỗ “ai bấm nút”.
 </div>
-<div class="insight"><strong>CCAR-F D2 (18%):</strong> Nắm vững 3 MCP capabilities (tools/resources/prompts), sự khác biệt local vs remote transport, cách filter tools với per_tool_config, và khi nào dùng Roots để giới hạn file access.</div>
+<div class="insight"><strong>CCAR-F D2 (18%):</strong> Nắm vững 3 MCP capabilities (tools/resources/prompts), sự khác biệt local vs remote transport, cách filter tools với per_tool_config, và khi nào dùng Roots để giới hạn file access (khóa Academy vẫn dạy Roots; đặc tả MCP 2026-07-28 đã deprecate Roots, Sampling, Logging).</div>
 <div class="insight"><strong>CCDV-F D8 (10,6%):</strong> Biết cú pháp khai báo <code>mcp_servers</code> + <code>betas</code> header, cách <code>MCPClient</code> list_tools và call_tool, hiểu trust hierarchy của MCP server descriptions.</div>
 <div class="insight"><strong>Phân biệt:</strong> Tool use = Claude tự quyết định gọi khi nào (model-initiated). Resources = client/host request chủ động (application-controlled). Prompts = user chọn trong UI (user-initiated). Sampling = server request Claude tạo text (deprecated).</div>
 <div class="tw"><table>
@@ -674,11 +676,13 @@ if __name__ == "__main__":
   <div class="box wrong"><div class="hd">Sai</div><ul>
     <li>“Resource do Claude tự quyết định gọi”</li>
     <li>“Sampling là cách mới nên dùng cho server mới”</li>
+    <li>“Giao thức ép server không đọc được ngoài roots”</li>
     <li>“Chỉ cần <code>mcp_servers</code>, không cần beta header”</li>
   </ul></div>
   <div class="box right"><div class="hd">Đúng</div><ul>
     <li>Resource do client/host chủ động request</li>
-    <li>Sampling là legacy, deprecated 2026-07-28</li>
+    <li>Sampling là legacy, deprecated 2026-07-28 (đặc tả: gọi thẳng API nhà cung cấp LLM)</li>
+    <li>Roots chỉ mang tính thông tin, server tự kiểm tra đường dẫn; Roots cũng deprecated 2026-07-28</li>
     <li>Cần <code>betas=["mcp-client-2025-11-20"]</code> khi dùng MCP với Claude API</li>
   </ul></div>
 </div>
@@ -691,5 +695,5 @@ if __name__ == "__main__":
 </div>
 
 <footer>
-  Luyện thi chứng chỉ Claude · Bài 12 · Model Context Protocol (MCP) · v0.22 · 2026-11-18. Tổng quan: <a href="/notes/00-tong-quan.md">00</a> · Luyện đề: <a href="/new">30</a>.
+  Luyện thi chứng chỉ Claude · Bài 12 · Model Context Protocol (MCP) · v0.23 · 2026-11-19. Tổng quan: <a href="/notes/00-tong-quan.md">00</a> · Luyện đề: <a href="/new">30</a>.
 </footer>

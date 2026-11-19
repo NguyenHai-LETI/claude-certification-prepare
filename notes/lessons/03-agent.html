@@ -351,7 +351,7 @@ while True:                                                                # ②
   Bạn giao việc cho một người vừa vào công ty sáng nay. Người đó chưa dự cuộc họp hôm qua, chưa đọc email nào của bạn. Họ chỉ biết đúng những gì ghi trên <strong>tờ giấy giao việc</strong>. Subagent cũng vậy: nó không thấy lịch sử của coordinator, nên mọi thông tin cần thiết phải nằm trong prompt giao việc.
 </div>
 <ul>
-  <li>Subagent được tạo qua <strong>Task tool</strong>. Vì vậy <code>allowedTools</code> của coordinator phải có <code>Task</code>, nếu thiếu thì coordinator không tạo được subagent.</li>
+  <li>Subagent được tạo qua <strong>Task tool</strong>. Vì vậy <code>allowedTools</code> của coordinator phải có <code>Task</code>, nếu thiếu thì coordinator không tạo được subagent. (Đề v1.0 chấm theo guide; docs Agent SDK hiện hành: <code>allowedTools</code> chỉ tự duyệt, tool <code>Agent</code> chạy dù không liệt kê. Xem ghi chú bên dưới.)</li>
   <li>Mỗi loại subagent khai báo bằng <code>AgentDefinition</code>: mô tả (để coordinator biết khi nào dùng), system prompt riêng, và danh sách tool được phép.</li>
 </ul>
 <pre><code>options = ClaudeAgentOptions(

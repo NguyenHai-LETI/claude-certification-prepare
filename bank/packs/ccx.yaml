@@ -2374,7 +2374,7 @@ questions:
       - Add a router agent that intercepts every search and calls the MCP tool.
     answer:
       - B
-    explanation: "Mô tả tool là cơ chế chính để agent chọn tool; nói rõ tool MCP tìm được gì mà Grep không làm được (tham chiếu chéo giữa các service, dạng kết quả trả về) là bước đầu rẻ và đúng gốc. Tước Grep khỏi agent là quá tay, vì Grep vẫn là tool đúng khi cần tìm chuỗi chính xác. Đổi thứ tự khai báo tool không cho model biết `search_code` mạnh hơn ở điểm nào. Router chặn mọi lượt tìm kiếm là hạ tầng thừa ở bước đầu. Nguồn: https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools"
+    explanation: "Mô tả tool là cơ chế chính để agent chọn tool; nói rõ tool MCP tìm được gì mà Grep không làm được (tham chiếu chéo giữa các service, dạng kết quả trả về) là bước đầu rẻ và đúng gốc. Tước Grep khỏi agent là quá tay, vì Grep vẫn là tool đúng khi cần tìm chuỗi chính xác (thêm nữa, theo docs Agent SDK hiện hành, bỏ một tool khỏi `allowedTools` chỉ làm nó thôi được tự duyệt chứ không gỡ được tool; muốn gỡ hẳn phải dùng `disallowedTools`, xem https://code.claude.com/docs/en/agent-sdk/permissions). Đổi thứ tự khai báo tool không cho model biết `search_code` mạnh hơn ở điểm nào. Router chặn mọi lượt tìm kiếm là hạ tầng thừa ở bước đầu. Nguồn: https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools"
     ref: lessons/12-mcp.html#intro-mcp
     reviewed: 2026-11-19
   - id: M07
@@ -13907,7 +13907,7 @@ questions:
       - A nightly batch job that reviews all of the merged code and reports the next morning
     answer:
       - A
-    explanation: "Claude Code GitHub Actions chạy Claude Code không tương tác trong workflow, kích hoạt khi PR được mở hoặc cập nhật, đăng nhận xét lên PR, và chỉ cấp đúng tool cần thiết qua --allowedTools trong claude_args cùng quyền workflow tối thiểu (https://code.claude.com/docs/en/github-actions). Một phiên tương tác để mở thường trực trên build server không gắn với sự kiện PR, dễ dừng giữa chừng và giữ quyền rộng lâu dài. Hook pre-commit chạy trên máy từng người: không đăng nhận xét lên PR, người dùng bỏ qua được, và mỗi máy cấu hình một kiểu. Review hằng đêm sau khi merge là quá muộn để làm cổng trước khi merge."
+    explanation: "Claude Code GitHub Actions chạy Claude Code không tương tác trong workflow, kích hoạt khi PR được mở hoặc cập nhật, đăng nhận xét lên PR, và chỉ cấp sẵn quyền cho đúng tool cần thiết qua --allowedTools trong claude_args cùng quyền workflow tối thiểu (https://code.claude.com/docs/en/github-actions). Một phiên tương tác để mở thường trực trên build server không gắn với sự kiện PR, dễ dừng giữa chừng và giữ quyền rộng lâu dài. Hook pre-commit chạy trên máy từng người: không đăng nhận xét lên PR, người dùng bỏ qua được, và mỗi máy cấu hình một kiểu. Review hằng đêm sau khi merge là quá muộn để làm cổng trước khi merge."
     ref: lessons/25-ben-lien-quan-van-hanh.html#claude-code-doi
     reviewed: 2026-11-19
   - id: PD23

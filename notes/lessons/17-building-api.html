@@ -887,7 +887,7 @@ chat(messages, tools=[{"type": "code_execution_20250825", "name": "code_executio
   <dt>MCP server / client</dt><dd>Server cung cấp tool, resource, prompt. Client nằm trong ứng dụng của bạn, hỏi server có gì và gọi nó.</dd>
   <dt>Tool / Resource / Prompt</dt><dd>Tool làm một hành động. Resource đọc dữ liệu. Prompt là mẫu lời nhắc dùng lại.</dd>
   <dt>Transport</dt><dd>Đường truyền giữa client và server: stdio (chạy trên máy) hoặc HTTP/SSE/WebSocket (từ xa).</dd>
-  <dt>FastMCP</dt><dd>Thư viện Python viết MCP server bằng decorator, tự sinh JSON schema từ type hint.</dd>
+  <dt>FastMCP</dt><dd>Lớp trong Python SDK <code>mcp</code> (bản 1.x) để viết MCP server bằng decorator, tự sinh JSON schema từ type hint. Quickstart chính thức hiện hành gọi là <code>MCPServer</code>.</dd>
 </dl></div>
 <div class="split wrongright">
   <div class="box wrong"><div class="hd">Sai</div><ul>
@@ -931,6 +931,7 @@ def edit_document(
     docs[doc_id] = docs[doc_id].replace(old_text, new_text)
     return "Done"</code></pre>
 <div class="alert"><strong>Dùng mcp[cli]&lt;2</strong> — version 2 đổi tên FastMCP → MCPServer.</div>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Code trên theo khóa học (tên <code>FastMCP</code>). Quickstart chính thức hiện hành viết <code>from mcp.server import MCPServer</code> và <code>mcp = MCPServer("weather")</code>; decorator <code>@mcp.tool()</code> giữ nguyên. Nguồn: <a href="https://modelcontextprotocol.io/docs/develop/build-server" target="_blank" rel="noopener">MCP Docs, Build an MCP server</a>.</div>
 
 <h3>8.3 Resources và Prompts (Bài 53–56)</h3>
 <p><strong>Resources</strong> expose data (GET-style), <strong>Tools</strong> perform actions (POST-style), <strong>Prompts</strong> cung cấp reusable templates:</p>

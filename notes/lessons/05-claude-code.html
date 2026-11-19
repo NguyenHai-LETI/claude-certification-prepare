@@ -205,7 +205,7 @@ argument-hint: [thư mục]  # gợi ý tham số khi gọi mà không truyền 
   <thead><tr><th>Trường frontmatter</th><th>Làm gì (theo exam guide)</th></tr></thead>
   <tbody>
     <tr><td><code>context: fork</code></td><td>Chạy skill trong context subagent cô lập. Dùng cho output dài (phân tích codebase) hoặc việc thăm dò (brainstorm phương án).</td></tr>
-    <tr><td><code>allowed-tools</code></td><td>Hạn chế tool trong lúc chạy skill, ví dụ chỉ cho ghi file để tránh hành động phá hoại.</td></tr>
+    <tr><td><code>allowed-tools</code></td><td>Hạn chế tool trong lúc chạy skill, ví dụ chỉ cho ghi file để tránh hành động phá hoại. (Đề v1.0 chấm theo guide; docs hiện hành: chỉ cấp sẵn quyền, không chặn tool khác, muốn chặn dùng <code>disallowed-tools</code>. Xem ghi chú bên dưới.)</td></tr>
     <tr><td><code>argument-hint</code></td><td>Nhắc người dùng nhập tham số khi gọi skill mà không kèm đối số.</td></tr>
   </tbody>
 </table></div>

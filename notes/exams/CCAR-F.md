@@ -72,7 +72,7 @@ Domain nặng nhất (~16 câu / 60).
 
 ### 1.3 Gọi subagent, truyền context
 
-- Subagent được spawn qua **Task tool**; coordinator phải có `"Task"` trong `allowedTools`. (Docs Agent SDK hiện tại: tool này đã đổi tên thành **Agent**, bản cũ phát ra `"Task"`. Đề v1.0 dùng tên Task.)
+- Subagent được spawn qua **Task tool**; coordinator phải có `"Task"` trong `allowedTools`. (Docs Agent SDK hiện tại: tool này đã đổi tên thành **Agent**, bản cũ phát ra `"Task"`. Đề v1.0 dùng tên Task.) Đề v1.0 chấm theo guide; thực tế docs hiện hành: `allowedTools` chỉ **tự duyệt** (auto-approve) tool được liệt kê, tool không liệt kê vẫn có mặt, và tool `Agent` vốn không cần hỏi quyền nên chạy được dù không có trong `allowedTools`; muốn ẩn hẳn một tool thì dùng `disallowedTools` ([Agent SDK, Configure permissions](https://code.claude.com/docs/en/agent-sdk/permissions)).
 - Context phải **đưa tường minh vào prompt** của subagent: dán đầy đủ kết quả của agent trước (vd. kết quả web search + phân tích tài liệu cho synthesis).
 - `AgentDefinition`: description, system prompt, giới hạn tool cho từng loại subagent.
 - Dùng định dạng có cấu trúc tách **nội dung** khỏi **metadata** (URL nguồn, tên tài liệu, số trang) để giữ attribution.
@@ -193,7 +193,8 @@ Nguồn: [CCAR-F Exam Guide v1.0](https://everpath-course-content.s3-accelerate.
 
 - Command: **project** `.claude/commands/` (theo git, cả team có) vs **user** `~/.claude/commands/` (cá nhân).
 - Skill: `.claude/skills/<tên>/SKILL.md` với frontmatter: `context: fork` (chạy trong context subagent cô lập, output dài không làm bẩn hội thoại chính), `allowed-tools` (giới hạn tool khi skill chạy), `argument-hint` (gợi ý tham số khi gọi thiếu đối số).
-- Biến thể cá nhân: tạo trong `~/.claude/skills/` **với tên khác** để không ảnh hưởng đồng đội.
+  - Đề v1.0 chấm theo guide (`allowed-tools` = giới hạn tool). Thực tế docs hiện hành: `allowed-tools` chỉ **cấp sẵn quyền** cho tool được liệt kê trong lượt gọi skill (không phải hỏi duyệt), "does not restrict which tools are available"; muốn loại tool khỏi skill thì dùng `disallowed-tools` ([Claude Code docs, Skills](https://code.claude.com/docs/en/skills)).
+- Biến thể cá nhân: tạo trong `~/.claude/skills/` **với tên khác** để không ảnh hưởng đồng đội. (Docs hiện hành: nếu trùng tên thì skill cá nhân thắng skill project, nhưng chỉ trên máy bạn; đặt tên khác để vẫn gọi được bản của team ([Skills](https://code.claude.com/docs/en/skills)).)
 - Skill (gọi theo yêu cầu, cho việc cụ thể) vs CLAUDE.md (luôn nạp, chuẩn chung).
 - Docs: `context: fork` chạy skill trong subagent **mới**, không mang theo toàn bộ hội thoại hiện tại.
 
@@ -378,9 +379,9 @@ Nguồn: [CCAR-F Exam Guide v1.0](https://everpath-course-content.s3-accelerate.
 ## Bài tập chuẩn bị (theo guide)
 
 1. **Agent nhiều tool có escalation** (D1, D2, D5): 3–4 MCP tool mô tả phân biệt rõ (có 2 tool dễ nhầm); vòng lặp theo `stop_reason`; lỗi có `errorCategory` + `isRetryable`; hook chặn thao tác vượt ngưỡng → escalate; thử yêu cầu nhiều vấn đề.
-2. **Cấu hình Claude Code cho team** (D3, D2): CLAUDE.md cấp project; `.claude/rules/` với glob (`src/api/**/*`, `**/*.test.*`); skill project có `context: fork` + `allowed-tools`; `.mcp.json` dùng env var + server cá nhân trong `~/.claude.json`; so plan mode và direct trên 3 loại việc.
+2. **Cấu hình Claude Code cho team** (D3, D2): CLAUDE.md cấp project; `.claude/rules/` với glob (`src/api/**/*`, `**/*.test.*`); skill project có `context: fork` + `allowed-tools` (docs hiện hành: chỉ cấp sẵn quyền; muốn chặn tool thì thêm `disallowed-tools`, xem mục 3.2); `.mcp.json` dùng env var + server cá nhân trong `~/.claude.json`; so plan mode và direct trên 3 loại việc.
 3. **Pipeline trích xuất dữ liệu** (D4, D5): schema có required/optional, enum `"other"` + detail, nullable; vòng validate–retry (phân biệt lỗi sửa được và thông tin vắng); few-shot cho định dạng khác nhau; batch 100 tài liệu, xử lý lỗi theo `custom_id`; định tuyến review theo confidence từng trường.
-4. **Pipeline research multi-agent** (D1, D2, D5): coordinator có `"Task"` trong `allowedTools`; subagent song song; output tách claim / evidence / URL / ngày; giả lập timeout và kiểm tra lỗi có cấu trúc + coverage gap; nguồn mâu thuẫn phải giữ cả hai giá trị.
+4. **Pipeline research multi-agent** (D1, D2, D5): coordinator có `"Task"` trong `allowedTools` (theo guide; docs hiện hành: tool `Agent` chạy dù không liệt kê, xem mục 1.3); subagent song song; output tách claim / evidence / URL / ngày; giả lập timeout và kiểm tra lỗi có cấu trúc + coverage gap; nguồn mâu thuẫn phải giữ cả hai giá trị.
 
 Nguồn: [CCAR-F Exam Guide v1.0](https://everpath-course-content.s3-accelerate.amazonaws.com/instructor%2F6nizmqk8tpzpfjvt6qmmav7rh%2Fpublic%2F1783542750%2FClaude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf) §7–8
 

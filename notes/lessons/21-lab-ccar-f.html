@@ -263,7 +263,8 @@ argument-hint: "[package-dir]"
   Trưởng nhóm nghiên cứu giao hai trợ lý cùng lúc: một người tìm tài liệu trên mạng, một người đọc báo cáo nội bộ. Mỗi người nộp phiếu ghi chép có cột "nhận định, trích đoạn, nguồn, ngày". Ai không truy cập được nguồn thì ghi rõ đã thử gì và còn thiếu gì.
 </div>
 <p><strong>Mục tiêu</strong>: coordinator giao việc song song, truyền context rõ, giữ nguồn gốc, lan truyền lỗi có cấu trúc. Domain: D1, D2, D5. Lý thuyết ở <a href="/notes/lessons/03-agent.html#coordinator">bài 03</a>, <a href="/notes/lessons/07-context.html#nguon-goc">bài 07 §6</a>.</p>
-<pre><code># Coordinator: allowedTools phải có "Task" để tạo subagent
+<pre><code># Coordinator: allowedTools phải có "Task" để tạo subagent (theo exam guide v1.0;
+# docs Agent SDK hiện hành: allowedTools chỉ tự duyệt, tool Agent chạy dù không liệt kê)
 options = ClaudeAgentOptions(allowed_tools=["Task"], agents={
     "web-search": AgentDefinition(description="Search the web for sources...",
                                   prompt="...", tools=["WebSearch", "WebFetch"]),
@@ -353,12 +354,14 @@ options = ClaudeAgentOptions(allowed_tools=["Task"], agents={
 <div class="tw"><table>
   <thead><tr><th>Chủ đề</th><th>Exam guide v1.0</th><th>Tài liệu 11/2026</th><th>Bài</th></tr></thead>
   <tbody>
-    <tr><td>Tool tạo subagent</td><td><code>Task</code>, <code>allowedTools</code> có <code>"Task"</code></td><td>Có thể tên <code>Agent</code></td><td><a href="/notes/lessons/03-agent.html#task">03 §4</a></td></tr>
+    <tr><td>Tool tạo subagent</td><td><code>Task</code>, <code>allowedTools</code> có <code>"Task"</code></td><td>Có thể tên <code>Agent</code>; <code>allowedTools</code> chỉ tự duyệt, <code>Agent</code> chạy dù không liệt kê (<a href="https://code.claude.com/docs/en/agent-sdk/permissions" target="_blank" rel="noopener">docs</a>)</td><td><a href="/notes/lessons/03-agent.html#task">03 §4</a></td></tr>
+    <tr><td>Skill <code>allowed-tools</code></td><td>Giới hạn tool khi skill chạy</td><td>Chỉ cấp sẵn quyền, không giới hạn; chặn tool bằng <code>disallowed-tools</code> (<a href="https://code.claude.com/docs/en/skills" target="_blank" rel="noopener">docs</a>)</td><td><a href="/notes/lessons/05-claude-code.html">05</a></td></tr>
     <tr><td><code>tool_choice</code> ép buộc</td><td><code>"any"</code> và tool cụ thể là cách đảm bảo có output</td><td>Một số model mới trả 400; dùng <code>strict</code> hoặc structured outputs</td><td><a href="/notes/lessons/04-tool-mcp.html#tool-choice">04 §4</a></td></tr>
     <tr><td>Extended thinking</td><td><code>budget_tokens</code></td><td>Adaptive thinking và effort; model mới bỏ <code>budget_tokens</code></td><td><a href="/notes/lessons/02-model-toi-uu.html#thinking">02 §4</a></td></tr>
     <tr><td>Sampling</td><td><code>temperature</code></td><td>Phiên bản API 2026-10-21 bỏ <code>temperature</code>, <code>top_p</code>, <code>top_k</code></td><td><a href="/notes/lessons/19-api-nang-cao.html#rest-sdk">19 §1</a></td></tr>
     <tr><td>Context dài</td><td>Case facts, cắt trường, tóm tắt ở đầu, <code>/compact</code></td><td>Có thêm compaction phía server, context editing</td><td><a href="/notes/lessons/07-context.html#case-facts">07 §1</a></td></tr>
     <tr><td>MCP transport</td><td>stdio, HTTP</td><td>Streamable HTTP thay HTTP+SSE cũ</td><td><a href="/notes/lessons/04-tool-mcp.html#mcp">04 §6</a></td></tr>
+    <tr><td>MCP Roots, Sampling, Logging</td><td>Không nêu riêng (khóa Academy dạy Roots giới hạn file access, Sampling)</td><td>Deprecated từ đặc tả MCP 2026-07-28 (SEP-2577); roots chỉ mang tính thông tin (<a href="https://modelcontextprotocol.io/specification/latest/changelog" target="_blank" rel="noopener">changelog</a>)</td><td><a href="/notes/lessons/12-mcp.html#mcp-advanced">12 §3</a></td></tr>
     <tr><td>Claude Code headless</td><td><code>-p</code>, <code>--output-format json</code>, <code>--json-schema</code></td><td>Thêm <code>--bare</code> cho script; chế độ này nằm trong Agent SDK</td><td><a href="/notes/lessons/05-claude-code.html#ci-cd">05 §6</a></td></tr>
   </tbody>
 </table></div>

@@ -437,6 +437,7 @@
   </ol>
   <figcaption>Hình 8. Bắt tay, khám phá, rồi gọi tool.</figcaption>
 </figure>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Hình 8 là luồng của đặc tả MCP đến bản 2025-11-25. Bản hiện hành <strong>2026-07-28</strong> làm MCP stateless: bỏ cặp <code>initialize</code>/<code>notifications/initialized</code>, mỗi request tự mang phiên bản giao thức và khả năng của client trong <code>_meta</code>; client có thể gọi <code>server/discover</code> để hỏi trước phiên bản và khả năng của server. Bước khám phá (<code>tools/list</code>) và gọi tool (<code>tools/call</code>) giữ nguyên. Cùng bản này, Roots, Sampling và Logging bị deprecate (xem <a href="/notes/lessons/12-mcp.html#mcp-advanced">bài 12 mục 3</a>). Nguồn: <a href="https://modelcontextprotocol.io/specification/latest/changelog" target="_blank" rel="noopener">MCP spec, Changelog 2026-07-28</a>.</div>
 <div class="tw"><table>
   <thead><tr><th>Transport</th><th>Server chạy ở đâu</th><th>Dùng khi</th></tr></thead>
   <tbody>
