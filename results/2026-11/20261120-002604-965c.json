@@ -1,0 +1,216 @@
+{
+  "id": "20261120-002604-965c",
+  "exam": "CCDV-F",
+  "mode": "domain",
+  "title": "Luyện theo domain CCDV-F · D1",
+  "feedback": "practice",
+  "device": "remote",
+  "startedAt": "2026-11-19T23:19:32.929Z",
+  "finishedAt": "2026-11-20T00:26:04.839Z",
+  "durationSec": 451,
+  "minutes": null,
+  "items": [
+    {
+      "qid": "C08",
+      "domain": "D1",
+      "chosen": [
+        "D"
+      ],
+      "answer": [
+        "C"
+      ],
+      "correct": false,
+      "timeSec": 243
+    },
+    {
+      "qid": "X29",
+      "domain": "D1",
+      "chosen": [
+        "C"
+      ],
+      "answer": [
+        "C"
+      ],
+      "correct": true,
+      "timeSec": 194
+    },
+    {
+      "qid": "C03",
+      "domain": "D1",
+      "chosen": [],
+      "answer": [
+        "B"
+      ],
+      "correct": false
+    },
+    {
+      "qid": "AI-CCARF-003",
+      "domain": "D1",
+      "chosen": [],
+      "answer": [
+        "D"
+      ],
+      "correct": false
+    },
+    {
+      "qid": "AI-CCDVF-001",
+      "domain": "D1",
+      "chosen": [],
+      "answer": [
+        "D"
+      ],
+      "correct": false
+    },
+    {
+      "qid": "U01",
+      "domain": "D1",
+      "chosen": [],
+      "answer": [
+        "A"
+      ],
+      "correct": false
+    },
+    {
+      "qid": "C267",
+      "domain": "D1",
+      "chosen": [],
+      "answer": [
+        "A"
+      ],
+      "correct": false
+    },
+    {
+      "qid": "AI-CCARF-001",
+      "domain": "D1",
+      "chosen": [],
+      "answer": [
+        "D"
+      ],
+      "correct": false
+    },
+    {
+      "qid": "C258",
+      "domain": "D1",
+      "chosen": [],
+      "answer": [
+        "D"
+      ],
+      "correct": false
+    },
+    {
+      "qid": "C247",
+      "domain": "D1",
+      "chosen": [],
+      "answer": [
+        "A"
+      ],
+      "correct": false
+    },
+    {
+      "qid": "X30",
+      "domain": "D1",
+      "chosen": [],
+      "answer": [
+        "B"
+      ],
+      "correct": false
+    },
+    {
+      "qid": "C02",
+      "domain": "D1",
+      "chosen": [],
+      "answer": [
+        "B"
+      ],
+      "correct": false
+    },
+    {
+      "qid": "C255",
+      "domain": "D1",
+      "chosen": [],
+      "answer": [
+        "C"
+      ],
+      "correct": false
+    },
+    {
+      "qid": "C257",
+      "domain": "D1",
+      "chosen": [],
+      "answer": [
+        "B"
+      ],
+      "correct": false
+    },
+    {
+      "qid": "C262",
+      "domain": "D1",
+      "chosen": [],
+      "answer": [
+        "B",
+        "C"
+      ],
+      "correct": false
+    },
+    {
+      "qid": "C261",
+      "domain": "D1",
+      "chosen": [],
+      "answer": [
+        "A",
+        "B"
+      ],
+      "correct": false
+    },
+    {
+      "qid": "C256",
+      "domain": "D1",
+      "chosen": [],
+      "answer": [
+        "D"
+      ],
+      "correct": false
+    },
+    {
+      "qid": "AI-CCDVF-003",
+      "domain": "D1",
+      "chosen": [],
+      "answer": [
+        "B"
+      ],
+      "correct": false
+    },
+    {
+      "qid": "L04",
+      "domain": "D1",
+      "chosen": [],
+      "answer": [
+        "C"
+      ],
+      "correct": false
+    },
+    {
+      "qid": "C16",
+      "domain": "D1",
+      "chosen": [],
+      "answer": [
+        "A"
+      ],
+      "correct": false
+    }
+  ],
+  "score": {
+    "correct": 1,
+    "total": 20,
+    "pct": 5,
+    "scaled": 140,
+    "pass": false
+  },
+  "byDomain": [
+    {
+      "domain": "D1",
+      "correct": 1,
+      "total": 20
+    }
+  ]
+}
