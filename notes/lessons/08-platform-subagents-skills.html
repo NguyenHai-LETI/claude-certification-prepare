@@ -1,14 +1,14 @@
-<p class="lesson-source">Nguồn: tài liệu ôn tập công khai <a href="https://claude.ai/artifact/3NhHr42CxTHGEs33N1ntFf" target="_blank" rel="noopener">artifact 3NhHr42…</a> (bài 11). Không thuộc và không được Anthropic xác nhận.</p>
+<p class="lesson-source">Nguồn: tài liệu ôn tập công khai <a href="https://claude.ai/artifact/3NhHr42CxTHGEs33N1ntFf" target="_blank" rel="noopener">artifact 3NhHr42…</a> (bài 08). Không thuộc và không được Anthropic xác nhận.</p>
 <header class="cover">
-  <div class="eyebrow">Luyện thi chứng chỉ Claude · Bài 11</div>
-  <h1>Claude Platform, Subagents &amp; Skills <span class="ja">Claude Platform 101 · Introduction to Subagents · Introduction to Agent Skills</span></h1>
-  <p class="lead">Ba lớp Platform (Primitives/Infrastructure/Controls), agent loop, built-in tools, MCP toolset, managed agents (Agent/Environment/Session/Events), subagent YAML frontmatter, output format design, skill SKILL.md structure, scope hierarchy.</p>
+  <div class="eyebrow">Luyện thi chứng chỉ Claude · Bài 08 · Chặng 2 · CCDV-F · bước 7/13</div>
+  <h1>Claude Platform, subagent và skill <span class="ja">Claude Platform 101 · Introduction to Subagents · Introduction to Agent Skills</span></h1>
+  <p class="lead">Ba lớp của Claude Platform, managed agents, subagent và memory của subagent, cấu trúc SKILL.md và phạm vi của skill.</p>
   <dl class="meta">
-    <dt>Kỳ thi</dt><dd>CCAR-F D1 (27%) · CCAR-F D3 (20%) · CCDV-F D1–D8 (nền tảng)</dd>
-    <dt>Phục vụ</dt><dd><span class="tag xt1">CCDV-F</span> 3 mục · <span class="tag xt3">CCAR-F</span> 2 mục · <a href="#xsum">bảng nhãn từng mục</a></dd>
+    <dt>Kỳ thi</dt><dd>CCDV-F D1, D3 · CCAR-F D1, D3</dd>
+    <dt>Phục vụ</dt><dd><span class="tag xt1">CCDV-F</span> 4 mục · <span class="tag xt3">CCAR-F</span> 2 mục · <a href="#xsum">bảng nhãn từng mục</a></dd>
 
-    <dt>Nguồn</dt><dd>academy.claude.com · Claude Platform 101, Introduction to subagents, Introduction to agent skills · Crawl 2026-11-17</dd>
-    <dt>Cập nhật</dt><dd><span class="status">v0.22 · 2026-11-18</span> · theo exam guide v1.0</dd>
+    <dt>Nguồn</dt><dd>academy.claude.com · Claude Platform 101, Introduction to subagents, Introduction to agent skills · Crawl 2026-11-17; Exam guide CCDV-F v1.0 mục 6; code.claude.com (permission modes, sub-agents, plugins reference, plugin dependencies, common workflows), platform.claude.com (mitigate jailbreaks, models overview) (tra 17/11/2026)</dd>
+    <dt>Cập nhật</dt><dd><span class="status">v0.39 · 2026-11-18</span> · theo exam guide v1.0</dd>
   </dl>
 </header>
 
@@ -16,11 +16,13 @@
 <summary>Mục lục</summary>
 
     <ol>
-      <li><a href="#tong-quan"><span class="n">1</span><span class="tx">Tổng quan</span></a></li>
+      <li><a href="#overview"><span class="n">1</span><span class="tx">Tổng quan</span></a></li>
       <li><a href="#claude-platform-101"><span class="n">2</span><span class="tx">Claude Platform 101 — 13 bài</span><span class="xds" aria-hidden="true"><i class="xd xt1" title="CCDV-F"></i></span></a></li>
       <li><a href="#subagents"><span class="n">3</span><span class="tx">Introduction to Subagents — 4 bài</span><span class="xds" aria-hidden="true"><i class="xd xt3" title="CCAR-F"></i><i class="xd xt1" title="CCDV-F"></i></span></a></li>
-      <li><a href="#agent-skills"><span class="n">4</span><span class="tx">Introduction to Agent Skills — 6 bài</span><span class="xds" aria-hidden="true"><i class="xd xt3" title="CCAR-F"></i><i class="xd xt1" title="CCDV-F"></i></span></a></li>
-      <li><a href="#exam-tips"><span class="n">5</span><span class="tx">Lưu ý ôn thi</span></a></li>
+      <li><a href="#agent-memory"><span class="n">4</span><span class="tx">Memory của subagent</span><span class="xds" aria-hidden="true"><i class="xd xt1" title="CCDV-F"></i></span></a></li>
+      <li><a href="#agent-skills"><span class="n">5</span><span class="tx">Introduction to Agent Skills — 6 bài</span><span class="xds" aria-hidden="true"><i class="xd xt3" title="CCAR-F"></i><i class="xd xt1" title="CCDV-F"></i></span></a></li>
+      <li><a href="#exam-tips"><span class="n">6</span><span class="tx">Lưu ý ôn thi</span></a></li>
+      <li><a href="#exam-keywords"><span class="n">7</span><span class="tx">Từ khoá đề thi</span></a></li>
     </ol>
 
 </details>
@@ -33,11 +35,12 @@
 <tbody>
 <tr><td><a href="#claude-platform-101">2. Claude Platform 101 — 13 bài</a></td><td><span class="tag xt1">CCDV-F D1</span></td><td>Chi tiết API của managed agents (Environment, Session, Events) là nâng cao.</td></tr>
 <tr><td><a href="#subagents">3. Introduction to Subagents — 4 bài</a></td><td><span class="tag xt3">CCAR-F D1</span> <span class="tag xt1">CCDV-F D1</span></td><td></td></tr>
-<tr><td><a href="#agent-skills">4. Introduction to Agent Skills — 6 bài</a></td><td><span class="tag xt3">CCAR-F D3</span> <span class="tag xt1">CCDV-F D3</span></td><td></td></tr>
+<tr><td><a href="#agent-memory">4. Memory của subagent</a></td><td><span class="tag xt1">CCDV-F D3</span></td><td></td></tr>
+<tr><td><a href="#agent-skills">5. Introduction to Agent Skills — 6 bài</a></td><td><span class="tag xt3">CCAR-F D3</span> <span class="tag xt1">CCDV-F D3</span></td><td></td></tr>
 </tbody></table></div>
 </details>
 
-<h2 id="tong-quan">1. Tổng quan</h2>
+<h2 id="overview">1. Tổng quan</h2>
 <div class="analogy"><div class="hd">Hình dung đời thường</div>
   Mở một quán ăn cần ba thứ. Một là <strong>bộ đồ nghề của đầu bếp</strong>: dao, bếp, nồi (Platform). Hai là <strong>cách chia việc</strong>: đầu bếp chính giao món phụ cho phụ bếp, phụ bếp chỉ báo lại món đã xong (subagent). Ba là <strong>sổ công thức</strong>: cuốn nào cần thì mở ra, không cần thì để trên kệ (skill). Ba khóa học dưới đây dạy đúng ba thứ đó.
 </div>
@@ -80,20 +83,40 @@
 </dl></div>
 <div class="insight"><strong>Cốt lõi.</strong> Platform 101 là bản đồ chung. Subagents trả lời “chia việc thế nào”. Skills trả lời “dạy Claude cách làm một loại việc thế nào”.</div>
 
+<h3>1.1 Một dự án chạy qua cả ba khóa</h3>
+<p>Giả sử đội bạn muốn một trợ lý tạo báo cáo doanh số tuần từ dữ liệu CRM. Ba khóa của bài này xuất hiện lần lượt, mỗi khóa trả lời một câu hỏi khác:</p>
+<ol>
+  <li><strong>Platform 101.</strong> Bạn gọi Claude qua Messages API, mô tả hai tool (<code>query_crm</code>, <code>export_sheet</code>) và viết vòng lặp xử lý <code>stop_reason</code>. Câu hỏi ở đây là “nền tảng cho tôi những gì, tôi tự viết phần nào”.</li>
+  <li><strong>Subagents.</strong> Phần đọc 30 file xuất từ CRM làm đầy context chính. Bạn giao việc đó cho một subagent. Subagent đọc trong context riêng và chỉ trả bản tóm tắt. Câu hỏi ở đây là “chia việc thế nào để context chính gọn”.</li>
+  <li><strong>Skills.</strong> Cách dựng báo cáo (nhóm theo vùng, định dạng bảng, khi nào hỏi lại) đóng gói vào skill <code>weekly-sales-report</code>. Claude chỉ nạp phần thân khi có người nhờ “số liệu thứ Sáu”. Câu hỏi ở đây là “dạy Claude một quy trình lặp lại thế nào”.</li>
+</ol>
+<h3>1.2 Tìm nhanh: câu hỏi đề dẫn tới mục nào</h3>
+<div class="tw"><table>
+  <thead><tr><th>Đề đang hỏi về</th><th>Đọc mục</th><th>Một ý phải nắm</th></tr></thead>
+  <tbody>
+    <tr><td>Vòng lặp tool use, tool, MCP toolset, managed agents</td><td><a href="#claude-platform-101">Mục 2</a></td><td>Dừng theo <code>stop_reason</code>; Claude xin gọi tool, code của bạn chạy</td></tr>
+    <tr><td>Khi nào dùng subagent, viết description và output format</td><td><a href="#subagents">Mục 3</a></td><td>Hỏi “công việc trung gian có quan trọng với luồng chính không”</td></tr>
+    <tr><td>Subagent nhớ qua các phiên, scope của memory</td><td><a href="#agent-memory">Mục 4</a></td><td><code>project</code> là scope nên chọn vì chia sẻ qua git</td></tr>
+    <tr><td>SKILL.md, scope, description, <code>allowed-tools</code>, so với CLAUDE.md và hook</td><td><a href="#agent-skills">Mục 5</a></td><td>Description quyết định skill có chạy không</td></tr>
+    <tr><td>Chọn đáp án khi hai phương án đều nghe hợp lý</td><td><a href="#exam-tips">Mục 6</a></td><td>Chọn cơ chế đúng bản chất: lời dặn thì xác suất, code thì tất định</td></tr>
+  </tbody>
+</table></div>
+<div class="insight"><strong>Cốt lõi.</strong> Ba khóa chồng lên nhau: Platform là nền, subagent chia việc trên nền đó, skill dạy cách làm từng việc. Đề CCAR-F D1 và D3 hỏi phần giao nhau, như “subagent có tự biết skill nào không” (mục 5.7).</div>
+
 <h2 id="claude-platform-101">2. Claude Platform 101 — 13 bài</h2>
 <p class="xtags"><span class="tag xt1">CCDV-F D1</span> <span class="xnote">Chi tiết API của managed agents (Environment, Session, Events) là nâng cao.</span></p>
 <div class="analogy"><div class="hd">Hình dung đời thường</div>
   Học lái xe có ba giai đoạn. Trước hết là làm quen <strong>vô lăng, côn, phanh</strong> (các bộ phận cơ bản). Sau đó là <strong>đường đi nhiều làn, trạm xăng, bãi đỗ</strong> (hạ tầng để chạy lâu dài). Cuối cùng là <strong>đồng hồ, biển báo, giới hạn tốc độ</strong> (kiểm soát). Claude Platform có đúng ba lớp như vậy, và 13 bài của khóa đi lần lượt từ lớp thấp lên cao.
 </div>
 
-<h3>2.1 What is the Claude Platform? (Bài 1)</h3>
-<p>Claude Platform = REST API + SDK + CLI + Console. Ba lớp:</p>
+<h3>2.1 Claude Platform là gì</h3>
+<p>Claude Platform gồm REST API, SDK, CLI và Console, chia ba lớp:</p>
 <ul>
-  <li><strong>Primitives:</strong> Messages API, tool use, files, web search, code execution, MCP, skills — những gì bạn gọi trực tiếp trong code.</li>
-  <li><strong>Infrastructure:</strong> managed agents, retries, queues, observability, prompt caching, memory — cơ sở hạ tầng để scale lên production.</li>
-  <li><strong>Controls:</strong> dashboards, evaluations, workspaces, spend limits, request logs — điều hành hệ thống thực tế.</li>
+  <li><strong>Primitives:</strong> Messages API, tool use, file, web search, code execution, MCP, skill: những thứ bạn gọi trực tiếp trong code.</li>
+  <li><strong>Infrastructure:</strong> managed agents, retry, hàng đợi, quan sát hệ thống, prompt caching, memory: hạ tầng để chạy ở quy mô production.</li>
+  <li><strong>Controls:</strong> dashboard, evaluation, workspace, hạn mức chi tiêu, log request: để vận hành hệ thống thật.</li>
 </ul>
-<p>Shorthand: <em>"build with primitives, scale on infrastructure, run with control."</em></p>
+<p>Câu tóm tắt của khoá học: <em>"build with primitives, scale on infrastructure, run with control"</em> (xây bằng primitive, mở rộng trên hạ tầng, vận hành bằng control).</p>
 <figure class="fig">
   <div class="sc"><svg viewBox="0 0 640 240" role="img" aria-label="Ba lớp của Claude Platform: Primitives để xây, Infrastructure để mở rộng, Controls để vận hành">
 
@@ -143,11 +166,11 @@ draft = "".join(block.text for block in response.content if block.type == "text"
   <dt>Production</dt><dd>Môi trường chạy thật cho người dùng thật, khác với chạy thử.</dd>
 </dl></div>
 
-<h3>2.2 Your First API Call (Bài 2)</h3>
+<h3>2.2 Your First API Call</h3>
 <div class="analogy"><div class="hd">Hình dung đời thường</div>
   Gọi API giống gửi một phiếu yêu cầu vào quầy. Phiếu ghi rõ: nhờ <strong>ai</strong> làm (model), được viết <strong>tối đa bao nhiêu</strong> (max_tokens), và <strong>nội dung nhờ</strong> (messages). Quầy trả về <strong>một xấp giấy</strong>, mỗi tờ một loại: tờ văn bản, tờ yêu cầu dùng công cụ… Bạn phải lật từng tờ xem là loại gì, không thể coi cả xấp là một tờ.
 </div>
-<p>Mỗi request dùng <code>messages.create</code> với <code>model</code>, <code>max_tokens</code>, và <code>messages</code>. Response <code>content</code> là <strong>array of blocks</strong>, không phải plain string — phải loop qua và kiểm tra <code>block.type</code>.</p>
+<p>Mỗi request gọi <code>messages.create</code> với <code>model</code>, <code>max_tokens</code> và <code>messages</code>. <code>content</code> của response là <strong>mảng các block</strong>, không phải chuỗi trơn, nên phải duyệt từng block và xem <code>block.type</code>.</p>
 <pre><code class="language-typescript">import Anthropic from "@anthropic-ai/sdk";
 const client = new Anthropic();
 
@@ -182,7 +205,7 @@ for (const block of response.content) {
   <dt>.env.local</dt><dd>File cấu hình cục bộ chứa bí mật, không đưa vào git.</dd>
 </dl></div>
 
-<h3>2.3 Choosing the Right Model (Bài 3)</h3>
+<h3>2.3 Choosing the Right Model</h3>
 <div class="analogy"><div class="hd">Hình dung đời thường</div>
   Cần chuyển một thùng đồ lặt vặt, bạn đi xe máy chứ không thuê xe tải. Chuyển cả nhà thì mới thuê xe tải. Chọn model cũng vậy: việc nhỏ dùng model nhỏ, rẻ và nhanh; việc nặng mới dùng model lớn.
 </div>
@@ -221,7 +244,7 @@ for model in models:
   <dt>response.usage</dt><dd>Số token vào và ra của lần gọi, dùng để tính tiền.</dd>
 </dl></div>
 
-<h3>2.4 The Agent Loop Explained (Bài 4)</h3>
+<h3>2.4 The Agent Loop Explained</h3>
 <div class="analogy"><div class="hd">Hình dung đời thường</div>
   Một nhân viên được giao “tìm thời tiết rồi gợi ý trang phục”. Anh ấy xin tra thời tiết, nhận kết quả, rồi tự quyết là đã đủ để trả lời hay cần tra thêm. Không ai đứng giữa để nhắc từng bước. Agent là như vậy: Claude tự đi tiếp cho tới khi thấy xong.
 </div>
@@ -314,12 +337,12 @@ while True:
 </div>
 <div class="insight"><strong>Cốt lõi.</strong> Claude kiểm soát reasoning; bạn kiểm soát loop và tools. Nhánh “trường hợp khác” là chỗ vòng lặp phải biết dừng.</div>
 
-<h3>2.5 Tool Use, Thinking, Built-in Tools (Bài 5–7)</h3>
+<h3>2.5 Tool use, thinking, built-in tool</h3>
 <div class="analogy"><div class="hd">Hình dung đời thường</div>
   Tool giống <strong>dụng cụ trong hộp đồ nghề</strong> kèm nhãn dán. Thợ chọn dụng cụ dựa vào nhãn, nên nhãn mơ hồ thì chọn nhầm. Thinking giống việc thợ <strong>nháp trên giấy trước khi làm</strong>. Built-in tool giống dụng cụ <strong>thuê sẵn ở cửa hàng</strong> (server tool) hoặc <strong>dụng cụ cửa hàng bán kèm hướng dẫn nhưng bạn tự cầm</strong> (client tool).
 </div>
-<p><strong>Tool use:</strong> định nghĩa tool bằng JSON schema (name + description + input_schema). Description phải cụ thể — đây là nguyên nhân số 1 khiến agent chọn sai tool. Tool Runner (beta) tự xử lý toàn bộ vòng lặp.</p>
-<p><strong>Extended thinking (Bài 6):</strong> Trên Opus 5, thinking bật tự động (adaptive). Dùng <code>output_config={"effort": "high"}</code> để kiểm soát độ sâu (low/medium/high/xhigh/max). Hiển thị summary với <code>thinking={"type": "adaptive", "display": "summarized"}</code>.</p>
+<p><strong>Tool use:</strong> định nghĩa tool bằng JSON schema (name, description, input_schema). Description phải cụ thể: đây là nguyên nhân số 1 khiến agent chọn sai tool. Tool Runner (beta) tự xử lý cả vòng lặp.</p>
+<p><strong>Extended thinking:</strong> trên Opus 5, thinking tự bật (adaptive). Dùng <code>output_config={"effort": "high"}</code> để chỉnh độ sâu (low, medium, high, xhigh, max). Hiện bản tóm tắt bằng <code>thinking={"type": "adaptive", "display": "summarized"}</code>.</p>
 <pre><code class="language-python">response = client.messages.create(
     model="claude-opus-5",
     max_tokens=16000,
@@ -332,7 +355,7 @@ while True:
   <li><code>thinking</code> kiểu <code>adaptive</code>: model tự quyết có cần nghĩ sâu không. <code>display: "summarized"</code> cho bạn xem bản tóm tắt phần suy nghĩ.</li>
   <li><code>effort</code> là nút chỉnh độ sâu, từ <code>low</code> đến <code>max</code>. Chọn <code>high</code> cho việc cần cân nhắc kỹ như lên kế hoạch chuyến đi.</li>
 </ul>
-<p><strong>Built-in tools (Bài 7):</strong> Server tools (web_search, code_execution, web_fetch) chạy trên infrastructure của Anthropic — <strong>không cần agent loop</strong>, kết quả trả về trong cùng response với block type <code>server_tool_use</code>. Client tools (memory, bash) chạy ở code bạn, Anthropic đã có schema sẵn.</p>
+<p><strong>Built-in tool:</strong> server tool (web_search, code_execution, web_fetch) chạy trên hạ tầng của Anthropic, <strong>không cần vòng lặp agent</strong>; kết quả trả về trong cùng response với block kiểu <code>server_tool_use</code>. Client tool (memory, bash) chạy trong code của bạn, nhưng Anthropic đã có sẵn schema.</p>
 <figure class="fig">
   <div class="sc"><svg viewBox="0 0 640 226" role="img" aria-label="So sánh server tool và client tool: server tool chạy ở Anthropic và kết quả nằm trong cùng response; client tool cần code của bạn chạy tool rồi gửi tool_result trong agent loop">
     <defs>
@@ -359,7 +382,7 @@ while True:
   </svg></div>
   <ol class="anim-steps">
     <li>Server tool: code gửi request kèm khai báo tool.</li>
-    <li>Anthropic chạy tool (web_search, code_execution, web_fetch) trên infrastructure của họ.</li>
+    <li>Anthropic chạy tool (web_search, code_execution, web_fetch) trên hạ tầng của họ.</li>
     <li>Kết quả về trong cùng một response, không cần loop.</li>
     <li>Client tool: Claude trả <code>tool_use</code>.</li>
     <li>Code của bạn chạy tool (memory, bash).</li>
@@ -376,12 +399,12 @@ while True:
 </dl></div>
 <div class="alert"><strong>Bẫy.</strong> Description tool mơ hồ là nguyên nhân số 1 khiến agent chọn sai tool. Và đừng viết agent loop cho server tool, vì kết quả đã nằm trong cùng response.</div>
 
-<h3>2.6 Skills, MCP, Context Management, Managed Agents (Bài 8–13)</h3>
+<h3>2.6 Skill, MCP, quản lý context, managed agents</h3>
 <div class="analogy"><div class="hd">Hình dung đời thường</div>
   Bạn thuê một trợ lý. <strong>Skill</strong> là cuốn sổ quy trình trợ lý mở khi gặp đúng loại việc. <strong>MCP</strong> là ổ cắm chuẩn để nối trợ lý với các dịch vụ bên ngoài như Slack hay Linear. <strong>Context management</strong> là cách giữ bàn làm việc gọn khi hồ sơ chất cao. <strong>Managed agents</strong> là thuê luôn văn phòng có sẵn: Anthropic lo chỗ ngồi và vòng làm việc, bạn chỉ giao việc.
 </div>
-<p><strong>Skills (Bài 8):</strong> SKILL.md chứa hướng dẫn thực thi ("how" Claude làm việc, không phải "what"). Upload bằng <code>client.skills.create()</code>, attach qua <code>container.skills</code> cùng code execution tool. Chỉ load name+description ban đầu, full content load on demand.</p>
-<p><strong>MCP (Bài 9):</strong> Dùng cho third-party services (Linear, Slack...). Khai báo <code>mcp_servers</code> + <code>tools</code> với <code>type: "mcp_toolset"</code>. Có thể lọc tool bằng <code>default_config: {enabled: false}</code> rồi enable từng tool cụ thể. Beta header: <code>betas=["mcp-client-2025-11-20"]</code>.</p>
+<p><strong>Skill:</strong> SKILL.md chứa hướng dẫn cách làm (Claude làm việc <em>thế nào</em>, không phải làm <em>gì</em>). Tải lên bằng <code>client.skills.create()</code>, gắn qua <code>container.skills</code> cùng code execution tool. Ban đầu chỉ nạp name và description; nội dung đầy đủ nạp khi cần.</p>
+<p><strong>MCP:</strong> dùng cho dịch vụ bên thứ ba (Linear, Slack…). Khai báo <code>mcp_servers</code> và <code>tools</code> với <code>type: "mcp_toolset"</code>. Có thể tắt mọi tool bằng <code>default_config: {enabled: false}</code> rồi bật từng tool cần dùng. Beta header: <code>betas=["mcp-client-2025-11-20"]</code>.</p>
 <pre><code class="language-python">response = client.beta.messages.create(
     model="claude-opus-5", max_tokens=1024,
     mcp_servers=[{"type": "url", "url": "https://mcp.linear.app/mcp",
@@ -395,17 +418,17 @@ while True:
   <li><code>tools</code> với <code>mcp_toolset</code> bật bộ tool của máy chủ đó cho Claude dùng.</li>
   <li><code>betas</code> bật tính năng beta. Vì vậy gọi qua <code>client.beta.messages</code>.</li>
 </ul>
-<p><strong>Context Management (Bài 10):</strong> Bốn pattern:</p>
+<p><strong>Quản lý context:</strong> bốn cách:</p>
 <div class="tw"><table>
   <thead><tr><th>Pattern</th><th>Cách dùng</th><th>API</th></tr></thead>
   <tbody>
     <tr><td>Just-in-time loading</td><td>Chỉ load context khi cần, qua tool</td><td>Design pattern</td></tr>
     <tr><td>Server-side compaction</td><td>Tóm tắt lịch sử hội thoại dài</td><td><code>context_management: {edits: [{type: "compact_..."}]}</code></td></tr>
     <tr><td>Prompt caching</td><td>Cache phần system prompt/tool defs ổn định</td><td><code>cache_control: {type: "ephemeral"}</code></td></tr>
-    <tr><td>Memory tool</td><td>Lưu state qua nhiều session</td><td>Client tool, bạn tự quản lý storage</td></tr>
+    <tr><td>Memory tool</td><td>Lưu trạng thái qua nhiều phiên</td><td>Client tool, bạn tự quản lý storage</td></tr>
   </tbody>
 </table></div>
-<p><strong>Managed Agents (Bài 11–12):</strong> Anthropic host vòng lặp agent. Bốn primitive: <strong>Agent</strong> (model + system prompt + toolset) → <strong>Environment</strong> (sandbox + networking) → <strong>Session</strong> (một lần chạy) → <strong>Events</strong> (stream các message). Mở stream <em>trước</em> khi gửi kickoff message.</p>
+<p><strong>Managed Agents:</strong> Anthropic chạy hộ vòng lặp agent. Bốn primitive: <strong>Agent</strong> (model, system prompt, bộ tool) → <strong>Environment</strong> (sandbox và mạng) → <strong>Session</strong> (một lần chạy) → <strong>Events</strong> (luồng message). Mở stream <em>trước</em> khi gửi message khởi động.</p>
 <figure class="fig">
   <div class="sc"><svg viewBox="0 0 640 252" role="img" aria-label="Managed Agents: bốn primitive Agent, Environment, Session, Events nối tiếp nhau; sau đó mở stream trước, gửi kickoff message, rồi đọc event tới khi session idle">
     <defs>
@@ -481,15 +504,15 @@ with client.beta.sessions.events.stream(session_id=session.id) as stream:
   <dt>Sandbox</dt><dd>Môi trường cô lập để agent chạy lệnh mà không chạm vào máy thật.</dd>
   <dt>Kickoff message</dt><dd>Tin nhắn đầu tiên giao việc cho session.</dd>
 </dl></div>
-<div class="insight"><strong>Cốt lõi.</strong> Bốn pattern context: load khi cần, tóm tắt, cache phần ổn định, ghi nhớ qua session. Với managed agents, nhớ chuỗi Agent → Environment → Session → Events.</div>
+<div class="insight"><strong>Cốt lõi.</strong> Bốn cách quản lý context: nạp khi cần, tóm tắt, cache phần ổn định, ghi nhớ qua phiên. Với managed agents, nhớ chuỗi Agent → Environment → Session → Events.</div>
 
 <h2 id="subagents">3. Introduction to Subagents — 4 bài</h2>
 <p class="xtags"><span class="tag xt3">CCAR-F D1</span> <span class="tag xt1">CCDV-F D1</span></p>
 <div class="analogy"><div class="hd">Hình dung đời thường</div>
   Bạn nhờ một đồng nghiệp “đọc giúp 30 file rồi báo lại chỗ nào xử lý đăng nhập”. Đồng nghiệp lật hết 30 file, bạn không phải xem từng file. Bạn nhận <strong>một đoạn tóm tắt</strong> và bàn làm việc của bạn vẫn gọn. Subagent làm đúng như vậy.
 </div>
-<h3>3.1 What Are Subagents? (Bài 1)</h3>
-<p>Subagent chạy trong <strong>context window riêng</strong>. Toàn bộ intermediate work (file reads, searches, tool calls) không ảnh hưởng context chính. Chỉ có summary trả về. Claude Code lưu full transcript của subagent ra file riêng. Ba built-in subagents: <strong>General purpose</strong>, <strong>Explore</strong> (đọc/tìm codebase), <strong>Plan</strong> (phân tích trước khi plan mode).</p>
+<h3>3.1 What Are Subagents?</h3>
+<p>Subagent chạy trong <strong>context window riêng</strong>. Mọi việc trung gian (đọc file, tìm kiếm, gọi tool) không làm đầy context chính; chỉ bản tóm tắt được trả về. Claude Code lưu toàn bộ transcript của subagent ra file riêng. Có ba subagent dựng sẵn: <strong>General purpose</strong>, <strong>Explore</strong> (đọc và tìm trong codebase), <strong>Plan</strong> (phân tích trước khi vào plan mode).</p>
 <figure class="fig">
   <div class="sc"><svg viewBox="0 0 640 258" role="img" aria-label="Subagent chạy trong context riêng: agent chính giao việc, subagent đọc file, tìm kiếm, gọi tool trong context của nó, chỉ trả về summary; context chính không chứa công việc trung gian">
     <defs>
@@ -529,8 +552,8 @@ with client.beta.sessions.events.stream(session_id=session.id) as stream:
   <dt>General purpose · Explore · Plan</dt><dd>Ba subagent có sẵn: đa dụng, đọc và tìm codebase, phân tích trước khi plan mode.</dd>
 </dl></div>
 
-<h3>3.2 Creating a Subagent (Bài 2)</h3>
-<p>File markdown với YAML frontmatter tại <code>.claude/agents/</code> (project scope) hoặc <code>~/.claude/agents/</code> (user scope). Các field:</p>
+<h3>3.2 Creating a Subagent</h3>
+<p>File markdown có YAML frontmatter, đặt ở <code>.claude/agents/</code> (phạm vi project) hoặc <code>~/.claude/agents/</code> (phạm vi user). Các trường:</p>
 <pre><code class="language-yaml">---
 name: code-quality-reviewer
 description: Use this agent when you need to review recently written or modified code for quality, security, and best practice compliance.
@@ -548,16 +571,16 @@ color: purple
 <p>Body dưới frontmatter là system prompt. Thêm "proactively" vào description để Claude tự động delegate không cần hỏi. Restart Claude Code nếu folder <code>agents/</code> mới tạo trong session hiện tại.</p>
 <div class="note"><span class="tag t-new">Thực tế 11/2026</span> Từ Claude Code v2.1.63, tool tạo subagent được đổi tên từ <code>Task</code> thành <code>Agent</code> (<a href="https://github.com/anthropics/claude-code/issues/29677" target="_blank" rel="noopener">issue #29677</a>). Tài liệu thi vẫn dùng tên <code>Task</code>; biết ý nghĩa là đủ.</div>
 
-<h3>3.3 Designing Effective Subagents (Bài 3)</h3>
+<h3>3.3 Designing Effective Subagents</h3>
 <div class="analogy"><div class="hd">Hình dung đời thường</div>
   Nhờ một người “kiểm tra giúp” mà không nói kiểm tra gì và báo lại thế nào thì kết quả sẽ lan man. Đưa họ <strong>một mẫu phiếu có sẵn các mục</strong> thì họ biết điền xong là hết việc.
 </div>
 <p>Bốn yếu tố quan trọng:</p>
 <ol>
   <li><strong>Description cụ thể:</strong> description quyết định cả <em>khi nào</em> delegate lẫn <em>nội dung</em> task được giao. Nếu description yêu cầu main agent cung cấp danh sách file cụ thể, main agent sẽ truyền thông tin đó.</li>
-  <li><strong>Output format rõ ràng:</strong> đây là thay đổi quan trọng nhất. Định nghĩa format trong system prompt tạo "điểm dừng tự nhiên" — subagent biết khi nào xong. Ví dụ: Summary / Critical Issues / Major Issues / Minor Issues / Recommendations / Approval Status.</li>
-  <li><strong>Báo cáo obstacles:</strong> thêm section "Obstacles Encountered" để main thread không phải tự phát hiện lại workaround.</li>
-  <li><strong>Giới hạn tool:</strong> research subagent chỉ cần Glob/Grep/Read; code reviewer cần Bash nhưng không cần Edit/Write.</li>
+  <li><strong>Định dạng output rõ:</strong> đây là thay đổi quan trọng nhất. Định nghĩa định dạng trong system prompt tạo “điểm dừng tự nhiên”, nên subagent biết khi nào xong. Ví dụ các mục: Summary / Critical Issues / Major Issues / Minor Issues / Recommendations / Approval Status.</li>
+  <li><strong>Báo cáo trở ngại:</strong> thêm mục "Obstacles Encountered" để luồng chính không phải tự phát hiện lại cách lách đã dùng.</li>
+  <li><strong>Giới hạn tool:</strong> subagent nghiên cứu chỉ cần Glob, Grep, Read; subagent review code cần Bash nhưng không cần Edit, Write.</li>
 </ol>
 <div class="split wrongright">
   <div class="box wrong"><div class="hd">Sai</div><ul>
@@ -573,7 +596,7 @@ color: purple
 </div>
 <div class="insight"><strong>Cốt lõi.</strong> Output format là thay đổi có tác dụng lớn nhất: nó cho subagent một điểm dừng tự nhiên.</div>
 
-<h3>3.4 Using Subagents Effectively (Bài 4)</h3>
+<h3>3.4 Using Subagents Effectively</h3>
 <p><strong>Câu hỏi quyết định:</strong> "Intermediate work có quan trọng với main thread không?"</p>
 <figure class="fig">
   <div class="sc"><svg viewBox="0 0 640 242" role="img" aria-label="Cây quyết định: nếu công việc trung gian không quan trọng với main thread thì dùng subagent, nếu quan trọng thì không dùng">
@@ -599,19 +622,92 @@ color: purple
   <thead><tr><th>Dùng subagent</th><th>KHÔNG dùng subagent</th></tr></thead>
   <tbody>
     <tr><td>Research/exploration (chỉ cần kết quả)</td><td>Pipeline tuần tự (mỗi bước phụ thuộc bước trước)</td></tr>
-    <tr><td>Code review (cần fresh perspective)</td><td>Test runner (cần xem full output để debug)</td></tr>
-    <tr><td>Task cần custom system prompt khác</td><td>Expert persona ("Python expert") — không thêm giá trị</td></tr>
+    <tr><td>Review code (cần góc nhìn mới)</td><td>Chạy test (cần xem toàn bộ output để debug)</td></tr>
+    <tr><td>Việc cần system prompt riêng khác hẳn</td><td>Vai chuyên gia ("Python expert"): không thêm giá trị</td></tr>
   </tbody>
 </table></div>
 <div class="alert"><strong>Bẫy.</strong> Dùng subagent cho test runner làm mất output đầy đủ mà bạn cần để debug, vì main thread chỉ nhận summary. Tạo subagent chỉ để đóng vai “Python expert” cũng không thêm giá trị.</div>
 
-<h2 id="agent-skills">4. Introduction to Agent Skills — 6 bài</h2>
+<h3>3.5 Subagent nhận gì, không nhận gì</h3>
+<p>Subagent không nhìn thấy hội thoại của agent chính. Nó nhận <strong>system prompt</strong> (phần thân file định nghĩa) cộng thông tin môi trường cơ bản như thư mục làm việc, và bắt đầu từ context mới chỉ có prompt giao việc. Nó cũng không nhận system prompt đầy đủ của Claude Code. Vì vậy mọi thứ subagent cần biết phải nằm trong prompt giao việc hoặc trong system prompt của nó.</p>
+<div class="tw"><table>
+  <thead><tr><th>Trường frontmatter</th><th>Tác dụng</th><th>Lưu ý</th></tr></thead>
+  <tbody>
+    <tr><td><code>description</code></td><td>Claude đọc để quyết định có giao việc hay không</td><td>Bắt buộc, cùng với <code>name</code></td></tr>
+    <tr><td><code>tools</code></td><td>Danh sách cho phép (allowlist)</td><td>Bỏ trống thì thừa kế mọi tool subagent được dùng</td></tr>
+    <tr><td><code>disallowedTools</code></td><td>Danh sách chặn (denylist)</td><td>Áp dụng trước <code>tools</code>; tool ghi ở cả hai nơi bị gỡ</td></tr>
+    <tr><td><code>skills</code></td><td>Nạp sẵn toàn bộ nội dung skill vào context lúc khởi động</td><td>Không phải danh sách skill được phép dùng</td></tr>
+    <tr><td><code>memory</code></td><td>Thư mục nhớ riêng theo scope</td><td>Xem mục 4</td></tr>
+  </tbody>
+</table></div>
+<h3>3.6 Ví dụ chạy từng bước: giao việc review</h3>
+<ol>
+  <li>Bạn gõ “review các file tôi vừa sửa”. Agent chính thấy description của <code>code-quality-reviewer</code> nói “review code vừa sửa” nên giao việc, kèm prompt “review <code>auth.py</code>, <code>session.py</code>, <code>routes.py</code>”.</li>
+  <li>Subagent bắt đầu trong context trống. Nó chỉ biết ba tên file đó và system prompt của mình. Nó đọc file, chạy Grep, mở các file liên quan.</li>
+  <li>Nó điền đúng khuôn trong system prompt: Summary, Critical Issues, Major Issues, Minor Issues, Recommendations, Approval Status. Điền xong mục cuối là điểm dừng tự nhiên.</li>
+  <li>Mục “Obstacles Encountered” ghi “không chạy được test vì thiếu biến môi trường, tôi đã đọc code thay thế”. Agent chính biết cách lách mà không tự mất công dò lại.</li>
+  <li>Context chính nhận một bản tóm tắt vài chục dòng. Bản ghi đầy đủ nằm ở file transcript riêng.</li>
+</ol>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div><ul>
+    <li>Prompt giao việc: “review code như lúc nãy”. Subagent không có “lúc nãy”</li>
+    <li>Bỏ <code>tools</code> trong khi chỉ cần quyền đọc: subagent thừa kế cả Edit và Write</li>
+    <li>Ghi <code>skills: [x]</code> rồi tin rằng subagent chỉ dùng được skill x</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đúng</div><ul>
+    <li>Nêu rõ file, mục tiêu, tiêu chí trong prompt giao việc</li>
+    <li><code>tools: Read, Grep, Glob</code> cho subagent nghiên cứu, hoặc <code>disallowedTools: Write, Edit</code></li>
+    <li><code>skills</code> chỉ quyết định skill nào được nạp sẵn; muốn cấm skill thì bỏ <code>Skill</code> khỏi <code>tools</code></li>
+  </ul></div>
+</div>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Subagent “fork” khác loại thường: nó có toàn bộ lịch sử hội thoại, cùng system prompt, cùng tool và dùng chung prompt cache với hội thoại gốc. Subagent thường bắt đầu từ context mới. Nguồn: <a href="https://code.claude.com/docs/en/sub-agents" target="_blank" rel="noopener">code.claude.com, Subagents</a>.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Allowlist, denylist</dt><dd>Danh sách tool được cho phép, hoặc danh sách tool bị gỡ khỏi bộ thừa kế.</dd>
+  <dt>Preload</dt><dd>Nạp sẵn nội dung đầy đủ của skill vào context subagent ngay lúc khởi động.</dd>
+  <dt>Fork</dt><dd>Subagent thừa kế toàn bộ lịch sử hội thoại của agent chính, khác subagent thường bắt đầu từ context mới.</dd>
+  <dt>Obstacles Encountered</dt><dd>Mục trong output format để subagent báo trở ngại và cách đã lách.</dd>
+</dl></div>
+
+<h2 id="agent-memory">4. Memory của subagent</h2>
+<p class="xtags"><span class="tag xt1">CCDV-F D3</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Một kiểm toán viên quay lại công ty mỗi quý. Người giỏi giữ sổ tay riêng: "kho hay lệch số ở mục này", "phòng kế toán dùng mã viết tắt kia". Lần sau họ đọc sổ trước khi bắt đầu, nên làm nhanh hơn và bắt lỗi đúng chỗ hơn.
+</div>
+<p>Blueprint D3 liệt kê <strong>Agent Memory</strong> là một thành phần lõi của Claude Code. Trường <code>memory</code> trong frontmatter của subagent cho nó một thư mục nhớ riêng, còn lại qua các phiên:</p>
+<pre><code>---
+name: code-reviewer
+description: Reviews code for quality and best practices
+memory: project
+---
+Before reviewing, check your memory. After reviewing, save new patterns you found.</code></pre>
+<div class="tw"><table>
+  <thead><tr><th>Scope</th><th>Thư mục</th><th>Dùng khi</th></tr></thead>
+  <tbody>
+    <tr><td><code>user</code></td><td><code>~/.claude/agent-memory/&lt;tên&gt;/</code></td><td>Kinh nghiệm dùng chung cho mọi dự án của bạn</td></tr>
+    <tr><td><code>project</code> (khuyên dùng)</td><td><code>.claude/agent-memory/&lt;tên&gt;/</code></td><td>Kiến thức riêng dự án, chia sẻ cho đội qua git</td></tr>
+    <tr><td><code>local</code></td><td><code>.claude/agent-memory-local/&lt;tên&gt;/</code></td><td>Riêng dự án nhưng không đưa vào git</td></tr>
+  </tbody>
+</table></div>
+<p>Khi bật memory: system prompt của subagent có hướng dẫn đọc, ghi thư mục nhớ và chứa 200 dòng đầu (tối đa 25KB) của <code>MEMORY.md</code>; các tool Read, Write, Edit tự được bật. Memory của subagent là một phần của <strong>auto memory</strong>: tắt auto memory (<code>autoMemoryEnabled: false</code> hoặc biến <code>CLAUDE_CODE_DISABLE_AUTO_MEMORY</code>) thì trường <code>memory</code> không còn tác dụng.</p>
+<div class="tw"><table>
+  <thead><tr><th>Cơ chế</th><th>Ai viết</th><th>Phạm vi</th></tr></thead>
+  <tbody>
+    <tr><td><code>CLAUDE.md</code></td><td>Con người</td><td>Quy tắc, nạp mọi phiên của dự án</td></tr>
+    <tr><td>Auto memory</td><td>Claude tự ghi (user, feedback, project, reference)</td><td>Phiên chính, theo dự án</td></tr>
+    <tr><td>Trường <code>memory</code> của subagent</td><td>Subagent tự ghi</td><td>Riêng từng subagent, theo phạm vi</td></tr>
+    <tr><td>Memory tool của API</td><td>Model gọi tool, ứng dụng của bạn lưu</td><td>Do bạn thiết kế (xem <a href="/notes/lessons/09-context-reliability.html#long-context">bài 09 §2</a>)</td></tr>
+  </tbody>
+</table></div>
+<div class="alert"><strong>Bẫy.</strong> Plugin subagent bỏ qua các trường <code>hooks</code>, <code>mcpServers</code>, <code>permissionMode</code> vì lý do bảo mật. Cần các trường này thì chép file agent vào <code>.claude/agents/</code>.</div>
+<div class="insight"><strong>Cốt lõi.</strong> CLAUDE.md là quy tắc người viết; memory là ghi chép Claude tự tích luỹ. Subagent có memory riêng theo scope; <code>project</code> là mặc định nên chọn vì đội dùng chung được.</div>
+
+<h2 id="agent-skills">5. Introduction to Agent Skills — 6 bài</h2>
 <p class="xtags"><span class="tag xt3">CCAR-F D3</span> <span class="tag xt1">CCDV-F D3</span></p>
 <div class="analogy"><div class="hd">Hình dung đời thường</div>
   Thư viện có hàng nghìn cuốn, nhưng thủ thư chỉ đọc <strong>nhãn trên gáy sách</strong> khi bạn bước vào. Chỉ khi bạn hỏi về nấu ăn, thủ thư mới rút cuốn sách nấu ăn ra và mở nội dung. Skill cũng vậy: Claude chỉ nạp tên và mô tả, nội dung đầy đủ nạp khi việc khớp.
 </div>
-<h3>4.1–4.2 What Are Skills + Creating Your First Skill</h3>
-<p>Skill = thư mục chứa <code>SKILL.md</code> + (tùy chọn) scripts, references, assets. File SKILL.md có frontmatter (name + description) và phần hướng dẫn bên dưới. Claude chỉ load name+description lúc khởi động; full content chỉ load khi match request.</p>
+<h3>5.1 Skill là gì và tạo skill đầu tiên</h3>
+<p>Skill là thư mục chứa <code>SKILL.md</code> và (tuỳ chọn) script, tài liệu tham khảo, asset. SKILL.md có frontmatter (name, description) và phần hướng dẫn bên dưới. Lúc khởi động Claude chỉ nạp name và description; nội dung đầy đủ chỉ nạp khi khớp yêu cầu.</p>
 <figure class="fig">
   <div class="sc"><svg viewBox="0 0 640 270" role="img" aria-label="Skill được nạp theo tầng: lúc khởi động chỉ nạp name và description vào context; khi yêu cầu khớp thì nạp nội dung SKILL.md; file trong references chỉ đọc khi cần; script chạy mà chỉ output vào context">
     <defs><marker id="m1109" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker></defs>
@@ -623,7 +719,6 @@ color: purple
     <rect x="360" y="86" width="264" height="44" rx="6" class="b-step"/><text x="374" y="104" class="t tb">Phần hướng dẫn</text><text x="374" y="120" class="ts">nội dung bên dưới frontmatter</text>
     <rect x="360" y="136" width="264" height="44" rx="6" class="b-step"/><text x="374" y="154" class="t tb">references/</text><text x="374" y="170" class="ts">tài liệu chi tiết</text>
     <rect x="360" y="186" width="264" height="44" rx="6" class="b-step"/><text x="374" y="204" class="t tb">scripts/</text><text x="374" y="220" class="ts">mã chạy được</text>
-
     <g><rect x="16" y="36" width="268" height="44" rx="6" class="b-done"/><text x="30" y="54" class="t tb">name + description</text><text x="30" y="70" class="ts">nạp lúc khởi động</text>
       <path class="ln-acc flow" d="M358,58 H288" marker-end="url(#m1109)"/></g>
     <g><text x="272" y="54" class="tw-good" text-anchor="end">✓ khớp yêu cầu</text></g>
@@ -647,12 +742,12 @@ color: purple
 <div class="tw"><table>
   <thead><tr><th>Vị trí</th><th>Phạm vi</th><th>Use case</th></tr></thead>
   <tbody>
-    <tr><td><code>~/.claude/skills/</code></td><td>Personal — toàn bộ projects</td><td>Commit style, code explanation style cá nhân</td></tr>
-    <tr><td><code>.claude/skills/</code></td><td>Project — chia sẻ qua git</td><td>PR checklist, brand guidelines của team</td></tr>
-    <tr><td>Enterprise managed settings</td><td>Org-wide, ưu tiên cao nhất</td><td>Compliance workflows bắt buộc</td></tr>
+    <tr><td><code>~/.claude/skills/</code></td><td>Personal — toàn bộ projects</td><td>Kiểu commit, kiểu giải thích code của riêng bạn</td></tr>
+    <tr><td><code>.claude/skills/</code></td><td>Project: chia sẻ qua git</td><td>Checklist PR, hướng dẫn thương hiệu của đội</td></tr>
+    <tr><td>Enterprise managed settings</td><td>Toàn tổ chức, ưu tiên cao nhất</td><td>Compliance workflows bắt buộc</td></tr>
   </tbody>
 </table></div>
-<p>Ưu tiên name conflict: <strong>Enterprise > Personal > Project</strong>. Plugin skills được namespace (<code>/plugin-name:skill-name</code>) nên không xung đột.</p>
+<p>Khi trùng tên, thứ tự ưu tiên là <strong>Enterprise > Personal > Project</strong>. Skill của plugin có namespace riêng (<code>/plugin-name:skill-name</code>) nên không xung đột.</p>
 <figure class="fig">
   <div class="sc"><svg viewBox="0 0 640 232" role="img" aria-label="Ba phạm vi skill xếp theo ưu tiên khi trùng tên: Enterprise cao nhất, rồi Personal, rồi Project">
     <defs><marker id="m1110" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah"/></marker></defs>
@@ -679,7 +774,7 @@ color: purple
   <dt>Namespace</dt><dd>Tiền tố tên (như <code>/plugin-name:skill-name</code>) để hai skill khác nguồn không trùng nhau.</dd>
 </dl></div>
 
-<h3>Viết name và description cho đúng</h3>
+<h3>5.2 Viết name và description cho đúng</h3>
 <p>Lúc khởi động Claude chỉ thấy <code>name</code> và <code>description</code> của mọi skill, nên hai trường này quyết định skill có được dùng đúng lúc không.</p>
 <div class="tw"><table>
   <thead><tr><th>Phần</th><th>Quy tắc</th><th>Ví dụ</th></tr></thead>
@@ -693,7 +788,7 @@ color: purple
   </tbody>
 </table></div>
 <div class="alert"><strong>Bẫy.</strong> Skill không bao giờ được gọi thường do <code>description</code> chỉ nói "làm gì" mà không nói "khi nào". Sửa description trước khi nghĩ tới việc chuyển nội dung sang CLAUDE.md.</div>
-<h3>4.3 Configuration and Multi-File Skills</h3>
+<h3>5.3 Cấu hình và skill nhiều file</h3>
 <p><strong>Frontmatter fields:</strong></p>
 <pre><code class="language-yaml">---
 name: codebase-onboarding
@@ -716,32 +811,32 @@ model: sonnet
 </div>
 <div class="note"><span class="tag t-new">Thực tế 11/2026</span> Academy nhấn mạnh <code>allowed-tools</code> chỉ pre-approve, không hạn chế Claude dùng tool khác; quyền cho các tool còn lại vẫn theo thiết lập thường. Ghi <code>Bash</code> đơn lẻ là pre-approve lệnh shell nói chung, nên chỉ dùng với skill đáng tin hoặc thu hẹp theo mẫu, ví dụ <code>Bash(git status *)</code>. Nguồn: <a href="https://academy.claude.com/courses/introduction-to-agent-skills/configuration-and-multi-file-skills" target="_blank" rel="noopener">Academy, Configuration and multi-file skills</a>.</div>
 
-<h3>4.4 Skills vs Other Claude Code Features</h3>
+<h3>5.4 Skill so với các tính năng khác của Claude Code</h3>
 <div class="analogy"><div class="hd">Hình dung đời thường</div>
   Trong công ty: <strong>nội quy</strong> ai cũng phải theo mỗi ngày (CLAUDE.md). <strong>Sổ tay nghiệp vụ</strong> mở khi gặp đúng việc (skill). <strong>Cổng từ</strong> chặn tự động, không phụ thuộc ai nhớ (hook). <strong>Phòng ban riêng</strong> nhận việc và báo lại (subagent). <strong>Đối tác bên ngoài</strong> nối qua hợp đồng chuẩn (MCP).
 </div>
 <div class="tw"><table>
   <thead><tr><th>Feature</th><th>Khi nào dùng</th></tr></thead>
   <tbody>
-    <tr><td><strong>CLAUDE.md</strong></td><td>Always-on conventions (TypeScript strict mode, naming rules)</td></tr>
-    <tr><td><strong>Skills</strong></td><td>Task-specific expertise, load on demand khi match request</td></tr>
-    <tr><td><strong>Hooks</strong></td><td>Event-driven (trước/sau tool call), enforcement thực sự</td></tr>
-    <tr><td><strong>Subagents</strong></td><td>Isolated context, delegated work với tool access riêng</td></tr>
-    <tr><td><strong>MCP servers</strong></td><td>External tools và integrations từ third-party</td></tr>
+    <tr><td><strong>CLAUDE.md</strong></td><td>Quy ước luôn áp dụng (TypeScript strict mode, quy tắc đặt tên)</td></tr>
+    <tr><td><strong>Skills</strong></td><td>Chuyên môn cho từng loại việc, nạp khi khớp yêu cầu</td></tr>
+    <tr><td><strong>Hooks</strong></td><td>Chạy theo sự kiện (trước, sau lời gọi tool), cưỡng chế thật</td></tr>
+    <tr><td><strong>Subagents</strong></td><td>Context tách riêng, giao việc với quyền tool riêng</td></tr>
+    <tr><td><strong>MCP servers</strong></td><td>Tool và tích hợp bên ngoài từ bên thứ ba</td></tr>
   </tbody>
 </table></div>
 <div class="alert"><strong>Bẫy.</strong> Quy tắc luôn đúng thì để CLAUDE.md, đừng viết thành skill (skill chỉ nạp khi khớp). Việc phải được ép chặt thì dùng hook, vì lời dặn trong skill không phải enforcement.</div>
 
-<h3>4.5–4.6 Sharing Skills + Troubleshooting</h3>
-<p><strong>Chia sẻ:</strong> commit vào <code>.claude/skills</code> → tự động qua git. Plugin → marketplace. Enterprise managed settings → <code>/etc/claude-code/.claude/skills/</code> trên Linux. Subagent custom có thể preload skill qua field <code>skills:</code> trong frontmatter agent file.</p>
+<h3>5.5 Chia sẻ skill và xử lý sự cố</h3>
+<p><strong>Chia sẻ:</strong> commit vào <code>.claude/skills</code> là tự chia sẻ qua git. Plugin thì qua marketplace. Managed settings của Enterprise đặt ở <code>/etc/claude-code/.claude/skills/</code> trên Linux. Subagent tự định nghĩa có thể nạp sẵn skill qua trường <code>skills:</code> trong frontmatter.</p>
 <p><strong>Troubleshoot (theo thứ tự):</strong></p>
 <div class="tw"><table>
   <thead><tr><th>Triệu chứng</th><th>Hành động</th></tr></thead>
   <tbody>
-    <tr><td>Skill không trigger</td><td>Cải thiện description, thêm trigger phrases thực tế</td></tr>
+    <tr><td>Skill không trigger</td><td>Sửa description, thêm các cụm từ người dùng hay nói thật</td></tr>
     <tr><td>Skill không load</td><td>Kiểm tra path/tên file (<code>SKILL.md</code>), dùng <code>claude --debug</code></td></tr>
     <tr><td>Sai skill được dùng</td><td>Làm description rõ ràng và khác biệt hơn</td></tr>
-    <tr><td>Skill bị override</td><td>Kiểm tra priority hierarchy, đổi tên skill</td></tr>
+    <tr><td>Skill bị override</td><td>Kiểm tra thứ tự ưu tiên, đổi tên skill</td></tr>
   </tbody>
 </table></div>
 <p>Validate trước khi share: <code>claude plugin validate ~/.claude/skills</code> hoặc <code>claude plugin validate .claude/skills</code> (cần Claude Code v2.1.233+).</p>
@@ -752,22 +847,122 @@ model: sonnet
 </dl></div>
 <div class="insight"><strong>Cốt lõi.</strong> Description là thứ quyết định skill có chạy không. Hầu hết lỗi “skill không chạy” sửa bằng việc viết description rõ và có cụm từ người dùng thật sự gõ.</div>
 
-<h2 id="exam-tips">5. Lưu ý ôn thi</h2>
+<h3>5.6 Ví dụ chạy từng bước: một yêu cầu đi qua skill</h3>
+<p>Có ba skill trong <code>.claude/skills/</code>: <code>weekly-sales-report</code>, <code>pr-checklist</code> và <code>brand-voice</code>. Người dùng gõ: “cho tôi số liệu thứ Sáu”.</p>
+<ol>
+  <li><strong>Khởi động.</strong> Context chỉ chứa ba cặp name và description, một đoạn ngắn mỗi skill. Phần thân và file <code>references/</code> chưa vào.</li>
+  <li><strong>Khớp.</strong> Claude so “số liệu thứ Sáu” với description. Chỉ <code>weekly-sales-report</code> có cụm “the Friday report”, nên chọn skill đó.</li>
+  <li><strong>Nạp thân.</strong> Nội dung SKILL.md vào context. Claude theo các bước đã đánh số: xuất CRM, nhóm theo vùng, tạo bảng.</li>
+  <li><strong>Đọc khi cần.</strong> Bước 3 dặn “xem <code>references/format.md</code> để biết mẫu bảng”. Chỉ lúc này file đó được đọc.</li>
+  <li><strong>Chạy script.</strong> Bước xuất CRM là script. Code của script không vào context; chỉ đoạn output của nó tốn token.</li>
+</ol>
+<div class="tw"><table>
+  <thead><tr><th>Cái gì vào context</th><th>Khi nào</th><th>Tốn token</th></tr></thead>
+  <tbody>
+    <tr><td>Name và description</td><td>Khởi động, với mọi skill</td><td>Ít, luôn có</td></tr>
+    <tr><td>Thân SKILL.md</td><td>Khi yêu cầu khớp description</td><td>Chỉ khi skill được dùng</td></tr>
+    <tr><td>File trong <code>references/</code></td><td>Khi thân dặn đọc và việc cần</td><td>Chỉ khi được đọc</td></tr>
+    <tr><td>Script</td><td>Khi chạy</td><td>Chỉ phần output</td></tr>
+  </tbody>
+</table></div>
+<div class="alert"><strong>Bẫy.</strong> Description viết “Weekly sales report tool” thì yêu cầu “số liệu thứ Sáu” không khớp và skill không chạy. Thêm cụm người dùng thật sự nói vào description, đừng chuyển cả skill sang CLAUDE.md (khi đó nó nạp mọi phiên và tốn token vô ích).</div>
+<h3>5.7 Skill và subagent gặp nhau</h3>
+<p>Trường <code>skills:</code> dễ bị hiểu nhầm là danh sách skill được phép dùng. Thực ra có hai việc riêng:</p>
+<div class="tw"><table>
+  <thead><tr><th>Muốn</th><th>Làm</th></tr></thead>
+  <tbody>
+    <tr><td>Subagent có sẵn kiến thức của một skill ngay từ đầu</td><td>Liệt kê skill trong trường <code>skills:</code> của frontmatter: toàn bộ nội dung được nạp lúc khởi động</td></tr>
+    <tr><td>Subagent không được gọi skill nào</td><td>Bỏ <code>Skill</code> khỏi <code>tools</code> hoặc thêm vào <code>disallowedTools</code></td></tr>
+  </tbody>
+</table></div>
+<p>Không có <code>skills:</code>, subagent vẫn khám phá và gọi được skill của project, user và plugin qua tool <code>Skill</code> trong lúc làm việc. Vậy <code>skills:</code> chỉ điều khiển phần nạp sẵn, không phải quyền truy cập.</p>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt><code>references/</code></dt><dd>Thư mục trong skill chứa tài liệu chi tiết, chỉ được đọc khi cần.</dd>
+  <dt><code>skills:</code> (trong subagent)</dt><dd>Trường frontmatter nạp sẵn nội dung skill vào context subagent.</dd>
+  <dt>Tool <code>Skill</code></dt><dd>Tool Claude dùng để gọi một skill trong lúc làm việc.</dd>
+</dl></div>
+
+<h2 id="exam-tips">6. Lưu ý ôn thi</h2>
 <div class="analogy"><div class="hd">Hình dung đời thường</div>
   Trước giờ thi, bạn chỉ cần tờ ghi chú một trang: cái nào hay ra, cái nào hay nhầm. Phần này là tờ ghi chú đó.
 </div>
-<div class="insight"><strong>CCAR-F D1 (27%):</strong> Hiểu rõ sự khác biệt agent vs workflow, khi nào dùng subagent, cấu trúc vòng lặp tool-use (stop_reason check), managed agents (4 primitive). Claude kiểm soát reasoning; bạn kiểm soát loop và tools.</div>
-<div class="insight"><strong>CCAR-F D3 (20%):</strong> SKILL.md structure (frontmatter + body), 3 scope (personal/project/enterprise), allowed-tools pre-approval, skills vs CLAUDE.md vs hooks vs subagents, /reload-skills khi folder mới tạo.</div>
-<div class="insight"><strong>CCDV-F D1–D8:</strong> Platform 101 phủ nhẹ toàn bộ 8 domain: D1 (agent loop), D2 (messages.create), D5 (model selection), D6 (system prompt/thinking), D8 (MCP toolset).</div>
+<div class="insight"><strong>CCAR-F D1 (27%):</strong> phân biệt rõ agent với workflow, khi nào dùng subagent, cấu trúc vòng lặp tool use (kiểm tra <code>stop_reason</code>), managed agents (4 primitive). Claude kiểm soát phần suy luận; bạn kiểm soát vòng lặp và tool.</div>
+<div class="insight"><strong>CCAR-F D3 (20%):</strong> cấu trúc SKILL.md (frontmatter và phần thân), 3 phạm vi (personal, project, enterprise), duyệt trước tool bằng <code>allowed-tools</code>, phân biệt skill với CLAUDE.md, hook và subagent, dùng <code>/reload-skills</code> khi vừa tạo thư mục mới.</div>
+<div class="insight"><strong>CCDV-F D1–D8:</strong> khoá Platform 101 chạm nhẹ cả 8 domain: D1 (vòng lặp agent), D2 (<code>messages.create</code>), D5 (chọn model), D6 (system prompt, thinking), D8 (MCP toolset).</div>
 <div class="alert"><strong>Bẫy hay gặp.</strong> Dừng vòng lặp theo chữ trong câu trả lời thay vì <code>stop_reason</code>; quên rằng <code>allowed-tools</code> chỉ pre-approve; dùng subagent cho việc cần xem output đầy đủ; gửi kickoff message trước khi mở stream.</div>
 
-<p class="lesson-practice">Luyện câu hỏi của bài này trong <a href="/bank?lesson=11">🗂️ Ngân hàng</a>.</p>
+<h3>6.1 Chọn cơ chế: tình huống, đáp án, lý do</h3>
+<div class="tw"><table>
+  <thead><tr><th>Tình huống đề đưa</th><th>Chọn</th><th>Vì sao</th></tr></thead>
+  <tbody>
+    <tr><td>Agent chính bị đầy context vì đọc hàng chục file chỉ để tìm một chỗ</td><td>Subagent (Explore)</td><td>Công việc trung gian không cần cho luồng chính, chỉ cần bản tóm tắt</td></tr>
+    <tr><td>Cần xem toàn bộ output của test để debug</td><td>Làm ở luồng chính</td><td>Subagent chỉ trả bản tóm tắt, mất chi tiết</td></tr>
+    <tr><td>Quy ước luôn áp dụng (TypeScript strict, cách đặt tên)</td><td>CLAUDE.md</td><td>Nạp mọi phiên; skill chỉ nạp khi khớp</td></tr>
+    <tr><td>Quy trình cho một loại việc, dùng thỉnh thoảng</td><td>Skill</td><td>Chỉ nạp khi khớp description</td></tr>
+    <tr><td>Phải chặn việc nguy hiểm, không được bỏ sót</td><td>Hook</td><td>Cưỡng chế bằng code; lời dặn trong skill là xác suất</td></tr>
+    <tr><td>Skill nhiều khi không chạy dù nội dung tốt</td><td>Sửa description</td><td>Thêm “khi nào dùng” và các cụm người dùng hay nói</td></tr>
+    <tr><td>Subagent cần nhớ khuôn lỗi của dự án qua các phiên</td><td><code>memory: project</code></td><td>Lưu ở <code>.claude/agent-memory/</code>, chia sẻ qua git</td></tr>
+    <tr><td>Vòng lặp tool use: khi nào thoát</td><td>Kiểm <code>stop_reason</code></td><td>Không đoán từ chữ trong câu trả lời</td></tr>
+  </tbody>
+</table></div>
+<h3>6.2 Bốn câu tự hỏi khi hai đáp án đều nghe hợp lý</h3>
+<ol class="principles">
+  <li>Việc này <strong>bắt buộc</strong> hay chỉ nên làm? Bắt buộc thì cần code (hook, cổng), không cần thêm câu dặn.</li>
+  <li>Thông tin này cần <strong>mọi lúc</strong> hay chỉ khi gặp một loại việc? Mọi lúc thì CLAUDE.md; theo loại việc thì skill.</li>
+  <li>Luồng chính có cần <strong>thấy các bước trung gian</strong> không? Cần thì không dùng subagent.</li>
+  <li><strong>Ai</strong> quyết định, Claude hay code của bạn? Vòng lặp và việc chạy tool thuộc code của bạn; Claude quyết định bước tiếp theo.</li>
+</ol>
+<h3>6.3 Bảng bẫy gộp</h3>
+<div class="tw"><table>
+  <thead><tr><th>Bẫy</th><th>Cách đúng</th><th>Mục</th></tr></thead>
+  <tbody>
+    <tr><td>Coi <code>allowed-tools</code> là giới hạn</td><td>Nó chỉ pre-approve; muốn chặn dùng <code>disallowed-tools</code></td><td><a href="#agent-skills">5</a></td></tr>
+    <tr><td>Subagent làm vai “Python expert”</td><td>Không thêm giá trị; dùng khi cần context hoặc quyền tool riêng</td><td><a href="#subagents">3</a></td></tr>
+    <tr><td>Không quy định output format cho subagent</td><td>Khuôn có mục cuối làm điểm dừng tự nhiên</td><td><a href="#subagents">3</a></td></tr>
+    <tr><td>Plugin subagent mà mong <code>hooks</code>, <code>mcpServers</code>, <code>permissionMode</code> chạy</td><td>Plugin bỏ qua ba trường này; chép file vào <code>.claude/agents/</code></td><td><a href="#agent-memory">4</a></td></tr>
+    <tr><td>Skill không chạy, định chuyển sang CLAUDE.md</td><td>Sửa description trước</td><td><a href="#agent-skills">5</a></td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="exam-keywords" class="pb">7. Từ khoá đề thi</h2>
+<p>Các từ tiếng Anh dưới đây xuất hiện nguyên văn trong đề và tài liệu chính thức. Đọc cột giữa để nắm nghĩa, cột phải để biết đề hay gài ở đâu; bấm số mục để xem lại phần giải thích. Mọi từ khoá của các bài được gom ở trang <a href="/notes/lessons/glossary.html">Thuật ngữ</a>.</p>
+<div class="tw"><table class="kwt">
+  <thead><tr><th>Từ khoá</th><th>Nghĩa</th><th>Đề hay hỏi, dễ nhầm</th><th class="nw">Mục</th></tr></thead>
+  <tbody>
+    <tr data-kw="primitives infrastructure controls"><td>Primitives, Infrastructure, Controls</td><td>Ba lớp của Claude Platform: khối gọi trực tiếp, hạ tầng chạy production, công cụ vận hành</td><td>“Build with primitives, scale on infrastructure, run with control”</td><td><a href="#claude-platform-101">§2</a></td></tr>
+    <tr data-kw="agent loop stop_reason"><td>Agent loop, <code>stop_reason</code></td><td>Vòng lặp tool use và lý do dừng</td><td>Dừng theo <code>stop_reason</code>, không theo chữ trong câu trả lời</td><td><a href="#claude-platform-101">§2</a></td></tr>
+    <tr data-kw="server tool"><td>Server tool</td><td>Tool do Anthropic chạy, kết quả nằm sẵn trong response</td><td>Không viết agent loop cho server tool</td><td><a href="#claude-platform-101">§2</a></td></tr>
+    <tr data-kw="managed agents"><td>Managed Agents</td><td>Anthropic chạy vòng lặp và môi trường cô lập</td><td>Đang beta; khác Agent SDK, nơi bạn tự host</td><td><a href="#claude-platform-101">§2</a></td></tr>
+    <tr data-kw="model inherit"><td><code>model: inherit</code></td><td>Subagent dùng model của agent chính</td><td>Các giá trị khác: haiku, sonnet, opus</td><td><a href="#subagents">§3</a></td></tr>
+    <tr data-kw="subagent"><td>Subagent</td><td>Agent con chạy trong context window riêng, chỉ trả bản tóm tắt</td><td>Dùng khi công việc trung gian không quan trọng với luồng chính</td><td><a href="#subagents">§3</a></td></tr>
+    <tr data-kw="Explore Plan general purpose"><td>General purpose, Explore, Plan</td><td>Ba subagent dựng sẵn: đa dụng, đọc và tìm codebase, phân tích trước plan mode</td><td>Explore chỉ để đọc, tìm</td><td><a href="#subagents">§3</a></td></tr>
+    <tr data-kw=".claude/agents"><td><code>.claude/agents/</code></td><td>Thư mục file định nghĩa subagent của project (user: <code>~/.claude/agents/</code>)</td><td>Phần thân file là system prompt; thư mục mới tạo thì restart</td><td><a href="#subagents">§3</a></td></tr>
+    <tr data-kw="description subagent"><td><code>description</code> của subagent</td><td>Claude đọc để quyết định giao việc và giao gì</td><td>Cụ thể, nêu khi nào dùng; thêm “proactively” để tự giao việc</td><td><a href="#subagents">§3</a></td></tr>
+    <tr data-kw="output format"><td>Output format</td><td>Khuôn kết quả trong system prompt của subagent</td><td>Thay đổi có tác dụng lớn nhất; tạo điểm dừng tự nhiên</td><td><a href="#subagents">§3</a></td></tr>
+    <tr data-kw="Obstacles Encountered"><td>Obstacles Encountered</td><td>Mục báo trở ngại và cách đã lách</td><td>Luồng chính khỏi phải tự phát hiện lại</td><td><a href="#subagents">§3</a></td></tr>
+    <tr data-kw="tools disallowedTools"><td><code>tools</code>, <code>disallowedTools</code></td><td>Danh sách cho phép / danh sách chặn tool của subagent</td><td>Bỏ <code>tools</code> thì thừa kế mọi tool</td><td><a href="#subagents">§3</a></td></tr>
+    <tr data-kw="Task Agent tool"><td>Tool <code>Task</code> (nay là <code>Agent</code>)</td><td>Tool tạo subagent</td><td>Từ v2.1.63 đổi tên; tài liệu thi còn dùng <code>Task</code></td><td><a href="#subagents">§3</a></td></tr>
+    <tr data-kw="fork"><td>Fork</td><td>Subagent thừa kế toàn bộ lịch sử hội thoại</td><td>Subagent thường bắt đầu từ context mới</td><td><a href="#subagents">§3</a></td></tr>
+    <tr data-kw="memory frontmatter"><td><code>memory: user|project|local</code></td><td>Thư mục nhớ riêng của subagent, còn qua các phiên</td><td><code>project</code> khuyên dùng vì chia sẻ qua git</td><td><a href="#agent-memory">§4</a></td></tr>
+    <tr data-kw="MEMORY.md"><td><code>MEMORY.md</code></td><td>File chỉ mục trong thư mục nhớ; nạp 200 dòng đầu, tối đa 25KB</td><td>Tắt auto memory thì trường <code>memory</code> cũng tắt</td><td><a href="#agent-memory">§4</a></td></tr>
+    <tr data-kw="SKILL.md"><td><code>SKILL.md</code></td><td>File chính của skill: frontmatter và phần hướng dẫn</td><td>Chỉ name, description nạp lúc khởi động</td><td><a href="#agent-skills">§5</a></td></tr>
+    <tr data-kw="progressive disclosure"><td>Progressive disclosure</td><td>Nạp theo tầng: nhãn, thân, chi tiết</td><td>SKILL.md dưới 500 dòng, chi tiết ở <code>references/</code></td><td><a href="#agent-skills">§5</a></td></tr>
+    <tr data-kw="skill scope personal project enterprise"><td>Skill scope: personal, project, enterprise</td><td>Ba nơi đặt skill</td><td>Trùng tên: Enterprise &gt; Personal &gt; Project</td><td><a href="#agent-skills">§5</a></td></tr>
+    <tr data-kw="allowed-tools"><td><code>allowed-tools</code></td><td>Pre-approve tool trong phạm vi skill</td><td>Không giới hạn; muốn chặn dùng <code>disallowed-tools</code></td><td><a href="#agent-skills">§5</a></td></tr>
+    <tr data-kw="skill description trigger"><td>Description và trigger</td><td>Claude khớp yêu cầu với description để chọn skill</td><td>Skill không chạy: sửa description trước</td><td><a href="#agent-skills">§5</a></td></tr>
+    <tr data-kw="skills preload"><td><code>skills:</code> trong subagent</td><td>Nạp sẵn nội dung skill vào context subagent</td><td>Không phải quyền truy cập; muốn cấm bỏ <code>Skill</code> khỏi tools</td><td><a href="#agent-skills">§5</a></td></tr>
+    <tr data-kw="skill vs CLAUDE.md hook"><td>Skill, CLAUDE.md, hook, subagent, MCP</td><td>Năm cơ chế mở rộng Claude Code</td><td>Luôn đúng: CLAUDE.md; theo loại việc: skill; cưỡng chế: hook</td><td><a href="#agent-skills">§5</a></td></tr>
+    <tr data-kw="claude plugin validate"><td><code>claude plugin validate</code></td><td>Kiểm tra skill trước khi chia sẻ</td><td>Cần Claude Code v2.1.233 trở lên</td><td><a href="#agent-skills">§5</a></td></tr>
+  </tbody>
+</table></div>
+
+<p class="lesson-practice">Luyện câu hỏi của bài này trong <a href="/bank?lesson=08">🗂️ Ngân hàng</a>.</p>
 
 <div class="btns pager">
-  <a class="btn" href="/notes/lessons/10-academy-courses.html">← Bài 10 · Khóa học Claude Academy</a>
-  <a class="btn primary" href="/notes/lessons/12-mcp.html">Bài 12 · Model Context Protocol (MCP) →</a>
+  <a class="btn" href="/notes/lessons/07-agents.html">← Bài 07 · Agent và điều phối</a>
+  <a class="btn primary" href="/notes/lessons/09-context-reliability.html">Bài 09 · Context và độ tin cậy →</a>
 </div>
 
 <footer>
-  Luyện thi chứng chỉ Claude · Bài 11 · Claude Platform, Subagents &amp; Skills · v0.22 · 2026-11-18. Tổng quan: <a href="/notes/00-tong-quan.md">00</a> · Luyện đề: <a href="/new">30</a>.
+  Luyện thi chứng chỉ Claude · Bài 08 · Claude Platform, subagent và skill · v0.39 · 2026-11-18. <a href="/notes/00-tong-quan.md">Tổng quan</a> · <a href="/new">Luyện đề</a>.
 </footer>

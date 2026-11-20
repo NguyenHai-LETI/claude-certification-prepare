@@ -1,14 +1,14 @@
-<p class="lesson-source">Nguồn: tài liệu ôn tập công khai <a href="https://claude.ai/artifact/3NhHr42CxTHGEs33N1ntFf" target="_blank" rel="noopener">artifact 3NhHr42…</a> (bài 21). Không thuộc và không được Anthropic xác nhận.</p>
+<p class="lesson-source">Nguồn: tài liệu ôn tập công khai <a href="https://claude.ai/artifact/3NhHr42CxTHGEs33N1ntFf" target="_blank" rel="noopener">artifact 3NhHr42…</a> (bài 18). Không thuộc và không được Anthropic xác nhận.</p>
 <header class="cover">
-  <div class="eyebrow">Luyện thi chứng chỉ Claude · Bài 21</div>
+  <div class="eyebrow">Luyện thi chứng chỉ Claude · Bài 18 · Chặng 4 · CCAR-F</div>
   <h1>Thực hành và tổng ôn CCAR-F <span class="ja">CCAR-F · Preparation Exercises · Scope · Sample lessons</span></h1>
-  <p class="lead">Bốn bài lab theo exam guide: agent hỗ trợ khách hàng có cổng chặn và escalation, cấu hình Claude Code cho cả đội, pipeline trích xuất có validate, retry và Batches, hệ nghiên cứu nhiều agent giữ nguồn. Phạm vi có ra và không ra, bảng exam guide so với tài liệu hiện hành, 12 bài học từ câu mẫu.</p>
+  <p class="lead">Bốn bài lab theo exam guide, phạm vi đề CCAR-F, chỗ exam guide khác tài liệu hiện hành, và bài học từ câu mẫu.</p>
   <dl class="meta">
-    <dt>Kỳ thi</dt><dd>CCAR-F D1–D5 (cả 6 tình huống)</dd>
+    <dt>Kỳ thi</dt><dd>CCAR-F D1, D2, D3, D4, D5</dd>
     <dt>Phục vụ</dt><dd><span class="tag xt3">CCAR-F</span> 7 mục · <a href="#xsum">bảng nhãn từng mục</a></dd>
 
     <dt>Nguồn</dt><dd>Exam guide CCAR-F v1.0 mục 8 Preparation Exercises, mục 9 Sample Questions, mục 17 Appendix; ghi chú «Đề cương chi tiết CCAR-F», «Câu hỏi mẫu và chiến thuật CCAR-F»</dd>
-    <dt>Cập nhật</dt><dd><span class="status">v0.22 · 2026-11-18</span> · theo exam guide v1.0</dd>
+    <dt>Cập nhật</dt><dd><span class="status">v0.39 · 2026-11-18</span> · theo exam guide v1.0</dd>
   </dl>
 </header>
 
@@ -20,9 +20,10 @@
       <li><a href="#lab-ex2"><span class="n">2</span><span class="tx">Lab Ex2: cấu hình Claude Code cho cả đội</span><span class="xds" aria-hidden="true"><i class="xd xt3" title="CCAR-F"></i></span></a></li>
       <li><a href="#lab-ex3"><span class="n">3</span><span class="tx">Lab Ex3: pipeline trích xuất có cấu trúc</span><span class="xds" aria-hidden="true"><i class="xd xt3" title="CCAR-F"></i></span></a></li>
       <li><a href="#lab-ex4"><span class="n">4</span><span class="tx">Lab Ex4: hệ nghiên cứu nhiều agent</span><span class="xds" aria-hidden="true"><i class="xd xt3" title="CCAR-F"></i></span></a></li>
-      <li><a href="#pham-vi"><span class="n">5</span><span class="tx">Phạm vi đề CCAR-F</span><span class="xds" aria-hidden="true"><i class="xd xt3" title="CCAR-F"></i></span></a></li>
-      <li><a href="#exam-thuc-te"><span class="n">6</span><span class="tx">Exam guide và tài liệu hiện hành</span><span class="xds" aria-hidden="true"><i class="xd xt3" title="CCAR-F"></i></span></a></li>
-      <li><a href="#cau-mau"><span class="n">7</span><span class="tx">Mười hai bài học từ câu mẫu CCAR-F</span><span class="xds" aria-hidden="true"><i class="xd xt3" title="CCAR-F"></i></span></a></li>
+      <li><a href="#exam-scope"><span class="n">5</span><span class="tx">Phạm vi đề CCAR-F</span><span class="xds" aria-hidden="true"><i class="xd xt3" title="CCAR-F"></i></span></a></li>
+      <li><a href="#exam-vs-current"><span class="n">6</span><span class="tx">Exam guide và tài liệu hiện hành</span><span class="xds" aria-hidden="true"><i class="xd xt3" title="CCAR-F"></i></span></a></li>
+      <li><a href="#sample-questions"><span class="n">7</span><span class="tx">Mười hai bài học từ câu mẫu CCAR-F</span><span class="xds" aria-hidden="true"><i class="xd xt3" title="CCAR-F"></i></span></a></li>
+      <li><a href="#exam-keywords"><span class="n">8</span><span class="tx">Từ khoá đề thi</span></a></li>
     </ol>
 
 </details>
@@ -37,9 +38,9 @@
 <tr><td><a href="#lab-ex2">2. Lab Ex2: cấu hình Claude Code cho cả đội</a></td><td><span class="tag xt3">CCAR-F D3</span> <span class="tag xt3">CCAR-F D2</span></td><td></td></tr>
 <tr><td><a href="#lab-ex3">3. Lab Ex3: pipeline trích xuất có cấu trúc</a></td><td><span class="tag xt3">CCAR-F D4</span> <span class="tag xt3">CCAR-F D5</span></td><td></td></tr>
 <tr><td><a href="#lab-ex4">4. Lab Ex4: hệ nghiên cứu nhiều agent</a></td><td><span class="tag xt3">CCAR-F D1</span> <span class="tag xt3">CCAR-F D5</span></td><td></td></tr>
-<tr><td><a href="#pham-vi">5. Phạm vi đề CCAR-F</a></td><td><span class="tag xt3">CCAR-F D5</span> <span class="tag xt3">CCAR-F</span></td><td></td></tr>
-<tr><td><a href="#exam-thuc-te">6. Exam guide và tài liệu hiện hành</a></td><td><span class="tag xt3">CCAR-F D3</span> <span class="tag xt3">CCAR-F</span></td><td></td></tr>
-<tr><td><a href="#cau-mau">7. Mười hai bài học từ câu mẫu CCAR-F</a></td><td><span class="tag xt3">CCAR-F</span></td><td></td></tr>
+<tr><td><a href="#exam-scope">5. Phạm vi đề CCAR-F</a></td><td><span class="tag xt3">CCAR-F D5</span> <span class="tag xt3">CCAR-F</span></td><td></td></tr>
+<tr><td><a href="#exam-vs-current">6. Exam guide và tài liệu hiện hành</a></td><td><span class="tag xt3">CCAR-F D3</span> <span class="tag xt3">CCAR-F</span></td><td></td></tr>
+<tr><td><a href="#sample-questions">7. Mười hai bài học từ câu mẫu CCAR-F</a></td><td><span class="tag xt3">CCAR-F</span></td><td></td></tr>
 </tbody></table></div>
 </details>
 
@@ -48,7 +49,7 @@
 <div class="analogy"><div class="hd">Hình dung đời thường</div>
   Một nhân viên quầy được giao bốn việc: tra khách, tra đơn, hoàn tiền, chuyển cấp trên. Quầy có một quy định cứng: hoàn tiền trên $500 phải có quản lý ký. Quy định đó không nằm trong lời dặn miệng, mà nằm ở máy tính tiền: máy không cho in phiếu hoàn trên $500.
 </div>
-<p><strong>Mục tiêu</strong>: tự dựng một vòng lặp agent có tool, lỗi có cấu trúc, cổng chặn bằng code và escalation. Không cần gọi API thật; viết code và tự kiểm theo tiêu chí ở cuối mục. Domain: D1, D2, D5. Lý thuyết ở <a href="/notes/lessons/03-agent.html">bài 03</a>, <a href="/notes/lessons/04-tool-mcp.html">bài 04</a>, <a href="/notes/lessons/07-context.html#escalation">bài 07</a>.</p>
+<p><strong>Mục tiêu</strong>: tự dựng một vòng lặp agent có tool, lỗi có cấu trúc, cổng chặn bằng code và escalation. Không cần gọi API thật; viết code và tự kiểm theo tiêu chí ở cuối mục. Domain: D1, D2, D5. Lý thuyết ở <a href="/notes/lessons/07-agents.html">bài 07</a>, <a href="/notes/lessons/05-tool-use.html">bài 05</a>, <a href="/notes/lessons/09-context-reliability.html#escalation">bài 09</a>.</p>
 <h3>Bước 1: bốn tool, hai tool dễ nhầm</h3>
 <pre><code>tools = [
   {"name": "get_customer",
@@ -139,7 +140,7 @@ while True:
 <div class="analogy"><div class="hd">Hình dung đời thường</div>
   Một văn phòng có nội quy chung dán ở sảnh, quy định riêng dán ở cửa từng phòng, sổ tay quy trình để trên kệ, và tủ khoá cá nhân của từng người. Ai mới vào cũng thấy nội quy sảnh; tủ khoá cá nhân thì không ai khác thấy.
 </div>
-<p><strong>Mục tiêu</strong>: dựng cấu hình Claude Code mà mọi người clone repo đều nhận được đúng chuẩn. Domain: D3, D2. Lý thuyết ở <a href="/notes/lessons/05-claude-code.html">bài 05</a>.</p>
+<p><strong>Mục tiêu</strong>: dựng cấu hình Claude Code mà mọi người clone repo đều nhận được đúng chuẩn. Domain: D3, D2. Lý thuyết ở <a href="/notes/lessons/13-claude-code-config.html">bài 13</a>.</p>
 <figure class="fig">
   <div class="sc"><svg viewBox="0 0 640 238" role="img" aria-label="Cây cấu hình Claude Code: phần commit vào repo gồm CLAUDE.md, .claude/rules, .claude/skills, .mcp.json; phần cá nhân gồm ~/.claude/CLAUDE.md và ~/.claude.json">
     <rect x="10" y="10" width="390" height="218" rx="6" class="b-step"/>
@@ -193,6 +194,38 @@ argument-hint: "[package-dir]"
     <tr><td>Migration thư viện qua nhiều file, nhiều cách làm hợp lệ</td><td>Plan mode trước</td></tr>
   </tbody>
 </table></div>
+<h3>2.1 Hai câu hỏi để đặt mỗi thứ vào đúng chỗ</h3>
+<p>Với mỗi mảnh cấu hình, hỏi hai câu. <strong>Ai cần nó?</strong> Cả đội thì đặt trong repo và commit; chỉ mình bạn thì đặt ở thư mục nhà hoặc file <code>settings.local.json</code>. <strong>Khi nào cần nạp?</strong> Luôn luôn thì vào <code>CLAUDE.md</code>; chỉ khi sửa file khớp một mẫu thì vào rule có <code>paths</code>; chỉ khi có người gọi thì vào command hay skill.</p>
+<div class="tw"><table>
+  <thead><tr><th>Thứ cần cấu hình</th><th>Đặt ở</th><th>Nạp khi nào</th><th>Vì sao chỗ này</th></tr></thead>
+  <tbody>
+    <tr><td>Chuẩn code chung, lệnh chạy test</td><td><code>CLAUDE.md</code> ở gốc repo</td><td>Mọi phiên</td><td>Mọi người clone repo đều nhận, không cần làm gì thêm</td></tr>
+    <tr><td>Quy ước cho file test nằm rải khắp repo</td><td><code>.claude/rules/testing.md</code> có <code>paths</code></td><td>Khi Claude làm việc với file khớp glob</td><td><code>CLAUDE.md</code> thư mục con chỉ gắn với một thư mục; glob phủ được file test ở mọi thư mục</td></tr>
+    <tr><td>Quy trình nhiều bước, kết quả dài</td><td>Skill có <code>context: fork</code></td><td>Khi việc khớp hoặc khi gọi</td><td>Output dài ở lại context riêng, phiên chính chỉ nhận tóm tắt</td></tr>
+    <tr><td>Lệnh dùng chung như <code>/review</code></td><td><code>.claude/commands/</code></td><td>Khi gõ lệnh</td><td>Chia sẻ qua git là project scope</td></tr>
+    <tr><td>MCP server dùng chung</td><td><code>.mcp.json</code> trong repo</td><td>Khi khởi động</td><td>Cả đội cùng kết nối; token lấy từ biến môi trường</td></tr>
+    <tr><td>MCP server thử nghiệm, thói quen riêng</td><td><code>~/.claude.json</code>, <code>~/.claude/CLAUDE.md</code></td><td>Mọi project của bạn</td><td>Không làm phiền đồng đội</td></tr>
+  </tbody>
+</table></div>
+<h3>2.2 Skill chạy trong context riêng</h3>
+<p>Mặc định, mọi thứ một skill đọc và in ra đều chảy vào hội thoại chính. Khi skill có <code>context: fork</code>, nó chạy trong một subagent với context riêng; phiên chính chỉ nhận bản tóm tắt cuối. Trường <code>allowed-tools</code> giới hạn tool trong lúc skill chạy, ví dụ chỉ <code>Read, Grep, Glob</code> để skill phân tích không thể sửa file. Trường <code>argument-hint</code> nhắc người dùng nhập đối số khi gọi skill mà chưa truyền.</p>
+<p><strong>Ví dụ chạy từng bước.</strong> Đội muốn kiểm tra phụ thuộc lỗi thời của một monorepo có 200 file <code>package.json</code>.</p>
+<ol>
+  <li>Không fork: Claude đọc 200 file ngay trong hội thoại chính; context đầy, các chỉ dẫn đầu phiên bị đẩy xa.</li>
+  <li>Có <code>context: fork</code> và <code>allowed-tools: Read, Grep, Glob</code>: skill đọc 200 file trong context riêng, không có tool ghi.</li>
+  <li>Skill trả về một bản tóm tắt ngắn: gói lỗi thời, gói rủi ro, đề xuất.</li>
+  <li>Phiên chính vẫn gọn, người dùng hỏi tiếp về kết quả mà không mất bối cảnh trước đó.</li>
+</ol>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div>Dồn mọi quy ước (API, test, tài liệu) vào một <code>CLAUDE.md</code> 600 dòng ở gốc repo; quy ước test cũng được nạp khi chỉ đang sửa tài liệu, và loãng chú ý.</div>
+  <div class="box right"><div class="hd">Đúng</div>Giữ trong <code>CLAUDE.md</code> chỉ thứ cần mọi lúc; quy ước theo loại file chuyển thành rule có <code>paths</code>, chỉ nạp khi Claude đụng file khớp.</div>
+</div>
+<div class="alert"><strong>Bẫy.</strong> Ghi giá trị token thật vào <code>.mcp.json</code> rồi commit. File này nằm trong repo nên lộ cho mọi người và lưu vào lịch sử git. Viết <code>${GITHUB_TOKEN}</code> để mỗi người dùng token của chính mình.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Scope</dt><dd>Phạm vi áp dụng của một cấu hình: project (commit vào repo, cả đội dùng) hay user (thư mục nhà, riêng bạn).</dd>
+  <dt>Glob</dt><dd>Mẫu tên file có ký tự đại diện, ví dụ <code>**/*.test.*</code> khớp mọi file test ở mọi thư mục.</dd>
+  <dt><code>context: fork</code></dt><dd>Thiết lập cho skill chạy trong subagent riêng, chỉ trả tóm tắt về phiên chính.</dd>
+</dl></div>
 <div class="insight"><strong>Cốt lõi.</strong> "Cả đội", "khi clone repo" thì đặt ở project và commit. "Cá nhân", "thử nghiệm" thì đặt ở thư mục nhà. Quy ước theo loại file rải khắp repo thì dùng rule có <code>paths</code>.</div>
 
 <h2 id="lab-ex3">3. Lab Ex3: pipeline trích xuất có cấu trúc</h2>
@@ -200,7 +233,7 @@ argument-hint: "[package-dir]"
 <div class="analogy"><div class="hd">Hình dung đời thường</div>
   Nhập hoá đơn vào phần mềm kế toán: ô nào hoá đơn không có thì để trống, không tự bịa. Nhập sai định dạng ngày thì phần mềm báo lỗi và bạn sửa đúng ô đó. Hoá đơn nào mờ thì để riêng cho kế toán trưởng xem.
 </div>
-<p><strong>Mục tiêu</strong>: trích xuất bằng tool_use với JSON schema, validate và retry, xử lý theo lô, chuyển ca khó cho người. Domain: D4, D5. Lý thuyết ở <a href="/notes/lessons/06-prompt-output.html">bài 06</a>, <a href="/notes/lessons/07-context.html#human-review">bài 07 §5</a>.</p>
+<p><strong>Mục tiêu</strong>: trích xuất bằng tool_use với JSON schema, validate và retry, xử lý theo lô, chuyển ca khó cho người. Domain: D4, D5. Lý thuyết ở <a href="/notes/lessons/04-prompt-output.html">bài 04</a>, <a href="/notes/lessons/09-context-reliability.html#human-review">bài 09 §6</a>.</p>
 <pre><code>{"name": "extract_invoice", "input_schema": {"type": "object",
   "properties": {
     "invoice_number": {"type": "string"},
@@ -262,7 +295,7 @@ argument-hint: "[package-dir]"
 <div class="analogy"><div class="hd">Hình dung đời thường</div>
   Trưởng nhóm nghiên cứu giao hai trợ lý cùng lúc: một người tìm tài liệu trên mạng, một người đọc báo cáo nội bộ. Mỗi người nộp phiếu ghi chép có cột "nhận định, trích đoạn, nguồn, ngày". Ai không truy cập được nguồn thì ghi rõ đã thử gì và còn thiếu gì.
 </div>
-<p><strong>Mục tiêu</strong>: coordinator giao việc song song, truyền context rõ, giữ nguồn gốc, lan truyền lỗi có cấu trúc. Domain: D1, D2, D5. Lý thuyết ở <a href="/notes/lessons/03-agent.html#coordinator">bài 03</a>, <a href="/notes/lessons/07-context.html#nguon-goc">bài 07 §6</a>.</p>
+<p><strong>Mục tiêu</strong>: coordinator giao việc song song, truyền context rõ, giữ nguồn gốc, lan truyền lỗi có cấu trúc. Domain: D1, D2, D5. Lý thuyết ở <a href="/notes/lessons/07-agents.html#coordinator">bài 07</a>, <a href="/notes/lessons/09-context-reliability.html#provenance">bài 09 §7</a>.</p>
 <pre><code># Coordinator: allowedTools phải có "Task" để tạo subagent (theo exam guide v1.0;
 # docs Agent SDK hiện hành: allowedTools chỉ tự duyệt, tool Agent chạy dù không liệt kê)
 options = ClaudeAgentOptions(allowed_tools=["Task"], agents={
@@ -310,9 +343,37 @@ options = ClaudeAgentOptions(allowed_tools=["Task"], agents={
     <tr><td>Mâu thuẫn</td><td>Hai nguồn uy tín khác số liệu: giữ cả hai kèm nguồn, tách phần đã xác lập và phần còn tranh cãi</td></tr>
   </tbody>
 </table></div>
+<h3>4.1 Subagent không thừa hưởng hội thoại</h3>
+<p>Subagent bắt đầu với context trống. Nó chỉ biết những gì coordinator viết trong prompt giao việc. Vì vậy prompt phải tự đủ: câu hỏi cần trả lời, phạm vi (nguồn nào, giai đoạn nào), ranh giới với subagent khác, định dạng kết quả. Subagent làm đúng yêu cầu mà báo cáo vẫn thiếu thì lỗi nằm ở người giao việc.</p>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div>Giao "nghiên cứu về năng lượng tái tạo" cho hai subagent; cả hai cùng tìm tin về điện mặt trời, không ai đụng tới điện gió. Báo cáo cuối phủ hẹp.</div>
+  <div class="box right"><div class="hd">Đúng</div>Coordinator chia chủ đề thành các hướng không chồng nhau (điện mặt trời, điện gió, lưu trữ), mỗi prompt ghi rõ hướng, nguồn ưu tiên và định dạng kết quả.</div>
+</div>
+<h3>4.2 Ba cách xử lý lỗi của subagent</h3>
+<div class="tw"><table>
+  <thead><tr><th>Cách làm</th><th>Hậu quả</th><th>Đánh giá</th></tr></thead>
+  <tbody>
+    <tr><td>Nuốt lỗi: trả "không có kết quả" như thể bình thường</td><td>Coordinator không biết đây là lỗi hay thật sự không có dữ liệu; báo cáo có lỗ hổng không ai thấy</td><td class="no">Sai</td></tr>
+    <tr><td>Dừng cả hệ khi một subagent timeout</td><td>Mất luôn kết quả của các subagent đã xong</td><td class="no">Sai</td></tr>
+    <tr><td>Trả lỗi có cấu trúc: loại lỗi, truy vấn đã thử, kết quả một phần, hướng thay thế</td><td>Coordinator đi tiếp với phần có sẵn, thử hướng khác hoặc ghi rõ chỗ thiếu trong báo cáo</td><td class="yes">Đúng</td></tr>
+  </tbody>
+</table></div>
+<p><strong>Ví dụ chạy từng bước.</strong> Subagent phân tích tài liệu nội bộ bị timeout ở báo cáo thứ ba trong năm báo cáo.</p>
+<ol>
+  <li>Subagent trả <code>status: partial</code>, <code>errorType: timeout</code>, hai kết quả đã trích, và gợi ý thử lại báo cáo thứ ba.</li>
+  <li>Coordinator thử một lần với phạm vi nhỏ hơn; vẫn lỗi.</li>
+  <li>Coordinator đi tiếp: tổng hợp từ bốn báo cáo, ghi chú "báo cáo thứ ba chưa phân tích được do timeout".</li>
+  <li>Người đọc báo cáo biết phạm vi phủ thật, không nhầm thiếu dữ liệu với không có phát hiện.</li>
+</ol>
+<div class="alert"><strong>Bẫy.</strong> Khi hai nguồn uy tín đưa số liệu khác nhau, đừng chọn một số "có vẻ đúng" và bỏ số kia. Giữ cả hai kèm nguồn và ngày, ghi rõ chỗ mâu thuẫn. Chọn một bên mà không có căn cứ là làm mất thông tin người đọc cần.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Coordinator</dt><dd>Agent điều phối: chia việc, giao cho subagent, tổng hợp kết quả.</dd>
+  <dt>Provenance</dt><dd>Nguồn gốc của một thông tin: nhận định này lấy từ đâu, trích đoạn nào, ngày nào.</dd>
+  <dt>Kết quả một phần (partial results)</dt><dd>Phần dữ liệu đã lấy được trước khi lỗi xảy ra, trả kèm lỗi để không mất công.</dd>
+</dl></div>
 <div class="note"><span class="tag t-new">Thực tế 11/2026</span> Trong Agent SDK hiện hành, tool tạo subagent có thể mang tên <code>Agent</code>; exam guide v1.0 dùng <code>Task</code>. Làm bài thi theo <code>Task</code>.</div>
 
-<h2 id="pham-vi">5. Phạm vi đề CCAR-F</h2>
+<h2 id="exam-scope">5. Phạm vi đề CCAR-F</h2>
 <p class="xtags"><span class="tag xt3">CCAR-F D5</span> <span class="tag xt3">CCAR-F</span></p>
 <p>Exam guide liệt kê rõ chủ đề có ra và không ra. Dùng danh sách "không ra" để không học thừa và để loại nhanh phương án nói về các chủ đề đó.</p>
 <div class="split">
@@ -348,25 +409,37 @@ options = ClaudeAgentOptions(allowed_tools=["Task"], agents={
 </div>
 <div class="alert"><strong>Bẫy.</strong> Phương án "dùng vector database", "chuyển sang streaming", "tăng rate limit" trong một câu CCAR-F hiếm khi là đáp án, vì chủ đề nằm ngoài phạm vi. Nhiều mục trong cột phải lại có trong CCDV-F (streaming, caching, rate limit): đừng mang suy luận CCAR-F sang CCDV-F.</div>
 
-<h2 id="exam-thuc-te">6. Exam guide và tài liệu hiện hành</h2>
+<h2 id="exam-vs-current">6. Exam guide và tài liệu hiện hành</h2>
 <p class="xtags"><span class="tag xt3">CCAR-F D3</span> <span class="tag xt3">CCAR-F</span></p>
 <p>CCAR-F không đổi đề, nhưng sản phẩm thì đổi. Khi hai bên khác nhau, <strong>trả lời theo exam guide</strong>. Bảng gom các khác biệt đã ghi rải rác ở các bài:</p>
 <div class="tw"><table>
   <thead><tr><th>Chủ đề</th><th>Exam guide v1.0</th><th>Tài liệu 11/2026</th><th>Bài</th></tr></thead>
   <tbody>
-    <tr><td>Tool tạo subagent</td><td><code>Task</code>, <code>allowedTools</code> có <code>"Task"</code></td><td>Có thể tên <code>Agent</code>; <code>allowedTools</code> chỉ tự duyệt, <code>Agent</code> chạy dù không liệt kê (<a href="https://code.claude.com/docs/en/agent-sdk/permissions" target="_blank" rel="noopener">docs</a>)</td><td><a href="/notes/lessons/03-agent.html#task">03 §4</a></td></tr>
-    <tr><td>Skill <code>allowed-tools</code></td><td>Giới hạn tool khi skill chạy</td><td>Chỉ cấp sẵn quyền, không giới hạn; chặn tool bằng <code>disallowed-tools</code> (<a href="https://code.claude.com/docs/en/skills" target="_blank" rel="noopener">docs</a>)</td><td><a href="/notes/lessons/05-claude-code.html">05</a></td></tr>
-    <tr><td><code>tool_choice</code> ép buộc</td><td><code>"any"</code> và tool cụ thể là cách đảm bảo có output</td><td>Một số model mới trả 400; dùng <code>strict</code> hoặc structured outputs</td><td><a href="/notes/lessons/04-tool-mcp.html#tool-choice">04 §4</a></td></tr>
-    <tr><td>Extended thinking</td><td><code>budget_tokens</code></td><td>Adaptive thinking và effort; model mới bỏ <code>budget_tokens</code></td><td><a href="/notes/lessons/02-model-toi-uu.html#thinking">02 §4</a></td></tr>
-    <tr><td>Sampling</td><td><code>temperature</code></td><td>Phiên bản API 2026-10-21 bỏ <code>temperature</code>, <code>top_p</code>, <code>top_k</code></td><td><a href="/notes/lessons/19-api-nang-cao.html#rest-sdk">19 §1</a></td></tr>
-    <tr><td>Context dài</td><td>Case facts, cắt trường, tóm tắt ở đầu, <code>/compact</code></td><td>Có thêm compaction phía server, context editing</td><td><a href="/notes/lessons/07-context.html#case-facts">07 §1</a></td></tr>
-    <tr><td>MCP transport</td><td>stdio, HTTP</td><td>Streamable HTTP thay HTTP+SSE cũ</td><td><a href="/notes/lessons/04-tool-mcp.html#mcp">04 §6</a></td></tr>
-    <tr><td>MCP Roots, Sampling, Logging</td><td>Không nêu riêng (khóa Academy dạy Roots giới hạn file access, Sampling)</td><td>Deprecated từ đặc tả MCP 2026-07-28 (SEP-2577); roots chỉ mang tính thông tin (<a href="https://modelcontextprotocol.io/specification/latest/changelog" target="_blank" rel="noopener">changelog</a>)</td><td><a href="/notes/lessons/12-mcp.html#mcp-advanced">12 §3</a></td></tr>
-    <tr><td>Claude Code headless</td><td><code>-p</code>, <code>--output-format json</code>, <code>--json-schema</code></td><td>Thêm <code>--bare</code> cho script; chế độ này nằm trong Agent SDK</td><td><a href="/notes/lessons/05-claude-code.html#ci-cd">05 §6</a></td></tr>
+    <tr><td>Tool tạo subagent</td><td><code>Task</code>, <code>allowedTools</code> có <code>"Task"</code></td><td>Có thể tên <code>Agent</code>; <code>allowedTools</code> chỉ tự duyệt, <code>Agent</code> chạy dù không liệt kê (<a href="https://code.claude.com/docs/en/agent-sdk/permissions" target="_blank" rel="noopener">docs</a>)</td><td><a href="/notes/lessons/07-agents.html#task">07 §4</a></td></tr>
+    <tr><td>Skill <code>allowed-tools</code></td><td>Giới hạn tool khi skill chạy</td><td>Chỉ cấp sẵn quyền, không giới hạn; chặn tool bằng <code>disallowed-tools</code> (<a href="https://code.claude.com/docs/en/skills" target="_blank" rel="noopener">docs</a>)</td><td><a href="/notes/lessons/13-claude-code-config.html#command-skill">13 §2</a></td></tr>
+    <tr><td>MCP Roots, Sampling, Logging</td><td>Không nêu riêng (khóa Academy dạy Roots giới hạn file access, Sampling)</td><td>Deprecated từ đặc tả MCP 2026-07-28 (SEP-2577); roots chỉ mang tính thông tin (<a href="https://modelcontextprotocol.io/specification/latest/changelog" target="_blank" rel="noopener">changelog</a>)</td><td><a href="/notes/lessons/06-mcp.html#mcp-advanced">06 §4</a></td></tr>
+    <tr><td><code>tool_choice</code> ép buộc</td><td><code>"any"</code> và tool cụ thể là cách đảm bảo có output</td><td>Một số model mới trả 400; dùng <code>strict</code> hoặc structured outputs</td><td><a href="/notes/lessons/05-tool-use.html#tool-choice">05 §6</a></td></tr>
+    <tr><td>Extended thinking</td><td><code>budget_tokens</code></td><td>Adaptive thinking và effort; model mới bỏ <code>budget_tokens</code></td><td><a href="/notes/lessons/03-models-cost.html#thinking">03 §2</a></td></tr>
+    <tr><td>Sampling</td><td><code>temperature</code></td><td>Phiên bản API 2026-10-21 bỏ <code>temperature</code>, <code>top_p</code>, <code>top_k</code></td><td><a href="/notes/lessons/02-messages-api.html#rest-sdk">02 §5</a></td></tr>
+    <tr><td>Context dài</td><td>Case facts, cắt trường, tóm tắt ở đầu, <code>/compact</code></td><td>Có thêm compaction phía server, context editing</td><td><a href="/notes/lessons/09-context-reliability.html#case-facts">09 §1</a></td></tr>
+    <tr><td>MCP transport</td><td>stdio, HTTP</td><td>Streamable HTTP thay HTTP+SSE cũ</td><td><a href="/notes/lessons/06-mcp.html#mcp">06 §2</a></td></tr>
+    <tr><td>Claude Code headless</td><td><code>-p</code>, <code>--output-format json</code>, <code>--json-schema</code></td><td>Thêm <code>--bare</code> cho script; chế độ này nằm trong Agent SDK</td><td><a href="/notes/lessons/13-claude-code-config.html#ci-cd">13 §7</a></td></tr>
   </tbody>
 </table></div>
+<h3>6.1 Cách đọc bảng khi gặp một phương án "mới hơn"</h3>
+<p>Đề CCAR-F viết theo exam guide v1.0. Nếu một phương án dùng tính năng của tài liệu hiện hành mà exam guide không nhắc, đừng chọn chỉ vì nó mới. Làm ba bước:</p>
+<ol>
+  <li>Xác định câu hỏi đang kiểm khái niệm nào (ví dụ: ép Claude trả đầu ra có cấu trúc).</li>
+  <li>Tìm trong bảng hàng tương ứng. Cột exam guide là cách đề coi là đúng.</li>
+  <li>Chọn phương án khớp cột exam guide. Nếu hai phương án cùng đúng theo exam guide, quay về nguyên tắc: nguyên nhân gốc, cách nhẹ và tương xứng, cơ chế tất định cho hậu quả lớn.</li>
+</ol>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div>Câu hỏi về cách đảm bảo mọi lần trả lời đều có đầu ra có cấu trúc. Loại phương án <code>tool_choice: "any"</code> vì "model mới trả 400", chọn phương án nói về một tính năng ngoài exam guide.</div>
+  <div class="box right"><div class="hd">Đúng</div>Chọn <code>tool_choice</code> <code>"any"</code> hoặc tool cụ thể, đúng theo exam guide. Khác biệt của tài liệu hiện hành ghi vào ghi chú ôn tập, không đổi đáp án.</div>
+</div>
+<div class="alert"><strong>Bẫy.</strong> Làm ngược lại cũng sai khi làm sản phẩm thật. Bảng này chỉ cho cách trả lời đề; khi viết code chạy trên API hiện hành, đọc tài liệu hiện hành, vì model mới có thể từ chối tham số cũ.</div>
 
-<h2 id="cau-mau">7. Mười hai bài học từ câu mẫu CCAR-F</h2>
+<h2 id="sample-questions">7. Mười hai bài học từ câu mẫu CCAR-F</h2>
 <p class="xtags"><span class="tag xt3">CCAR-F</span></p>
 <p>Tóm tắt bài học từ 12 câu mẫu của exam guide, xếp theo tình huống (không chép đề):</p>
 <div class="tw"><table>
@@ -386,15 +459,71 @@ options = ClaudeAgentOptions(allowed_tools=["Task"], agents={
     <tr><td>PR lớn review không đều</td><td>Mỗi file một lượt, thêm lượt tích hợp</td><td>Context lớn hơn không chữa loãng chú ý</td></tr>
   </tbody>
 </table></div>
+<h3>7.1 Ba kiểu nguyên nhân gốc lặp lại</h3>
+<p>Mười hai bài học trên quy về ba kiểu. Nhận ra kiểu nào thì chọn nhanh được hướng sửa.</p>
+<div class="tw"><table>
+  <thead><tr><th>Kiểu nguyên nhân</th><th>Dấu hiệu trong đề</th><th>Hướng sửa</th><th>Ví dụ trong bảng</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Claude thiếu thông tin để chọn đúng</strong></td><td>Chọn nhầm tool, escalate sai chỗ, báo cáo thiếu một mảng</td><td>Bổ sung thông tin: mô tả tool, tiêu chí kèm few-shot, giao việc rõ hơn</td><td>Hai tool mô tả sơ sài; tiêu chí escalation</td></tr>
+    <tr><td><strong>Quy tắc bắt buộc đang dựa vào lời dặn</strong></td><td>Có hậu quả tài chính, bảo mật, tuân thủ; "thỉnh thoảng bỏ qua bước"</td><td>Cơ chế tất định: cổng bằng code, hook, quyền</td><td>Bỏ qua xác minh khách trước hoàn tiền</td></tr>
+    <tr><td><strong>Chọn sai công cụ cho hình dạng việc</strong></td><td>Việc rõ nhưng dùng công cụ nặng, hoặc ngược lại</td><td>Khớp công cụ với việc: plan mode cho việc phức tạp, <code>-p</code> cho CI, Batches cho việc không gấp</td><td>Tách monolith; pipeline CI treo; chuyển mọi việc sang Batches</td></tr>
+  </tbody>
+</table></div>
+<p><strong>Ví dụ chạy từng bước.</strong> Một câu hỏi mô tả: agent hỗ trợ đôi lúc gọi <code>process_refund</code> trước khi xác minh khách. Bốn phương án: viết lại system prompt nhấn mạnh "luôn xác minh trước"; thêm ví dụ few-shot; chặn bằng code; thêm một agent giám sát.</p>
+<ol>
+  <li>Nhận diện kiểu: có hậu quả tài chính và hành vi "đôi lúc", nên thuộc kiểu quy tắc bắt buộc dựa vào lời dặn.</li>
+  <li>Loại phương án dựa vào lời dặn hoặc ví dụ: chỉ làm giảm xác suất, không bảo đảm.</li>
+  <li>Loại agent giám sát: thêm một thành phần xác suất khác, nặng hơn mức cần.</li>
+  <li>Chọn cổng bằng code chặn <code>process_refund</code> và <code>lookup_order</code> khi chưa có khách đã xác minh.</li>
+</ol>
+<div class="alert"><strong>Bẫy.</strong> Đừng áp một công thức cho mọi câu. Khi lỗi chỉ do mô tả tool sơ sài, thêm cổng chặn là làm quá tay; cách nhẹ nhất giải quyết đúng nguyên nhân mới là đáp án. Cơ chế tất định dành cho trường hợp hậu quả nặng.</div>
 <div class="insight"><strong>Cốt lõi.</strong> Tìm nguyên nhân gốc; chọn cách nhẹ và tương xứng; ngoại lệ là khi có hậu quả tài chính, bảo mật, tuân thủ thì chọn cơ chế tất định. Chiến thuật đầy đủ ở <a href="/notes/00-tong-quan.md">trang tổng quan §6</a>.</div>
 
-<p class="lesson-practice">Luyện câu hỏi của bài này trong <a href="/bank?lesson=21">🗂️ Ngân hàng</a>.</p>
+<h2 id="exam-keywords" class="pb">8. Từ khoá đề thi</h2>
+<p>Các từ tiếng Anh dưới đây xuất hiện nguyên văn trong đề và tài liệu chính thức. Đọc cột giữa để nắm nghĩa, cột phải để biết đề hay gài ở đâu; bấm số mục để xem lại phần giải thích. Mọi từ khoá của các bài được gom ở trang <a href="/notes/lessons/glossary.html">Thuật ngữ</a>.</p>
+<div class="tw"><table class="kwt">
+  <thead><tr><th>Từ khoá</th><th>Nghĩa</th><th>Đề hay hỏi, dễ nhầm</th><th class="nw">Mục</th></tr></thead>
+  <tbody>
+    <tr data-kw="stop_reason"><td><code>stop_reason</code></td><td>Lý do Claude dừng lượt; vòng lặp agent đọc nó để biết bước tiếp theo</td><td><code>tool_use</code> thì chạy tool rồi lặp; <code>end_turn</code> thì dừng. Không đoán từ chữ "xong" trong câu trả lời</td><td><a href="#lab-ex1">§1</a></td></tr>
+    <tr data-kw="tool description"><td>Mô tả tool (tool description)</td><td>Đoạn văn Claude đọc để chọn tool: trả gì, dùng khi nào, cần gì, ranh giới</td><td>Hai tool mô tả sơ sài thì bị gọi nhầm; sửa gốc bằng cách viết lại mô tả, nhẹ hơn thêm bộ phân loại</td><td><a href="#lab-ex1">§1</a></td></tr>
+    <tr data-kw="tool_result"><td><code>tool_result</code>, <code>is_error</code></td><td>Khối gửi kết quả tool cho Claude; <code>is_error</code> đánh dấu lỗi</td><td>Mọi <code>tool_result</code> của một lượt đi trong một message role <code>user</code></td><td><a href="#lab-ex1">§1</a></td></tr>
+    <tr data-kw="errorCategory"><td><code>errorCategory</code>, <code>isRetryable</code></td><td>Lỗi có cấu trúc: loại lỗi (transient, validation, business, permission) và có thử lại được không</td><td>Timeout thì thử lại; lỗi nghiệp vụ thì giải thích cho khách, không thử lại</td><td><a href="#lab-ex1">§1</a></td></tr>
+    <tr data-kw="programmatic enforcement"><td>Programmatic enforcement (cổng chặn bằng code)</td><td>Quy tắc bắt buộc được thi hành bằng code hoặc hook, không bằng lời dặn</td><td>Hậu quả tài chính, bảo mật: chọn cơ chế tất định; lời dặn trong prompt chỉ là xác suất</td><td><a href="#lab-ex1">§1</a></td></tr>
+    <tr data-kw="PreToolUse"><td>Hook <code>PreToolUse</code></td><td>Hook chạy trước khi tool thực thi, có thể chặn hoặc chuyển hướng</td><td>Dùng cho cổng như "chưa xác minh khách thì không hoàn tiền"</td><td><a href="#lab-ex1">§1</a></td></tr>
+    <tr data-kw="escalate_to_human"><td><code>escalate_to_human</code></td><td>Tool chuyển ca cho người kèm tóm tắt</td><td>Bàn giao phải đủ customer_id, nguyên nhân, đề xuất; không bắt người đọc lại transcript</td><td><a href="#lab-ex1">§1</a></td></tr>
+    <tr data-kw="escalation criteria"><td>Escalation criteria (tiêu chí chuyển người)</td><td>Điều kiện rõ để agent chuyển ca, kèm ví dụ few-shot</td><td>Điểm tự tin do model tự báo và sentiment không phải tiêu chí đáng tin</td><td><a href="#sample-questions">§7</a></td></tr>
+    <tr data-kw="CLAUDE.md"><td><code>CLAUDE.md</code></td><td>File chỉ dẫn Claude Code nạp mỗi phiên</td><td>Cả đội dùng thì đặt trong repo và commit; cấp user chỉ cho sở thích riêng</td><td><a href="#lab-ex2">§2</a></td></tr>
+    <tr data-kw="@import"><td><code>@import</code></td><td>Cú pháp tham chiếu file ngoài từ CLAUDE.md để giữ gọn</td><td>Mỗi package import chuẩn liên quan; khác rule có <code>paths</code> (nạp theo file đang sửa)</td><td><a href="#exam-scope">§5</a></td></tr>
+    <tr data-kw=".claude/rules paths"><td><code>.claude/rules/</code> với <code>paths</code></td><td>Rule chỉ nạp khi làm việc với file khớp glob</td><td>Đáp án cho quy ước theo loại file rải khắp repo (như file test); CLAUDE.md thư mục con gắn với một thư mục</td><td><a href="#lab-ex2">§2</a></td></tr>
+    <tr data-kw=".claude/commands"><td><code>.claude/commands/</code></td><td>Slash command dùng chung qua repo</td><td>Chia sẻ qua git là project scope; <code>~/.claude/commands</code> là riêng bạn</td><td><a href="#sample-questions">§7</a></td></tr>
+    <tr data-kw="context fork"><td><code>context: fork</code></td><td>Skill chạy trong subagent riêng, chỉ trả tóm tắt</td><td>Dùng cho skill có output dài; không phải cách giới hạn tool</td><td><a href="#lab-ex2">§2</a></td></tr>
+    <tr data-kw="allowed-tools"><td><code>allowed-tools</code></td><td>Trường của skill giới hạn tool khi skill chạy</td><td>Cho skill phân tích chỉ Read, Grep, Glob để không sửa file</td><td><a href="#lab-ex2">§2</a></td></tr>
+    <tr data-kw="argument-hint"><td><code>argument-hint</code></td><td>Gợi ý đối số khi gọi skill mà chưa truyền</td><td>Chỉ nhắc người dùng nhập tham số; không phải cách giới hạn tool hay quyền</td><td><a href="#lab-ex2">§2</a></td></tr>
+    <tr data-kw=".mcp.json"><td><code>.mcp.json</code></td><td>File cấu hình MCP của project, commit vào repo</td><td>Token viết <code>${TÊN_BIẾN}</code>, không ghi giá trị thật; server cá nhân ở <code>~/.claude.json</code></td><td><a href="#lab-ex2">§2</a></td></tr>
+    <tr data-kw="project scope user scope"><td>Project scope, user scope</td><td>Cấu hình chia sẻ cho cả đội, hay riêng bạn</td><td>"Cả đội", "khi clone repo" là project; "cá nhân", "thử nghiệm" là user</td><td><a href="#lab-ex2">§2</a></td></tr>
+    <tr data-kw="plan mode"><td>Plan mode</td><td>Chế độ Claude tìm hiểu và đề xuất kế hoạch trước khi sửa</td><td>Hợp với migration nhiều file, nhiều cách làm hợp lệ; bug một file rõ nguyên nhân thì làm trực tiếp</td><td><a href="#lab-ex2">§2</a></td></tr>
+    <tr data-kw="Task tool"><td>Tool <code>Task</code> (tạo subagent)</td><td>Tool coordinator dùng để giao việc cho subagent</td><td><code>allowedTools</code> của coordinator phải có <code>"Task"</code>; tài liệu hiện hành có thể gọi là <code>Agent</code>, đề dùng <code>Task</code></td><td><a href="#lab-ex4">§4</a></td></tr>
+    <tr data-kw="AgentDefinition"><td><code>AgentDefinition</code></td><td>Khai báo một subagent: mô tả, prompt, danh sách tool</td><td>Mỗi subagent chỉ có tool đúng vai</td><td><a href="#lab-ex4">§4</a></td></tr>
+    <tr data-kw="parallel subagents"><td>Chạy subagent song song</td><td>Coordinator phát nhiều lời gọi <code>Task</code> trong cùng một response</td><td>Gọi lần lượt từng response thì không song song</td><td><a href="#lab-ex4">§4</a></td></tr>
+    <tr data-kw="provenance"><td>Provenance (nguồn gốc)</td><td>Giữ cặp nhận định và nguồn, trích đoạn, ngày</td><td>Số liệu mâu thuẫn: giữ cả hai kèm nguồn, không chọn một bên</td><td><a href="#lab-ex4">§4</a></td></tr>
+    <tr data-kw="partial results"><td>Partial results (kết quả một phần)</td><td>Phần đã lấy được trả kèm lỗi có cấu trúc</td><td>Không nuốt lỗi, không dừng cả hệ; ghi rõ phần thiếu trong báo cáo</td><td><a href="#lab-ex4">§4</a></td></tr>
+    <tr data-kw="verify_fact"><td><code>verify_fact</code></td><td>Tool hẹp cho agent tổng hợp kiểm tra nhanh một dữ kiện</td><td>Ví dụ của quyền tối thiểu, thay vì cho agent tổng hợp mọi tool tìm kiếm</td><td><a href="#sample-questions">§7</a></td></tr>
+    <tr data-kw="tool_use structured output"><td>Output có cấu trúc qua <code>tool_use</code> và JSON schema</td><td>Ép đầu ra theo schema bằng tool</td><td>Schema loại lỗi cú pháp, không loại lỗi ngữ nghĩa như tổng sai</td><td><a href="#lab-ex3">§3</a></td></tr>
+    <tr data-kw="nullable"><td>Nullable (<code>["string", "null"]</code>)</td><td>Trường được phép là null khi tài liệu không có thông tin</td><td>Chống bịa giá trị; trường bắt buộc mà tài liệu không có sẽ khiến model bịa</td><td><a href="#lab-ex3">§3</a></td></tr>
+    <tr data-kw="tool_choice"><td><code>tool_choice</code></td><td>Điều khiển việc Claude có phải gọi tool</td><td><code>"any"</code> hoặc tool cụ thể để đảm bảo có output; hiện hành có khác biệt ở model mới</td><td><a href="#exam-vs-current">§6</a></td></tr>
+    <tr data-kw="few-shot"><td>Few-shot</td><td>2–4 ví dụ trong prompt, có ca biên</td><td>Giúp tiêu chí mơ hồ và định dạng không đều; không thay cổng chặn bằng code</td><td><a href="#lab-ex3">§3</a></td></tr>
+    <tr data-kw="Message Batches"><td>Message Batches API, <code>custom_id</code></td><td>Xử lý lô bất đồng bộ, giá giảm, tối đa 24 giờ</td><td>Chỉ cho việc không gấp; việc chặn merge cần đồng bộ; ghép kết quả bằng <code>custom_id</code></td><td><a href="#lab-ex3">§3</a></td></tr>
+    <tr data-kw="claude -p"><td><code>claude -p</code>, <code>--output-format json</code>, <code>--json-schema</code></td><td>Chạy Claude Code không tương tác trong CI, kết quả máy đọc được</td><td>Treo trong pipeline thì dùng <code>-p</code>; <code>CLAUDE_HEADLESS</code>, <code>--batch</code> không tồn tại</td><td><a href="#exam-vs-current">§6</a></td></tr>
+  </tbody>
+</table></div>
+
+<p class="lesson-practice">Luyện câu hỏi của bài này trong <a href="/bank?lesson=18">🗂️ Ngân hàng</a>.</p>
 
 <div class="btns pager">
-  <a class="btn" href="/notes/lessons/20-san-pham-du-lieu.html">← Bài 20 · Sản phẩm, dữ liệu và chính sách</a>
-  <a class="btn primary" href="/notes/lessons/22-thiet-ke-giai-phap.html">Bài 22 · Thiết kế giải pháp và model →</a>
+  <a class="btn" href="/notes/lessons/17-ccao-f-products-policy.html">← Bài 17 · CCAO-F: sản phẩm, dữ liệu và chính sách</a>
+  <a class="btn primary" href="/notes/lessons/19-solution-design.html">Bài 19 · Thiết kế giải pháp và model →</a>
 </div>
 
 <footer>
-  Luyện thi chứng chỉ Claude · Bài 21 · Thực hành và tổng ôn CCAR-F · v0.22 · 2026-11-18. Tổng quan: <a href="/notes/00-tong-quan.md">00</a> · Luyện đề: <a href="/new">30</a>.
+  Luyện thi chứng chỉ Claude · Bài 18 · Thực hành và tổng ôn CCAR-F · v0.39 · 2026-11-18. <a href="/notes/00-tong-quan.md">Tổng quan</a> · <a href="/new">Luyện đề</a>.
 </footer>

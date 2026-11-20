@@ -73,7 +73,7 @@ Dùng `Dockerfile` + `render.yaml`. Ổ đĩa trên Render free bị xoá mỗi 
 
 | Pack | Nguồn | Số câu |
 |---|---|---|
-| `ccx.yaml` | Câu tự soạn từ tài liệu ôn tập công khai [artifact 3NhHr42…](https://claude.ai/artifact/3NhHr42CxTHGEs33N1ntFf). Tác giả không nêu tên, không ghi giấy phép, không thuộc Anthropic. Nhập bằng `npm run import-ccx -- <thư mục assets>` | 955 |
+| `ccx.yaml` | Câu tự soạn từ tài liệu ôn tập công khai [artifact 3NhHr42…](https://claude.ai/artifact/3NhHr42CxTHGEs33N1ntFf). Tác giả không nêu tên, không ghi giấy phép, không thuộc Anthropic. Bản nhập gần nhất: v0.39 (18/11/2026). Nhập bằng `npm run import-ccx -- <thư mục assets>` | 1.063 |
 | `official.yaml` | Câu mẫu trong 4 Exam Guide chính thức, chép nguyên văn; giải thích tự viết | 21 |
 | `ai-20261118-*.yaml` | AI sinh từ tài liệu chính thức của Anthropic, có kiểm định độc lập (báo cáo trong `bank/reviews/`) | 100 |
 
@@ -84,7 +84,10 @@ Dùng `Dockerfile` + `render.yaml`. Ổ đĩa trên Render free bị xoá mỗi 
 ## Tài liệu (`notes/`)
 
 - `00-tong-quan.md`, `exams/<MÃ>.md`: tự viết từ Exam Guide v1.0, FAQ của Anthropic Partner Academy, Pearson VUE và docs chính thức. Cuối mỗi mục có ghi nguồn.
-- `lessons/*.html`: 26 bài học chuyển từ artifact nói trên, có ghi nguồn ở đầu mỗi bài. Chuyển bằng `node scripts/import-lessons.ts <thư mục>`.
+- `lessons/*.html`: 23 bài học (bản v0.39 của artifact nói trên: 01 nhập môn, 02–14 CCDV-F, 15–17 CCAO-F, 18 CCAR-F, 19–22 CCAR-P, 23 phụ lục Academy) và trang `glossary.html` (711 thuật ngữ), có ghi nguồn ở đầu mỗi trang. Chuyển bằng `node scripts/import-lessons.ts <thư mục>`.
+- Cập nhật khi artifact đổi: tải toàn bộ file của artifact bằng Artifact tool, chạy `npm run import-ccx -- <thư mục>/assets` **trước**, rồi `node scripts/import-lessons.ts <thư mục>` (script xoá các file bài học mà artifact không còn dùng).
+  - `import-ccx` giữ nguyên nội dung và định dạng các câu đã có (kể cả `status: retired`, `reviewed`), chỉ đổi `ref` trỏ vào bài không còn tồn tại và thêm câu mới vào cuối pack.
+  - `import-lessons` **ghi đè** các file bài học, nên sửa đổi tay trong `notes/lessons/` (ví dụ ghi chú "Thực tế 11/2026" của các đợt soát) phải port lại sau mỗi lần nhập. Danh sách sửa đổi đã port nằm trong `bank/reviews/`.
 
 ## Phát triển
 

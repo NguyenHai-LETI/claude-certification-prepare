@@ -50,7 +50,7 @@ export interface Question {
   options: string[]; // Markdown; letters are A, B, C… by index
   answer: string[]; // sorted letters; length > 1 = multiple answer ("Choose TWO")
   explanation: string; // Markdown, Vietnamese
-  ref?: string; // note link: "<note path>#<anchor>", e.g. "lessons/05-claude-code.html#claude-md"
+  ref?: string; // note link: "<note path>#<anchor>", e.g. "lessons/13-claude-code-config.html#claude-md"
   status: QuestionStatus;
   difficulty?: 'easy' | 'medium' | 'hard';
   tags?: string[];
@@ -248,7 +248,7 @@ export interface Dashboard {
 // ── notes & search ──────────────────────────────────────────────────────────
 
 export interface NoteEntry {
-  path: string; // relative to notes/, e.g. "exams/CCAR-F.md", "lessons/05-claude-code.html"
+  path: string; // relative to notes/, e.g. "exams/CCAR-F.md", "lessons/13-claude-code-config.html"
   title: string;
   group: string; // section in the notes tree: "Tổng quan", "Kỳ thi", "Bài học"
   exams?: ExamCode[]; // which exams it is relevant to (frontmatter / lesson map)

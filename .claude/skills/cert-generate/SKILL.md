@@ -79,7 +79,7 @@ questions:
       - "…"
     answer: [C]
     explanation: "… Nguồn: https://…"
-    ref: lessons/04-tool-mcp.html#<anchor>
+    ref: lessons/06-mcp.html#<anchor>
     status: active
     difficulty: medium
     tags: [mcp, tool-design]

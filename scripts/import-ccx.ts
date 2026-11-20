@@ -3,6 +3,8 @@
 // <dir> holds the artifact's assets/data.js and assets/questions-*.js (download them with Claude Code's Artifact tool).
 // The files are parsed statically with the TypeScript parser — nothing from them is executed.
 // Re-running keeps local edits: a question whose id already exists in ccx.yaml is left as it is unless --overwrite.
+// Exception: when the artifact restructures its lessons, a kept question whose `ref` points at a lesson file the artifact
+// no longer has gets the artifact's current ref (the lesson pages themselves are re-imported by scripts/import-lessons.ts).
 import fs from 'node:fs';
 import path from 'node:path';
 import ts from 'typescript';
@@ -81,25 +83,48 @@ function main() {
     process.exit(2);
   }
   const { data, questions } = parseDir(path.resolve(dir));
-  const existing = new Map<string, unknown>();
-  if (fs.existsSync(out)) {
-    const doc = YAML.parse(fs.readFileSync(out, 'utf8')) as { questions?: { id: string }[] };
-    for (const q of doc.questions ?? []) existing.set(q.id, q);
-  }
+  // The existing pack is edited as a YAML document (not re-serialized from plain objects), so reviewers' edits keep their
+  // formatting and the diff shows only what this import changed. Questions that exist only locally are kept.
+  const doc = fs.existsSync(out)
+    ? YAML.parseDocument(fs.readFileSync(out, 'utf8'))
+    : new YAML.Document({
+        id: 'ccx',
+        title: 'Bộ câu tự soạn từ tài liệu ôn tập công khai (artifact 3NhHr42…)',
+        origin: 'imported',
+        source: SOURCE,
+        license: 'Không ghi giấy phép. Tài liệu ôn tập cá nhân, không thuộc và không được Anthropic xác nhận.',
+        imported: '',
+        description:
+          'Câu tiếng Anh như đề thật, giải thích tiếng Việt. Tác giả ghi: câu tự soạn theo task statement của Exam Guide v1.0, không lấy từ đề thật.',
+        questions: [],
+      });
+  if (doc.errors.length) throw new Error(`${out}: ${doc.errors[0].message}`);
+  const seq = doc.get('questions') as YAML.YAMLSeq<YAML.YAMLMap>;
+  const byId = new Map<string, number>();
+  seq.items.forEach((item, i) => byId.set(String(item.get('id')), i));
   const seen = new Set<string>();
   let added = 0;
+  let replaced = 0;
   let kept = 0;
-  const list = questions.map((q) => {
+  let refsMoved = 0;
+  const lessonFiles = new Set(Object.values(data.lessons).map((l) => l.f));
+  for (const q of questions) {
     if (seen.has(q.id)) throw new Error(`duplicate id ${q.id}`);
     seen.add(q.id);
-    if (!overwrite && existing.has(q.id)) {
-      kept++;
-      return existing.get(q.id);
-    }
-    added++;
     const lesson = data.lessons[q.l];
     const ref = lesson ? `lessons/${lesson.f}${q.s ?? ''}` : undefined;
-    return {
+    const at = byId.get(q.id);
+    if (at !== undefined && !overwrite) {
+      kept++;
+      const item = seq.items[at];
+      const oldFile = String(item.get('ref') ?? '').match(/^lessons\/([^#]+)/)?.[1];
+      if (ref && oldFile && !lessonFiles.has(oldFile)) {
+        item.set('ref', ref);
+        refsMoved++;
+      }
+      continue;
+    }
+    const node = doc.createNode({
       id: q.id,
       exams: q.d,
       ...(q.sc ? { scenario: q.sc } : {}),
@@ -108,22 +133,22 @@ function main() {
       answer: q.a.map((i) => LETTERS[i]).sort(),
       explanation: q.w,
       ...(ref ? { ref } : {}),
-    };
-  });
-  const pack = {
-    id: 'ccx',
-    title: 'Bộ câu tự soạn từ tài liệu ôn tập công khai (artifact 3NhHr42…)',
-    origin: 'imported',
-    source: SOURCE,
-    license: 'Không ghi giấy phép. Tài liệu ôn tập cá nhân, không thuộc và không được Anthropic xác nhận.',
-    imported: new Date().toISOString().slice(0, 10),
-    description:
-      'Câu tiếng Anh như đề thật, giải thích tiếng Việt. Tác giả ghi: câu tự soạn theo task statement của Exam Guide v1.0, không lấy từ đề thật.',
-    questions: list,
-  };
+    }) as YAML.YAMLMap;
+    if (at !== undefined) {
+      seq.items[at] = node;
+      replaced++;
+    } else {
+      seq.items.push(node);
+      added++;
+    }
+  }
+  doc.set('imported', new Date().toISOString().slice(0, 10));
   fs.mkdirSync(path.dirname(out), { recursive: true });
-  fs.writeFileSync(out, YAML.stringify(pack, { lineWidth: 0 }));
-  console.log(`bank/packs/ccx.yaml: ${list.length} câu (${added} mới/ghi đè, ${kept} giữ nguyên)`);
+  fs.writeFileSync(out, doc.toString({ lineWidth: 0 }));
+  console.log(
+    `bank/packs/ccx.yaml: ${seq.items.length} câu (${added} mới, ${replaced} ghi đè, ${kept} giữ nguyên, ` +
+      `trong đó ${refsMoved} cập nhật ref sang bài mới)`,
+  );
 }
 
 main();

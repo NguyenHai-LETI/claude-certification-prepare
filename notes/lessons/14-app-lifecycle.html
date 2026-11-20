@@ -1,0 +1,567 @@
+<p class="lesson-source">Nguồn: tài liệu ôn tập công khai <a href="https://claude.ai/artifact/3NhHr42CxTHGEs33N1ntFf" target="_blank" rel="noopener">artifact 3NhHr42…</a> (bài 14). Không thuộc và không được Anthropic xác nhận.</p>
+<header class="cover">
+  <div class="eyebrow">Luyện thi chứng chỉ Claude · Bài 14 · Chặng 2 · CCDV-F · bước 13/13</div>
+  <h1>Vòng đời ứng dụng và tổng kiểm CCDV-F <span class="ja">Requirements · Life Cycle · Versioning · CCDV-F review</span></h1>
+  <p class="lead">Yêu cầu và vòng đời ứng dụng Claude, quản lý phiên bản model, prompt và plugin, SDLC kiểu AI-native, bài học từ câu mẫu và bản đồ 25 kỹ năng CCDV-F.</p>
+  <dl class="meta">
+    <dt>Kỳ thi</dt><dd>CCDV-F D2, D8 · CCAR-F D3 · CCAR-P D7</dd>
+    <dt>Phục vụ</dt><dd><span class="tag xt1">CCDV-F</span> 5 mục · <span class="tag xt3">CCAR-F</span> 1 mục · <span class="tag xt4">CCAR-P</span> 1 mục · <a href="#xsum">bảng nhãn từng mục</a></dd>
+
+    <dt>Nguồn</dt><dd>Exam guide CCDV-F v1.0 mục 6; code.claude.com (permission modes, sub-agents, plugins reference, plugin dependencies, common workflows), platform.claude.com (mitigate jailbreaks, models overview) (tra 17/11/2026); academy.claude.com · Introduction to evals, Claude Code in action, AI-native SDLC playbook · Crawl 2026-11-17; Ghi chú «Đề cương CCDV-F và CCAO-F» Phần A; platform.claude.com/docs (rate limits, token counting, extended thinking, context editing, compaction, citations, MCP connector, Admin API) tra 17/11/2026</dd>
+    <dt>Cập nhật</dt><dd><span class="status">v0.39 · 2026-11-18</span> · theo exam guide v1.0</dd>
+  </dl>
+</header>
+
+<details class="toc">
+<summary>Mục lục</summary>
+
+    <ol>
+      <li><a href="#requirements-lifecycle"><span class="n">1</span><span class="tx">Yêu cầu và vòng đời hệ thống</span><span class="xds" aria-hidden="true"><i class="xd xt1" title="CCDV-F"></i></span></a></li>
+      <li><a href="#versioning"><span class="n">2</span><span class="tx">Quản lý phiên bản: model, prompt, plugin</span><span class="xds" aria-hidden="true"><i class="xd xt1" title="CCDV-F"></i></span></a></li>
+      <li><a href="#sdlc-playbook"><span class="n">3</span><span class="tx">AI-Native SDLC Playbook — 14 bài</span><span class="xds" aria-hidden="true"><i class="xd xt1" title="CCDV-F"></i><i class="xd xt3" title="CCAR-F"></i><i class="xd xt4" title="CCAR-P"></i></span></a></li>
+      <li><a href="#sample-questions"><span class="n">4</span><span class="tx">Bài học từ 3 câu mẫu CCDV-F</span><span class="xds" aria-hidden="true"><i class="xd xt1" title="CCDV-F"></i></span></a></li>
+      <li><a href="#skill-map"><span class="n">5</span><span class="tx">Bản đồ 25 kỹ năng CCDV-F tới bài học</span><span class="xds" aria-hidden="true"><i class="xd xt1" title="CCDV-F"></i></span></a></li>
+      <li><a href="#exam-keywords"><span class="n">6</span><span class="tx">Từ khoá đề thi</span></a></li>
+    </ol>
+
+</details>
+
+<details class="xsum" id="xsum">
+<summary>Mục nào phục vụ bài thi nào</summary>
+<p class="xnote">Mã đầu là bài thi chính của mục. <b>Nền</b>: cần để hiểu các mục sau. <b>Nâng cao</b>: ngoài phạm vi các exam guide. Ôn cho một bài thi thì đọc các mục có mã của bài đó trước.</p>
+<div class="tw"><table>
+<thead><tr><th>Mục</th><th>Bài thi</th><th>Ghi chú</th></tr></thead>
+<tbody>
+<tr><td><a href="#requirements-lifecycle">1. Yêu cầu và vòng đời hệ thống</a></td><td><span class="tag xt1">CCDV-F D2</span></td><td></td></tr>
+<tr><td><a href="#versioning">2. Quản lý phiên bản: model, prompt, plugin</a></td><td><span class="tag xt1">CCDV-F D2</span></td><td></td></tr>
+<tr><td><a href="#sdlc-playbook">3. AI-Native SDLC Playbook — 14 bài</a></td><td><span class="tag xt1">CCDV-F D2</span> <span class="tag xt3">CCAR-F D3</span> <span class="tag xt4">CCAR-P D7</span></td><td>Phần lớn playbook (intent.md, worktree song song) là nâng cao; đề chỉ hỏi vòng đời và review.</td></tr>
+<tr><td><a href="#sample-questions">4. Bài học từ 3 câu mẫu CCDV-F</a></td><td><span class="tag xt1">CCDV-F D2</span> <span class="tag xt1">CCDV-F D8</span> <span class="tag xt1">CCDV-F</span></td><td></td></tr>
+<tr><td><a href="#skill-map">5. Bản đồ 25 kỹ năng CCDV-F tới bài học</a></td><td><span class="tag xt1">CCDV-F</span></td><td></td></tr>
+</tbody></table></div>
+</details>
+
+<h2 id="requirements-lifecycle">1. Yêu cầu và vòng đời hệ thống</h2>
+<p class="xtags"><span class="tag xt1">CCDV-F D2</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Đặt may một bộ áo dài. "Áo màu xanh, cổ cao, tay dài" là yêu cầu về chính chiếc áo. "Xong trước Tết, giá dưới ba triệu, giặt máy được" là yêu cầu về điều kiện quanh chiếc áo. Thợ may chỉ nghe vế đầu thì có thể làm áo đẹp nhưng trễ hẹn và vượt tiền. May xong còn phải sửa khi người mặc tăng cân: đó là vòng đời.
+</div>
+<p>Blueprint CCDV-F tách hai kỹ năng nhỏ trong D2: <strong>Understanding Requirements</strong> (3,4%) và <strong>Systems Life Cycle</strong> (2,8%). Câu hỏi thường cho một yêu cầu kinh doanh rồi hỏi lựa chọn kỹ thuật nào khớp. Mẹo đọc đề: gạch chân các con số về độ trễ, khối lượng, chi phí, vùng dữ liệu. Chúng là yêu cầu phi chức năng và thường quyết định đáp án.</p>
+<h3>1.1 Yêu cầu chức năng và phi chức năng</h3>
+<p><strong>Yêu cầu chức năng</strong> (functional) nói hệ thống phải <em>làm gì</em>: phân loại ticket, tóm tắt hợp đồng, trả lời có trích dẫn. <strong>Yêu cầu phi chức năng</strong> (non-functional) nói hệ thống phải làm <em>tốt đến mức nào và trong điều kiện nào</em>: nhanh bao nhiêu, rẻ bao nhiêu, dữ liệu để ở đâu. Hai loại này quyết định hai lớp lựa chọn khác nhau. Yêu cầu chức năng chọn cách viết prompt và tool. Yêu cầu phi chức năng chọn đường gọi API, model và cách triển khai.</p>
+<p>Ví dụ có số. Một công ty bảo hiểm muốn tóm tắt hồ sơ bồi thường, mỗi hồ sơ là một PDF khoảng 30 trang. Đề bài cho bốn dữ kiện:</p>
+<div class="tw"><table>
+  <thead><tr><th>Dữ kiện trong đề</th><th>Loại yêu cầu</th><th>Hệ quả cho thiết kế</th></tr></thead>
+  <tbody>
+    <tr><td>12.000 hồ sơ tồn, cần xong trong 3 ngày</td><td>Khối lượng, không gấp</td><td>Message Batches API. Hạn 3 ngày rộng hơn mức 24 giờ của Batches, nên chạy theo lô được</td></tr>
+    <tr><td>Mỗi ngày 200 hồ sơ mới, nhân viên ngồi chờ kết quả</td><td>Độ trễ</td><td>API đồng bộ kèm streaming, để chữ hiện ra ngay</td></tr>
+    <tr><td>Nhân viên hỏi nhiều câu về cùng một hồ sơ</td><td>Chi phí lặp</td><td>Files API hoặc prompt caching cho phần PDF, để khỏi gửi và tính lại cả hồ sơ</td></tr>
+    <tr><td>Dữ liệu khách hàng phải xử lý tại Mỹ</td><td>Dữ liệu, tuân thủ</td><td><code>inference_geo</code>, xem <a href="/notes/lessons/11-security-data.html#data-deployment">bài 11 §7</a></td></tr>
+  </tbody>
+</table></div>
+<p>Một ứng dụng có thể cần hai đường gọi khác nhau cho hai nhóm yêu cầu: lô tồn đi qua Batches, hồ sơ mới đi qua API đồng bộ. Đề hay cố ý trộn một con số “gấp” và một con số “không gấp” trong cùng một tình huống để xem bạn có tách được không.</p>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 214" role="img" aria-label="Vòng đời một ứng dụng Claude gồm bảy pha: yêu cầu, thiết kế, xây dựng, kiểm thử, triển khai, vận hành, bảo trì; kiểm thử là cổng eval, và khi đổi prompt hay model ở bảo trì thì quay lại kiểm thử">
+    <defs><marker id="m14k1" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker></defs>
+    <rect x="2" y="20" width="78" height="76" rx="6" class="b-step"/><text x="41" y="42" class="t tb" text-anchor="middle">Yêu cầu</text><text x="41" y="62" class="ts" text-anchor="middle">tiêu chí</text><text x="41" y="76" class="ts" text-anchor="middle">đo được</text>
+    <rect x="95" y="20" width="78" height="76" rx="6" class="b-step"/><text x="134" y="42" class="t tb" text-anchor="middle">Thiết kế</text><text x="134" y="62" class="ts" text-anchor="middle">bậc đơn</text><text x="134" y="76" class="ts" text-anchor="middle">giản nhất</text>
+    <rect x="188" y="20" width="78" height="76" rx="6" class="b-step"/><text x="227" y="42" class="t tb" text-anchor="middle">Xây dựng</text><text x="227" y="62" class="ts" text-anchor="middle">prompt</text><text x="227" y="76" class="ts" text-anchor="middle">nằm trong git</text>
+    <rect x="281" y="20" width="78" height="76" rx="6" class="b-hot"/><text x="320" y="42" class="t tb" text-anchor="middle">Kiểm thử</text><text x="320" y="62" class="ts" text-anchor="middle">cổng eval:</text><text x="320" y="76" class="ts" text-anchor="middle">qua mới đi</text>
+    <rect x="374" y="20" width="78" height="76" rx="6" class="b-done"/><text x="413" y="42" class="t tb" text-anchor="middle">Triển khai</text><text x="413" y="62" class="ts" text-anchor="middle">ghim model,</text><text x="413" y="76" class="ts" text-anchor="middle">mở dần</text>
+    <rect x="467" y="20" width="78" height="76" rx="6" class="b-done"/><text x="506" y="42" class="t tb" text-anchor="middle">Vận hành</text><text x="506" y="62" class="ts" text-anchor="middle">usage, 429,</text><text x="506" y="76" class="ts" text-anchor="middle">529, độ trễ</text>
+    <rect x="560" y="20" width="78" height="76" rx="6" class="b-warn"/><text x="599" y="42" class="t tb" text-anchor="middle">Bảo trì</text><text x="599" y="62" class="ts" text-anchor="middle">model sắp</text><text x="599" y="76" class="ts" text-anchor="middle">bị retire</text>
+    <path d="M80,58 H93 M173,58 H186 M266,58 H279 M359,58 H372 M452,58 H465 M545,58 H558" class="ln-acc" marker-end="url(#m14k1)"/>
+    <path d="M599,96 V150 H320 V98" class="ln-acc" marker-end="url(#m14k1)"/>
+    <text x="460" y="144" class="ts halo" text-anchor="middle">đổi prompt hay model: quay lại cổng eval</text>
+    <text x="320" y="190" class="ts" text-anchor="middle">Mỗi lần đổi prompt hay model là một lần phát hành, và đều phải qua eval.</text>
+  </svg></div>
+  <figcaption>Hình 1. Vòng đời một ứng dụng Claude. Kiểm thử là cổng eval, và mọi thay đổi prompt hay model đều quay về cổng này.</figcaption>
+</figure>
+<h3>1.2 Từ yêu cầu tới lựa chọn Claude</h3>
+<div class="tw"><table>
+  <thead><tr><th>Loại yêu cầu</th><th>Ví dụ trong đề</th><th>Lựa chọn Claude thường khớp</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Chức năng</strong></td><td>Phân loại ticket vào 8 nhóm; trả lời có trích chính sách</td><td>Prompt có tiêu chí rõ, structured output, citations</td></tr>
+    <tr><td>Độ trễ</td><td>Người dùng chờ trên màn hình, cần thấy chữ trong 1 giây</td><td>Streaming, model nhỏ hơn, prompt caching cho phần tĩnh</td></tr>
+    <tr><td>Khối lượng, không gấp</td><td>10.000 tài liệu, cần kết quả sáng mai</td><td>Message Batches API (rẻ hơn, xong trong 24 giờ)</td></tr>
+    <tr><td>Thông lượng</td><td>Đỉnh 2.000 request mỗi phút</td><td>Kiểm tra rate limit theo tier, hàng đợi, backoff khi gặp 429</td></tr>
+    <tr><td>Chi phí</td><td>Ngân sách cố định mỗi tháng</td><td>Đo <code>usage</code>, caching, chọn model theo việc, batch</td></tr>
+    <tr><td>Độ sẵn sàng</td><td>Không được dừng khi Claude quá tải</td><td>Retry có backoff khi 529, fallback model hoặc hàng đợi</td></tr>
+    <tr><td>Dữ liệu, tuân thủ</td><td>Dữ liệu phải xử lý tại Mỹ, không lưu lại</td><td><code>inference_geo</code>, ZDR (xem <a href="/notes/lessons/11-security-data.html#data-deployment">bài 11 §7</a>)</td></tr>
+    <tr><td>Hạ tầng sẵn có</td><td>Công ty đã chuẩn hoá trên AWS và IAM</td><td>Claude trên Bedrock</td></tr>
+  </tbody>
+</table></div>
+<h3>1.3 Vòng đời một ứng dụng Claude</h3>
+<p>Vòng đời một ứng dụng Claude đi qua cùng các pha như mọi hệ thống phần mềm. Khác biệt nằm ở chỗ "mã nguồn" gồm cả prompt và model, nên mỗi pha có thêm việc riêng:</p>
+<div class="tw"><table>
+  <thead><tr><th>Pha</th><th>Việc riêng khi dùng Claude</th></tr></thead>
+  <tbody>
+    <tr><td>Yêu cầu</td><td>Viết tiêu chí thành công đo được (độ chính xác, độ trễ p95, chi phí mỗi ca) trước khi viết prompt</td></tr>
+    <tr><td>Thiết kế</td><td>Chọn bậc đơn giản nhất: một lời gọi, workflow hay agent; chọn model, tool</td></tr>
+    <tr><td>Xây dựng</td><td>Prompt nằm trong git như code; test cho phần code bao quanh</td></tr>
+    <tr><td>Kiểm thử</td><td>Bộ eval có ca thật và ca biên; chạy lại mỗi lần đổi prompt hay model</td></tr>
+    <tr><td>Triển khai</td><td>Ghim model ID và phiên bản prompt; mở dần (feature flag, canary)</td></tr>
+    <tr><td>Vận hành</td><td>Theo dõi <code>usage</code>, tỷ lệ 429 và 529, độ trễ, lấy mẫu chất lượng định kỳ</td></tr>
+    <tr><td>Bảo trì</td><td>Nhận thông báo ngừng hỗ trợ model, chạy eval trên model mới, chuyển trước ngày retire</td></tr>
+  </tbody>
+</table></div>
+<h3>1.4 Vòng đời của một model: active, deprecated, retired</h3>
+<p>Model Claude không dùng mãi được. Anthropic định kỳ cho các model cũ nghỉ hưu, và báo trước qua email cùng trang tài liệu về model. Mỗi model ở một trong ba trạng thái:</p>
+<div class="tw"><table>
+  <thead><tr><th>Trạng thái</th><th>Nghĩa</th><th>Bạn cần làm gì</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Active</strong></td><td>Đang được hỗ trợ</td><td>Dùng bình thường</td></tr>
+    <tr><td><strong>Deprecated</strong></td><td>Vẫn chạy nhưng không còn được khuyến nghị; có model thay thế gợi ý và ngày retire</td><td>Lên kế hoạch chuyển: chạy eval trên model thay thế</td></tr>
+    <tr><td><strong>Retired</strong></td><td>Không còn dùng được; request tới model này lỗi</td><td>Đã quá muộn: ứng dụng ngừng chạy nếu còn gọi model này</td></tr>
+  </tbody>
+</table></div>
+<p>Khi nhận thông báo deprecated, làm theo thứ tự này, mỗi bước có lý do:</p>
+<ol>
+  <li>Ghi lại ngày retire và model thay thế được gợi ý, vì đó là hạn cứng của bạn.</li>
+  <li>Chạy bộ eval hiện có trên model mới. Model mới có thể đổi định dạng, độ dài hay cách gọi tool.</li>
+  <li>So độ chính xác, độ trễ và chi phí với bản đang chạy.</li>
+  <li>Mở dần cho một phần lưu lượng (canary) và theo dõi.</li>
+  <li>Đổi model ID ở một chỗ cấu hình duy nhất, rồi ghi vào lịch sử thay đổi.</li>
+</ol>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Ba trạng thái active, deprecated, retired lấy từ trang <a href="https://platform.claude.com/docs/en/about-claude/model-deprecations" target="_blank" rel="noopener">Model deprecations</a>. Trang này cũng giữ bảng ngày retire của từng model.</div>
+<div class="alert"><strong>Bẫy.</strong> Đáp án "đổi sang model mới nhất ngay khi ra mắt vì model mới luôn tốt hơn" bỏ qua pha kiểm thử. Model mới có thể đổi hành vi (định dạng, độ dài, cách gọi tool). Đáp án đúng chạy eval trước rồi mới chuyển.</div>
+<div class="insight"><strong>Cốt lõi.</strong> Yêu cầu phi chức năng (độ trễ, khối lượng, chi phí, vùng dữ liệu) thường là chìa khoá chọn đáp án. Trong vòng đời, mỗi lần đổi prompt hay model là một lần phát hành, phải qua eval.</div>
+<p>Muốn đi sâu hơn (SLA, bàn giao, ngừng hỗ trợ model theo góc nhìn kiến trúc sư), xem <a href="/notes/lessons/22-stakeholders-operations.html#lifecycle">bài 22 §5</a>.</p>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Yêu cầu phi chức năng</dt><dd>Điều kiện hệ thống phải đạt ngoài chức năng: độ trễ, thông lượng, chi phí, độ sẵn sàng, bảo mật, tuân thủ.</dd>
+  <dt>SDLC</dt><dd>Software development life cycle: các pha từ yêu cầu, thiết kế, xây dựng, kiểm thử, triển khai tới vận hành và bảo trì.</dd>
+  <dt>Yêu cầu chức năng</dt><dd>Điều hệ thống phải làm, như phân loại ticket.</dd>
+  <dt>Eval</dt><dd>Bộ ca thử có đáp án mong đợi, chạy lại để đo chất lượng mỗi khi đổi prompt hay model.</dd>
+  <dt>Deprecated / retired</dt><dd>Model còn chạy nhưng không khuyến nghị / model đã ngừng, request tới nó lỗi.</dd>
+  <dt>Canary</dt><dd>Mở thay đổi cho một phần nhỏ lưu lượng trước, theo dõi rồi mới mở rộng.</dd>
+</dl></div>
+
+<h2 id="versioning">2. Quản lý phiên bản: model, prompt, plugin</h2>
+<p class="xtags"><span class="tag xt1">CCDV-F D2</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Nhà hàng giữ công thức món ăn trong sổ có ghi ngày sửa. Mua nước mắm thì ghi rõ hãng và loại, không ghi "nước mắm bất kỳ". Khi khách kêu món hôm nay mặn, bếp trưởng lật sổ biết ngay công thức nào, nguyên liệu lô nào đã đổi.
+</div>
+<p>Kỹ năng <strong>Configuration Management</strong> (4,1%) hỏi bạn ghim cái gì và ghim ở đâu để hệ thống chạy giống nhau giữa các lần và giữa các máy.</p>
+<h3>2.1 Ghim là gì, và ghim ở đâu</h3>
+<p><strong>Ghim</strong> (pin) một thứ là khoá nó ở một phiên bản cụ thể, để nó chỉ đổi khi bạn chủ động đổi. Không ghim thì hệ thống có thể đổi hành vi mà không ai làm gì: một thư viện tự nâng bản, một chuỗi alias trỏ sang model khác. Bảng dưới liệt kê từng thành phần, hình cho thấy ghim ở trong kho mã và dấu vết để lại lúc chạy.</p>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 230" role="img" aria-label="Những thứ ghim trong git: model ID, phiên bản API và SDK, prompt, CLAUDE.md và settings, plugin; lúc chạy mỗi request gửi model ID cụ thể, log ghi phiên bản prompt, và khi có lỗi thì truy ngược về đúng bản và quay lại">
+    <defs><marker id="m14k2" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker></defs>
+    <rect x="4" y="6" width="300" height="218" rx="8" class="lane"/><text x="16" y="26" class="lane-lb">TRONG KHO MÃ (GIT, QUA PR)</text>
+    <rect x="16" y="38" width="276" height="30" rx="5" class="b-step"/><text x="26" y="58" class="t">Model ID cụ thể, một chỗ cấu hình</text>
+    <rect x="16" y="74" width="276" height="30" rx="5" class="b-step"/><text x="26" y="94" class="t">anthropic-version, SDK trong lockfile</text>
+    <rect x="16" y="110" width="276" height="30" rx="5" class="b-step"/><text x="26" y="130" class="t">Prompt có số phiên bản</text>
+    <rect x="16" y="146" width="276" height="30" rx="5" class="b-step"/><text x="26" y="166" class="t">CLAUDE.md, .claude/settings.json</text>
+    <rect x="16" y="182" width="276" height="30" rx="5" class="b-step"/><text x="26" y="202" class="t">Plugin: version, dependencies</text>
+    <rect x="336" y="6" width="300" height="218" rx="8" class="lane"/><text x="348" y="26" class="lane-lb">LÚC CHẠY VÀ KHI CÓ LỖI</text>
+    <path d="M292,53 H346" class="ln-acc" marker-end="url(#m14k2)"/><rect x="348" y="38" width="276" height="44" rx="5" class="b-done"/><text x="358" y="57" class="t">Mỗi request gửi đúng model ID</text><text x="358" y="73" class="ts">không tự đổi dưới chân bạn</text>
+    <path d="M292,125 H346" class="ln-acc" marker-end="url(#m14k2)"/><rect x="348" y="94" width="276" height="62" rx="5" class="b-done"/><text x="358" y="113" class="t">Mỗi request log kèm</text><text x="358" y="129" class="ts">model ID và phiên bản prompt</text><text x="358" y="145" class="ts">cạnh input và output</text>
+    <path d="M486,156 V172" class="ln-acc" marker-end="url(#m14k2)"/><rect x="348" y="174" width="276" height="42" rx="5" class="b-hot"/><text x="358" y="192" class="t">Lỗi: truy ra đúng bản prompt,</text><text x="358" y="207" class="t">quay lại bản cũ khi eval tụt</text>
+  </svg></div>
+  <figcaption>Hình 2. Ghim các thành phần trong kho mã, rồi log phiên bản lúc chạy để truy ngược khi có lỗi.</figcaption>
+</figure>
+<div class="tw"><table>
+  <thead><tr><th>Thành phần</th><th>Ghim bằng cách nào</th><th>Vì sao</th></tr></thead>
+  <tbody>
+    <tr><td>Model</td><td>Dùng model ID cụ thể trong cấu hình, không rải chuỗi model khắp code</td><td>Đổi model là đổi hành vi; cần chủ động và có eval</td></tr>
+    <tr><td>Phiên bản API</td><td>Header <code>anthropic-version</code>; SDK cùng phiên bản trong lockfile</td><td>Thay đổi phá vỡ tương thích đi kèm phiên bản API mới</td></tr>
+    <tr><td>Prompt</td><td>Lưu trong git hoặc kho prompt có số phiên bản; log phiên bản prompt cùng mỗi request</td><td>Truy được lỗi về đúng bản prompt; quay lại bản cũ khi eval tụt</td></tr>
+    <tr><td>CLAUDE.md, settings</td><td><code>CLAUDE.md</code>, <code>.claude/settings.json</code> commit vào repo, sửa qua PR</td><td>Cả đội dùng cùng quy tắc và quyền</td></tr>
+    <tr><td>Plugin</td><td>Trường <code>version</code> trong <code>plugin.json</code>; ràng buộc phiên bản cho <code>dependencies</code></td><td>Plugin phụ thuộc không đổi dưới chân bạn</td></tr>
+  </tbody>
+</table></div>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Từ thế hệ 4.6, model ID không có ngày (ví dụ <code>claude-opus-5-5</code>) và mỗi ID đã là một snapshot cố định. Với model cũ hơn, alias là con trỏ tới ID có ngày nên có thể đổi. Nguồn: platform.claude.com/docs/en/about-claude/models/overview.</div>
+<p><strong>Plugin phụ thuộc plugin khác.</strong> Một plugin có thể gọi MCP server hay skill của plugin khác. Khai báo trong <code>.claude-plugin/plugin.json</code>:</p>
+<pre><code>{
+  "name": "deploy-kit",
+  "version": "3.1.0",
+  "dependencies": [
+    "audit-logger",
+    { "name": "secrets-vault", "version": "~2.1.0" }
+  ]
+}</code></pre>
+<ul>
+  <li>Chuỗi trần (<code>"audit-logger"</code>): luôn theo bản mới nhất mà marketplace cung cấp. Nếu bản mới đổi tên một MCP tool mà plugin của bạn gọi, plugin của bạn hỏng với mọi người vừa cập nhật.</li>
+  <li>Đối tượng có <code>version</code> là dải semver (<code>~2.1.0</code>, <code>^2.0</code>, <code>&gt;=1.4</code>): chỉ nhận bản trong dải, ví dụ <code>~2.1.0</code> nhận 2.1.x và không lên 2.2. Người duy trì plugin phụ thuộc phải gắn tag phát hành để dải này tìm được bản.</li>
+  <li><code>"name@marketplace"</code> hoặc trường <code>marketplace</code>: lấy plugin phụ thuộc từ marketplace khác.</li>
+</ul>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Trường <code>version</code> của plugin không bị kiểm theo semver; đặt nó là ghim plugin ở bản đó tới khi bạn đổi. Nguồn: code.claude.com/docs/en/plugins-reference, code.claude.com/docs/en/plugins/dependencies.</div>
+<h3>2.2 Ví dụ truy lỗi nhờ phiên bản</h3>
+<p>Thứ Hai, tỷ lệ phân loại đúng của một ứng dụng tụt từ 94% xuống 81%. Nhóm làm theo từng bước:</p>
+<ol>
+  <li>Mở log của các request lỗi: mỗi dòng ghi model ID và phiên bản prompt. Từ thứ Sáu, dòng log đổi từ <code>prompt-v13</code> sang <code>prompt-v14</code>, còn model ID không đổi.</li>
+  <li>Kết luận: nguyên nhân là prompt, không phải model. Nếu log không có phiên bản prompt thì không loại trừ được hai khả năng này.</li>
+  <li>Quay lại <code>prompt-v13</code> bằng cách revert PR. Tỷ lệ về lại mức cũ.</li>
+  <li>Chạy eval với <code>prompt-v14</code> để tìm ca nào tụt, sửa, rồi phát hành lại qua PR.</li>
+</ol>
+<p>Con số 94% và 81% là ví dụ minh hoạ, không phải số liệu thật. Điểm cần nhớ là cách truy: có phiên bản trong log thì khoanh vùng được trong vài phút.</p>
+<h3>2.3 Semver và dải phiên bản của plugin phụ thuộc</h3>
+<p><strong>Semver</strong> (semantic versioning) viết phiên bản thành ba số <code>MAJOR.MINOR.PATCH</code>, ví dụ <code>2.1.4</code>. Số đầu tăng khi thay đổi phá vỡ tương thích, số giữa tăng khi thêm tính năng tương thích, số cuối tăng khi sửa lỗi. Một dải phiên bản chọn tập các bản được nhận:</p>
+<div class="tw"><table>
+  <thead><tr><th>Dải</th><th>Nhận</th><th>Không nhận</th></tr></thead>
+  <tbody>
+    <tr><td><code>~2.1.0</code></td><td>2.1.0, 2.1.5 (chỉ số cuối đổi)</td><td>2.2.0, 3.0.0</td></tr>
+    <tr><td><code>^2.0</code></td><td>2.0.0, 2.9.1 (không đổi số đầu)</td><td>3.0.0</td></tr>
+    <tr><td><code>&gt;=1.4</code></td><td>1.4 trở lên, kể cả 3.x</td><td>1.3</td></tr>
+    <tr><td>Chuỗi trần <code>"audit-logger"</code></td><td>Luôn bản mới nhất marketplace cung cấp</td><td>Không giới hạn nên rủi ro cao nhất</td></tr>
+  </tbody>
+</table></div>
+<p>Dải <code>~2.1.0</code> và <code>^2.0</code> có trong tài liệu <a href="https://code.claude.com/docs/en/plugins/dependencies" target="_blank" rel="noopener">plugin dependencies</a>. Chọn dải hẹp hơn thì an toàn hơn, đổi lại bạn phải tự nâng bản sau khi đã kiểm thử.</p>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div>Prompt nằm trong biến môi trường trên server, sửa trực tiếp khi cần. Log chỉ có input và output.</div>
+  <div class="box right"><div class="hd">Đúng</div>Prompt trong git, mỗi thay đổi qua PR và chạy eval. Mỗi request log kèm phiên bản prompt và model ID để truy lỗi.</div>
+</div>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> API key không thuộc file cấu hình có version. Trong Claude Code, đặt <code>apiKeyHelper</code> trong settings để chạy một script trả về key lúc cần, hoặc cấp key qua biến môi trường lúc chạy (<code>ANTHROPIC_API_KEY</code>). Nếu key đã bị commit: vô hiệu hoá hoặc xoá key đó trước, tạo key mới, rồi mới chuyển key ra khỏi file. Mã hoá key ngay trong file hay thêm file vào <code>.gitignore</code> không xử lý được key đã nằm trong lịch sử git. Nguồn: <a href="https://code.claude.com/docs/en/iam" target="_blank" rel="noopener">code.claude.com/docs/en/iam</a>, <a href="https://platform.claude.com/docs/en/manage-claude/authentication" target="_blank" rel="noopener">platform.claude.com/docs/en/manage-claude/authentication</a>.</div>
+<div class="insight"><strong>Cốt lõi.</strong> Thứ gì đổi được hành vi của hệ thống (model, prompt, cấu hình, plugin) thì phải có phiên bản, nằm trong kho mã và được kiểm trước khi phát hành.</div>
+
+<h2 id="sdlc-playbook">3. AI-Native SDLC Playbook — 14 bài</h2>
+<p class="xtags"><span class="tag xt1">CCDV-F D2</span> <span class="tag xt3">CCAR-F D3</span> <span class="tag xt4">CCAR-P D7</span> <span class="xnote">Phần lớn playbook (intent.md, worktree song song) là nâng cao; đề chỉ hỏi vòng đời và review.</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Xây một căn nhà. Có kiến trúc sư, thợ xây, người kiểm tra chất lượng, và chủ nhà ký nhận. Máy móc làm phần nặng và lặp lại, nhưng chủ nhà vẫn giữ quyền quyết định ở những điểm quan trọng: bản vẽ cuối, nghiệm thu, bàn giao. AI-native SDLC chia việc kiểu đó giữa AI và người.
+</div>
+<h3>3.1 SDLC kiểu AI-native: 6 giai đoạn</h3>
+<div class="tw"><table>
+  <thead><tr><th>Giai đoạn</th><th>AI role</th><th>Human role</th></tr></thead>
+  <tbody>
+    <tr><td>1. Intent clarification</td><td>Hỏi làm rõ, tóm tắt requirements</td><td>Viết <code>intent.md</code>, review tóm tắt</td></tr>
+    <tr><td>2. Architecture planning</td><td>Đề xuất kiến trúc, tradeoff analysis</td><td>Quyết định, sign-off</td></tr>
+    <tr><td>3. Implementation</td><td>Viết code, test, debug</td><td>Review PR, kiểm tra trường hợp biên</td></tr>
+    <tr><td>4. Verification</td><td>Chạy test, lint, kiểm tra độ phủ</td><td>Xem test lỗi, duyệt merge</td></tr>
+    <tr><td>5. Deployment</td><td>Chuẩn bị deployment plan</td><td>Approve deployment, monitor rollout</td></tr>
+    <tr><td>6. Retrospective</td><td>Phân tích incidents, đề xuất cải thiện</td><td>Cập nhật CLAUDE.md, cải tiến quy trình</td></tr>
+  </tbody>
+</table></div>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 242" role="img" aria-label="Sáu giai đoạn AI-native SDLC, mỗi giai đoạn có vai trò của AI và của người">
+    <defs><marker id="m1308" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker></defs>
+    <g><rect x="10" y="12" width="190" height="94" rx="6" class="b-step"/><text x="105" y="32" class="t tb" text-anchor="middle">1. Intent clarification</text><text x="105" y="54" class="ts" text-anchor="middle">AI: hỏi làm rõ, tóm tắt yêu cầu</text><text x="105" y="72" class="ts" text-anchor="middle">Người: viết intent.md,</text><text x="105" y="86" class="ts" text-anchor="middle">review tóm tắt</text></g>
+    <g><path class="ln-acc flow" d="M200,59 H223" marker-end="url(#m1308)"/><rect x="225" y="12" width="190" height="94" rx="6" class="b-step"/><text x="320" y="32" class="t tb" text-anchor="middle">2. Architecture planning</text><text x="320" y="54" class="ts" text-anchor="middle">AI: đề xuất kiến trúc, tradeoff</text><text x="320" y="72" class="ts" text-anchor="middle">Người: quyết định, sign-off</text></g>
+    <g><path class="ln-acc flow" d="M415,59 H438" marker-end="url(#m1308)"/><rect x="440" y="12" width="190" height="94" rx="6" class="b-step"/><text x="535" y="32" class="t tb" text-anchor="middle">3. Implementation</text><text x="535" y="54" class="ts" text-anchor="middle">AI: viết code, test, debug</text><text x="535" y="72" class="ts" text-anchor="middle">Người: review PR,</text><text x="535" y="86" class="ts" text-anchor="middle">check edge cases</text></g>
+    <g><path class="ln-acc flow" d="M535,106 V118 H105 V130" marker-end="url(#m1308)"/><rect x="10" y="132" width="190" height="94" rx="6" class="b-hot"/><text x="105" y="152" class="t tb" text-anchor="middle">4. Verification</text><text x="105" y="174" class="ts" text-anchor="middle">AI: chạy test, lint, coverage</text><text x="105" y="192" class="ts" text-anchor="middle">Người: review test fail,</text><text x="105" y="206" class="ts" text-anchor="middle">approve merge</text></g>
+    <g><path class="ln-acc flow" d="M200,179 H223" marker-end="url(#m1308)"/><rect x="225" y="132" width="190" height="94" rx="6" class="b-hot"/><text x="320" y="152" class="t tb" text-anchor="middle">5. Deployment</text><text x="320" y="174" class="ts" text-anchor="middle">AI: chuẩn bị deployment plan</text><text x="320" y="192" class="ts" text-anchor="middle">Người: approve deploy,</text><text x="320" y="206" class="ts" text-anchor="middle">monitor rollout</text></g>
+    <g><path class="ln-acc flow" d="M415,179 H438" marker-end="url(#m1308)"/><rect x="440" y="132" width="190" height="94" rx="6" class="b-done"/><text x="535" y="152" class="t tb" text-anchor="middle">6. Retrospective</text><text x="535" y="174" class="ts" text-anchor="middle">AI: phân tích incident, đề xuất</text><text x="535" y="192" class="ts" text-anchor="middle">Người: cập nhật CLAUDE.md,</text><text x="535" y="206" class="ts" text-anchor="middle">quy trình</text></g>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Làm rõ ý định: AI hỏi lại và tóm tắt, người viết <code>intent.md</code> và duyệt tóm tắt.</li>
+    <li>Lên kiến trúc: AI đề xuất và phân tích đánh đổi, người quyết định.</li>
+    <li>Cài đặt: AI viết code và test, người review PR.</li>
+    <li>Kiểm chứng: AI chạy test và lint, người duyệt merge.</li>
+    <li>Triển khai: AI chuẩn bị kế hoạch, người cho phép và theo dõi.</li>
+    <li>Nhìn lại: AI phân tích sự cố, người cập nhật CLAUDE.md và quy trình.</li>
+  </ol>
+  <figcaption>Hình 3. Sáu giai đoạn AI-native SDLC: AI làm phần lặp lại, người giữ các cổng quyết định.</figcaption>
+</figure>
+<div class="insight"><strong>Cốt lõi.</strong> Ở mỗi giai đoạn, quyết định cuối cùng (sign-off, approve, merge, deploy) vẫn thuộc về người. AI làm phần phân tích và việc lặp lại.</div>
+
+<h3>3.2 Intent.md và CLAUDE.md /init</h3>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Trước khi thuê thợ, bạn viết một tờ giấy: muốn gì, không được làm gì, thế nào là xong. Thợ đọc tờ giấy đó thay vì đoán ý bạn mỗi lần hỏi lại. <strong>intent.md</strong> là tờ giấy ấy.
+</div>
+<p><strong>intent.md:</strong> viết trước khi bắt đầu việc phức tạp: mục tiêu, ràng buộc, tiêu chí thành công. Đặt ở gốc project hoặc thư mục riêng của việc đó. Claude đọc lại khi cần làm rõ.</p>
+<pre><code class="language-markdown"># Intent: Migrate auth system to JWT
+
+## Goal
+Replace session-based auth with stateless JWT tokens.
+
+## Constraints
+- Must maintain backward compatibility during rollout
+- Zero downtime migration
+- Keep existing user sessions valid for 24h after cutover
+
+## Success Criteria
+- All existing tests pass
+- Login time < 200ms p99
+- No auth-related errors in first 24h post-deploy</code></pre>
+<p>Ba phần: <strong>Goal</strong> (việc cần đạt), <strong>Constraints</strong> (điều không được vi phạm), <strong>Success Criteria</strong> (đo được để biết đã xong). Ví dụ <code>p99 &lt; 200ms</code> nghĩa là 99% lượt đăng nhập phải dưới 200 mili giây.</p>
+<p><strong>Quy trình /init:</strong> chạy <code>/init</code> trong project mới → Claude đọc codebase → tạo CLAUDE.md gồm tóm tắt stack, các lệnh và quy ước. <strong>Quy tắc two-strikes:</strong> lần đầu sửa tay, lần thứ hai thêm vào CLAUDE.md.</p>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div><ul>
+    <li>“Chuyển auth sang JWT” và để Claude tự đoán ràng buộc</li>
+    <li>Success criteria mơ hồ: “chạy tốt”</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đúng</div><ul>
+    <li>Viết mục tiêu, ràng buộc (không gián đoạn dịch vụ, tương thích ngược) và tiêu chí thành công đo được</li>
+    <li>Đặt <code>intent.md</code> ở project root để Claude tham chiếu</li>
+  </ul></div>
+</div>
+
+<h3>3.3 Worktree song song và subagent kiểm tra</h3>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Hai thợ cùng sửa một căn nhà. Nếu cùng đứng trong một phòng, họ vướng nhau. Cho mỗi người một phòng riêng (worktree) thì không đụng nhau. Sau khi thợ xong, một <em>người kiểm tra mới đến</em> (verifier) soi lại, vì người chưa từng thấy lúc thi công sẽ ít bị thiên vị hơn.
+</div>
+<p><strong>Worktree song song:</strong> dùng <code>git worktree add</code> để nhiều phiên Claude Code làm song song trên cùng repo mà không đụng nhau:</p>
+<pre><code class="language-bash">git worktree add ../feature-auth feature/auth-migration
+git worktree add ../feature-tests feature/test-improvements
+# Mỗi worktree có thư mục riêng, branch riêng
+</code></pre>
+<p><strong>Mẫu subagent kiểm tra (verifier):</strong> sau khi subagent viết code xong, gọi một subagent khác để review độc lập. Subagent này có context mới, không bị ảnh hưởng bởi các quyết định lúc viết code.</p>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 276" role="img" aria-label="Hai worktree với branch riêng cho hai instance Claude Code chạy song song; implementation xong thì verifier subagent với context mới kiểm tra và trả APPROVED hoặc NEEDS_REVISION">
+    <defs><marker id="m1309" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker></defs>
+    <g><rect x="10" y="100" width="120" height="64" rx="6" class="b-sys"/><text x="70" y="124" class="t tb" text-anchor="middle">Repo chung</text><text x="70" y="142" class="ts" text-anchor="middle">cùng lịch sử git</text></g>
+    <g>
+      <path class="ln-acc flow" d="M130,118 L198,80" marker-end="url(#m1309)"/><path class="ln-acc flow" d="M130,146 L198,186" marker-end="url(#m1309)"/>
+      <rect x="200" y="40" width="200" height="74" rx="6" class="b-step"/><text x="300" y="62" class="t tb" text-anchor="middle">../feature-auth</text><text x="300" y="80" class="ts" text-anchor="middle">branch feature/auth-migration</text><text x="300" y="96" class="ts" text-anchor="middle">Claude Code instance 1</text>
+      <rect x="200" y="152" width="200" height="74" rx="6" class="b-step"/><text x="300" y="174" class="t tb" text-anchor="middle">../feature-tests</text><text x="300" y="192" class="ts" text-anchor="middle">branch feature/test-improvements</text><text x="300" y="208" class="ts" text-anchor="middle">Claude Code instance 2</text>
+    </g>
+    <g><path class="ln-acc flow" d="M400,77 H468" marker-end="url(#m1309)"/><text x="434" y="68" class="ts halo" text-anchor="middle">xong</text></g>
+    <g><rect x="470" y="40" width="160" height="74" rx="6" class="b-hot"/><text x="550" y="62" class="t tb" text-anchor="middle">code-verifier</text><text x="550" y="80" class="ts" text-anchor="middle">fresh context</text><text x="550" y="96" class="ts" text-anchor="middle">Bash, Glob, Grep, Read</text></g>
+    <g><text x="550" y="150" class="tw-good" text-anchor="middle">APPROVED</text><text x="550" y="174" class="tw-warn" text-anchor="middle">NEEDS_REVISION</text><text x="550" y="192" class="ts" text-anchor="middle">kèm vấn đề cụ thể</text></g>
+    <text x="320" y="254" class="tw-acc" text-anchor="middle">Mỗi worktree: thư mục riêng, branch riêng, nên không conflict</text>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Có một repo, nhiều việc cần làm song song.</li>
+    <li><code>git worktree add</code> tạo mỗi việc một thư mục và một branch riêng; mỗi thư mục chạy một instance Claude Code.</li>
+    <li>Khi subagent viết code hoàn thành…</li>
+    <li>…verifier subagent được tạo, có context mới và chỉ có tool đọc và chạy lệnh.</li>
+    <li>Verifier trả <code>APPROVED</code> hoặc <code>NEEDS_REVISION</code> kèm vấn đề cụ thể.</li>
+  </ol>
+  <figcaption>Hình 4. Worktree song song và verifier subagent review độc lập.</figcaption>
+</figure>
+<pre><code class="language-yaml">---
+name: code-verifier
+description: Verify implementation correctness after changes. Use when implementation is complete and needs independent review.
+tools: Bash, Glob, Grep, Read
+model: sonnet
+---
+Review the implementation for:
+1. All acceptance criteria from intent.md are met
+2. No security vulnerabilities introduced
+3. Tests cover happy path and error cases
+4. Performance implications considered
+
+Report: APPROVED or NEEDS_REVISION with specific issues.</code></pre>
+<p>Chú giải phần đầu file: <code>name</code> là tên subagent; <code>description</code> cho Claude biết khi nào nên gọi nó; <code>tools</code> giới hạn tool được dùng (không có <code>Edit</code>, nên verifier không tự sửa code); <code>model: sonnet</code> chọn model. Phần sau dấu <code>---</code> là chỉ dẫn gửi cho subagent.</p>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Claude Code hiện có cờ <code>claude --worktree &lt;tên&gt;</code> (hoặc <code>-w</code>) tạo worktree trong <code>.claude/worktrees/&lt;tên&gt;/</code> trên branch <code>worktree-&lt;tên&gt;</code>, và subagent có thể chạy trong worktree riêng bằng <code>isolation: worktree</code> trong frontmatter. Worktree mới là bản checkout sạch nên cần cài dependency lại. Nguồn: <a href="https://code.claude.com/docs/en/worktrees" target="_blank" rel="noopener">Worktrees</a>.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Git worktree</dt><dd>Một thư mục làm việc thêm của cùng repo, có branch riêng.</dd>
+  <dt>Subagent</dt><dd>Một Claude phụ chạy việc riêng với context riêng.</dd>
+  <dt>Fresh context</dt><dd>Context trống, chưa thấy quá trình làm việc trước, nên đánh giá độc lập.</dd>
+  <dt>Bias</dt><dd>Thiên lệch: người làm ra thường khó thấy lỗi của chính mình.</dd>
+</dl></div>
+
+<h3>3.4 Hooks như Approval Gates</h3>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Cửa kiểm soát có khóa từ: dù nhân viên quên hay muốn bỏ qua, cửa không mở nếu chưa quét thẻ. Quy tắc viết trong tài liệu có thể bị quên. Quy tắc nằm trong hook thì máy tự ép thực hiện.
+</div>
+<p>Dùng hook để cưỡng chế các bước của quy trình, không bỏ qua hay lách được:</p>
+<pre><code class="language-json">{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [{
+          "type": "command",
+          "command": "scripts/check-test-pass.sh"
+        }]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit",
+        "hooks": [{
+          "type": "command",
+          "command": "scripts/auto-lint.sh"
+        }]
+      }
+    ]
+  }
+}</code></pre>
+<pre><code class="language-bash">#!/bin/bash
+# check-test-pass.sh — block deploy nếu tests chưa pass
+INPUT=$(cat)
+COMMAND=$(echo "$INPUT" | jq -r '.input.command')
+if echo "$COMMAND" | grep -q "deploy\|push"; then
+    if ! npm test --silent 2>/dev/null; then
+        echo "Tests must pass before deploying" >&2
+        exit 2  # exit 2 = block action
+    fi
+fi
+exit 0</code></pre>
+<p>Đọc từng bước: hook <code>PreToolUse</code> với matcher <code>Bash</code> chạy <code>check-test-pass.sh</code> trước mọi lệnh Bash. Nếu lệnh chứa <code>deploy</code> hoặc <code>push</code> và <code>npm test</code> thất bại, script ghi lý do ra stderr rồi <code>exit 2</code>, nên lệnh bị chặn (xem Hình 15 ở bài 13). Hook <code>PostToolUse</code> với matcher <code>Edit</code> chạy <code>auto-lint.sh</code> sau mỗi lần sửa file.</p>
+<div class="alert"><strong>Bẫy.</strong> Mã thoát của hook: 0 là cho qua, 1 là cảnh báo (KHÔNG chặn), 2 là chặn. Nhiều người tưởng mã 1 chặn, nhưng không phải.</div>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div><ul>
+    <li>Viết “luôn chạy test trước khi deploy” trong CLAUDE.md và tin là đủ</li>
+    <li><code>exit 1</code> trong hook chặn</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đúng</div><ul>
+    <li>Dùng hook PreToolUse để ép bước test, vì hook chạy chắc chắn</li>
+    <li><code>exit 2</code> kèm lý do ở stderr</li>
+  </ul></div>
+</div>
+
+<h3>3.5 Managed settings cho doanh nghiệp chịu quản lý chặt</h3>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Một ngân hàng có quy định bảo mật chung do trụ sở đặt. Chi nhánh và từng nhân viên có thể chỉnh vài thứ nhỏ, nhưng các quy định an ninh thì không ai sửa được. Managed settings là bộ quy định từ trụ sở cho Claude Code.
+</div>
+<p>Doanh nghiệp quản lý cài đặt Claude Code tập trung bằng file managed settings:</p>
+<ul>
+  <li><strong>macOS:</strong> <code>/Library/Application Support/ClaudeCode/managed-settings.json</code></li>
+  <li><strong>Linux:</strong> <code>/etc/claude-code/managed-settings.json</code></li>
+  <li><strong>Windows:</strong> <code>C:\ProgramData\ClaudeCode\managed-settings.json</code></li>
+</ul>
+<p>Managed settings ghi đè cài đặt của user ở các trường liên quan bảo mật. Triển khai bằng MDM (Jamf, Intune). Có thể nạp sẵn skill và CLAUDE.md cho cả tổ chức.</p>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Trang managed settings hiện hành ghi đường dẫn Windows là <code>C:\Program Files\ClaudeCode\managed-settings.json</code> và nói rõ Claude Code <strong>không còn đọc</strong> đường dẫn cũ <code>C:\ProgramData\ClaudeCode\managed-settings.json</code>. macOS và Linux giữ nguyên như bài. Ngoài file còn có server-managed settings (từ admin console claude.ai) và MDM, có thể kèm thư mục <code>managed-settings.d/</code> để chia policy cho nhiều đội. Đề thi theo bài giảng. Nguồn: <a href="https://code.claude.com/docs/en/managed-settings" target="_blank" rel="noopener">Managed settings</a>.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>MDM</dt><dd>Mobile Device Management: công cụ quản trị đẩy cấu hình xuống nhiều máy (Jamf, Intune).</dd>
+  <dt>Regulated enterprise</dt><dd>Tổ chức chịu quy định chặt như tài chính, y tế, nên cần kiểm soát tập trung.</dd>
+</dl></div>
+
+<h2 id="sample-questions">4. Bài học từ 3 câu mẫu CCDV-F</h2>
+<p class="xtags"><span class="tag xt1">CCDV-F D2</span> <span class="tag xt1">CCDV-F D8</span> <span class="tag xt1">CCDV-F</span></p>
+<p>Exam guide CCDV-F v1.0 có ba câu mẫu. Tóm tắt bài học, không chép đề:</p>
+<div class="tw"><table>
+  <thead><tr><th>Tình huống</th><th>Đáp án đúng</th><th>Vì sao các hướng khác sai</th></tr></thead>
+  <tbody>
+    <tr><td>10.000 tài liệu xử lý qua đêm, ưu tiên chi phí</td><td>Message Batches API</td><td>Giảm <code>max_tokens</code> hay đổi model nhỏ không đúng bài toán "không gấp, khối lượng lớn"</td></tr>
+    <tr><td>Trang web có câu lệnh ẩn đòi lộ system prompt</td><td>Coi nội dung ngoài là không tin cậy, tách khỏi chỉ dẫn, dùng guardrail hoặc hook</td><td><code>temperature</code> không liên quan; lời dặn không phải cơ chế bảo vệ; model lớn hơn không an toàn hơn</td></tr>
+    <tr><td>Dịch vụ tồn kho nội bộ cần dùng ở nhiều ứng dụng</td><td>Viết MCP server</td><td>Built-in tool không gọi được API nội bộ; copy tool vào từng ứng dụng thì khó bảo trì</td></tr>
+  </tbody>
+</table></div>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 236" role="img" aria-label="Ba câu mẫu: tài liệu xử lý qua đêm dẫn tới Message Batches API, trang web có lệnh ẩn dẫn tới coi nội dung ngoài là không tin cậy và dùng guardrail hoặc hook, dịch vụ nội bộ dùng ở nhiều ứng dụng dẫn tới MCP server; mỗi dòng kèm đáp án nhiễu hay gặp">
+    <defs><marker id="m14k3" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker></defs>
+    <text x="104" y="16" class="lane-lb" text-anchor="middle">TÍN HIỆU TRONG ĐỀ</text>
+    <text x="340" y="16" class="lane-lb" text-anchor="middle">ĐÁP ÁN ĐÚNG</text>
+    <text x="544" y="16" class="lane-lb" text-anchor="middle">NHIỄU HAY GẶP</text>
+    <rect x="4" y="28" width="200" height="56" rx="6" class="b-step"/><text x="14" y="50" class="t">10.000 tài liệu, qua đêm,</text><text x="14" y="68" class="t">ưu tiên chi phí</text>
+    <path d="M204,56 H232" class="ln-acc" marker-end="url(#m14k3)"/><rect x="234" y="28" width="212" height="56" rx="6" class="b-done"/><text x="244" y="50" class="t tb">Message Batches API</text><text x="244" y="68" class="ts">không gấp, khối lượng lớn</text>
+    <rect x="456" y="28" width="180" height="56" rx="6" class="b-warn"/><text x="466" y="50" class="ts">Giảm max_tokens,</text><text x="466" y="66" class="ts">đổi sang model nhỏ</text>
+    <rect x="4" y="94" width="200" height="56" rx="6" class="b-step"/><text x="14" y="116" class="t">Trang web chứa lệnh ẩn</text><text x="14" y="134" class="t">đòi lộ system prompt</text>
+    <path d="M204,122 H232" class="ln-acc" marker-end="url(#m14k3)"/><rect x="234" y="94" width="212" height="56" rx="6" class="b-done"/><text x="244" y="116" class="t tb">Nội dung ngoài = dữ liệu</text><text x="244" y="134" class="ts">tách khỏi chỉ dẫn, guardrail, hook</text>
+    <rect x="456" y="94" width="180" height="56" rx="6" class="b-warn"/><text x="466" y="116" class="ts">Chỉnh temperature,</text><text x="466" y="132" class="ts">dặn trong prompt, model lớn</text>
+    <rect x="4" y="160" width="200" height="56" rx="6" class="b-step"/><text x="14" y="182" class="t">Dịch vụ tồn kho nội bộ,</text><text x="14" y="200" class="t">nhiều ứng dụng cần dùng</text>
+    <path d="M204,188 H232" class="ln-acc" marker-end="url(#m14k3)"/><rect x="234" y="160" width="212" height="56" rx="6" class="b-done"/><text x="244" y="182" class="t tb">Viết một MCP server</text><text x="244" y="200" class="ts">dùng lại ở mọi ứng dụng</text>
+    <rect x="456" y="160" width="180" height="56" rx="6" class="b-warn"/><text x="466" y="182" class="ts">Built-in tool,</text><text x="466" y="198" class="ts">chép tool vào từng app</text>
+  </svg></div>
+  <figcaption>Hình 5. Ba câu mẫu: tín hiệu trong đề dẫn tới tính năng có sẵn, và kiểu đáp án nhiễu đi kèm.</figcaption>
+</figure>
+<h3>4.1 Từ khoá dẫn tới đáp án</h3>
+<div class="tw"><table>
+  <thead><tr><th>Đề nói</th><th>Nghĩ tới</th></tr></thead>
+  <tbody>
+    <tr><td>"qua đêm", "không gấp", "khối lượng lớn", "giảm chi phí"</td><td>Batches; prompt caching</td></tr>
+    <tr><td>"người dùng đang chờ", "trước khi merge"</td><td>API đồng bộ, streaming</td></tr>
+    <tr><td>"429", "giờ cao điểm"</td><td><code>retry-after</code>, backoff, giới hạn đồng thời, cache</td></tr>
+    <tr><td>"ước tính chi phí trước", "có vừa context không"</td><td><code>count_tokens</code></td></tr>
+    <tr><td>"trích dẫn kiểm chứng được"</td><td>Citations, <code>search_result</code></td></tr>
+    <tr><td>"dùng lại cho nhiều ứng dụng", "hệ thống nội bộ"</td><td>MCP server</td></tr>
+    <tr><td>"nội dung từ web, email, file người khác"</td><td>Dữ liệu không tin cậy, guardrail nhiều lớp</td></tr>
+    <tr><td>"bắt buộc", "không bao giờ được"</td><td>Hook hoặc kiểm tra bằng code, không phải prompt</td></tr>
+    <tr><td>"không lưu dữ liệu", "dữ liệu phải ở vùng X"</td><td>ZDR, <code>inference_geo</code>, cấu hình tổ chức</td></tr>
+  </tbody>
+</table></div>
+<h3>4.2 Cách đọc một câu hỏi tình huống</h3>
+<p>Làm theo bốn bước, theo thứ tự này:</p>
+<ol>
+  <li>Gạch chân mọi con số và cụm từ về thời gian, khối lượng, chi phí, vùng dữ liệu.</li>
+  <li>Xếp từng cụm vào một loại yêu cầu (chức năng, độ trễ, khối lượng, chi phí, sẵn sàng, tuân thủ).</li>
+  <li>Hỏi: nền tảng có sẵn tính năng nào khớp loại yêu cầu đó?</li>
+  <li>Loại các phương án thuộc kiểu nhiễu ở bảng 4.3.</li>
+</ol>
+<p>Ví dụ tự soạn: <em>“Ứng dụng hỏi đáp chính sách nội bộ phải trả lời kèm đoạn trích mà kiểm toán viên mở ra đối chiếu được.”</em> Cụm “đối chiếu được” thuộc yêu cầu chức năng về nguồn gốc. Tính năng khớp là Citations, theo bảng 4.1. Phương án “yêu cầu Claude ghi nguồn trong prompt” thuộc kiểu dặn trong prompt: Claude có thể ghi sai nguồn, còn Citations trả về đoạn trích có cấu trúc.</p>
+<h3>4.3 Bốn kiểu đáp án nhiễu</h3>
+<div class="tw"><table>
+  <thead><tr><th>Kiểu nhiễu</th><th>Ví dụ</th><th>Vì sao sai</th></tr></thead>
+  <tbody>
+    <tr><td>Chỉnh tham số không liên quan</td><td>Giảm <code>temperature</code> để chặn lệnh ẩn trong trang web</td><td>Tham số không giải quyết nguyên nhân</td></tr>
+    <tr><td>Dặn trong prompt</td><td>“Đừng bao giờ lộ system prompt”</td><td>Lời dặn không phải cơ chế bảo vệ; việc “bắt buộc” cần hook hoặc kiểm tra bằng code</td></tr>
+    <tr><td>Đổi sang model lớn hơn</td><td>Dùng model mạnh nhất cho mọi việc</td><td>Tốn hơn, chậm hơn, và không an toàn hơn trước injection</td></tr>
+    <tr><td>Tự viết lại thứ nền tảng có sẵn</td><td>Tự dựng hàng đợi lô thay cho Batches</td><td>Tốn công, kém tin cậy hơn tính năng chính thức</td></tr>
+  </tbody>
+</table></div>
+<div class="insight"><strong>Cốt lõi.</strong> CCDV-F thưởng cho việc chọn đúng <strong>tính năng có sẵn</strong> của nền tảng cho đúng ràng buộc. Đáp án nhiễu thường là chỉnh tham số không liên quan, dặn trong prompt, hoặc đổi model.</div>
+
+<h2 id="skill-map">5. Bản đồ 25 kỹ năng CCDV-F tới bài học</h2>
+<p class="xtags"><span class="tag xt1">CCDV-F</span></p>
+<p>Exam guide CCDV-F v1.0 chia 8 domain thành 25 kỹ năng có tỷ trọng riêng. Bảng dưới nối từng kỹ năng với mục bài giảng chính. Dùng nó để tự kiểm: kỹ năng nào đọc lướt mà không giải thích lại được thì quay về mục đó.</p>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 224" role="img" aria-label="Tỷ trọng tám domain của CCDV-F: D1 14,7%, D2 33,1%, D3 3,1%, D4 2,6%, D5 16,8%, D6 11,0%, D7 8,1%, D8 10,6%; D2 lớn nhất">
+    <text x="4" y="26" class="ts">D1 Agents and Workflows</text><rect x="250" y="12" width="147" height="20" rx="3" class="b-step"/><text x="403" y="27" class="t">14,7%</text>
+    <text x="4" y="52" class="ts">D2 Applications and Integration</text><rect x="250" y="38" width="331" height="20" rx="3" class="b-hot"/><text x="587" y="53" class="t">33,1%</text>
+    <text x="4" y="78" class="ts">D3 Claude Code</text><rect x="250" y="64" width="31" height="20" rx="3" class="b-step"/><text x="287" y="79" class="t">3,1%</text>
+    <text x="4" y="104" class="ts">D4 Eval, Testing, and Debugging</text><rect x="250" y="90" width="26" height="20" rx="3" class="b-step"/><text x="282" y="105" class="t">2,6%</text>
+    <text x="4" y="130" class="ts">D5 Model Selection and Optimization</text><rect x="250" y="116" width="168" height="20" rx="3" class="b-step"/><text x="424" y="131" class="t">16,8%</text>
+    <text x="4" y="156" class="ts">D6 Prompt and Context Engineering</text><rect x="250" y="142" width="110" height="20" rx="3" class="b-step"/><text x="366" y="157" class="t">11,0%</text>
+    <text x="4" y="182" class="ts">D7 Security and Safety</text><rect x="250" y="168" width="81" height="20" rx="3" class="b-step"/><text x="337" y="183" class="t">8,1%</text>
+    <text x="4" y="208" class="ts">D8 Tools and MCPs</text><rect x="250" y="194" width="106" height="20" rx="3" class="b-step"/><text x="362" y="209" class="t">10,6%</text>
+  </svg></div>
+  <figcaption>Hình 6. Tỷ trọng tám domain của CCDV-F. D2 chiếm một phần ba đề, nên ôn D2 trước.</figcaption>
+</figure>
+<div class="tw"><table>
+  <thead><tr><th>Domain</th><th>Kỹ năng (tỷ trọng)</th><th>Học ở</th></tr></thead>
+  <tbody>
+    <tr><td rowspan="3">D1</td><td>Agent Architecture (4,5%)</td><td><a href="/notes/lessons/07-agents.html#workflow-agent">07 §1</a>, <a href="/notes/lessons/07-agents.html#coordinator">07 §3</a>, <a href="/notes/lessons/08-platform-subagents-skills.html#subagents">08 §3</a></td></tr>
+    <tr><td>Agent Construction (5,3%)</td><td><a href="/notes/lessons/07-agents.html#agent-loop">07 §2</a>, <a href="/notes/lessons/07-agents.html#hook-sdk">07 §6</a>, <a href="/notes/lessons/07-agents.html#deployment">07 §9</a></td></tr>
+    <tr><td>Agent Patterns and Frameworks (4,9%)</td><td><a href="/notes/lessons/07-agents.html#memory">07 §10</a>, <a href="/notes/lessons/07-agents.html#framework">07 §11</a></td></tr>
+    <tr><td rowspan="6">D2</td><td>Understanding Requirements (3,4%)</td><td><a href="#requirements-lifecycle">14 §1</a>, <a href="/notes/lessons/02-messages-api.html#app-design">02 §13</a></td></tr>
+    <tr><td>Systems Life Cycle (2,8%)</td><td><a href="#requirements-lifecycle">14 §1</a>, <a href="/notes/lessons/03-models-cost.html#model-upgrade">03 §7</a></td></tr>
+    <tr><td>Claude API Mechanics (6,8%)</td><td><a href="/notes/lessons/02-messages-api.html">02</a>, <a href="/notes/lessons/03-models-cost.html#thinking">03 §2</a>, <a href="/notes/lessons/03-models-cost.html#caching">03 §4</a></td></tr>
+    <tr><td>Software Engineering Foundations (7,4%)</td><td><a href="/notes/lessons/02-messages-api.html#rest-sdk">02 §5</a>, <a href="/notes/lessons/02-messages-api.html#async">02 §15</a>, <a href="/notes/lessons/13-claude-code-config.html#ci-cd">13 §7</a>, <a href="/notes/lessons/13-claude-code-config.html#refactor">13 §6</a></td></tr>
+    <tr><td>Claude Application Design (8,6%)</td><td><a href="/notes/lessons/02-messages-api.html#app-design">02 §13</a>, <a href="/notes/lessons/04-prompt-output.html#schema">04 §4</a>, <a href="/notes/lessons/07-agents.html#sessions">07 §8</a>, <a href="/notes/lessons/13-claude-code-config.html#plugin">13 §10</a></td></tr>
+    <tr><td>Configuration Management (4,1%)</td><td><a href="/notes/lessons/02-messages-api.html#configuration">02 §14</a>, <a href="/notes/lessons/13-claude-code-config.html#settings">13 §8</a>, <a href="#versioning">14 §2</a></td></tr>
+    <tr><td>D3</td><td>Claude Code Operation (3,1%)</td><td><a href="/notes/lessons/13-claude-code-config.html">13</a>, <a href="/notes/lessons/12-claude-code-basics.html">12</a>, <a href="/notes/lessons/13-claude-code-config.html#permission-modes">13 §9</a>, <a href="/notes/lessons/08-platform-subagents-skills.html#agent-memory">08 §4</a></td></tr>
+    <tr><td>D4</td><td>Debugging and Error Handling (2,6%)</td><td><a href="/notes/lessons/02-messages-api.html#http-errors">02 §4</a>, <a href="/notes/lessons/02-messages-api.html#rate-limit">02 §7</a>, <a href="/notes/lessons/10-evals-debug.html#debug">10 §2</a></td></tr>
+    <tr><td rowspan="4">D5</td><td>LLM Fundamentals (5,2%)</td><td><a href="/notes/lessons/01-claude-llm-basics.html#llm-basics">01 §3</a>, <a href="/notes/lessons/01-claude-llm-basics.html#non-determinism">01 §4</a>, <a href="/notes/lessons/03-models-cost.html#thinking">03 §2</a></td></tr>
+    <tr><td>Technical Fundamentals (6,1%)</td><td><a href="/notes/lessons/02-messages-api.html#rest-sdk">02 §5</a>, <a href="/notes/lessons/02-messages-api.html#streaming">02 §8</a></td></tr>
+    <tr><td>Model Selection and Tradeoffs (2,7%)</td><td><a href="/notes/lessons/03-models-cost.html#model-selection">03 §1</a>, <a href="/notes/lessons/03-models-cost.html#model-upgrade">03 §7</a></td></tr>
+    <tr><td>Cost and Token Management (2,8%)</td><td><a href="/notes/lessons/03-models-cost.html#caching">03 §4</a>, <a href="/notes/lessons/03-models-cost.html#cost">03 §5</a>, <a href="/notes/lessons/02-messages-api.html#token-counting">02 §6</a></td></tr>
+    <tr><td rowspan="3">D6</td><td>Context Engineering (3,8%)</td><td><a href="/notes/lessons/09-context-reliability.html#case-facts">09 §1</a>, <a href="/notes/lessons/09-context-reliability.html#long-context">09 §2</a></td></tr>
+    <tr><td>Prompt Engineering (4,6%)</td><td><a href="/notes/lessons/04-prompt-output.html#prompt-structure">04 §1</a>, <a href="/notes/lessons/04-prompt-output.html#explicit-criteria">04 §2</a>, <a href="/notes/lessons/04-prompt-output.html#few-shot">04 §3</a></td></tr>
+    <tr><td>Output Handling (2,6%)</td><td><a href="/notes/lessons/04-prompt-output.html#schema">04 §4</a>, <a href="/notes/lessons/04-prompt-output.html#validate-retry">04 §6</a></td></tr>
+    <tr><td rowspan="4">D7</td><td>AI Application Security (3,2%)</td><td><a href="/notes/lessons/11-security-data.html#injection">11 §1</a>, <a href="/notes/lessons/11-security-data.html#pii">11 §6</a>, <a href="/notes/lessons/11-security-data.html#jailbreak">11 §2</a></td></tr>
+    <tr><td>Guardrails and Safe Deployment (2,3%)</td><td><a href="/notes/lessons/11-security-data.html#guardrail">11 §3</a>, <a href="/notes/lessons/17-ccao-f-products-policy.html#usage-policy">17 §1</a></td></tr>
+    <tr><td>Claude Hooks (1,0%)</td><td><a href="/notes/lessons/11-security-data.html#hook">11 §4</a>, <a href="/notes/lessons/07-agents.html#hook-sdk">07 §6</a></td></tr>
+    <tr><td>Identity, Secrets and Key Management (1,6%)</td><td><a href="/notes/lessons/11-security-data.html#secret">11 §5</a>, <a href="/notes/lessons/11-security-data.html#data-deployment">11 §7</a></td></tr>
+    <tr><td rowspan="3">D8</td><td>Tool Implementation (4,4%)</td><td><a href="/notes/lessons/05-tool-use.html#tool-interface">05 §1</a>, <a href="/notes/lessons/05-tool-use.html#tool-errors">05 §4</a>, <a href="/notes/lessons/05-tool-use.html#client-server">05 §8</a>, <a href="/notes/lessons/23-academy-courses.html">23</a></td></tr>
+    <tr><td>MCP Server Development (2,1%)</td><td><a href="/notes/lessons/06-mcp.html#mcp">06 §2</a>, <a href="/notes/lessons/06-mcp.html#intro-mcp">06 §3</a></td></tr>
+    <tr><td>Agentic Customization (4,1%)</td><td><a href="/notes/lessons/05-tool-use.html#choose-extension">05 §10</a>, <a href="/notes/lessons/05-tool-use.html#built-in">05 §9</a></td></tr>
+  </tbody>
+</table></div>
+<div class="insight"><strong>Cốt lõi.</strong> D2 chiếm một phần ba đề, và ba kỹ năng lớn nhất của nó là Application Design (8,6%), Software Engineering Foundations (7,4%), API Mechanics (6,8%). Ôn kỹ ba kỹ năng này trước.</div>
+
+<h2 id="exam-keywords" class="pb">6. Từ khoá đề thi</h2>
+<p>Các từ tiếng Anh dưới đây xuất hiện nguyên văn trong đề và tài liệu chính thức. Đọc cột giữa để nắm nghĩa, cột phải để biết đề hay gài ở đâu; bấm số mục để xem lại phần giải thích. Mọi từ khoá của các bài được gom ở trang <a href="/notes/lessons/glossary.html">Thuật ngữ</a>.</p>
+<div class="tw"><table class="kwt">
+  <thead><tr><th>Từ khoá</th><th>Nghĩa</th><th>Đề hay hỏi, dễ nhầm</th><th class="nw">Mục</th></tr></thead>
+  <tbody>
+    <tr data-kw="429"><td><code>429</code> rate_limit_error</td><td>Vượt giới hạn tốc độ</td><td>Dùng retry-after, backoff, hàng đợi; không phải lỗi của prompt</td><td><a href="#requirements-lifecycle">§1</a></td></tr>
+    <tr data-kw="529"><td><code>529</code> overloaded</td><td>Dịch vụ quá tải</td><td>Retry có backoff, fallback; khác 429 ở chỗ không do bạn vượt hạn mức</td><td><a href="#requirements-lifecycle">§1</a></td></tr>
+    <tr data-kw="AI-native SDLC"><td>AI-native SDLC</td><td>Sáu giai đoạn: AI làm phần lặp lại, người giữ quyết định cuối</td><td>Sign-off, approve, merge, deploy luôn thuộc về người</td><td><a href="#sdlc-playbook">§3</a></td></tr>
+    <tr data-kw="anthropic-version"><td><code>anthropic-version</code></td><td>Header chọn phiên bản API</td><td>Ghim cùng SDK trong lockfile</td><td><a href="#versioning">§2</a></td></tr>
+    <tr data-kw="apiKeyHelper"><td><code>apiKeyHelper</code></td><td>Script trả API key lúc cần</td><td>Key đã commit: vô hiệu hoá key trước, rồi mới dọn file</td><td><a href="#versioning">§2</a></td></tr>
+    <tr data-kw="approval gate"><td>Hook như approval gate</td><td>Hook PreToolUse ép bước bắt buộc</td><td>Exit 2 chặn, exit 1 không chặn; lời dặn trong CLAUDE.md không đủ</td><td><a href="#sdlc-playbook">§3</a></td></tr>
+    <tr data-kw="canary"><td>Canary</td><td>Mở thay đổi cho một phần nhỏ lưu lượng trước</td><td>Dùng khi triển khai prompt hay model mới</td><td><a href="#requirements-lifecycle">§1</a></td></tr>
+    <tr data-kw="deprecated"><td>Deprecated, retired</td><td>Model còn chạy nhưng không khuyến nghị, rồi ngừng hẳn</td><td>Nhận thông báo thì chạy eval trên model thay thế trước ngày retire</td><td><a href="#requirements-lifecycle">§1</a></td></tr>
+    <tr data-kw="eval gate"><td>Eval (cổng kiểm thử)</td><td>Bộ ca thử chạy lại mỗi lần đổi prompt hay model</td><td>Đáp án đúng chạy eval rồi mới chuyển model</td><td><a href="#requirements-lifecycle">§1</a></td></tr>
+    <tr data-kw="functional requirements"><td>Functional requirements</td><td>Yêu cầu chức năng: hệ thống phải làm gì</td><td>Quyết định prompt và tool, không quyết định đường gọi API</td><td><a href="#requirements-lifecycle">§1</a></td></tr>
+    <tr data-kw="inference_geo"><td><code>inference_geo</code></td><td>Chọn vùng xử lý dữ liệu</td><td>Yêu cầu dữ liệu phải ở một vùng; không phải ZDR</td><td><a href="#requirements-lifecycle">§1</a></td></tr>
+    <tr data-kw="intent.md"><td><code>intent.md</code></td><td>Tờ mục tiêu, ràng buộc, tiêu chí thành công viết trước việc phức tạp</td><td>Tiêu chí phải đo được, như p99 dưới 200ms</td><td><a href="#sdlc-playbook">§3</a></td></tr>
+    <tr data-kw="keyword to answer"><td>Từ khoá dẫn tới đáp án</td><td>“qua đêm” thì Batches, “429” thì backoff, “nội bộ dùng lại” thì MCP</td><td>Đáp án nhiễu: chỉnh tham số, dặn prompt, đổi model</td><td><a href="#sample-questions">§4</a></td></tr>
+    <tr data-kw="managed settings"><td>Managed settings</td><td>File cấu hình tập trung do doanh nghiệp triển khai (MDM)</td><td>User không ghi đè được các trường bảo mật</td><td><a href="#sdlc-playbook">§3</a></td></tr>
+    <tr data-kw="MCP server"><td>MCP server</td><td>Cách dùng lại một dịch vụ nội bộ ở nhiều ứng dụng</td><td>Built-in tool không gọi được API nội bộ</td><td><a href="#sample-questions">§4</a></td></tr>
+    <tr data-kw="Message Batches API"><td>Message Batches API</td><td>Gửi lô lớn, xử lý bất đồng bộ, rẻ hơn</td><td>Hợp việc không gấp, khối lượng lớn; không hợp việc người dùng đang chờ</td><td><a href="#requirements-lifecycle">§1</a></td></tr>
+    <tr data-kw="non-functional requirements"><td>Non-functional requirements</td><td>Yêu cầu phi chức năng: độ trễ, thông lượng, chi phí, sẵn sàng, tuân thủ</td><td>Thường là chìa khoá chọn đáp án; gạch chân con số trong đề</td><td><a href="#requirements-lifecycle">§1</a></td></tr>
+    <tr data-kw="pin"><td>Pin (ghim phiên bản)</td><td>Khoá model, SDK, prompt, plugin ở bản cụ thể</td><td>Model ID cụ thể trong một chỗ cấu hình; không dùng alias tự đổi</td><td><a href="#versioning">§2</a></td></tr>
+    <tr data-kw="plugin dependencies"><td>Plugin <code>dependencies</code></td><td>Plugin khai plugin khác mà nó cần</td><td>Chuỗi trần luôn theo bản mới nhất, dễ hỏng; dải semver giới hạn</td><td><a href="#versioning">§2</a></td></tr>
+    <tr data-kw="prompt injection"><td>Nội dung ngoài không tin cậy</td><td>Trang web, email, file người khác có thể chứa lệnh ẩn</td><td>Tách dữ liệu khỏi chỉ dẫn, guardrail nhiều lớp</td><td><a href="#sample-questions">§4</a></td></tr>
+    <tr data-kw="prompt versioning"><td>Phiên bản prompt</td><td>Prompt nằm trong git, đổi qua PR, log kèm mỗi request</td><td>Prompt chỉnh trực tiếp trên server thì không truy được lỗi</td><td><a href="#versioning">§2</a></td></tr>
+    <tr data-kw="SDLC"><td>SDLC</td><td>Các pha từ yêu cầu tới bảo trì</td><td>Với Claude, prompt và model cũng là phần phát hành</td><td><a href="#requirements-lifecycle">§1</a></td></tr>
+    <tr data-kw="semver"><td>Semver (<code>~2.1.0</code>, <code>^2.0</code>)</td><td>Dải phiên bản MAJOR.MINOR.PATCH</td><td><code>~2.1.0</code> nhận 2.1.x, không lên 2.2</td><td><a href="#versioning">§2</a></td></tr>
+    <tr data-kw="skill map"><td>25 kỹ năng CCDV-F</td><td>Tám domain, tỷ trọng riêng</td><td>D2 lớn nhất (33,1%)</td><td><a href="#skill-map">§5</a></td></tr>
+    <tr data-kw="streaming"><td>Streaming</td><td>Nhận chữ dần khi Claude sinh</td><td>Cho yêu cầu độ trễ khi người dùng ngồi chờ</td><td><a href="#requirements-lifecycle">§1</a></td></tr>
+    <tr data-kw="verifier"><td>Verifier subagent</td><td>Subagent review độc lập, context mới, chỉ đọc và chạy lệnh</td><td>Người viết khó thấy lỗi của chính mình</td><td><a href="#sdlc-playbook">§3</a></td></tr>
+    <tr data-kw="worktree"><td><code>git worktree</code></td><td>Thư mục và branch riêng cho mỗi phiên Claude chạy song song</td><td>Tránh các phiên đè file nhau</td><td><a href="#sdlc-playbook">§3</a></td></tr>
+  </tbody>
+</table></div>
+
+<p class="lesson-practice">Luyện câu hỏi của bài này trong <a href="/bank?lesson=14">🗂️ Ngân hàng</a>.</p>
+
+<div class="btns pager">
+  <a class="btn" href="/notes/lessons/13-claude-code-config.html">← Bài 13 · Claude Code: cấu hình, CI và quyền</a>
+  <a class="btn primary" href="/notes/lessons/15-ccao-f-work.html">Bài 15 · CCAO-F: Claude cho công việc →</a>
+</div>
+
+<footer>
+  Luyện thi chứng chỉ Claude · Bài 14 · Vòng đời ứng dụng và tổng kiểm CCDV-F · v0.39 · 2026-11-18. <a href="/notes/00-tong-quan.md">Tổng quan</a> · <a href="/new">Luyện đề</a>.
+</footer>

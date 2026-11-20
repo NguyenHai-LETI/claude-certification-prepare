@@ -1,0 +1,869 @@
+<p class="lesson-source">Nguồn: tài liệu ôn tập công khai <a href="https://claude.ai/artifact/3NhHr42CxTHGEs33N1ntFf" target="_blank" rel="noopener">artifact 3NhHr42…</a> (bài 23). Không thuộc và không được Anthropic xác nhận.</p>
+<header class="cover">
+  <div class="eyebrow">Luyện thi chứng chỉ Claude · Bài 23 · Phụ lục</div>
+  <h1>Phụ lục: khoá học Claude Academy <span class="ja">Academy · 28 courses</span></h1>
+  <p class="lead">Toàn bộ khoá học trên academy.claude.com: mô tả, ánh xạ tới kỳ thi, lộ trình theo chứng chỉ, kèm phần tổng quan và mẹo thi của các khoá đã có bài riêng.</p>
+  <dl class="meta">
+    <dt>Kỳ thi</dt><dd>CCDV-F · CCAR-F · CCAO-F – tài nguyên học bổ trợ chính thức từ Anthropic</dd>
+    <dt>Nguồn</dt><dd>academy.claude.com/courses · Crawl 2026-11-17; academy.claude.com · Claude 101, AI Fluency Framework · Crawl 2026-11-17; academy.claude.com · AI capabilities and limitations, Building effective human-agent teams, Deploying Claude Enterprise · Crawl 2026-11-17; academy.claude.com · Introduction to evals, Claude Code in action, AI-native SDLC playbook · Crawl 2026-11-17; academy.claude.com · Building with the Claude API · Crawl 2026-11-17; academy.claude.com · Tool use with the Messages API · Crawl 2026-11-17</dd>
+    <dt>Cập nhật</dt><dd><span class="status">v0.39 · 2026-11-18</span> · theo exam guide v1.0</dd>
+  </dl>
+</header>
+
+<details class="toc">
+<summary>Mục lục</summary>
+
+    <ol>
+      <li><a href="#overview"><span class="n">1</span><span class="tx">Tổng quan</span></a></li>
+      <li><a href="#start-journey"><span class="n">2</span><span class="tx">Nhóm: Start your journey</span></a></li>
+      <li><a href="#learn-products"><span class="n">3</span><span class="tx">Nhóm: Learn the products</span></a></li>
+      <li><a href="#ai-fluent"><span class="n">4</span><span class="tx">Nhóm: Become AI fluent</span></a></li>
+      <li><a href="#fluency-world"><span class="n">5</span><span class="tx">Nhóm: AI Fluency for your world</span></a></li>
+      <li><a href="#build-api"><span class="n">6</span><span class="tx">Nhóm: Build with the API</span></a></li>
+      <li><a href="#exam-mapping"><span class="n">7</span><span class="tx">Ánh xạ Academy → kỳ thi</span></a></li>
+      <li><a href="#academy-path"><span class="n">8</span><span class="tx">Lộ trình học Academy theo chứng chỉ</span></a></li>
+      <li><a href="#notes"><span class="n">9</span><span class="tx">Ghi chú thực tế</span></a></li>
+      <li><a href="#course-claude-101"><span class="n">10</span><span class="tx">Tổng quan khoá Claude 101 và AI Fluency</span></a></li>
+      <li><a href="#tips-claude-101"><span class="n">11</span><span class="tx">Lưu ý ôn thi: Claude 101 và AI Fluency</span></a></li>
+      <li><a href="#course-ai-capabilities"><span class="n">12</span><span class="tx">Tổng quan khoá AI Capabilities, Human-Agent Teams, Enterprise</span></a></li>
+      <li><a href="#tips-ai-capabilities"><span class="n">13</span><span class="tx">Lưu ý ôn thi: AI Capabilities, Human-Agent Teams, Enterprise</span></a></li>
+      <li><a href="#course-evals-sdlc"><span class="n">14</span><span class="tx">Tổng quan khoá Evals, Claude Code in Action, SDLC</span></a></li>
+      <li><a href="#tips-evals-sdlc"><span class="n">15</span><span class="tx">Lưu ý ôn thi: Evals, Claude Code in Action, SDLC</span></a></li>
+      <li><a href="#course-building-api"><span class="n">16</span><span class="tx">Tổng quan khoá Building with the Claude API</span></a></li>
+      <li><a href="#tips-building-api"><span class="n">17</span><span class="tx">Lưu ý ôn thi: Building with the Claude API</span></a></li>
+      <li><a href="#course-tool-use"><span class="n">18</span><span class="tx">Tổng quan khoá Tool Use với Messages API</span></a></li>
+      <li><a href="#tips-tool-use"><span class="n">19</span><span class="tx">Lưu ý ôn thi: Tool Use với Messages API</span></a></li>
+      <li><a href="#exam-keywords"><span class="n">20</span><span class="tx">Từ khoá đề thi</span></a></li>
+    </ol>
+</details>
+
+<h2 id="overview">1. Tổng quan</h2>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Claude Academy giống một <strong>trường học có năm khoa</strong>. Khoa nhập môn dành cho người mới. Khoa sản phẩm dạy từng công cụ. Khoa tư duy dạy cách làm việc với AI. Khoa theo nghề dạy cho từng ngành. Khoa API dành cho người viết code. Bạn không cần học hết trường, chỉ cần chọn đúng khoa và đúng môn cho kỳ thi mình định thi.
+</div>
+<p>Claude Academy (<a href="https://academy.claude.com" target="_blank" rel="noopener">academy.claude.com</a>) cung cấp <strong>28 khóa học</strong> chia thành 5 nhóm. Toàn bộ miễn phí; một số bài yêu cầu tài khoản Team/Enterprise để thực hành. Khóa có quiz và completion badge là tài nguyên ôn tập trực tiếp cho các kỳ thi chứng chỉ.</p>
+<div class="tw"><table>
+  <thead><tr><th>Nhóm</th><th>Số khóa</th><th>Đối tượng chính</th><th>Liên quan kỳ thi</th></tr></thead>
+  <tbody>
+    <tr><td>Start your journey</td><td>5</td><td>Người dùng mới, nghiệp vụ</td><td>CCAO-F D1–D5</td></tr>
+    <tr><td>Learn the products</td><td>8</td><td>Developer, Architect</td><td>CCDV-F D1–D8 · CCAR-F D1–D5</td></tr>
+    <tr><td>Become AI fluent</td><td>3</td><td>Mọi đối tượng</td><td>CCAO-F D2, D6</td></tr>
+    <tr><td>AI Fluency for your world</td><td>9</td><td>Theo ngành, vai trò</td><td>CCAO-F tham khảo</td></tr>
+    <tr><td>Build with the API</td><td>5</td><td>Developer, Architect</td><td>CCDV-F D2–D8 · CCAR-F D1–D5</td></tr>
+  </tbody>
+</table></div>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 290" role="img" aria-label="Bản đồ năm nhóm khóa Academy và ba chứng chỉ: Build with the API và Learn the products dẫn tới CCDV-F và CCAR-F; Start your journey và Become AI fluent dẫn tới CCAO-F; AI Fluency for your world chỉ là tham khảo cho CCAO-F">
+    <defs>
+      <marker id="m1001" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker>
+      <marker id="m1002" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah"/></marker>
+    </defs>
+    <path d="M238,34 L418,50" class="ln-acc" marker-end="url(#m1001)"/>
+    <path d="M238,34 L418,130" class="ln-acc" marker-end="url(#m1001)"/>
+    <path d="M238,90 L418,66" class="ln-acc" marker-end="url(#m1001)"/>
+    <path d="M238,90 L418,146" class="ln-acc" marker-end="url(#m1001)"/>
+    <path d="M238,90 L418,205" class="ln-dash" marker-end="url(#m1002)"/>
+    <path d="M238,146 L418,222" class="ln-acc" marker-end="url(#m1001)"/>
+    <path d="M238,202 L418,238" class="ln-acc" marker-end="url(#m1001)"/>
+    <path d="M238,258 L418,256" class="ln-dash" marker-end="url(#m1002)"/>
+    <rect x="10" y="12" width="226" height="44" rx="6" class="b-sys"/><text x="24" y="31" class="t tb">Build with the API</text><text x="24" y="47" class="ts">5 khóa · developer, architect</text>
+    <rect x="10" y="68" width="226" height="44" rx="6" class="b-sys"/><text x="24" y="87" class="t tb">Learn the products</text><text x="24" y="103" class="ts">8 khóa · developer, architect</text>
+    <rect x="10" y="124" width="226" height="44" rx="6" class="b-step"/><text x="24" y="143" class="t tb">Start your journey</text><text x="24" y="159" class="ts">5 khóa · người dùng mới, nghiệp vụ</text>
+    <rect x="10" y="180" width="226" height="44" rx="6" class="b-step"/><text x="24" y="199" class="t tb">Become AI fluent</text><text x="24" y="215" class="ts">3 khóa · mọi đối tượng</text>
+    <rect x="10" y="236" width="226" height="44" rx="6" class="b-opt"/><text x="24" y="255" class="t tb">AI Fluency for your world</text><text x="24" y="271" class="ts">9 khóa · theo ngành, vai trò</text>
+    <rect x="420" y="30" width="210" height="60" rx="6" class="b-done"/><text x="434" y="54" class="t tb">CCDV-F</text><text x="434" y="72" class="ts">D1–D8 · developer</text>
+    <rect x="420" y="110" width="210" height="60" rx="6" class="b-done"/><text x="434" y="134" class="t tb">CCAR-F</text><text x="434" y="152" class="ts">D1–D5 · architect</text>
+    <rect x="420" y="190" width="210" height="84" rx="6" class="b-done"/><text x="434" y="214" class="t tb">CCAO-F</text><text x="434" y="232" class="ts">D1–D7 · nghiệp vụ</text><text x="434" y="262" class="ts">Nét đứt: liên quan một phần</text>
+  </svg></div>
+  <figcaption>Hình 1. Năm nhóm khóa Academy hướng tới ba chứng chỉ nào. Nét đứt là liên quan một phần (ví dụ <em>Deploying Claude Enterprise</em> cho CCAO-F D4, D5; nhóm theo ngành chỉ để tham khảo).</figcaption>
+</figure>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Khóa (course)</dt><dd>Một chuỗi bài học về một chủ đề, có số bài và số giờ học.</dd>
+  <dt>Bài (lesson)</dt><dd>Một đơn vị nhỏ trong khóa. “13 bài” nghĩa là khóa có 13 bài.</dd>
+  <dt>Quiz</dt><dd>Bài kiểm tra ngắn cuối khóa.</dd>
+  <dt>Completion badge</dt><dd>Huy hiệu nhận khi hoàn thành khóa có quiz.</dd>
+  <dt>Domain (D1, D2…)</dt><dd>Một nhóm kiến thức trong đề thi. Mỗi bài thi chia thành vài domain.</dd>
+  <dt>CCDV-F · CCAR-F · CCAO-F</dt><dd>Ba trong bốn chứng chỉ mà site này ôn. Xem bảng ở trang Tổng quan để biết đối tượng của từng bài thi.</dd>
+</dl></div>
+<div class="insight"><strong>Cốt lõi.</strong> Với CCDV-F và CCAR-F: ưu tiên nhóm <em>Build with the API</em> và <em>Learn the products</em>. Với CCAO-F: ưu tiên <em>Start your journey</em> và <em>Become AI fluent</em>.</div>
+
+<h2 id="start-journey">2. Nhóm: Start your journey</h2>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Đây là <strong>buổi định hướng</strong> khi vào trường: tham quan các tòa nhà, biết phòng nào làm gì. Bạn chưa học sâu, nhưng sau buổi này bạn biết mình đứng ở đâu.
+</div>
+<p>Năm khóa nhập môn, mỗi khóa 1–2,5 tiếng. Có quiz và completion badge.</p>
+<div class="tw"><table>
+  <thead><tr><th>Khóa</th><th>Bài</th><th>Thời gian</th><th>Nội dung chính</th></tr></thead>
+  <tbody>
+    <tr>
+      <td><strong>Claude 101</strong></td><td>13</td><td>2,5 h</td>
+      <td>Hội thoại hiệu quả với Claude; Projects và Artifacts; Skills; Connectors; Enterprise Search; Research Mode; Claude theo vai trò; Claude Code, Claude Tag, Claude Design.</td>
+    </tr>
+    <tr>
+      <td><strong>Claude Code 101</strong></td><td>12</td><td>1,5 h</td>
+      <td>Vòng lặp agent, context window, quyền; plan mode, auto-accept, manual mode; quy trình explore → plan → code → commit; CLAUDE.md; subagent; skill; MCP; hook.</td>
+    </tr>
+    <tr>
+      <td><strong>Introduction to Claude Cowork</strong></td><td>14</td><td>2,5 h</td>
+      <td>Tính năng cộng tác trong claude.ai.</td>
+    </tr>
+    <tr>
+      <td><strong>Introduction to Claude Tag</strong></td><td>11</td><td>2,5 h</td>
+      <td>Claude trong Slack: slash command, cài đặt workspace.</td>
+    </tr>
+    <tr>
+      <td><strong>Claude Platform 101</strong></td><td>13</td><td>1,5 h</td>
+      <td>Lời gọi API đầu tiên (TypeScript SDK); chọn model Fable, Opus, Sonnet, Haiku; vòng lặp agent và Tool Runner; tool use; thinking; built-in tool; skill; MCP; quản lý context (4 cách); managed agents; gọi Claude Code qua API.</td>
+    </tr>
+  </tbody>
+</table></div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Claude Code</dt><dd>Công cụ AI viết và sửa code ngay trong dự án của bạn, chạy ở terminal hoặc IDE.</dd>
+  <dt>Claude Cowork · Claude Tag</dt><dd>Hai sản phẩm có khóa riêng ở nhóm này. Mô tả trong bảng lấy theo trang Academy.</dd>
+  <dt>Platform</dt><dd>Bộ API, SDK và Console để lập trình viên đưa Claude vào ứng dụng của mình.</dd>
+</dl></div>
+<div class="alert"><strong>Lưu ý cho CCAR-F.</strong> <em>Claude Platform 101</em> bao gồm đủ 5 domain CCAR-F ở mức nhập môn: đọc trước nếu chưa quen API.</div>
+
+<h2 id="learn-products">3. Nhóm: Learn the products</h2>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Mỗi khóa ở đây giống <strong>một buổi tập sử dụng một dụng cụ</strong> trong xưởng: máy khoan, máy cưa, máy mài. Bạn học dụng cụ nào thì dùng được dụng cụ đó. Các dụng cụ gồm Claude Code, MCP, subagent, skill, quy trình phát triển có AI, triển khai Enterprise và eval.
+</div>
+<p>Tám khóa chuyên sâu về từng sản phẩm, với quiz và completion badge (trừ hai khóa intro beta).</p>
+<div class="tw"><table>
+  <thead><tr><th>Khóa</th><th>Bài</th><th>Thời gian</th><th>Nội dung chính</th><th>Thi</th></tr></thead>
+  <tbody>
+    <tr>
+      <td><strong>Claude Code in action</strong></td><td>9</td><td>1 h</td>
+      <td>Điều hướng phiên dài (plan mode, compaction, rewind); CLAUDE.md gọn; skill để kiểm chứng; permission mode; hook; tác vụ định kỳ; chế độ headless; GitHub Actions; plugin code review; plugin.</td>
+      <td>CCAR-F D3</td>
+    </tr>
+    <tr>
+      <td><strong>Introduction to MCP</strong></td><td>10</td><td>1 h</td>
+      <td>Kiến trúc MCP; transport; Python SDK với decorator; MCP Server Inspector; client; resources (URI tĩnh và template); prompts; pattern autocomplete và inject context.</td>
+      <td>CCDV-F D8 · CCAR-F D2</td>
+    </tr>
+    <tr>
+      <td><strong>MCP Advanced topics</strong></td><td>11</td><td>1,5 h</td>
+      <td>Sampling (server nhờ client gọi LLM); log và thông báo tiến độ; roots (giới hạn thư mục); các loại message JSON; transport stdio; Streamable HTTP (SSE, quản lý phiên); stateless so với stateful; mở rộng theo chiều ngang. <em>Lưu ý: đặc tả MCP hiện hành 2026-07-28 đã deprecate Sampling, Logging và Roots (SEP-2577; roots chỉ mang tính thông tin, không phải cơ chế kiểm soát truy cập) và bỏ session của Streamable HTTP; khóa học vẫn dạy theo bản cũ. Xem <a href="/notes/lessons/06-mcp.html#mcp-advanced">bài 06 mục 4</a>, nguồn <a href="https://modelcontextprotocol.io/specification/latest/changelog" target="_blank" rel="noopener">MCP spec, Changelog</a>.</em></td>
+      <td>CCAR-F D2</td>
+    </tr>
+    <tr>
+      <td><strong>Introduction to subagents</strong></td><td>4</td><td>45 min</td>
+      <td>Context window riêng của subagent; input/output summary; viết subagent: code review, documentation; output có cấu trúc; giới hạn tool; anti-pattern.</td>
+      <td>CCAR-F D1</td>
+    </tr>
+    <tr>
+      <td><strong>Introduction to agent skills</strong></td><td>6</td><td>1 h</td>
+      <td>Skill là gì và cách Claude Code khớp; SKILL.md frontmatter; allowed-tools; multi-file skill (progressive disclosure, scripts); skill vs CLAUDE.md vs subagent vs hook vs MCP; phân phối qua repo, plugin, enterprise; troubleshoot (validator, --debug).</td>
+      <td>CCAR-F D3</td>
+    </tr>
+    <tr>
+      <td><strong>AI-native SDLC playbook</strong></td><td>14</td><td>1 h</td>
+      <td>Quy trình phát triển phần mềm tích hợp AI.</td>
+      <td>CCAR-F D3</td>
+    </tr>
+    <tr>
+      <td><strong>Deploying Claude Enterprise</strong></td><td>14</td><td>2,5 h</td>
+      <td>5 quyết định triển khai: cấu trúc tổ chức (một hay nhiều org, nhóm); truy cập (giao diện, connector); quản trị (tuỳ biến); giới hạn chi tiêu; khả năng quan sát (tín hiệu sử dụng, dữ liệu dùng). Cách các quyết định liên quan nhau; đưa sản phẩm mới vào dùng.</td>
+      <td>CCAO-F D4, D5</td>
+    </tr>
+    <tr>
+      <td><strong>Introduction to evals</strong></td><td>4</td><td>1 h</td>
+      <td>Chọn model theo ngưỡng chính xác tối thiểu; dựng eval tối thiểu (dữ liệu lấy từ production, grader bằng code và LLM chấm theo rubric); sửa prompt trước khi đổi model; eval trong CI (chặn merge khi điểm thấp), Batch API, phát hiện độ trôi (lấy mẫu hằng đêm).</td>
+      <td>CCDV-F D4</td>
+    </tr>
+  </tbody>
+</table></div>
+
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>MCP</dt><dd>Model Context Protocol, chuẩn để nối Claude với công cụ và dữ liệu bên ngoài.</dd>
+  <dt>Subagent · Skill</dt><dd>Agent con làm việc trong vùng nhớ riêng; thư mục hướng dẫn chỉ nạp khi cần. Xem bài 08.</dd>
+  <dt>Eval</dt><dd>Bộ kiểm tra chất lượng đầu ra của model, chạy lặp lại để so sánh các lần thay đổi.</dd>
+  <dt>SDLC</dt><dd>Quy trình phát triển phần mềm, từ yêu cầu tới triển khai.</dd>
+  <dt>Enterprise</dt><dd>Gói dành cho tổ chức lớn, có quản trị và kiểm soát chi tiêu.</dd>
+</dl></div>
+
+<h2 id="ai-fluent">4. Nhóm: Become AI fluent</h2>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Biết dùng bếp khác với biết <strong>nấu ăn</strong>. Nhóm này không dạy dụng cụ. Nó dạy tư duy: nhờ AI việc gì, nói rõ ra sao, kiểm tra kết quả thế nào, và chịu trách nhiệm ra sao.
+</div>
+<p>Ba khóa về tư duy và kỹ năng sử dụng AI hiệu quả. Phù hợp cho CCAO-F và làm nền cho các khóa kỹ thuật.</p>
+<div class="tw"><table>
+  <thead><tr><th>Khóa</th><th>Bài</th><th>Thời gian</th><th>Nội dung chính</th></tr></thead>
+  <tbody>
+    <tr>
+      <td><strong>AI Fluency: Framework &amp; foundations</strong></td><td>14</td><td>4 h</td>
+      <td>4D Framework: <strong>Delegation</strong> (Problem/Platform Awareness) · <strong>Description</strong> (Product/Process/Performance) · <strong>Discernment</strong> (đánh giá output) · <strong>Diligence</strong> (Creation/Transparency/Deployment). Ba hình thức giao tiếp AI: Automation, Augmentation, Agency. Vòng lặp Description-Discernment.</td>
+    </tr>
+    <tr>
+      <td><strong>AI capabilities and limitations</strong></td><td>13</td><td>3,5 h</td>
+      <td>Những việc AI làm tốt và không làm tốt; giới hạn mô hình ngôn ngữ; đánh giá output; rủi ro.</td>
+    </tr>
+    <tr>
+      <td><strong>Building effective human-agent teams</strong></td><td>5</td><td>45 min</td>
+      <td>Phối hợp người và agent; phân công nhiệm vụ; giám sát và escalation.</td>
+    </tr>
+  </tbody>
+</table></div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>4D Framework</dt><dd>Bốn chữ D: Delegation (giao việc gì cho AI), Description (mô tả việc), Discernment (đánh giá kết quả), Diligence (làm việc có trách nhiệm).</dd>
+  <dt>Automation · Augmentation · Agency</dt><dd>Ba hình thức giao tiếp với AI theo khóa học. Tên gọi giữ nguyên tiếng Anh.</dd>
+</dl></div>
+<div class="insight"><strong>CCAO-F.</strong> 4D Framework (Delegation/Description/Discernment/Diligence) của khóa <em>AI Fluency: Framework &amp; foundations</em> là khung tư duy phù hợp với D1–D2 (prompting, output evaluation). Học khoá này trước khi luyện đề CCAO-F.</div>
+
+<h3>4.1 Bốn chữ D: mỗi chữ trả lời câu hỏi nào</h3>
+<div class="tw"><table>
+  <thead><tr><th>Chữ D</th><th>Câu hỏi nó trả lời</th><th>Thành phần</th><th>Ví dụ với báo cáo doanh thu quý</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Delegation</strong></td><td>Việc nào giao cho AI, việc nào giữ lại?</td><td>Problem, Platform, Task Awareness</td><td>AI làm bảng so sánh nháp; bạn giữ kết luận gửi ban giám đốc</td></tr>
+    <tr><td><strong>Description</strong></td><td>Nói với AI thế nào để nhận đúng thứ cần?</td><td>Product, Process, Performance</td><td>"Bảng ba cột cho ban giám đốc, so với quý trước rồi mới kết luận, trả lời ngắn và chỉ ra giả định yếu"</td></tr>
+    <tr><td><strong>Discernment</strong></td><td>Kết quả có đúng và đủ chưa?</td><td>Đánh giá output, vòng đọc → tìm chỗ hụt → góp ý → lặp</td><td>Đối chiếu số liệu với nguồn, góp ý đúng đoạn cần sửa</td></tr>
+    <tr><td><strong>Diligence</strong></td><td>Dùng AI có trách nhiệm chưa?</td><td>Creation, Transparency, Deployment</td><td>Đọc lại trước khi gửi, ghi chú có dùng AI nếu chính sách yêu cầu</td></tr>
+  </tbody>
+</table></div>
+<p>Delegation và Diligence là hai quyết định rộng (khi nào và cách dùng AI). Description và Discernment là hai việc làm lặp lại trong từng cuộc trao đổi: bạn mô tả, AI trả lời, bạn đánh giá, rồi mô tả lại tốt hơn. Phần giải thích đầy đủ nằm ở <a href="/notes/lessons/15-ccao-f-work.html#ai-fluency">bài 15 §3</a>.</p>
+<h3>4.2 Ba khoá của nhóm: học gì, thi bài nào</h3>
+<div class="tw"><table>
+  <thead><tr><th>Khoá</th><th>Học được gì</th><th>Dùng cho</th></tr></thead>
+  <tbody>
+    <tr><td><strong>AI Fluency: Framework &amp; foundations</strong> (14 bài, 4 h)</td><td>Khung 4D và vòng Description–Discernment; biết nghĩ trước khi gõ prompt</td><td>CCAO-F D1 (Description), D2 (Discernment), D4 (Delegation), D6 (Diligence)</td></tr>
+    <tr><td><strong>AI capabilities and limitations</strong> (13 bài, 3,5 h)</td><td>AI làm tốt gì, sai ở đâu, khi nào tự tin mà sai; cách kiểm chứng</td><td>CCAO-F D2, D6</td></tr>
+    <tr><td><strong>Building effective human-agent teams</strong> (5 bài, 45 phút)</td><td>Vai rõ, mục tiêu chung, trao quyền dần, quyền vừa đủ cho người và agent</td><td>CCAO-F D4 (xem <a href="/notes/lessons/16-ccao-f-teams-enterprise.html#human-agent-teams">bài 16 §1</a>)</td></tr>
+  </tbody>
+</table></div>
+<p><strong>Ví dụ chạy từng bước.</strong> Một nhân viên nhờ Claude tóm tắt hợp đồng nhà cung cấp.</p>
+<ol>
+  <li>Delegation: tóm tắt giao cho AI; quyết định có ký hay không giữ lại cho người.</li>
+  <li>Description: nêu sản phẩm (tóm tắt một trang), cách làm (liệt kê điều khoản phạt trước), tiêu chuẩn (cho người không chuyên luật).</li>
+  <li>Discernment: đọc bản trả về, đối chiếu với hợp đồng, thấy thiếu điều khoản phạt, góp ý đúng chỗ thiếu, lặp lại tới khi đạt.</li>
+  <li>Diligence: đọc lại toàn bộ trước khi chuyển cho sếp; thêm ghi chú có dùng AI nếu công ty yêu cầu.</li>
+</ol>
+<div class="alert"><strong>Bẫy.</strong> Nhầm ý nghĩa của hai chữ D đầu. Description là nói với AI việc cần làm; Delegation là quyết định có giao việc đó cho AI hay không. Đề hay cho tình huống và hỏi bước nào đang bị bỏ qua.</div>
+
+<h2 id="fluency-world">5. Nhóm: AI Fluency for your world</h2>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Cùng một môn “nấu ăn” nhưng có lớp riêng cho đầu bếp nhà hàng, cho người nấu ăn gia đình, cho học sinh. Nội dung cốt lõi giống nhau, ví dụ thì đổi theo nghề. Nhóm này làm đúng việc đó cho 9 nhóm đối tượng.
+</div>
+<p>Chín khóa chuyên biệt theo đối tượng. Không có thông tin thời gian cụ thể. Có quiz và completion badge (trừ pK–12 Train the Trainer).</p>
+<div class="tw"><table>
+  <thead><tr><th>Khóa</th><th>Bài</th><th>Đối tượng</th></tr></thead>
+  <tbody>
+    <tr><td><strong>For builders</strong></td><td>9</td><td>Người xây dựng sản phẩm, developer</td></tr>
+    <tr><td><strong>For creative work</strong></td><td>8</td><td>Sáng tác nội dung, thiết kế</td></tr>
+    <tr><td><strong>For educators</strong></td><td>4</td><td>Giáo viên đại học, người đào tạo</td></tr>
+    <tr><td><strong>For pK–12 educators</strong></td><td>10</td><td>Giáo viên phổ thông</td></tr>
+    <tr><td><strong>For pK–12 Train the Trainer</strong></td><td>4</td><td>Người đào tạo giáo viên</td></tr>
+    <tr><td><strong>For facilitators</strong></td><td>7</td><td>Facilitator, trainer nội bộ</td></tr>
+    <tr><td><strong>For nonprofits</strong></td><td>9</td><td>Tổ chức phi lợi nhuận</td></tr>
+    <tr><td><strong>For small businesses</strong></td><td>8</td><td>Doanh nghiệp nhỏ</td></tr>
+    <tr><td><strong>For students</strong></td><td>5</td><td>Học sinh, sinh viên</td></tr>
+  </tbody>
+</table></div>
+
+<div class="insight"><strong>Cốt lõi.</strong> Nhóm này chỉ tham khảo cho CCAO-F. Chọn khóa hợp nghề của bạn nếu còn thời gian, không bắt buộc cho kỳ thi.</div>
+
+<h3>5.1 Chọn khoá hợp vai trò</h3>
+<p>Cả chín khoá cùng dạy khung 4D; chỉ đổi ví dụ theo nghề. Vì vậy với CCAO-F, bạn học <em>AI Fluency: Framework &amp; foundations</em> ở §4 trước, rồi chọn một khoá ở đây để thấy 4D áp vào việc của chính mình.</p>
+<div class="tw"><table>
+  <thead><tr><th>Nếu bạn là</th><th>Khoá hợp</th><th>Số bài</th></tr></thead>
+  <tbody>
+    <tr><td>Người làm sản phẩm hoặc developer</td><td>For builders</td><td>9</td></tr>
+    <tr><td>Người sáng tác nội dung, thiết kế</td><td>For creative work</td><td>8</td></tr>
+    <tr><td>Giảng viên đại học, người đào tạo</td><td>For educators</td><td>4</td></tr>
+    <tr><td>Giáo viên phổ thông; người đào tạo giáo viên</td><td>For pK–12 educators; For pK–12 Train the Trainer</td><td>10; 4</td></tr>
+    <tr><td>Facilitator, trainer nội bộ</td><td>For facilitators</td><td>7</td></tr>
+    <tr><td>Làm ở tổ chức phi lợi nhuận</td><td>For nonprofits</td><td>9</td></tr>
+    <tr><td>Chủ hoặc nhân viên doanh nghiệp nhỏ</td><td>For small businesses</td><td>8</td></tr>
+    <tr><td>Học sinh, sinh viên</td><td>For students</td><td>5</td></tr>
+  </tbody>
+</table></div>
+<p>Một ví dụ: chị Mai làm marketing cho cửa hàng nhỏ. Chị học Framework &amp; foundations (14 bài) để nắm 4D, rồi <em>For small businesses</em> (8 bài) để xem 4D áp vào báo giá, email khách và kế hoạch bán hàng. Chị không cần khoá nào khác của nhóm này.</p>
+<div class="alert"><strong>Bẫy.</strong> Coi khoá theo ngành là nguồn câu hỏi chính của CCAO-F. Đề thi dựa trên exam guide; nhóm này chỉ giúp hiểu thêm bằng ví dụ gần nghề.</div>
+
+<h2 id="build-api">6. Nhóm: Build with the API</h2>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Đây là <strong>lớp thực hành lái xe có thầy ngồi cạnh</strong>. Bạn tự cầm lái: gọi API, thêm tool, chạy eval, dựng agent. Khóa lớn nhất của nhóm dài 67 bài, nên được chia thành 9 module để học từng đoạn.
+</div>
+<p>Năm khóa chuyên sâu dành cho developer. Tổng cộng hơn 200 bài, 27 tiếng học.</p>
+<div class="tw"><table>
+  <thead><tr><th>Khóa</th><th>Bài</th><th>Thời gian</th><th>Nội dung chính</th><th>Thi</th></tr></thead>
+  <tbody>
+    <tr>
+      <td><strong>Building with the Claude API</strong></td><td>67</td><td>9 h</td>
+      <td>
+        Module 1 (API): xác thực, API key, request cơ bản, hội thoại nhiều lượt, system prompt, temperature, streaming, dữ liệu có cấu trúc.<br>
+        Module 2 (Eval): quy trình eval, dataset thử, chấm bằng code và bằng model.<br>
+        Module 3 (Prompt engineering): rõ ràng, cụ thể, thẻ XML, few-shot.<br>
+        Module 4 (Tool use): schema, content block, tool nhiều lượt, text edit, web search.<br>
+        Module 5 (RAG): chia đoạn, embedding, BM25, pipeline nhiều chỉ mục.<br>
+        Module 6 (Tính năng): thinking, ảnh, PDF, citations, caching, code execution, Files API.<br>
+        Module 7 (MCP): server và client, resource, prompt.<br>
+        Module 8 (Claude Code): cài đặt, dùng thực tế, MCP server trong Claude Code.<br>
+        Module 9 (Agent): song song, nối chuỗi, định tuyến, workflow so với agent.
+      </td>
+      <td>CCDV-F D1–D8 · CCAR-F D1–D5</td>
+    </tr>
+    <tr>
+      <td><strong>Tool use with the Messages API</strong></td><td>9</td><td>1,5 h</td>
+      <td>Hàm và schema của tool; content block; tool result; tool nhiều lượt; nhiều tool; fine-grained tool calling; text edit tool; web search tool.</td>
+      <td>CCDV-F D8 · CCAR-F D2</td>
+    </tr>
+    <tr>
+      <td><strong>Introduction to evals</strong></td><td>4</td><td>1 h</td>
+      <td>(xem §3 phía trên)</td>
+      <td>CCDV-F D4</td>
+    </tr>
+    <tr>
+      <td><strong>Claude with Amazon Bedrock</strong></td><td>65</td><td>8 h</td>
+      <td>Nội dung tương đương <em>Building with the Claude API</em> nhưng dùng Bedrock SDK.</td>
+      <td>CCDV-F D2 (nền tảng bên thứ ba)</td>
+    </tr>
+    <tr>
+      <td><strong>Claude on Google Cloud</strong></td><td>66</td><td>8,5 h</td>
+      <td>Nội dung tương đương nhưng dùng Vertex AI SDK.</td>
+      <td>CCDV-F D2 (nền tảng bên thứ ba)</td>
+    </tr>
+  </tbody>
+</table></div>
+
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Module</dt><dd>Một phần của khóa dài. “Module 9” của <em>Building with the Claude API</em> là phần về Agents.</dd>
+  <dt>Bedrock · Google Cloud (Vertex AI)</dt><dd>Hai nền tảng đám mây bên thứ ba cũng cho gọi Claude. Hai khóa tương ứng dạy cùng nội dung nhưng dùng SDK của nền tảng đó.</dd>
+  <dt>RAG · Embeddings · BM25</dt><dd>Các kỹ thuật tìm tài liệu liên quan rồi đưa cho Claude, nằm trong Module 5.</dd>
+</dl></div>
+
+<h2 id="exam-mapping">7. Ánh xạ Academy → kỳ thi</h2>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Đề cương thi như <strong>danh sách chương cần ôn</strong>, còn khóa Academy là <strong>sách tham khảo</strong>. Phần này là mục lục tra cứu: chương nào (domain) nên đọc cuốn nào (khóa). Domain nặng điểm thì ôn kỹ hơn.
+</div>
+<h3>7.1. CCDV-F: khóa ưu tiên theo domain</h3>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 232" role="img" aria-label="Tỷ trọng tám domain của CCDV-F: D2 33,1 phần trăm, D5 16,8, D1 14,7, D6 11,0, D8 10,6, D7 8,1, D3 3,1, D4 2,6">
+    <text x="10" y="26" class="ts">D1 Agents and Workflows</text><rect x="210" y="14" width="147" height="16" rx="3" class="b-step"/><text x="363" y="26" class="ts tb">14,7%</text>
+    <text x="10" y="50" class="ts tb">D2 Applications and Integration</text><rect x="210" y="38" width="331" height="16" rx="3" class="b-hot"/><text x="547" y="50" class="ts tb">33,1%</text>
+    <text x="10" y="74" class="ts">D3 Claude Code</text><rect x="210" y="62" width="31" height="16" rx="3" class="b-step"/><text x="247" y="74" class="ts tb">3,1%</text>
+    <text x="10" y="98" class="ts">D4 Eval, Testing, and Debugging</text><rect x="210" y="86" width="26" height="16" rx="3" class="b-step"/><text x="242" y="98" class="ts tb">2,6%</text>
+    <text x="10" y="122" class="ts tb">D5 Model Selection and Optimization</text><rect x="210" y="110" width="168" height="16" rx="3" class="b-hot"/><text x="384" y="122" class="ts tb">16,8%</text>
+    <text x="10" y="146" class="ts">D6 Prompt and Context Engineering</text><rect x="210" y="134" width="110" height="16" rx="3" class="b-step"/><text x="326" y="146" class="ts tb">11,0%</text>
+    <text x="10" y="170" class="ts">D7 Security and Safety</text><rect x="210" y="158" width="81" height="16" rx="3" class="b-step"/><text x="297" y="170" class="ts tb">8,1%</text>
+    <text x="10" y="194" class="ts">D8 Tools and MCPs</text><rect x="210" y="182" width="106" height="16" rx="3" class="b-step"/><text x="322" y="194" class="ts tb">10,6%</text>
+    <text x="320" y="224" class="ts" text-anchor="middle">Độ dài thanh theo tỷ trọng domain của CCDV-F. Hai thanh nổi là hai domain nặng nhất.</text>
+  </svg></div>
+  <figcaption>Hình 2. Tỷ trọng tám domain CCDV-F: D2 và D5 chiếm gần một nửa đề.</figcaption>
+</figure>
+<div class="tw"><table>
+  <thead><tr><th class="nw">Domain</th><th>Tên</th><th class="c">%</th><th>Khóa Academy ưu tiên</th></tr></thead>
+  <tbody>
+    <tr><td>D1</td><td>Agents and Workflows</td><td class="c">14,7</td><td>Building with the Claude API (Module 9) · Claude Platform 101</td></tr>
+    <tr><td>D2</td><td>Applications and Integration</td><td class="c nw"><strong>33,1</strong></td><td>Building with the Claude API (Module 1, 6) · Tool use with Messages API · Claude with Bedrock/GCP</td></tr>
+    <tr><td>D3</td><td>Claude Code</td><td class="c">3,1</td><td>Claude Code 101 · Claude Code in action</td></tr>
+    <tr><td>D4</td><td>Eval, Testing, and Debugging</td><td class="c">2,6</td><td>Introduction to evals · Building with Claude API (Module 2)</td></tr>
+    <tr><td>D5</td><td>Model Selection and Optimization</td><td class="c nw"><strong>16,8</strong></td><td>Building with Claude API (Module 3, 6) · Claude Platform 101</td></tr>
+    <tr><td>D6</td><td>Prompt and Context Engineering</td><td class="c">11,0</td><td>Building with Claude API (Module 3) · Claude Platform 101</td></tr>
+    <tr><td>D7</td><td>Security and Safety</td><td class="c">8,1</td><td>Claude Code in action (hooks) · Building with Claude API</td></tr>
+    <tr><td>D8</td><td>Tools and MCPs</td><td class="c">10,6</td><td>Introduction to MCP · Tool use with Messages API · MCP Advanced</td></tr>
+  </tbody>
+</table></div>
+
+<h3>7.2. CCAR-F: khóa ưu tiên theo domain</h3>
+<div class="tw"><table>
+  <thead><tr><th class="nw">Domain</th><th>Tên</th><th class="c">%</th><th>Khóa Academy ưu tiên</th></tr></thead>
+  <tbody>
+    <tr><td>D1</td><td>Agentic Architecture &amp; Orchestration</td><td class="c nw"><strong>27</strong></td><td>Introduction to subagents · Building with Claude API (Module 9) · Claude Platform 101</td></tr>
+    <tr><td>D2</td><td>Tool Design &amp; MCP Integration</td><td class="c">18</td><td>Introduction to MCP · MCP Advanced topics · Tool use with Messages API</td></tr>
+    <tr><td>D3</td><td>Claude Code Configuration &amp; Workflows</td><td class="c">20</td><td>Claude Code in action · Introduction to agent skills · AI-native SDLC playbook</td></tr>
+    <tr><td>D4</td><td>Prompt Engineering &amp; Structured Output</td><td class="c">20</td><td>Building with Claude API (Module 3) · Tool use with Messages API (schema)</td></tr>
+    <tr><td>D5</td><td>Context Management &amp; Reliability</td><td class="c">15</td><td>Claude Platform 101 (context management) · Building with Claude API (Module 1)</td></tr>
+  </tbody>
+</table></div>
+
+<h3>7.3. CCAO-F: khóa ưu tiên theo domain</h3>
+<div class="tw"><table>
+  <thead><tr><th class="nw">Domain</th><th>Tên</th><th class="c">%</th><th>Khóa Academy ưu tiên</th></tr></thead>
+  <tbody>
+    <tr><td>D1</td><td>Prompting and Task Execution</td><td class="c">14</td><td>Claude 101 · AI Fluency: Framework &amp; foundations (Description)</td></tr>
+    <tr><td>D2</td><td>Output Evaluation and Validation</td><td class="c nw"><strong>21</strong></td><td>AI Fluency: Framework &amp; foundations (Discernment) · AI capabilities and limitations</td></tr>
+    <tr><td>D3</td><td>Product and Model Selection</td><td class="c">12</td><td>Claude 101 · Claude Platform 101</td></tr>
+    <tr><td>D4</td><td>Workflow Integration and Solution Design</td><td class="c">16</td><td>Deploying Claude Enterprise · Building effective human-agent teams</td></tr>
+    <tr><td>D5</td><td>Configuration and Knowledge Management</td><td class="c">12</td><td>Claude 101 (Projects, connectors) · Deploying Claude Enterprise</td></tr>
+    <tr><td>D6</td><td>Governance, Risk, and Responsible Use</td><td class="c">15</td><td>AI Fluency (Diligence) · AI capabilities and limitations · Deploying Claude Enterprise</td></tr>
+    <tr><td>D7</td><td>Troubleshooting and Optimization</td><td class="c">10</td><td>Claude 101 · AI Fluency</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="academy-path">8. Lộ trình học Academy theo chứng chỉ</h2>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Đi du lịch ba nơi thì có <strong>ba lịch trình khác nhau</strong>, mỗi lịch trình chia theo ngày. Bạn không cần ghé mọi điểm, chỉ cần ghé những điểm đáng nhất theo thứ tự hợp lý rồi lên đường. Hình dưới là ba lịch trình, hiện dần từng chặng.
+</div>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 272" role="img" aria-label="Lộ trình học theo từng bài thi: CCDV-F sáu chặng, CCAR-F năm chặng, CCAO-F năm chặng, mỗi chặng là một khóa Academy kèm domain">
+    <text x="11" y="36" class="lane-lb">CCDV-F · 6 chặng</text>
+    <text x="11" y="118" class="lane-lb">CCAR-F · 5 chặng</text>
+    <text x="11" y="200" class="lane-lb">CCAO-F · 5 chặng</text>
+    <g><text x="60" y="14" class="ts tb" text-anchor="middle">Chặng 1</text>
+      <rect x="11" y="44" width="98" height="52" rx="6" class="b-step"/><text x="60" y="60" class="ts tb" text-anchor="middle">Claude API</text><text x="60" y="75" class="ts" text-anchor="middle">Module 1 và 6</text><text x="60" y="88" class="ts" text-anchor="middle">D2, D5</text>
+      <rect x="11" y="126" width="98" height="52" rx="6" class="b-sys"/><text x="60" y="142" class="ts tb" text-anchor="middle">Intro subagents</text><text x="60" y="157" class="ts" text-anchor="middle">D1</text>
+      <rect x="11" y="208" width="98" height="52" rx="6" class="b-done"/><text x="60" y="224" class="ts tb" text-anchor="middle">AI Fluency</text><text x="60" y="239" class="ts" text-anchor="middle">Framework</text><text x="60" y="252" class="ts" text-anchor="middle">D1, D2, D6</text></g>
+    <g><text x="164" y="14" class="ts tb" text-anchor="middle">Chặng 2</text>
+      <rect x="115" y="44" width="98" height="52" rx="6" class="b-step"/><text x="164" y="60" class="ts tb" text-anchor="middle">Tool use</text><text x="164" y="75" class="ts" text-anchor="middle">Messages API</text><text x="164" y="88" class="ts" text-anchor="middle">D8</text>
+      <rect x="115" y="126" width="98" height="52" rx="6" class="b-sys"/><text x="164" y="142" class="ts tb" text-anchor="middle">Intro to MCP</text><text x="164" y="157" class="ts" text-anchor="middle">+ MCP Advanced</text><text x="164" y="170" class="ts" text-anchor="middle">D2</text>
+      <rect x="115" y="208" width="98" height="52" rx="6" class="b-done"/><text x="164" y="224" class="ts tb" text-anchor="middle">Claude 101</text><text x="164" y="239" class="ts" text-anchor="middle">D1, D3, D5</text></g>
+    <g><text x="268" y="14" class="ts tb" text-anchor="middle">Chặng 3</text>
+      <rect x="219" y="44" width="98" height="52" rx="6" class="b-step"/><text x="268" y="60" class="ts tb" text-anchor="middle">Intro to MCP</text><text x="268" y="75" class="ts" text-anchor="middle">D8</text>
+      <rect x="219" y="126" width="98" height="52" rx="6" class="b-sys"/><text x="268" y="142" class="ts tb" text-anchor="middle">Code in action</text><text x="268" y="157" class="ts" text-anchor="middle">+ Agent skills</text><text x="268" y="170" class="ts" text-anchor="middle">D3</text>
+      <rect x="219" y="208" width="98" height="52" rx="6" class="b-done"/><text x="268" y="224" class="ts tb" text-anchor="middle">AI capabilities</text><text x="268" y="239" class="ts" text-anchor="middle">and limitations</text><text x="268" y="252" class="ts" text-anchor="middle">D2, D6</text></g>
+    <g><text x="372" y="14" class="ts tb" text-anchor="middle">Chặng 4</text>
+      <rect x="323" y="44" width="98" height="52" rx="6" class="b-step"/><text x="372" y="60" class="ts tb" text-anchor="middle">Claude API</text><text x="372" y="75" class="ts" text-anchor="middle">Module 9 (Agents)</text><text x="372" y="88" class="ts" text-anchor="middle">D1</text>
+      <rect x="323" y="126" width="98" height="52" rx="6" class="b-sys"/><text x="372" y="142" class="ts tb" text-anchor="middle">Claude API</text><text x="372" y="157" class="ts" text-anchor="middle">Module 3 (Prompt)</text><text x="372" y="170" class="ts" text-anchor="middle">D4</text>
+      <rect x="323" y="208" width="98" height="52" rx="6" class="b-done"/><text x="372" y="224" class="ts tb" text-anchor="middle">Deploying Claude</text><text x="372" y="239" class="ts" text-anchor="middle">Enterprise</text><text x="372" y="252" class="ts" text-anchor="middle">D4, D5, D6</text></g>
+    <g><text x="476" y="14" class="ts tb" text-anchor="middle">Chặng 5</text>
+      <rect x="427" y="44" width="98" height="52" rx="6" class="b-step"/><text x="476" y="60" class="ts tb" text-anchor="middle">Intro to evals</text><text x="476" y="75" class="ts" text-anchor="middle">D4</text>
+      <rect x="427" y="126" width="98" height="52" rx="6" class="b-sys"/><text x="476" y="142" class="ts tb" text-anchor="middle">Platform 101</text><text x="476" y="157" class="ts" text-anchor="middle">quản lý context</text><text x="476" y="170" class="ts" text-anchor="middle">D5</text>
+      <rect x="427" y="208" width="98" height="52" rx="6" class="b-done"/><text x="476" y="224" class="ts tb" text-anchor="middle">Human-agent</text><text x="476" y="239" class="ts" text-anchor="middle">teams</text><text x="476" y="252" class="ts" text-anchor="middle">D4</text></g>
+    <g><text x="580" y="14" class="ts tb" text-anchor="middle">Chặng 6</text>
+      <rect x="531" y="44" width="98" height="52" rx="6" class="b-step"/><text x="580" y="60" class="ts tb" text-anchor="middle">Claude Code 101</text><text x="580" y="75" class="ts" text-anchor="middle">D3</text></g>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Chặng 1. CCDV-F: Building with the Claude API (Module 1 và 6). CCAR-F: Introduction to subagents. CCAO-F: AI Fluency: Framework &amp; foundations.</li>
+    <li>Chặng 2. CCDV-F: Tool use with Messages API. CCAR-F: Introduction to MCP và MCP Advanced. CCAO-F: Claude 101.</li>
+    <li>Chặng 3. CCDV-F: Introduction to MCP. CCAR-F: Claude Code in action và Intro to agent skills. CCAO-F: AI capabilities and limitations.</li>
+    <li>Chặng 4. CCDV-F: Module 9 (Agents). CCAR-F: Module 3 (Prompt). CCAO-F: Deploying Claude Enterprise.</li>
+    <li>Chặng 5. CCDV-F: Introduction to evals. CCAR-F: Claude Platform 101 (context management). CCAO-F: Building effective human-agent teams.</li>
+    <li>Chặng 6, chỉ CCDV-F: Claude Code 101. Tới đây có thể dừng và chuyển sang luyện đề.</li>
+  </ol>
+  <figcaption>Hình 3. Lộ trình theo từng bài thi, mỗi chặng một khóa kèm domain được phủ.</figcaption>
+</figure>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 312" role="img" aria-label="Cây quyết định nên học khóa nào trước: chọn chứng chỉ; CCDV-F bắt đầu bằng Building with the Claude API; CCAR-F hỏi đã quen API chưa, chưa thì Platform 101 còn rồi thì Introduction to subagents; CCAO-F bắt đầu bằng AI Fluency">
+    <rect x="200" y="8" width="240" height="36" rx="6" class="b-sys"/><text x="320" y="31" class="t tb" text-anchor="middle">Bạn định thi chứng chỉ nào?</text>
+    <path d="M320,44 V60 M112,60 H528 M112,60 V76 M320,60 V76 M528,60 V76 M112,116 V140 M320,116 V140 M528,116 V140 M112,196 V222 M320,196 V208 M268,208 H372 M268,208 V222 M372,208 V222 M528,196 V222" class="ln"/>
+    <rect x="12" y="76" width="200" height="40" rx="6" class="b-step"/><text x="112" y="94" class="t tb" text-anchor="middle">CCDV-F</text><text x="112" y="108" class="ts" text-anchor="middle">developer</text>
+    <rect x="220" y="76" width="200" height="40" rx="6" class="b-step"/><text x="320" y="94" class="t tb" text-anchor="middle">CCAR-F</text><text x="320" y="108" class="ts" text-anchor="middle">architect</text>
+    <rect x="428" y="76" width="200" height="40" rx="6" class="b-step"/><text x="528" y="94" class="t tb" text-anchor="middle">CCAO-F</text><text x="528" y="108" class="ts" text-anchor="middle">người dùng nghiệp vụ</text>
+    <rect x="12" y="140" width="200" height="56" rx="6" class="b-done"/><text x="112" y="162" class="t tb" text-anchor="middle">Building with the Claude API</text><text x="112" y="180" class="ts" text-anchor="middle">Module 1 và 6 · D2, D5</text>
+    <rect x="220" y="140" width="200" height="56" rx="6" class="b-code"/><text x="320" y="162" class="t tb" text-anchor="middle">Đã quen API chưa?</text><text x="320" y="180" class="ts" text-anchor="middle">Platform 101 đọc trước nếu chưa</text>
+    <rect x="428" y="140" width="200" height="56" rx="6" class="b-done"/><text x="528" y="162" class="t tb" text-anchor="middle">AI Fluency</text><text x="528" y="180" class="ts" text-anchor="middle">Framework and foundations</text>
+    <rect x="12" y="222" width="200" height="44" rx="6" class="b-next"/><text x="112" y="240" class="ts" text-anchor="middle">Tiếp: Tool use, Intro to MCP,</text><text x="112" y="254" class="ts" text-anchor="middle">Module 9, evals, Claude Code 101</text>
+    <rect x="220" y="222" width="96" height="44" rx="6" class="b-warn"/><text x="268" y="238" class="ts tb" text-anchor="middle">Chưa quen</text><text x="268" y="252" class="ts" text-anchor="middle">Platform 101</text>
+    <rect x="324" y="222" width="96" height="44" rx="6" class="b-done"/><text x="372" y="238" class="ts tb" text-anchor="middle">Đã quen</text><text x="372" y="252" class="ts" text-anchor="middle">Intro subagents</text>
+    <rect x="428" y="222" width="200" height="44" rx="6" class="b-next"/><text x="528" y="240" class="ts" text-anchor="middle">Tiếp: Claude 101, AI capabilities,</text><text x="528" y="254" class="ts" text-anchor="middle">Deploying Claude Enterprise</text>
+    <text x="320" y="286" class="ts" text-anchor="middle">CCAR-F tiếp theo: MCP + Advanced, Code in action + agent skills, API Module 3</text>
+    <text x="320" y="304" class="ts" text-anchor="middle">Chỉ có thời gian cho một khóa? Building with the Claude API (67 bài, 9 giờ)</text>
+  </svg></div>
+  <figcaption>Hình 4. Cây quyết định “nên học khóa nào trước”. Thứ tự các khóa tiếp theo lấy từ danh sách ưu tiên bên dưới.</figcaption>
+</figure>
+<div class="insight"><strong>Cốt lõi.</strong> Không cần hoàn thành mọi khóa. Bảng dưới xếp theo thứ tự ưu tiên; dừng sớm khi đã nắm khái niệm, chuyển sang luyện đề.</div>
+<div class="split">
+  <div class="box"><div class="hd">CCDV-F (ưu tiên)</div>
+    <ol>
+      <li><strong>Building with the Claude API</strong> – Module 1 (API) và 6 (Features): D2, D5</li>
+      <li><strong>Tool use with Messages API</strong>: D8</li>
+      <li><strong>Introduction to MCP</strong>: D8</li>
+      <li><strong>Building with Claude API</strong> – Module 9 (Agents): D1</li>
+      <li><strong>Introduction to evals</strong>: D4</li>
+      <li><strong>Claude Code 101</strong>: D3</li>
+    </ol>
+  </div>
+  <div class="box"><div class="hd">CCAR-F (ưu tiên)</div>
+    <ol>
+      <li><strong>Introduction to subagents</strong>: D1</li>
+      <li><strong>Introduction to MCP</strong> + <strong>MCP Advanced</strong>: D2</li>
+      <li><strong>Claude Code in action</strong> + <strong>Intro to agent skills</strong>: D3</li>
+      <li><strong>Building with Claude API</strong> – Module 3 (Prompt): D4</li>
+      <li><strong>Claude Platform 101</strong> – context management: D5</li>
+    </ol>
+  </div>
+  <div class="box"><div class="hd">CCAO-F (ưu tiên)</div>
+    <ol>
+      <li><strong>AI Fluency: Framework &amp; foundations</strong>: D1, D2, D6</li>
+      <li><strong>Claude 101</strong>: D1, D3, D5</li>
+      <li><strong>AI capabilities and limitations</strong>: D2, D6</li>
+      <li><strong>Deploying Claude Enterprise</strong>: D4, D5, D6</li>
+      <li><strong>Building effective human-agent teams</strong>: D4</li>
+    </ol>
+  </div>
+</div>
+<p class="note">Khóa <em>Building with the Claude API</em> (67 bài, 9 tiếng) phủ gần như toàn bộ CCDV-F và CCAR-F; đây là tài nguyên duy nhất cần thiết nếu chỉ có thời gian cho một khóa. Phiên bản Bedrock và Google Cloud có nội dung tương đương nhưng thay đổi SDK.</p>
+
+<h2 id="notes">9. Ghi chú thực tế</h2>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Đây là những dòng chữ nhỏ cuối bảng giá: điều kiện áp dụng, ngày cập nhật, ngôn ngữ. Đọc trước khi bạn lên kế hoạch học để khỏi bất ngờ.
+</div>
+<ul>
+  <li><strong>Badge và chứng nhận:</strong> Khóa có quiz + completion badge → Credly badge riêng; không liên quan trực tiếp tới bốn chứng chỉ Pearson VUE, nhưng thể hiện kiến thức đã học.</li>
+  <li><strong>Phiên bản nội dung:</strong> Academy cập nhật khóa học liên tục, không có số phiên bản công khai. Dữ liệu trang này lấy ngày 17/11/2026; kiểm tra lại khi đổi đề (07/12/2026 trở đi).</li>
+  <li><strong>Ngôn ngữ:</strong> Toàn bộ bài giảng bằng tiếng Anh; không có phiên dịch chính thức.</li>
+  <li><strong>Yêu cầu tài khoản:</strong> Enterprise Search (Claude 101 bài 9) và Research (bài 10) cần Team/Enterprise plan. Các bài còn lại xem được với tài khoản miễn phí.</li>
+  <li><strong>Khoá beta:</strong> <em>Introduction to subagents</em> và <em>Introduction to agent skills</em> hiện chưa có quiz và badge; nội dung có thể thay đổi.</li>
+</ul>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Khi đối chiếu với trang <a href="https://academy.claude.com/courses" target="_blank" rel="noopener">academy.claude.com/courses</a>: (1) <em>Introduction to evals</em> chỉ xuất hiện dưới nhóm Build with the API, không nằm trong nhóm Learn the products như bảng ở §3. Bài này vẫn giữ nguyên dữ liệu đã crawl, nên khóa này xuất hiện ở cả §3 và §6. (2) Trang hiện đánh dấu <em>Building effective human-agent teams</em> là beta (khóa này có quiz và badge), còn <em>Introduction to subagents</em> và <em>Introduction to agent skills</em> chưa có quiz hay badge. (3) Đếm các khóa trên trang được 29 khóa khác nhau, trong khi bài này (theo số liệu đã crawl) ghi 28. Nếu cần con số chính xác, hãy đếm lại trên trang. Số bài, số giờ của các khóa còn lại khớp với bảng.</div>
+<div class="alert"><strong>Nguồn gốc.</strong> Dữ liệu bài này lấy từ crawl academy.claude.com/courses ngày 17/11/2026. Số bài, thời gian, cấu trúc bài học có thể thay đổi. Nội dung chi tiết từng bài chỉ có khi đăng nhập vào Academy.</div>
+
+<h2 id="course-claude-101">10. Tổng quan khoá Claude 101 và AI Fluency</h2>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Học lái xe có hai phần. Phần một dạy bạn biết xe: bấm nút nào, bật đèn thế nào. Phần hai dạy bạn biết đường: khi nào nhường, khi nào dừng, và lỡ có sự cố thì làm gì. Hai khóa học trong bài này cũng vậy. <strong>Claude 101</strong> dạy bạn biết “chiếc xe” là Claude. <strong>AI Fluency Framework</strong> dạy bạn biết “luật đường” khi làm việc cùng AI.
+</div>
+<p>Bài này tổng hợp hai khóa dành cho người dùng cuối: <strong>Claude 101</strong> (13 bài, nhập môn Claude.ai) và <strong>AI Fluency Framework</strong> (14 bài, tư duy làm việc với AI). Nội dung chính cho CCAO-F D1–D7. CCAO-F là kỳ thi cho người dùng nghiệp vụ, nên các ví dụ trong bài lấy từ công việc văn phòng: viết email, tóm tắt hợp đồng, soạn báo cáo. Bài không cần bạn biết lập trình.</p>
+
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 224" role="img" aria-label="Hai khóa và các domain CCAO-F: Claude 101 phủ D1 prompting, D2 đánh giá output, D3 chọn sản phẩm; AI Fluency Framework phủ D4 workflow, D5 cấu hình, D6 governance">
+    <rect x="4" y="4" width="312" height="216" rx="8" class="lane"/>
+    <rect x="324" y="4" width="312" height="216" rx="8" class="lane"/>
+    <text x="160" y="22" class="lane-lb" text-anchor="middle">KHÓA 1 · MỤC 2</text>
+    <text x="480" y="22" class="lane-lb" text-anchor="middle">KHÓA 2 · MỤC 3</text>
+    <rect x="24" y="34" width="272" height="46" rx="6" class="b-sys"/>
+    <text x="160" y="55" class="t tb" text-anchor="middle">Claude 101 · 13 bài</text><text x="160" y="71" class="ts" text-anchor="middle">biết dùng Claude.ai</text>
+    <rect x="24" y="94" width="272" height="30" rx="6" class="b-step"/><text x="160" y="114" class="t" text-anchor="middle">D1 · Prompting</text>
+    <rect x="24" y="132" width="272" height="30" rx="6" class="b-step"/><text x="160" y="152" class="t" text-anchor="middle">D2 · Đánh giá output</text>
+    <rect x="24" y="170" width="272" height="30" rx="6" class="b-step"/><text x="160" y="190" class="t" text-anchor="middle">D3 · Chọn model, feature, plan</text>
+    <rect x="344" y="34" width="272" height="46" rx="6" class="b-sys"/>
+    <text x="480" y="55" class="t tb" text-anchor="middle">AI Fluency Framework · 14 bài</text><text x="480" y="71" class="ts" text-anchor="middle">biết nghĩ khi làm việc với AI</text>
+    <rect x="344" y="94" width="272" height="30" rx="6" class="b-done"/><text x="480" y="114" class="t" text-anchor="middle">D4 · Workflow = Delegation</text>
+    <rect x="344" y="132" width="272" height="30" rx="6" class="b-done"/><text x="480" y="152" class="t" text-anchor="middle">D5 · Projects + system prompt</text>
+    <rect x="344" y="170" width="272" height="30" rx="6" class="b-done"/><text x="480" y="190" class="t" text-anchor="middle">D6 · Governance = Diligence</text>
+  </svg></div>
+  <figcaption>Hình 5. Hai khóa và phần CCAO-F mỗi khóa phủ (theo ghi chú ôn thi ở mục 11).</figcaption>
+</figure>
+
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Claude.ai</dt><dd>Trang và ứng dụng chat với Claude dành cho người dùng cuối.</dd>
+  <dt>Prompt</dt><dd>Câu bạn viết để giao việc cho Claude.</dd>
+  <dt>AI Fluency</dt><dd>Khả năng làm việc với AI một cách hiệu quả và có trách nhiệm. Khung 4D (bốn chữ D) là bộ xương của nó.</dd>
+  <dt>CCAO-F</dt><dd>Kỳ thi chứng chỉ dành cho người dùng nghiệp vụ. D1 đến D7 là các domain (mảng kiến thức) của đề.</dd>
+</dl></div>
+<div class="insight"><strong>Cốt lõi.</strong> Học theo thứ tự: biết công cụ làm được gì (bài 01, mục 1), rồi biết cách nghĩ khi dùng nó (bài 15, mục 3), rồi ôn các điểm hay hỏi (mục 11).</div>
+
+<h3>10.1 Claude 101 và AI Fluency: nội dung chính</h3>
+<div class="tw"><table>
+  <thead><tr><th>Khoá</th><th>Học gì</th><th>Dùng cho CCAO-F</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Claude 101</strong> (13 bài, 2,5 h)</td><td>Hội thoại hiệu quả; Projects và Artifacts; Skills; Connectors; Enterprise Search; Research Mode; Claude theo vai trò; Claude Code, Claude Tag, Claude Design</td><td>D1 prompting, D3 chọn sản phẩm, D5 Projects và connector, D7</td></tr>
+    <tr><td><strong>AI Fluency: Framework &amp; foundations</strong> (14 bài, 4 h)</td><td>Bốn chữ D, vòng Description–Discernment, tư duy dùng AI có trách nhiệm</td><td>D1, D2, D4, D6</td></tr>
+  </tbody>
+</table></div>
+<p>Hai khoá bổ sung cho nhau: Claude 101 cho biết bấm nút nào, AI Fluency cho biết nên nghĩ gì trước khi bấm. Enterprise Search và Research cần gói Team hoặc Enterprise để thực hành (xem §9); nếu không có gói đó, vẫn đọc được phần giải thích.</p>
+<p><strong>Ví dụ chạy từng bước: chọn tính năng cho ba việc.</strong></p>
+<ol>
+  <li>Cần so sánh ba nhà cung cấp từ nhiều nguồn có trích dẫn: dùng Research Mode.</li>
+  <li>Cần Claude nhớ bộ tài liệu chính sách qua nhiều cuộc chat: tạo Projects và nạp tài liệu làm knowledge base.</li>
+  <li>Cần giải bài toán lập luận khó, không cần tin mới: bật Thinking.</li>
+</ol>
+<div class="alert"><strong>Bẫy.</strong> Hội thoại riêng lẻ không nhớ tài liệu giữa các phiên. Muốn bối cảnh lâu dài thì dùng Projects, không tải lại tài liệu mỗi lần.</div>
+
+<h2 id="tips-claude-101">11. Lưu ý ôn thi: Claude 101 và AI Fluency</h2>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Trước giờ thi, người ta không đọc lại cả cuốn sách mà xem một tờ ghi chú: “gặp tình huống này thì nghĩ tới khái niệm kia”. Mục này là tờ ghi chú đó cho CCAO-F.
+</div>
+<div class="insight"><strong>CCAO-F D1–D3:</strong> Claude 101 phủ D1 (prompting), D2 (đánh giá output, tức vòng discernment), D3 (chọn sản phẩm: chọn model, tính năng, gói). Nhớ: Research cho việc cần nhiều nguồn, Thinking cho suy luận sâu, Projects cho bối cảnh lâu dài.</div>
+<div class="insight"><strong>CCAO-F D4–D6:</strong> khung AI Fluency phủ D4 (đưa vào quy trình, tức Delegation), D5 (cấu hình: Projects và system prompt), D6 (quản trị: chiều Diligence). 4D là Delegation, Description, Discernment, Diligence.</div>
+<div class="insight"><strong>Bẫy hay ra đề:</strong> Constitutional AI không chỉ nói về an toàn. CAI là khung để AI học giá trị từ các nguyên tắc, không chỉ từ phản hồi của con người. Nhưng với đề thi, biết "Claude được thiết kế để helpful, harmless, honest" là đủ.</div>
+
+<div class="tw"><table>
+  <thead><tr><th>Tình huống trong đề</th><th>Nghĩ tới</th></tr></thead>
+  <tbody>
+    <tr><td>Kết quả chung chung, lệch giọng</td><td>Description: thêm role, format, constraints, ví dụ</td></tr>
+    <tr><td>Cần so sánh nhiều nguồn, có trích dẫn</td><td>Research mode</td></tr>
+    <tr><td>Bài toán lập luận khó, không cần tin mới</td><td>Thinking mode</td></tr>
+    <tr><td>Muốn Claude nhớ tài liệu công ty qua nhiều chat</td><td>Projects (knowledge base và system prompt)</td></tr>
+    <tr><td>Nhận bản nháp có số liệu đáng ngờ</td><td>Discernment: verify qua nguồn gốc, góp ý cụ thể, lặp lại</td></tr>
+    <tr><td>Báo cáo sắp gửi khách, chính sách yêu cầu nêu việc dùng AI</td><td>Diligence: đọc lại và thêm ghi chú minh bạch</td></tr>
+    <tr><td>Quyết định xem giao việc nào cho AI</td><td>Delegation: Problem, Platform, Task Awareness</td></tr>
+  </tbody>
+</table></div>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div><ul>
+    <li>“Constitutional AI chỉ nói về an toàn”</li>
+    <li>“Conversations riêng lẻ nhớ tài liệu giữa các phiên”</li>
+    <li>“Dùng Research mode cho mọi câu hỏi”</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đúng</div><ul>
+    <li>CAI: AI học giá trị từ nguyên tắc viết rõ, không chỉ từ phản hồi con người</li>
+    <li>Projects mới nhớ knowledge base và chat trong project</li>
+    <li>Research cho việc cần nhiều nguồn và trích dẫn, Thinking cho suy luận sâu</li>
+  </ul></div>
+</div>
+
+<h2 id="course-ai-capabilities">12. Tổng quan khoá AI Capabilities, Human-Agent Teams, Enterprise</h2>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Công ty bạn tuyển một nhân viên mới rất giỏi và làm việc cực nhanh. Trước khi giao việc, bạn cần biết ba điều. Một: nhân viên này giỏi gì, hay sai ở đâu (khóa thứ nhất). Hai: nhân viên này làm chung với cả phòng thì phân vai ra sao (khóa thứ hai). Ba: IT phải cấp tài khoản, quyền, ngân sách và theo dõi thế nào cho an toàn (khóa thứ ba).
+</div>
+<p>Bài này tổng hợp ba khóa: <strong>AI Capabilities and Limitations</strong> (13 bài), <strong>Building Effective Human-Agent Teams</strong> (5 bài), và <strong>Deploying Claude Enterprise</strong> (14 bài). Nội dung cốt lõi cho CCAO-F D2, D6 và phần Enterprise deployment.</p>
+<p>CCAO-F là kỳ thi dành cho <strong>người dùng nghiệp vụ</strong> (không phải lập trình viên), nên bài này dùng ví dụ văn phòng và gần như không có code.</p>
+<div class="tw"><table>
+  <thead><tr><th>Phần</th><th>Câu hỏi trả lời</th><th>Dùng cho</th></tr></thead>
+  <tbody>
+    <tr><td>Mục 2</td><td>AI làm tốt gì, sai ở đâu?</td><td>CCAO-F D2 (đánh giá kết quả)</td></tr>
+    <tr><td>Mục 3</td><td>Người và agent làm chung thế nào?</td><td>Human-Agent Teams</td></tr>
+    <tr><td>Mục 4</td><td>IT triển khai Claude cho cả công ty ra sao?</td><td>CCAO-F D6 (governance)</td></tr>
+  </tbody>
+</table></div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>CCAO-F</dt><dd>Kỳ thi chứng chỉ Claude dành cho người dùng nghiệp vụ. D2, D6 là các domain (nhóm kiến thức) của kỳ thi.</dd>
+  <dt>Agent</dt><dd>AI không chỉ trả lời một câu mà tự làm nhiều bước để hoàn thành việc được giao.</dd>
+  <dt>Enterprise</dt><dd>Gói Claude dành cho doanh nghiệp lớn, có quản trị tập trung (đăng nhập một lần, phân quyền, kiểm toán).</dd>
+</dl></div>
+
+<h3>12.1 Ba khoá: học gì, thi bài nào</h3>
+<div class="tw"><table>
+  <thead><tr><th>Khoá</th><th>Học gì</th><th>Dùng cho</th></tr></thead>
+  <tbody>
+    <tr><td><strong>AI capabilities and limitations</strong> (13 bài, 3,5 h)</td><td>Việc AI làm tốt và không tốt; giới hạn như mốc cắt dữ liệu, câu hỏi quá cụ thể, thiên lệch thừa hưởng, quên nguồn; đánh giá output</td><td>CCAO-F D2, D6</td></tr>
+    <tr><td><strong>Building effective human-agent teams</strong> (5 bài, 45 phút)</td><td>Từ AI một người sang AI cả đội (danh tính, bộ nhớ, bối cảnh chung); bốn nguyên tắc; năm câu hỏi sẵn sàng</td><td>CCAO-F D4 · <a href="/notes/lessons/16-ccao-f-teams-enterprise.html#human-agent-teams">bài 16 §1</a></td></tr>
+    <tr><td><strong>Deploying Claude Enterprise</strong> (14 bài, 2,5 h)</td><td>Năm quyết định triển khai theo thứ tự; các thiết lập khó hoàn tác; nhóm và quyền; connector; chi tiêu; quan sát</td><td>CCAO-F D4, D5, D6 · <a href="/notes/lessons/16-ccao-f-teams-enterprise.html#enterprise">bài 16 §2</a></td></tr>
+  </tbody>
+</table></div>
+<p><strong>Ví dụ chạy từng bước: IT của công ty 500 người triển khai Claude Enterprise.</strong></p>
+<ol>
+  <li>Structure and Identity: nhận domain email của công ty, chọn một tổ chức phẳng hay tổ chức mẹ kèm tổ chức con. Đây là các thiết lập khó hoàn tác, nên chốt trước khi mời người dùng.</li>
+  <li>Access: đăng nhập một lần (SSO), cấp tài khoản bằng JIT hoặc SCIM, gom người dùng vào nhóm.</li>
+  <li>Governance: quyết định ai được dựng Projects, connector nào được bật; connector phải qua ba cổng (admin bật, người dùng cấp quyền, EMA).</li>
+  <li>Spend: đặt trần chi tiêu theo workspace, nhóm hoặc người dùng.</li>
+  <li>Visibility: bật audit log và thời hạn lưu để theo dõi ai làm gì.</li>
+</ol>
+<div class="alert"><strong>Bẫy.</strong> Làm Spend trước Structure hoặc Access. Mỗi quyết định dựa trên quyết định trước: chưa biết tổ chức và nhóm thì chưa đặt được trần chi tiêu theo nhóm.</div>
+
+<h2 id="tips-ai-capabilities">13. Lưu ý ôn thi: AI Capabilities, Human-Agent Teams, Enterprise</h2>
+<div class="insight"><strong>CCAO-F D2 (21%), đánh giá output:</strong> vòng discernment, các kiểu AI hay bịa (khi nào AI sai nhiều nhất), cách kiểm chứng dữ kiện. Biết các loại giới hạn: mốc cắt dữ liệu, câu hỏi quá cụ thể, thiên lệch thừa hưởng, quên nguồn.</div>
+<div class="insight"><strong>CCAO-F D6 (15%), quản trị:</strong> 5 quyết định triển khai theo đúng thứ tự (Structure → Access → Governance → Spend → Visibility); 4 cài đặt khó hoàn tác; quy tắc hợp của RBAC; 3 cổng connector (admin bật, user cấp quyền, EMA).</div>
+<div class="insight"><strong>Đội người–agent:</strong> 4 nguyên tắc (vai rõ, mục tiêu chung, giao dần, quyền vừa đủ); 5 câu hỏi sẵn sàng. Chuyển từ AI một người sang AI cả đội cần thêm 3 thành phần (danh tính, bộ nhớ, bối cảnh chung).</div>
+<div class="alert"><strong>Bẫy hay gặp:</strong> nhầm union với intersection ở RBAC; quên cổng EMA ở connector; xếp sai thứ tự năm quyết định; nghĩ rằng hỏi lại “bạn chắc không?” là đủ để xác minh thông tin quan trọng.</div>
+
+<h3>13.1 Tình huống thi và hướng nghĩ tới</h3>
+<div class="tw"><table>
+  <thead><tr><th>Tình huống trong đề</th><th>Nghĩ tới</th></tr></thead>
+  <tbody>
+    <tr><td>Người thuộc hai nhóm có tập quyền khác nhau, hỏi người đó làm được gì</td><td>RBAC union rule: nhận hợp quyền của cả hai nhóm, không phải phần giao</td></tr>
+    <tr><td>Connector đã bật nhưng Claude vẫn không đọc được dữ liệu</td><td>Kiểm đủ ba cổng: admin bật, người dùng cấp quyền, EMA</td></tr>
+    <tr><td>Hỏi thứ tự các bước khi triển khai Enterprise</td><td>Structure, Access, Governance, Spend, Visibility</td></tr>
+    <tr><td>Thiết lập nào nên chốt kỹ vì khó hoàn tác</td><td>Nhận domain, cấu trúc tổ chức, ánh xạ nhóm, thời hạn lưu dữ liệu</td></tr>
+    <tr><td>Bản nháp AI có số liệu và trích dẫn đáng ngờ</td><td>Kiểm chứng ở nguồn gốc; hỏi lại "bạn chắc không?" chưa phải xác minh</td></tr>
+    <tr><td>Đưa agent vào đội, chưa rõ thành công là gì</td><td>Năm câu hỏi sẵn sàng: chưa define success thì chưa giao cho agent</td></tr>
+  </tbody>
+</table></div>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div><ul>
+    <li>"Người thuộc hai nhóm chỉ có quyền chung của hai nhóm"</li>
+    <li>"Sau bốn tuần cho agent tự chạy" (trao quyền theo lịch)</li>
+    <li>"Hỏi Claude có chắc không là đủ để xác minh số liệu"</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đúng</div><ul>
+    <li>Quyền là hợp (union) của mọi nhóm</li>
+    <li>Giảm giám sát khi kết quả đo được đạt ngưỡng, siết lại khi xấu đi</li>
+    <li>Kiểm chứng bằng nguồn gốc bên ngoài cuộc trò chuyện</li>
+  </ul></div>
+</div>
+
+<h2 id="course-evals-sdlc">14. Tổng quan khoá Evals, Claude Code in Action, SDLC</h2>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Bạn mở một quán ăn. Trước hết cần cách <strong>chấm điểm món</strong> để biết công thức mới ngon hơn hay dở hơn (evals). Tiếp theo cần <strong>quy trình trong bếp</strong>: ai nấu, ai nếm, ai được mở tủ lạnh (Claude Code với hooks, CLAUDE.md, quyền). Cuối cùng là <strong>cách vận hành cả quán</strong> từ nhận đơn tới dọn bàn, có người và máy phối hợp (AI-native SDLC).
+</div>
+<p>Bài này tổng hợp ba khóa: <strong>Introduction to Evals</strong> (4 bài), <strong>Claude Code in Action</strong> (9 bài), và <strong>AI-Native SDLC Playbook</strong> (14 bài). Nội dung phủ toàn bộ CCAR-F D3, CCDV-F D4, và phần advanced deployment.</p>
+<div class="tw"><table>
+  <thead><tr><th>Khóa</th><th>Số bài</th><th>Trả lời câu hỏi</th><th>Mục</th></tr></thead>
+  <tbody>
+    <tr><td>Introduction to Evals</td><td>4</td><td>Làm sao biết prompt hay model nào tốt hơn?</td><td>2</td></tr>
+    <tr><td>Claude Code in Action</td><td>9</td><td>Dùng Claude Code an toàn và lặp lại được thế nào?</td><td>3</td></tr>
+    <tr><td>AI-Native SDLC Playbook</td><td>14</td><td>Cả vòng đời phần mềm chia việc cho AI và người ra sao?</td><td>4</td></tr>
+  </tbody>
+</table></div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Eval</dt><dd>Phép đo chất lượng câu trả lời của Claude một cách có hệ thống, lặp lại được.</dd>
+  <dt>SDLC</dt><dd>Software Development Life Cycle: vòng đời phần mềm, từ hiểu yêu cầu tới vận hành.</dd>
+  <dt>Hook</dt><dd>Đoạn script tự chạy trước hoặc sau khi Claude dùng một tool.</dd>
+  <dt>CI</dt><dd>Continuous Integration: máy chủ tự chạy kiểm tra mỗi khi có code mới.</dd>
+</dl></div>
+<div class="insight"><strong>Cốt lõi.</strong> Ba khóa cùng một ý: đừng tin cảm giác. Đo bằng eval, ép quy tắc bằng hook, và để người giữ các cổng quyết định.</div>
+
+<h3>14.1 Ba khoá: học gì, thi bài nào</h3>
+<div class="tw"><table>
+  <thead><tr><th>Khoá</th><th>Học gì</th><th>Dùng cho</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Introduction to evals</strong> (4 bài, 1 h)</td><td>Chọn model theo ngưỡng chính xác tối thiểu; eval tối thiểu với dữ liệu lấy từ production, grader bằng code và bằng model theo rubric; sửa prompt trước khi đổi model; eval trong CI; Batch API; lấy mẫu hằng đêm</td><td>CCDV-F D4 · <a href="/notes/lessons/10-evals-debug.html#evals">bài 10 §1</a></td></tr>
+    <tr><td><strong>Claude Code in action</strong> (9 bài, 1 h)</td><td>Điều hướng phiên dài; CLAUDE.md gọn; permission mode; hook; headless; GitHub Actions; plugin</td><td>CCAR-F D3 · <a href="/notes/lessons/13-claude-code-config.html#claude-code-in-action">bài 13 §11</a></td></tr>
+    <tr><td><strong>AI-native SDLC playbook</strong> (14 bài, 1 h)</td><td>Quy trình phát triển có AI: viết intent trước việc phức tạp, worktree song song, subagent kiểm tra độc lập, hook làm cổng duyệt</td><td>CCAR-F D3</td></tr>
+  </tbody>
+</table></div>
+<p><strong>Ví dụ chạy từng bước: eval làm cổng chặn trong CI cho một prompt phân loại email.</strong></p>
+<ol>
+  <li>Lấy khoảng 200 email thật (đã che thông tin cá nhân), gắn nhãn đúng bằng tay.</li>
+  <li>Grader bằng code so nhãn Claude trả về với nhãn đúng; phần cần đánh giá sắc thái thì thêm model chấm theo rubric.</li>
+  <li>Đặt ngưỡng, ví dụ 90%. CI chạy eval mỗi khi prompt đổi và chặn merge nếu điểm thấp hơn ngưỡng.</li>
+  <li>Điểm thấp thì sửa prompt trước; chỉ nâng model khi prompt đã tốt mà vẫn chưa đạt.</li>
+  <li>Sau khi lên production, lấy mẫu email thật mỗi đêm và chấm lại để bắt độ trôi chất lượng.</li>
+</ol>
+<div class="alert"><strong>Bẫy.</strong> Nâng model ngay khi điểm thấp. Prompt mơ hồ thì model lớn hơn cũng trả lời mơ hồ và chi phí tăng; thứ tự đúng là sửa prompt trước, đổi model sau.</div>
+
+<h2 id="tips-evals-sdlc">15. Lưu ý ôn thi: Evals, Claude Code in Action, SDLC</h2>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Trước giờ thi, bạn ghi ra một tờ nhớ nhanh những chỗ dễ nhầm nhất. Ở bài này, chỗ nhầm nổi tiếng nhất là cái “bảo vệ” (exit code): chỉ một mã duy nhất thật sự chặn cổng.
+</div>
+<div class="insight"><strong>CCAR-F D3 (20%), hook:</strong> nhớ mã 2 chặn, mã 1 không chặn. PreToolUse dùng để cưỡng chế. <code>permissionDecision: allow/deny/ask</code>. Phân biệt các permission mode. Thứ bậc CLAUDE.md (4 vị trí theo khoá học). Quy tắc two-strikes.</div>
+<div class="insight"><strong>CCDV-F D4 (2,6%), eval:</strong> 5 bước chọn model, 3 loại grader, Batch API (<code>custom_id</code>, <code>request_counts</code>), lấy mẫu hằng đêm để bắt độ trôi. Sửa prompt trước khi nâng model.</div>
+<div class="insight"><strong>Mẫu chính của SDLC:</strong> viết intent.md trước việc phức tạp, worktree song song cho việc song song, subagent kiểm tra để review độc lập, hook làm cổng duyệt.</div>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div><ul>
+    <li>“Hook thoát <code>exit 1</code> sẽ chặn lệnh”</li>
+    <li>“Kết quả chưa tốt thì nâng model trước”</li>
+    <li>“Verifier nên dùng lại context của implementation cho nhanh”</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đúng</div><ul>
+    <li>Chỉ <code>exit 2</code> chặn</li>
+    <li>Iterate prompt trước, upgrade model sau</li>
+    <li>Subagent kiểm tra có context mới để review độc lập</li>
+  </ul></div>
+</div>
+
+<h3>15.1 Hook và quyền: nhớ bằng bảng</h3>
+<div class="tw"><table>
+  <thead><tr><th>Mã thoát của hook</th><th>Kết quả</th><th>Dùng khi</th></tr></thead>
+  <tbody>
+    <tr><td><code>exit 0</code></td><td>Cho qua</td><td>Kiểm tra đạt</td></tr>
+    <tr><td><code>exit 1</code></td><td>Nhắc nhở nhưng vẫn cho qua</td><td>Chỉ cảnh báo; không thể dùng để cưỡng chế</td></tr>
+    <tr><td><code>exit 2</code></td><td>Chặn hành động, lý do ghi ở stderr quay về Claude</td><td>Quy tắc bắt buộc, gắn với PreToolUse</td></tr>
+  </tbody>
+</table></div>
+<p>Hook là code chạy tất định, nên dùng cho quy tắc phải đúng 100%. Lời dặn trong CLAUDE.md chỉ là hướng dẫn, và Claude có thể bỏ sót. Chi tiết ở <a href="/notes/lessons/13-claude-code-config.html#claude-code-in-action">bài 13 §11</a>.</p>
+<div class="alert"><strong>Bẫy.</strong> Viết hook thoát <code>exit 1</code> khi kiểm tra thất bại rồi tin rằng lệnh bị chặn. Chỉ <code>exit 2</code> chặn.</div>
+
+<h2 id="course-building-api">16. Tổng quan khoá Building with the Claude API</h2>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Bạn học nấu một bữa tiệc từ đầu. Đầu tiên học cách gọi bếp (gửi một request), rồi học viết thực đơn rõ ràng (prompt), nếm thử món (eval), dùng dụng cụ (tool), tra sổ công thức (RAG), dùng thiết bị đặc biệt (caching, batch), nối bếp với nhà cung cấp (MCP), và cuối cùng điều phối cả bếp (agent, workflow). 9 module của khóa đi đúng thứ tự đó, mỗi module dựa trên module trước.
+</div>
+<p>Khóa <strong>Building with the Claude API</strong> gồm 67 bài chia thành 9 module — đây là khóa API toàn diện nhất trên Claude Academy, phủ hầu hết các domain của CCDV-F và CCAR-F.</p>
+<div class="tw"><table>
+  <thead><tr><th>Module</th><th>Bài</th><th>Nội dung chính</th><th>Exam domain</th></tr></thead>
+  <tbody>
+    <tr><td>1. Accessing the API</td><td>1–8</td><td>API key, request cơ bản, hội thoại nhiều lượt, system prompt, temperature, streaming, dữ liệu có cấu trúc</td><td>CCDV-F D2, D5, D6</td></tr>
+    <tr><td>2. Prompt Evaluation</td><td>9–14</td><td>Quy trình eval, dataset thử, chấm bằng model, chấm bằng code</td><td>CCDV-F D4</td></tr>
+    <tr><td>3. Prompt Engineering</td><td>15–19</td><td>Rõ ràng, trực tiếp, cụ thể; thẻ XML; ví dụ few-shot</td><td>CCDV-F D6, CCAR-F D4</td></tr>
+    <tr><td>4. Tool Use</td><td>20–31</td><td>Schema của tool, content block, tool nhiều lượt, tool song song, text edit, web search</td><td>CCDV-F D8, CCAR-F D2</td></tr>
+    <tr><td>5. RAG &amp; Agentic Search</td><td>32–38</td><td>Chia đoạn, embedding, tìm theo vector, BM25, pipeline nhiều chỉ mục</td><td>CCDV-F D2, CCAR-F D5</td></tr>
+    <tr><td>6. Features of Claude</td><td>39–46</td><td>Extended thinking, ảnh, PDF, citations, prompt caching, Files API, code execution</td><td>CCDV-F D2, D5</td></tr>
+    <tr><td>7. Model Context Protocol</td><td>47–56</td><td>MCP server và client; tool, resource, prompt; decorator của FastMCP</td><td>CCDV-F D8, CCAR-F D2</td></tr>
+    <tr><td>8. Anthropic Apps</td><td>57–60</td><td>Claude Code setup, /init, CLAUDE.md, MCP trong Claude Code</td><td>CCAR-F D3</td></tr>
+    <tr><td>9. Agents &amp; Workflows</td><td>61–67</td><td>Song song, nối chuỗi, định tuyến, agent so với workflow, tự kiểm tra môi trường</td><td>CCAR-F D1, CCDV-F D1</td></tr>
+  </tbody>
+</table></div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>API</dt><dd>Cổng để chương trình của bạn nói chuyện với dịch vụ của Anthropic bằng các request có định dạng cố định.</dd>
+  <dt>CCDV-F, CCAR-F</dt><dd>Hai kỳ thi chứng chỉ của site này. D1, D2… là số thứ tự domain (mảng kiến thức) trong đề cương.</dd>
+  <dt>Module</dt><dd>Một nhóm bài học trong khóa. Bài này gom nội dung của cả 67 bài thành 9 mục để dễ ôn.</dd>
+</dl></div>
+
+<h2 id="tips-building-api">17. Lưu ý ôn thi: Building with the Claude API</h2>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Trước giờ thi, bạn không đọc lại cả giáo trình mà xem bản đồ ôn tập: domain nào nặng điểm, ý nào hay bị hỏi. Các khối dưới đây là bản đồ đó, theo thứ tự trọng số.
+</div>
+<div class="insight"><strong>CCDV-F D2 (33,1%), Applications and Integration:</strong> domain nặng nhất. Nắm chắc: tham số của <code>messages.create</code> (model, max_tokens, messages); cấu trúc response (content block, stop_reason, usage); các loại event của streaming; quản lý lịch sử hội thoại nhiều lượt; prompt caching (cache_control, breakpoint, số token tối thiểu, thứ tự xử lý tools → system → messages); Batch API (custom_id, hỏi trạng thái, giảm 50%); Files API (tải lên → file_id → dùng lại); code execution tool (Docker, không có mạng); web search tool (chuỗi type, max_uses, allowed_domains).</div>
+<div class="insight"><strong>CCDV-F D5 (16,8%), chọn model:</strong> các bậc model (Fable, Opus, Sonnet, Haiku); khoảng temperature và việc hợp với từng khoảng; extended thinking (budget_tokens, tối thiểu 1024, ràng buộc với max_tokens); usage.input_tokens và output_tokens. Mẫu định tuyến theo chi phí: Haiku phân loại → Sonnet viết nháp → Opus chỉ cho việc phức tạp.</div>
+<div class="insight"><strong>CCDV-F D6 (11%), prompt engineering:</strong> rõ ràng và trực tiếp (động từ hành động), cụ thể (tiêu chí chất lượng output và các bước xử lý), thẻ XML (khi nào cần), few-shot (trường hợp biên, ví dụ định dạng, lấy từ kết quả eval). Vòng eval lặp lại.</div>
+<div class="insight"><strong>CCDV-F D8 (10,6%), tool và MCP:</strong> cấu trúc schema của tool (name, description, input_schema); tool_use block (id, name, input); tool_result block (tool_use_id, content, is_error); vòng tool nhiều lượt; fine-grained tool calling (eager_input_streaming); kiến trúc MCP (3 capability: tool, resource, prompt; 2 transport: stdio, HTTP).</div>
+<div class="insight"><strong>CCAR-F D1 (27%), kiến trúc agent:</strong> workflow là các bước định sẵn (bạn điều khiển); agent là mục tiêu cộng tool (Claude điều khiển). Song song (async gather, gộp kết quả), nối chuỗi (mỗi bước một trọng tâm), định tuyến (phân loại → chuyên biệt), evaluator-optimizer (producer, grader, vòng lặp). Tự kiểm tra môi trường là vòng phản hồi cho agent.</div>
+<div class="insight"><strong>CCAR-F D4 (20%), prompt và output có cấu trúc:</strong> output có cấu trúc qua tool_use với <code>tool_choice={"type": "tool", "name": "..."}</code>, <code>model_json_schema()</code> của Pydantic. Sửa prompt theo kết quả eval. Nối chuỗi để xử lý prompt có nhiều ràng buộc.</div>
+
+<h2 id="course-tool-use">18. Tổng quan khoá Tool Use với Messages API</h2>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Bạn ngồi ở quán ăn. Bồi bàn (Claude) không tự nấu. Anh ta ghi phiếu gọi món rồi đưa vào bếp (code của bạn). Bếp nấu xong, đưa đĩa ra, bồi bàn mang đến bàn. Bài này là về cách viết phiếu gọi món đúng mẫu, cho bếp nấu nhiều món cùng lúc, và đỡ tốn tiền khi cứ đưa lại cùng một thực đơn dài mỗi lần.
+</div>
+<p>Khóa <strong>Tool Use with the Messages API</strong> (9 bài) là khóa chuyên sâu nhất về tool design trên Claude Academy. Nội dung trực tiếp cho CCAR-F D2 (18%) và CCDV-F D8 (10,6%).</p>
+<p>Bài 05 đã dạy phần nền: tool definition, <code>tool_choice</code>, client tool và server tool, lỗi có cấu trúc. Bài này đi tiếp: strict mode, gọi nhiều tool song song, và hai cách giảm chi phí (programmatic tool calling, prompt caching cho tool definitions).</p>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 236" role="img" aria-label="Một vòng gọi tool: code gửi messages và tools, Claude trả stop_reason tool_use, code chạy hàm, gửi tool_result, Claude trả câu trả lời cuối">
+    <defs>
+      <marker id="m1801" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah"/></marker>
+      <marker id="m1802" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-good"/></marker>
+    </defs>
+    <rect x="10" y="8" width="150" height="30" rx="6" class="b-sys"/><text x="85" y="28" class="t tb" text-anchor="middle">Code của bạn</text>
+    <rect x="480" y="8" width="150" height="30" rx="6" class="b-step"/><text x="555" y="28" class="t tb" text-anchor="middle">Claude (API)</text>
+    <path d="M85,38 V228" class="ln-dash"/><path d="M555,38 V228" class="ln-dash"/>
+    <g><path d="M85,66 H553" class="ln" marker-end="url(#m1801)"/><text x="320" y="60" class="ts" text-anchor="middle">1. messages + tools</text></g>
+    <g><path d="M555,100 H87" class="ln-acc flow" marker-end="url(#m1801)"/><text x="320" y="94" class="ts" text-anchor="middle">2. stop_reason: tool_use + khối tool_use (name, input, id)</text></g>
+    <g><rect x="100" y="116" width="150" height="28" rx="5" class="b-hot"/><text x="175" y="135" class="ts" text-anchor="middle">3. chạy get_weather</text></g>
+    <g><path d="M85,172 H553" class="ln" marker-end="url(#m1801)"/><text x="320" y="166" class="ts" text-anchor="middle">4. tool_result (cùng tool_use_id)</text></g>
+    <g><path d="M555,206 H87" class="ln-good flow" marker-end="url(#m1802)"/><text x="320" y="200" class="ts" text-anchor="middle">5. stop_reason: end_turn + câu trả lời cuối</text></g>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Code gửi câu hỏi của người dùng cùng danh sách tool.</li>
+    <li>Claude không tự chạy tool. Nó trả về yêu cầu: tên tool, đầu vào, và một <code>id</code>.</li>
+    <li>Code của bạn tự chạy hàm tương ứng.</li>
+    <li>Code gửi kết quả về, gắn đúng <code>tool_use_id</code>.</li>
+    <li>Claude đọc kết quả rồi viết câu trả lời cuối (<code>end_turn</code>).</li>
+  </ol>
+  <figcaption>Hình 6. Một vòng gọi tool trên Messages API.</figcaption>
+</figure>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Tool use</dt><dd>Claude yêu cầu code của bạn chạy một hàm, rồi dùng kết quả để trả lời.</dd>
+  <dt>Messages API</dt><dd>API chính của Claude: bạn gửi danh sách tin nhắn, nhận câu trả lời.</dd>
+  <dt>stop_reason</dt><dd>Lý do Claude dừng: <code>tool_use</code> (đang chờ bạn chạy tool) hoặc <code>end_turn</code> (đã trả lời xong).</dd>
+  <dt>tool_use_id</dt><dd>Mã gắn một yêu cầu gọi tool với kết quả của nó, để khớp đúng cặp.</dd>
+</dl></div>
+<div class="insight"><strong>Cốt lõi.</strong> Claude chỉ <em>đề nghị</em> gọi tool. Code của bạn mới là bên chạy tool và gửi lại kết quả.</div>
+
+<h2 id="tips-tool-use">19. Lưu ý ôn thi: Tool Use với Messages API</h2>
+<div class="insight"><strong>CCAR-F D2 (18%):</strong> cấu trúc tool definition (name, description, input_schema, input_examples). Viết description 3–4 câu, nói khi nào dùng và khi nào không. Gộp tool trùng. Yêu cầu của strict mode (<code>additionalProperties: false</code>). Luồng gọi tool song song (gom hết → chạy song song → một user message).</div>
+<div class="insight"><strong>CCDV-F D8 (10,6%):</strong> cách dùng tool_choice, server tool so với client tool, ép output có cấu trúc bằng tool_choice, Batch API, prompt caching cho tool definition. Biết dùng <code>is_error: true</code> khi tool lỗi.</div>
+<div class="insight"><strong>Bẫy hay ra đề:</strong> khi Claude gọi nhiều tool song song, phải gửi TẤT CẢ kết quả trong MỘT user message (mảng các tool_result block), không phải mỗi kết quả một message. Và phải thêm assistant message (chứa response.content) vào messages trước user message chứa kết quả tool.</div>
+<div class="alert"><strong>Bẫy hay gặp:</strong> thiếu <code>additionalProperties: false</code> khi dùng strict; throw exception thay vì <code>is_error: true</code>; tách mỗi tool_result một tin nhắn; quên thêm assistant message trước tin nhắn user; đặt <code>cache_control</code> ở tool đầu thay vì tool cuối.</div>
+
+<h3>19.1 Hình dạng đúng của message khi gọi tool song song</h3>
+<p>Claude trả hai khối <code>tool_use</code> trong cùng một response. Message tiếp theo phải theo đúng hình dạng sau: message assistant giữ nguyên <code>response.content</code>, rồi một message user duy nhất chứa mọi <code>tool_result</code>.</p>
+<pre><code>messages = [
+    {"role": "user", "content": "Weather in Hanoi and Hue?"},
+    {"role": "assistant", "content": response.content},
+    {"role": "user", "content": [
+        {"type": "tool_result", "tool_use_id": "toolu_01", "content": "31C"},
+        {"type": "tool_result", "tool_use_id": "toolu_02", "content": "29C"},
+    ]},
+]</code></pre>
+<div class="tw"><table>
+  <thead><tr><th>Lỗi trong code</th><th>Hậu quả</th></tr></thead>
+  <tbody>
+    <tr><td>Mỗi <code>tool_result</code> một message user riêng</td><td>Sai định dạng; mọi kết quả phải nằm trong một message</td></tr>
+    <tr><td>Bỏ message assistant chứa <code>response.content</code></td><td><code>tool_result</code> không khớp với <code>tool_use</code> nào ở message trước</td></tr>
+    <tr><td>Ném exception khi tool lỗi</td><td>Claude không biết chuyện gì xảy ra; trả <code>tool_result</code> với <code>is_error: true</code> để Claude xử lý tiếp</td></tr>
+    <tr><td>Strict mode thiếu <code>additionalProperties: false</code></td><td>Schema không đạt yêu cầu của strict mode</td></tr>
+    <tr><td><code>cache_control</code> đặt ở tool đầu</td><td>Chỉ cache phần trước điểm đặt; đặt ở tool cuối để cache cả danh sách</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="exam-keywords" class="pb">20. Từ khoá đề thi</h2>
+<p>Các từ tiếng Anh dưới đây xuất hiện nguyên văn trong đề và tài liệu chính thức. Đọc cột giữa để nắm nghĩa, cột phải để biết đề hay gài ở đâu; bấm số mục để xem lại phần giải thích. Mọi từ khoá của các bài được gom ở trang <a href="/notes/lessons/glossary.html">Thuật ngữ</a>.</p>
+<div class="tw"><table class="kwt">
+  <thead><tr><th>Từ khoá</th><th>Nghĩa</th><th>Đề hay hỏi, dễ nhầm</th><th class="nw">Mục</th></tr></thead>
+  <tbody>
+    <tr data-kw="4D Framework"><td><strong>4D Framework</strong></td><td>Delegation, Description, Discernment, Diligence</td><td>Phân biệt từng chữ D theo tình huống</td><td><a href="#ai-fluent">§4</a></td></tr>
+    <tr data-kw="Academy"><td><strong>Claude Academy</strong></td><td>Kho khoá học miễn phí của Anthropic: 28 khoá, 5 nhóm theo bài này</td><td>Số khoá có thể đổi khi crawl lại; quiz và badge không phải kỳ thi chứng chỉ</td><td><a href="#overview">§1</a></td></tr>
+    <tr data-kw="AI capabilities and limitations"><td><strong>AI capabilities and limitations</strong></td><td>Khoá 13 bài về điều AI làm tốt, giới hạn và cách đánh giá output</td><td>Phủ CCAO-F D2 và D6</td><td><a href="#course-ai-capabilities">§12</a></td></tr>
+    <tr data-kw="AI-native SDLC playbook"><td><strong>AI-native SDLC playbook</strong></td><td>Khoá 14 bài về vòng đời phần mềm có AI</td><td>Intent trước việc phức tạp, worktree song song, subagent kiểm tra, hook làm cổng</td><td><a href="#course-evals-sdlc">§14</a></td></tr>
+    <tr data-kw="Bedrock Vertex AI"><td><strong>Claude with Amazon Bedrock, Claude on Google Cloud</strong></td><td>Hai khoá dạy cùng nội dung API nhưng dùng SDK của nền tảng thứ ba</td><td>Liên quan CCDV-F D2 ở nền tảng bên thứ ba</td><td><a href="#build-api">§6</a></td></tr>
+    <tr data-kw="Building effective human-agent teams"><td><strong>Building effective human-agent teams</strong></td><td>Khoá 5 bài về phối hợp người và agent</td><td>Bốn nguyên tắc, năm câu hỏi sẵn sàng; nhớ danh tính, bộ nhớ, bối cảnh chung</td><td><a href="#course-ai-capabilities">§12</a></td></tr>
+    <tr data-kw="Building with the Claude API"><td><strong>Building with the Claude API</strong></td><td>Khoá 67 bài, 9 module, toàn diện nhất cho developer</td><td>Module 4 là tool use; module 9 là agent và workflow</td><td><a href="#course-building-api">§16</a></td></tr>
+    <tr data-kw="Claude 101"><td><strong>Claude 101</strong></td><td>Khoá nhập môn 13 bài về Claude.ai</td><td>Research cho nhiều nguồn, Thinking cho suy luận sâu, Projects cho bối cảnh lâu dài</td><td><a href="#course-claude-101">§10</a></td></tr>
+    <tr data-kw="Claude Code 101"><td><strong>Claude Code 101</strong></td><td>Khoá 12 bài: vòng lặp agent, plan mode, CLAUDE.md, subagent, hook</td><td>Là khoá riêng, khác Claude Code in action (9 bài)</td><td><a href="#start-journey">§2</a></td></tr>
+    <tr data-kw="Claude Code in action"><td><strong>Claude Code in action</strong></td><td>Khoá 9 bài: phiên dài, permission mode, hook, headless, GitHub Actions</td><td>Phủ CCAR-F D3</td><td><a href="#course-evals-sdlc">§14</a></td></tr>
+    <tr data-kw="Claude Platform 101"><td><strong>Claude Platform 101</strong></td><td>Khoá 13 bài nhập môn API và agent</td><td>Gồm đủ 5 domain CCAR-F ở mức nhập môn</td><td><a href="#start-journey">§2</a></td></tr>
+    <tr data-kw="completion badge"><td><strong>Completion badge</strong></td><td>Huy hiệu nhận khi hoàn thành khoá có quiz</td><td>Không liên quan trực tiếp tới bốn chứng chỉ Pearson VUE</td><td><a href="#notes">§9</a></td></tr>
+    <tr data-kw="Delegation"><td><strong>Delegation</strong></td><td>Chữ D giao việc: Problem, Platform, Task Awareness</td><td>Quyết định có giao việc cho AI hay không; khác Description</td><td><a href="#ai-fluent">§4</a></td></tr>
+    <tr data-kw="Deploying Claude Enterprise"><td><strong>Deploying Claude Enterprise</strong></td><td>Khoá 14 bài về triển khai Enterprise</td><td>Năm quyết định theo thứ tự, ba cổng connector, quy tắc union</td><td><a href="#course-ai-capabilities">§12</a></td></tr>
+    <tr data-kw="Description"><td><strong>Description</strong></td><td>Chữ D mô tả việc: Product, Process, Performance</td><td>Nói với AI việc cần làm; khác Delegation</td><td><a href="#ai-fluent">§4</a></td></tr>
+    <tr data-kw="Diligence"><td><strong>Diligence</strong></td><td>Chữ D trách nhiệm: Creation, Transparency, Deployment</td><td>Đọc lại trước khi gửi, minh bạch khi chính sách yêu cầu</td><td><a href="#ai-fluent">§4</a></td></tr>
+    <tr data-kw="Discernment"><td><strong>Discernment (Discernment Loop)</strong></td><td>Chữ D đánh giá output; vòng đọc, tìm chỗ hụt, góp ý, lặp</td><td>Không chấp nhận bản đầu tiên; kiểm chứng dữ kiện ở nguồn gốc</td><td><a href="#ai-fluent">§4</a></td></tr>
+    <tr data-kw="EMA"><td><strong>EMA (External Model Access)</strong></td><td>Cổng thứ ba của connector: cho phép model đọc dữ liệu connector</td><td>Quên EMA là bẫy hay gặp; cần đủ ba cổng</td><td><a href="#tips-ai-capabilities">§13</a></td></tr>
+    <tr data-kw="exit 2"><td><strong><code>exit 2</code> (hook)</strong></td><td>Mã thoát duy nhất chặn hành động</td><td><code>exit 1</code> không chặn; PreToolUse dùng để cưỡng chế</td><td><a href="#tips-evals-sdlc">§15</a></td></tr>
+    <tr data-kw="five deployment decisions"><td><strong>Structure, Access, Governance, Spend, Visibility</strong></td><td>Năm quyết định triển khai Enterprise theo đúng thứ tự</td><td>Hay hỏi bước nào trước, thiết lập nào khó hoàn tác</td><td><a href="#tips-ai-capabilities">§13</a></td></tr>
+    <tr data-kw="Introduction to evals"><td><strong>Introduction to evals</strong></td><td>Khoá 4 bài về eval tối thiểu</td><td>Sửa prompt trước, nâng model sau; Batch API; lấy mẫu hằng đêm bắt độ trôi</td><td><a href="#course-evals-sdlc">§14</a></td></tr>
+    <tr data-kw="RBAC union rule"><td><strong>RBAC union rule</strong></td><td>Người thuộc nhiều nhóm nhận hợp quyền của mọi nhóm</td><td>Không phải phần giao (intersection)</td><td><a href="#tips-ai-capabilities">§13</a></td></tr>
+    <tr data-kw="strict mode"><td><strong>Strict mode (<code>additionalProperties: false</code>)</strong></td><td>Ép Claude gọi tool đúng schema</td><td>Thiếu <code>additionalProperties: false</code> là lỗi hay gặp</td><td><a href="#tips-tool-use">§19</a></td></tr>
+    <tr data-kw="Tool use with the Messages API"><td><strong>Tool use with the Messages API</strong></td><td>Khoá 9 bài chuyên về thiết kế tool</td><td>Phủ CCAR-F D2 và CCDV-F D8</td><td><a href="#course-tool-use">§18</a></td></tr>
+    <tr data-kw="tool_result"><td><strong><code>tool_result</code>, <code>tool_use_id</code>, <code>is_error</code></strong></td><td>Khối kết quả tool gắn đúng id của yêu cầu</td><td>Gọi song song: mọi kết quả trong MỘT user message; tool lỗi thì <code>is_error: true</code></td><td><a href="#tips-tool-use">§19</a></td></tr>
+  </tbody>
+</table></div>
+
+<div class="btns pager">
+  <a class="btn" href="/notes/lessons/22-stakeholders-operations.html">← Bài 22 · Bên liên quan, vòng đời, năng suất đội</a>
+  <a class="btn primary" href="/new">Luyện đề →</a>
+</div>
+
+<footer>
+  Luyện thi chứng chỉ Claude · Bài 23 · Phụ lục: khoá học Claude Academy · v0.39 · 2026-11-18. <a href="/notes/00-tong-quan.md">Tổng quan</a> · <a href="/new">Luyện đề</a>.
+</footer>

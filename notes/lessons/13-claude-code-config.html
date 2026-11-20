@@ -1,0 +1,1097 @@
+<p class="lesson-source">Nguồn: tài liệu ôn tập công khai <a href="https://claude.ai/artifact/3NhHr42CxTHGEs33N1ntFf" target="_blank" rel="noopener">artifact 3NhHr42…</a> (bài 13). Không thuộc và không được Anthropic xác nhận.</p>
+<header class="cover">
+  <div class="eyebrow">Luyện thi chứng chỉ Claude · Bài 13 · Chặng 2 · CCDV-F · bước 12/13</div>
+  <h1>Claude Code: cấu hình, CI và quyền <span class="ja">Claude Code Configuration &amp; Workflows</span></h1>
+  <p class="lead">Thứ bậc CLAUDE.md, slash command và skill, rule theo đường dẫn, plan mode, tinh chỉnh lặp, refactor, CI/CD, settings, chế độ quyền, plugin, Claude Code in Action.</p>
+  <dl class="meta">
+    <dt>Kỳ thi</dt><dd>CCDV-F D2, D3, D8 · CCAR-F D3 · CCAR-P D7</dd>
+    <dt>Phục vụ</dt><dd><span class="tag xt1">CCDV-F</span> 8 mục · <span class="tag xt3">CCAR-F</span> 7 mục · <span class="tag xt4">CCAR-P</span> 4 mục · <a href="#xsum">bảng nhãn từng mục</a></dd>
+
+    <dt>Nguồn</dt><dd>Ghi chú «Đề cương chi tiết CCAR-F» Domain 3; «Đề cương CCDV-F và CCAO-F» D2, D3; «Cấu trúc một Claude Skill»; Exam guide CCDV-F v1.0 mục 6; code.claude.com (permission modes, sub-agents, plugins reference, plugin dependencies, common workflows), platform.claude.com (mitigate jailbreaks, models overview) (tra 17/11/2026); academy.claude.com · Introduction to evals, Claude Code in action, AI-native SDLC playbook · Crawl 2026-11-17</dd>
+    <dt>Cập nhật</dt><dd><span class="status">v0.39 · 2026-11-18</span> · theo exam guide v1.0</dd>
+  </dl>
+</header>
+
+<details class="toc">
+<summary>Mục lục</summary>
+
+    <ol>
+      <li><a href="#claude-md"><span class="n">1</span><span class="tx">Thứ bậc CLAUDE.md</span><span class="xds" aria-hidden="true"><i class="xd xt3" title="CCAR-F"></i><i class="xd xt1" title="CCDV-F"></i><i class="xd xt4" title="CCAR-P"></i></span></a></li>
+      <li><a href="#command-skill"><span class="n">2</span><span class="tx">Slash command và skill</span><span class="xds" aria-hidden="true"><i class="xd xt3" title="CCAR-F"></i><i class="xd xt1" title="CCDV-F"></i></span></a></li>
+      <li><a href="#rules"><span class="n">3</span><span class="tx">Rule theo đường dẫn</span><span class="xds" aria-hidden="true"><i class="xd xt3" title="CCAR-F"></i></span></a></li>
+      <li><a href="#plan-mode"><span class="n">4</span><span class="tx">Plan mode hay làm trực tiếp</span><span class="xds" aria-hidden="true"><i class="xd xt3" title="CCAR-F"></i></span></a></li>
+      <li><a href="#iterative-refinement"><span class="n">5</span><span class="tx">Tinh chỉnh lặp</span><span class="xds" aria-hidden="true"><i class="xd xt3" title="CCAR-F"></i></span></a></li>
+      <li><a href="#refactor"><span class="n">6</span><span class="tx">Refactor nhỏ và lớn với Claude Code</span><span class="xds" aria-hidden="true"><i class="xd xt1" title="CCDV-F"></i></span></a></li>
+      <li><a href="#ci-cd"><span class="n">7</span><span class="tx">Claude Code trong CI/CD</span><span class="xds" aria-hidden="true"><i class="xd xt3" title="CCAR-F"></i><i class="xd xt1" title="CCDV-F"></i><i class="xd xt4" title="CCAR-P"></i></span></a></li>
+      <li><a href="#settings"><span class="n">8</span><span class="tx">Settings và quyền</span><span class="xds" aria-hidden="true"><i class="xd xt1" title="CCDV-F"></i><i class="xd xt4" title="CCAR-P"></i></span></a></li>
+      <li><a href="#permission-modes"><span class="n">9</span><span class="tx">Chế độ quyền và auto mode</span><span class="xds" aria-hidden="true"><i class="xd xt1" title="CCDV-F"></i></span></a></li>
+      <li><a href="#plugin"><span class="n">10</span><span class="tx">Plugin</span><span class="xds" aria-hidden="true"><i class="xd xt1" title="CCDV-F"></i><i class="xd xt4" title="CCAR-P"></i></span></a></li>
+      <li><a href="#claude-code-in-action"><span class="n">11</span><span class="tx">Ôn theo khoá Claude Code in Action</span><span class="xds" aria-hidden="true"><i class="xd xt3" title="CCAR-F"></i><i class="xd xt1" title="CCDV-F"></i></span></a></li>
+      <li><a href="#exam-keywords"><span class="n">12</span><span class="tx">Từ khoá đề thi</span></a></li>
+    </ol>
+
+</details>
+
+<details class="xsum" id="xsum">
+<summary>Mục nào phục vụ bài thi nào</summary>
+<p class="xnote">Mã đầu là bài thi chính của mục. <b>Nền</b>: cần để hiểu các mục sau. <b>Nâng cao</b>: ngoài phạm vi các exam guide. Ôn cho một bài thi thì đọc các mục có mã của bài đó trước.</p>
+<div class="tw"><table>
+<thead><tr><th>Mục</th><th>Bài thi</th><th>Ghi chú</th></tr></thead>
+<tbody>
+<tr><td><a href="#claude-md">1. Thứ bậc CLAUDE.md</a></td><td><span class="tag xt3">CCAR-F D3</span> <span class="tag xt1">CCDV-F D3</span> <span class="tag xt1">CCDV-F D2</span> <span class="tag xt4">CCAR-P D7</span></td><td></td></tr>
+<tr><td><a href="#command-skill">2. Slash command và skill</a></td><td><span class="tag xt3">CCAR-F D3</span> <span class="tag xt1">CCDV-F D3</span></td><td></td></tr>
+<tr><td><a href="#rules">3. Rule theo đường dẫn</a></td><td><span class="tag xt3">CCAR-F D3</span></td><td></td></tr>
+<tr><td><a href="#plan-mode">4. Plan mode hay làm trực tiếp</a></td><td><span class="tag xt3">CCAR-F D3</span></td><td></td></tr>
+<tr><td><a href="#iterative-refinement">5. Tinh chỉnh lặp</a></td><td><span class="tag xt3">CCAR-F D3</span></td><td></td></tr>
+<tr><td><a href="#refactor">6. Refactor nhỏ và lớn với Claude Code</a></td><td><span class="tag xt1">CCDV-F D2</span></td><td></td></tr>
+<tr><td><a href="#ci-cd">7. Claude Code trong CI/CD</a></td><td><span class="tag xt3">CCAR-F D3</span> <span class="tag xt1">CCDV-F D3</span> <span class="tag xt4">CCAR-P D7</span></td><td></td></tr>
+<tr><td><a href="#settings">8. Settings và quyền</a></td><td><span class="tag xt1">CCDV-F D2</span> <span class="tag xt1">CCDV-F D3</span> <span class="tag xt4">CCAR-P D7</span></td><td></td></tr>
+<tr><td><a href="#permission-modes">9. Chế độ quyền và auto mode</a></td><td><span class="tag xt1">CCDV-F D3</span></td><td></td></tr>
+<tr><td><a href="#plugin">10. Plugin</a></td><td><span class="tag xt1">CCDV-F D2</span> <span class="tag xt1">CCDV-F D8</span> <span class="tag xt4">CCAR-P D7</span></td><td></td></tr>
+<tr><td><a href="#claude-code-in-action">11. Ôn theo khoá Claude Code in Action</a></td><td><span class="tag xt3">CCAR-F D3</span> <span class="tag xt1">CCDV-F D2</span> <span class="tag xt1">CCDV-F D3</span></td><td></td></tr>
+</tbody></table></div>
+</details>
+
+<h2 id="claude-md">1. Thứ bậc CLAUDE.md</h2>
+<p class="xtags"><span class="tag xt3">CCAR-F D3</span> <span class="tag xt1">CCDV-F D3</span> <span class="tag xt1">CCDV-F D2</span> <span class="tag xt4">CCAR-P D7</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Một nhân viên mới vào công ty gặp ba loại “nội quy”. <strong>Nội quy công ty</strong> dán ở sảnh, ai cũng đọc. <strong>Quy định riêng của phòng ban</strong> chỉ có hiệu lực khi bạn vào phòng đó. <strong>Sổ tay cá nhân</strong> của chính bạn thì chỉ bạn đọc. Nếu sếp ghi quy tắc quan trọng vào sổ tay của mình, nhân viên mới sẽ không bao giờ thấy nó. CLAUDE.md hoạt động y như vậy.
+</div>
+<p><strong>CLAUDE.md</strong> là một file markdown chứa chỉ dẫn cố định (lệnh build, quy ước code, “luôn làm X”). Claude Code đọc nó ở đầu <strong>mỗi phiên</strong> và đưa vào <strong>context</strong> (vùng nhớ làm việc của Claude trong phiên đó). Có ba cấp, mỗi cấp nằm ở một chỗ khác nhau nên người được thấy cũng khác nhau.</p>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 250" role="img" aria-label="Ba cấp CLAUDE.md lần lượt được nạp vào context: user khi khởi động, project khi khởi động, thư mục con khi Claude làm việc với file trong thư mục đó">
+    <defs><marker id="m0501" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker></defs>
+    <text x="10" y="18" class="lane-lb">FILE TRÊN Ổ ĐĨA</text>
+    <text x="380" y="18" class="lane-lb">CONTEXT CỦA PHIÊN</text>
+    <rect x="380" y="26" width="250" height="198" rx="8" class="lane"/>
+    <g>
+      <rect x="10" y="30" width="290" height="50" rx="6" class="b-sys"/>
+      <text x="22" y="50" class="tm">~/.claude/CLAUDE.md</text><text x="22" y="67" class="ts">User · chỉ riêng bạn, không nằm trong git</text>
+      <path d="M300,55 H394" class="ln-acc flow" marker-end="url(#m0501)"/>
+      <rect x="396" y="36" width="218" height="40" rx="5" class="b-sys"/><text x="408" y="53" class="t tb">1. Cấp user</text><text x="408" y="68" class="ts">nạp lúc khởi động</text>
+    </g>
+    <g>
+      <rect x="10" y="94" width="290" height="50" rx="6" class="b-done"/>
+      <text x="22" y="114" class="tm">CLAUDE.md (gốc repo)</text><text x="22" y="131" class="ts">Project · cả đội, commit vào git</text>
+      <path d="M300,119 H394" class="ln-acc flow" marker-end="url(#m0501)"/>
+      <rect x="396" y="92" width="218" height="40" rx="5" class="b-done"/><text x="408" y="109" class="t tb">2. Cấp project</text><text x="408" y="124" class="ts">nạp lúc khởi động</text>
+    </g>
+    <g>
+      <rect x="10" y="158" width="290" height="50" rx="6" class="b-step"/>
+      <text x="22" y="178" class="tm">src/api/CLAUDE.md</text><text x="22" y="195" class="ts">Thư mục · cả đội, chỉ cho phần code này</text>
+      <path d="M300,183 H394" class="ln-acc flow" marker-end="url(#m0501)"/>
+      <rect x="396" y="148" width="218" height="40" rx="5" class="b-step"/><text x="408" y="165" class="t tb">3. Cấp thư mục</text><text x="408" y="180" class="ts">nạp khi Claude đụng file ở đó</text>
+    </g>
+    <text x="320" y="244" class="tw-good" text-anchor="middle">Cả ba được nối lại với nhau, không cấp nào xoá cấp nào</text>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Cấp <strong>user</strong> (<code>~/.claude/CLAUDE.md</code>) nạp khi khởi động. Chỉ máy của bạn có file này.</li>
+    <li>Cấp <strong>project</strong> (CLAUDE.md ở gốc repo) nạp khi khởi động. Đồng đội clone repo là có.</li>
+    <li>Cấp <strong>thư mục</strong> chỉ nạp khi Claude đọc hoặc sửa file nằm trong thư mục đó.</li>
+    <li>Các file được nối lại trong cùng context.</li>
+  </ol>
+  <figcaption>Hình 1. Ba cấp CLAUDE.md được nạp vào context theo từng tầng.</figcaption>
+</figure>
+<div class="tw"><table>
+  <thead><tr><th>Cấp</th><th>Vị trí</th><th>Chia sẻ với đội?</th></tr></thead>
+  <tbody>
+    <tr><td>User</td><td><code>~/.claude/CLAUDE.md</code></td><td class="no">Không (không nằm trong git)</td></tr>
+    <tr><td>Project</td><td><code>CLAUDE.md</code> ở gốc repo hoặc <code>.claude/CLAUDE.md</code></td><td class="yes">Có</td></tr>
+    <tr><td>Thư mục</td><td><code>CLAUDE.md</code> trong thư mục con</td><td class="yes">Có</td></tr>
+  </tbody>
+</table></div>
+<ul>
+  <li><code>/init</code> quét repo và tạo CLAUDE.md ban đầu.</li>
+  <li><code>@import</code> tham chiếu file ngoài để CLAUDE.md gọn; mỗi package chỉ import chuẩn liên quan.</li>
+  <li><code>/memory</code> xem file memory nào đang được nạp: dùng khi hành vi không nhất quán giữa các phiên.</li>
+  <li>Định kỳ rà CLAUDE.md cho gọn và hết mâu thuẫn.</li>
+</ul>
+<h3>1.1 Ví dụ: package billing chỉ import chuẩn nó cần</h3>
+<pre><code># packages/billing/CLAUDE.md
+Dự án thanh toán. Chạy test: npm test -- billing
+
+@docs/standards/money.md        # import: nội dung file này được nạp cùng
+@docs/standards/testing.md      # chỉ import chuẩn liên quan tới billing</code></pre>
+<p>Cách làm này giữ file gọn. Package <code>web</code> không cần đọc chuẩn tiền tệ, nên CLAUDE.md của nó không import <code>money.md</code>.</p>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div><ul>
+    <li>Ghi quy ước của cả đội vào <code>~/.claude/CLAUDE.md</code> của mình</li>
+    <li>Thành viên mới clone repo nhưng Claude không biết quy ước</li>
+    <li>Một CLAUDE.md dài, nhiều mâu thuẫn</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đúng</div><ul>
+    <li>Đặt quy ước chung ở CLAUDE.md của project rồi commit</li>
+    <li>Chỉ giữ sở thích cá nhân (ngôn ngữ trả lời, editor) ở cấp user</li>
+    <li>Tách chuẩn theo chủ đề, dùng <code>@import</code>, định kỳ rà lại</li>
+  </ul></div>
+</div>
+<div class="alert"><strong>Tình huống hay ra.</strong> Thành viên mới không nhận được chỉ dẫn vì chỉ dẫn nằm ở cấp user của người khác.</div>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Theo <a href="https://code.claude.com/docs/en/memory" target="_blank" rel="noopener">tài liệu memory</a> hiện hành:
+<ul>
+  <li>Claude Code nạp CLAUDE.md ở thư mục đang chạy và <strong>mọi thư mục cha</strong> của nó. File ở thư mục gốc đứng trước, file gần nhất đứng sau. Các file được <strong>nối lại</strong>, không ghi đè nhau.</li>
+  <li>CLAUDE.md trong thư mục con chỉ nạp khi Claude đọc, ghi hoặc sửa file ở thư mục đó, đúng như Hình 1.</li>
+  <li>Ngoài ba cấp của đề thi còn có <code>CLAUDE.local.md</code> (riêng bạn trong một project, nên gitignore) và CLAUDE.md <strong>managed policy</strong> do admin triển khai cho cả tổ chức.</li>
+  <li>Mỗi file nên dưới khoảng 200 dòng. <code>@import</code> cho phép lồng tối đa 4 bước, và đường dẫn tương đối tính từ file chứa dòng import.</li>
+  <li>Claude cũng đọc được <code>AGENTS.md</code> nếu repo dùng file này thay cho CLAUDE.md.</li>
+  <li><strong>Kiểm tra file nào đã nạp:</strong> docs hướng dẫn chạy <code>/context all</code> rồi xem danh sách dưới mục <strong>Memory files</strong>. <code>/memory</code> dùng để duyệt và mở các file memory (CLAUDE.md, <code>CLAUDE.local.md</code>, auto memory) ra sửa, và để bật tắt auto memory. Exam guide v1.0 vẫn nói dùng <code>/memory</code> để xác minh file đã nạp: khi thi chọn theo exam guide.</li>
+</ul>
+Đề thi chỉ hỏi ba cấp user, project, thư mục.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Context</dt><dd>Toàn bộ chữ Claude đang “nhìn thấy” trong phiên: chỉ dẫn, hội thoại, file đã đọc. Càng đầy, Claude càng khó theo dõi và càng tốn token.</dd>
+  <dt>Phiên (session)</dt><dd>Một lần làm việc liên tục với Claude Code, từ lúc mở đến lúc đóng.</dd>
+  <dt>@import</dt><dd>Dòng bắt đầu bằng <code>@</code> kèm đường dẫn, để kéo nội dung file khác vào CLAUDE.md.</dd>
+  <dt>Version control (git)</dt><dd>Nơi cả đội cùng lưu code. File nằm trong git thì đồng đội nhận được, file nằm trong thư mục home của bạn thì không.</dd>
+</dl></div>
+
+<h2 id="command-skill">2. Slash command và skill</h2>
+<p class="xtags"><span class="tag xt3">CCAR-F D3</span> <span class="tag xt1">CCDV-F D3</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Trong thư viện, trên kệ chỉ dán nhãn tên sách và một dòng mô tả. Bạn chỉ rút sách xuống khi cần. Skill hoạt động như vậy: Claude chỉ thấy <strong>tên và mô tả</strong>, và chỉ đọc cả “cuốn sách” khi việc đang làm khớp mô tả. Còn CLAUDE.md giống nội quy dán tường: ai vào cũng thấy, lúc nào cũng thấy.
+</div>
+<p><strong>Slash command</strong> là lệnh bạn gõ bắt đầu bằng <code>/</code> (ví dụ <code>/review</code>) để chạy một prompt đã soạn sẵn. <strong>Skill</strong> là một thư mục có file <code>SKILL.md</code> mô tả một quy trình làm việc; Claude tự nạp khi thấy việc phù hợp, hoặc bạn gọi bằng <code>/tên-skill</code>.</p>
+<div class="tw"><table>
+  <thead><tr><th></th><th>Project (chia sẻ qua git)</th><th>User (cá nhân)</th></tr></thead>
+  <tbody>
+    <tr><td>Command</td><td><code>.claude/commands/</code></td><td><code>~/.claude/commands/</code></td></tr>
+    <tr><td>Skill</td><td><code>.claude/skills/&lt;tên&gt;/SKILL.md</code></td><td><code>~/.claude/skills/</code></td></tr>
+  </tbody>
+</table></div>
+<p>Ví dụ command đơn giản nhất: file <code>.claude/commands/review.md</code> chứa một prompt, và cả đội gõ <code>/review</code> là dùng được vì file nằm trong git.</p>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 236" role="img" aria-label="Skill được nạp theo cần: lúc khởi động chỉ có tên và mô tả, khi người dùng nói đúng việc thì thân SKILL.md được nạp, với context fork thì chạy trong subagent riêng và chỉ trả tóm tắt">
+    <defs>
+      <marker id="m0502" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker>
+      <marker id="m0503" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-good"/></marker>
+    </defs>
+    <rect x="8" y="30" width="190" height="104" rx="8" class="b-sys"/>
+    <text x="103" y="50" class="t tb" text-anchor="middle">Phiên chính</text>
+    <text x="103" y="72" class="ts" text-anchor="middle">chỉ thấy tên + mô tả</text>
+    <text x="103" y="86" class="ts" text-anchor="middle">của mọi skill</text>
+    <text x="103" y="108" class="ts" text-anchor="middle">Bạn: “kiểm tra dependency”</text>
+
+    <path class="ln-acc flow" d="M198,70 H246" marker-end="url(#m0502)"/>
+    <text x="222" y="62" class="ts halo" text-anchor="middle">khớp</text>
+    <g><rect x="248" y="30" width="170" height="104" rx="8" class="b-step"/>
+      <text x="333" y="50" class="t tb" text-anchor="middle">SKILL.md</text>
+      <text x="333" y="72" class="ts" text-anchor="middle">thân skill chỉ nạp</text><text x="333" y="86" class="ts" text-anchor="middle">ở bước này</text>
+      <text x="333" y="108" class="tm" text-anchor="middle">context: fork</text></g>
+    <g><path class="ln-acc flow" d="M418,70 H466" marker-end="url(#m0502)"/>
+      <rect x="468" y="30" width="164" height="104" rx="8" class="b-hot"/>
+      <text x="550" y="50" class="t tb" text-anchor="middle">Subagent riêng</text>
+      <text x="550" y="72" class="ts" text-anchor="middle">đọc nhiều file,</text><text x="550" y="86" class="ts" text-anchor="middle">output dài nằm ở đây</text></g>
+    <g><path class="ln-good flow" d="M550,134 V176 H103 V136" marker-end="url(#m0503)"/>
+      <text x="326" y="170" class="tw-good" text-anchor="middle">chỉ tóm tắt quay về</text>
+      <text x="326" y="206" class="ts" text-anchor="middle">Phiên chính sạch, không bị output dài làm bẩn</text></g>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Lúc khởi động, Claude chỉ nhìn thấy <code>name</code> và <code>description</code> của từng skill.</li>
+    <li>Bạn nói một việc khớp với mô tả của một skill.</li>
+    <li>Lúc này thân <code>SKILL.md</code> mới được nạp (progressive disclosure).</li>
+    <li>Có <code>context: fork</code> thì skill chạy trong một subagent riêng.</li>
+    <li>Chỉ phần tóm tắt trả về phiên chính.</li>
+  </ol>
+  <figcaption>Hình 2. Skill nạp khi cần, và <code>context: fork</code> giữ output dài ở ngoài phiên chính.</figcaption>
+</figure>
+<pre><code>---
+name: analyze-deps
+description: Phân tích phụ thuộc của repo. Dùng khi người dùng hỏi về thư viện lỗi thời,
+  xung đột phiên bản hoặc nói "kiểm tra dependency".
+context: fork             # chạy trong context subagent riêng, output dài không làm bẩn phiên chính
+allowed-tools: Read, Grep, Bash
+argument-hint: [thư mục]  # gợi ý tham số khi gọi mà không truyền đối số
+---
+## Các bước
+1. …, vì …</code></pre>
+<ul>
+  <li><code>description</code> là phần quan trọng nhất: lúc khởi động Claude chỉ thấy tên và mô tả của mọi skill để quyết định có nạp không. Nêu rõ skill làm gì, khi nào dùng, và cách người dùng hay diễn đạt.</li>
+  <li>Thân skill chỉ nạp khi được kích hoạt (progressive disclosure); giữ <code>SKILL.md</code> gọn, tách chi tiết sang file phụ.</li>
+  <li>Skill nạp <strong>khi cần</strong>, cho workflow theo việc; CLAUDE.md <strong>luôn được nạp</strong>, cho chuẩn chung.</li>
+  <li>Muốn biến thể riêng: tạo skill cá nhân <strong>tên khác</strong> trong <code>~/.claude/skills/</code>.</li>
+</ul>
+<div class="tw"><table>
+  <thead><tr><th>Trường frontmatter</th><th>Làm gì (theo exam guide)</th></tr></thead>
+  <tbody>
+    <tr><td><code>context: fork</code></td><td>Chạy skill trong context subagent cô lập. Dùng cho output dài (phân tích codebase) hoặc việc thăm dò (brainstorm phương án).</td></tr>
+    <tr><td><code>allowed-tools</code></td><td>Hạn chế tool trong lúc chạy skill, ví dụ chỉ cho ghi file để tránh hành động phá hoại. (Đề v1.0 chấm theo guide; docs hiện hành: chỉ cấp sẵn quyền, không chặn tool khác, muốn chặn dùng <code>disallowed-tools</code>. Nguồn: <a href="https://code.claude.com/docs/en/skills" target="_blank" rel="noopener">Claude Code docs, Skills</a>.)</td></tr>
+    <tr><td><code>argument-hint</code></td><td>Nhắc người dùng nhập tham số khi gọi skill mà không kèm đối số.</td></tr>
+  </tbody>
+</table></div>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Mô tả mơ hồ</div><ul>
+    <li><code>description: Phân tích dependency.</code></li>
+    <li>Claude không biết khi nào nên nạp, nên bỏ qua dù bạn nói “kiểm tra thư viện cũ”</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Mô tả rõ</div><ul>
+    <li>Nêu việc làm, thời điểm dùng, và các cách nói của người dùng (“thư viện lỗi thời”, “kiểm tra dependency”)</li>
+    <li>Claude khớp được và nạp đúng lúc</li>
+  </ul></div>
+</div>
+<div class="alert"><strong>Bẫy.</strong> Nhét quy trình riêng của từng việc vào CLAUDE.md khiến nó nạp ở mọi phiên và tốn context. Quy trình theo việc thì làm skill. Chuẩn chung luôn đúng thì để ở CLAUDE.md. Muốn tuỳ biến skill của đội cho riêng mình, tạo bản <strong>tên khác</strong> ở <code>~/.claude/skills/</code> thay vì sửa bản chung.</div>
+<p class="src">Khung đầy đủ của một skill: ghi chú Cấu trúc của một Claude Skill.</p>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Theo <a href="https://code.claude.com/docs/en/skills" target="_blank" rel="noopener">tài liệu skills</a> hiện hành:
+<ul>
+  <li>Command trong <code>.claude/commands/</code> đã gộp vào skill; file cũ vẫn chạy, trùng tên thì skill thắng.</li>
+  <li><code>allowed-tools</code> <strong>cấp quyền dùng không cần hỏi</strong> trong lượt gọi skill, không chặn tool khác. Muốn loại tool thì dùng <code>disallowed-tools</code>. Exam guide v1.0 mô tả <code>allowed-tools</code> là “giới hạn tool”: khi thi, chọn theo exam guide.</li>
+  <li>Quyền của <code>allowed-tools</code> chỉ có hiệu lực trong lượt gọi skill và hết khi bạn gửi tin nhắn kế tiếp.</li>
+  <li><code>argument-hint</code> theo docs chỉ là <strong>gợi ý hiện khi autocomplete</strong> (ví dụ <code>[issue-number]</code>), không tự hỏi người dùng. Exam guide mô tả nó như cách “nhắc nhập tham số”: khi thi chọn theo exam guide. Skill tải lên claude.ai hoặc Skills API chỉ nhận <code>name</code>, <code>description</code>, <code>license</code>, <code>compatibility</code>, <code>metadata</code>, <code>allowed-tools</code>; trường lạ như <code>argument-hint</code> gây lỗi khi đóng gói, trong khi Claude Code lặng lẽ bỏ qua trường nó không biết.</li>
+  <li><code>description</code> là trường nên có nhất: Claude đọc nó để quyết định có áp dụng skill hay không. Bỏ trống thì Claude Code lấy dòng không rỗng đầu tiên của thân skill. <code>description</code> cộng <code>when_to_use</code> bị cắt ở 1.536 ký tự trong danh sách skill, nên đặt ý chính lên đầu.</li>
+  <li><code>disable-model-invocation: true</code>: chỉ người dùng gọi được (hợp với <code>/deploy</code> có tác dụng phụ). <code>user-invocable: false</code>: ẩn khỏi menu <code>/</code>, chỉ Claude gọi.</li>
+  <li>Skill cũng có trường <code>paths</code> để chỉ tự nạp khi làm việc với file khớp glob. Exam guide vẫn dùng <code>.claude/rules/</code> cho tình huống này.</li>
+  <li><code>context: fork</code> kèm <code>agent</code> (Explore, Plan, general-purpose…); subagent không thấy lịch sử hội thoại nên nội dung skill phải tự đủ.</li>
+</ul></div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Frontmatter</dt><dd>Khối giữa hai dòng <code>---</code> ở đầu file, khai báo cấu hình dạng <code>khoá: giá trị</code>.</dd>
+  <dt>Subagent</dt><dd>Một Claude phụ chạy trong context riêng, làm xong rồi chỉ báo kết quả về.</dd>
+  <dt>Progressive disclosure</dt><dd>Chỉ nạp thêm chi tiết khi cần: trước hết tên và mô tả, thân skill sau.</dd>
+</dl></div>
+
+<h2 id="rules" class="pb">3. Rule theo đường dẫn</h2>
+<p class="xtags"><span class="tag xt3">CCAR-F D3</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Trong xưởng, biển “đeo kính bảo hộ” chỉ treo ở khu máy cắt, không treo ở văn phòng. Ai bước vào khu máy cắt mới cần biết quy tắc đó. Rule theo đường dẫn cũng vậy: chỉ khi Claude làm việc với loại file đó, quy tắc mới được nạp.
+</div>
+<p><strong>Rule</strong> là một file markdown trong <code>.claude/rules/</code>, mỗi file một chủ đề. Dòng <code>paths</code> ở đầu file là một danh sách <strong>glob</strong> (mẫu khớp tên file, ví dụ <code>*.test.tsx</code> khớp mọi file test). Rule có <code>paths</code> chỉ nạp khi Claude làm việc với file khớp mẫu.</p>
+<pre><code>---
+paths: ["**/*.test.tsx"]
+---
+Quy ước viết test: …</code></pre>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 224" role="img" aria-label="Rule testing.md với paths khớp mọi file test: sửa Button.test.tsx thì rule được nạp, sửa server.ts thì rule không được nạp">
+    <defs>
+      <marker id="m0504" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-good"/></marker>
+      <marker id="m0505" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-warn"/></marker>
+    </defs>
+    <text x="10" y="20" class="lane-lb">Rule: .claude/rules/testing.md, paths: **/*.test.tsx</text>
+    <g><rect x="10" y="40" width="190" height="52" rx="6" class="b-sys"/><text x="105" y="62" class="tm" text-anchor="middle">Button.test.tsx</text><text x="105" y="79" class="ts" text-anchor="middle">Claude sửa file này</text></g>
+    <g><path d="M200,66 H236" class="ln-good flow" marker-end="url(#m0504)"/>
+      <rect x="238" y="40" width="170" height="52" rx="6" class="b-done"/><text x="323" y="62" class="t tb" text-anchor="middle">Khớp glob</text><text x="323" y="79" class="ts" text-anchor="middle">đuôi .test.tsx</text>
+      <path d="M408,66 H444" class="ln-good flow" marker-end="url(#m0504)"/>
+      <rect x="446" y="40" width="184" height="52" rx="6" class="b-done"/><text x="538" y="62" class="t tb" text-anchor="middle">Rule được nạp</text><text x="538" y="79" class="ts" text-anchor="middle">quy ước test vào context</text></g>
+    <g><rect x="10" y="124" width="190" height="52" rx="6" class="b-sys"/><text x="105" y="146" class="tm" text-anchor="middle">server.ts</text><text x="105" y="163" class="ts" text-anchor="middle">Claude sửa file này</text></g>
+    <g><path d="M200,150 H236" class="ln-warn-solid flow" marker-end="url(#m0505)"/>
+      <rect x="238" y="124" width="170" height="52" rx="6" class="b-warn"/><text x="323" y="146" class="t tb" text-anchor="middle">Không khớp</text><text x="323" y="163" class="ts" text-anchor="middle">không phải file test</text>
+      <path d="M408,150 H444" class="ln-warn-solid flow" marker-end="url(#m0505)"/>
+      <rect x="446" y="124" width="184" height="52" rx="6" class="b-warn"/><text x="538" y="146" class="t tb" text-anchor="middle">Rule không nạp</text><text x="538" y="163" class="ts" text-anchor="middle">tiết kiệm context</text></g>
+    <text x="320" y="208" class="ts" text-anchor="middle">Test nằm rải khắp codebase vẫn dùng chung một rule</text>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Claude đang sửa <code>Button.test.tsx</code>.</li>
+    <li>Tên file khớp <code>**/*.test.tsx</code>, nên rule testing được nạp.</li>
+    <li>Sau đó Claude sửa <code>server.ts</code>.</li>
+    <li>File này không khớp, rule không nạp và không tốn context.</li>
+  </ol>
+  <figcaption>Hình 3. Rule có <code>paths</code> chỉ nạp khi file đang làm việc khớp glob.</figcaption>
+</figure>
+<ul>
+  <li>File trong <code>.claude/rules/</code> tách chuẩn theo chủ đề (<code>testing.md</code>, <code>api-conventions.md</code>).</li>
+  <li>Rule có <code>paths</code> chỉ nạp khi Claude làm việc với file khớp glob (exam guide viết “khi sửa”; xem ghi chú bên dưới), tiết kiệm context.</li>
+  <li>Rule theo glob <strong>thắng</strong> CLAUDE.md thư mục con khi quy ước áp cho file <strong>rải khắp codebase</strong> (test nằm cạnh code).</li>
+</ul>
+<div class="tw"><table>
+  <thead><tr><th>Quy ước nằm ở…</th><th>Chọn</th><th>Lý do</th></tr></thead>
+  <tbody>
+    <tr><td>Một thư mục (<code>terraform/</code>)</td><td>CLAUDE.md trong thư mục đó, hoặc rule với <code>paths: ["terraform/**/*"]</code></td><td>File cùng chỗ</td></tr>
+    <tr><td>File rải nhiều thư mục (mọi <code>*.test.tsx</code>)</td><td>Rule với glob <code>**/*.test.tsx</code></td><td>CLAUDE.md từng thư mục sẽ phải chép lặp</td></tr>
+  </tbody>
+</table></div>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Theo <a href="https://code.claude.com/docs/en/memory" target="_blank" rel="noopener">tài liệu memory</a>: rule có <code>paths</code> nạp khi Claude dùng tool <strong>Read, Write hoặc Edit</strong> trên file khớp, và cả khi Claude xem file bằng lệnh Bash được tính là đọc (ví dụ <code>cat</code> hoặc <code>head</code> trên một file). Vậy Claude không cần <em>sửa</em> file thì rule vẫn nạp; đáp án đề nói “khi sửa file khớp” vẫn đúng. Rule <strong>không có</strong> <code>paths</code> thì nạp ngay lúc khởi động, cùng mức ưu tiên với <code>.claude/CLAUDE.md</code>. Mẫu trong <code>paths</code> tính từ thư mục chứa thư mục <code>.claude</code> của rule dự án.</div>
+<div class="alert"><strong>Bẫy.</strong> Đặt một CLAUDE.md trong mỗi thư mục có file test để áp quy ước test. Quy ước bị chép nhiều chỗ, dễ lệch, và sót thư mục mới. Rule theo glob giải quyết gọn một lần.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Glob</dt><dd>Mẫu khớp đường dẫn: <code>*</code> thay cho một đoạn tên, <code>**</code> thay cho mọi thư mục lồng nhau.</dd>
+  <dt>Token</dt><dd>Đơn vị tính chữ của model. Context càng nhiều chữ càng tốn token.</dd>
+</dl></div>
+
+<h2 id="plan-mode">4. Plan mode hay làm trực tiếp</h2>
+<p class="xtags"><span class="tag xt3">CCAR-F D3</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Sửa bóng đèn hỏng thì bạn thay luôn, không cần bản vẽ. Xây thêm một tầng nhà thì phải có bản vẽ, khảo sát móng và chủ nhà duyệt trước khi đổ bê tông. Làm sai ở bản vẽ chỉ tốn một tờ giấy, làm sai khi xây thì tốn cả tầng. Plan mode là bước “vẽ bản vẽ” cho Claude.
+</div>
+<p><strong>Plan mode</strong> là chế độ Claude chỉ đọc code và lập kế hoạch, chưa sửa file nào. Bạn xem kế hoạch, đồng ý rồi mới chuyển sang <strong>làm trực tiếp</strong> (direct execution: để Claude sửa file ngay).</p>
+<div class="split">
+  <div class="box"><div class="hd">Plan mode</div><ul><li>Thay đổi lớn, nhiều file (migration 45+ file)</li><li>Quyết định kiến trúc, nhiều hướng hợp lệ</li><li>Tách monolith thành microservice</li></ul></div>
+  <div class="box"><div class="hd">Làm trực tiếp</div><ul><li>Phạm vi rõ: bug một file có stack trace</li><li>Thêm một điều kiện kiểm tra</li></ul></div>
+</div>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 220" role="img" aria-label="Quy trình kết hợp: trong plan mode, Explore subagent dò code, Claude viết kế hoạch, bạn duyệt; sau đó làm trực tiếp theo kế hoạch">
+    <defs><marker id="m0506" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker></defs>
+    <rect x="4" y="8" width="404" height="150" rx="8" class="lane"/>
+    <rect x="420" y="8" width="216" height="150" rx="8" class="lane"/>
+    <text x="16" y="26" class="lane-lb">PLAN MODE · chỉ đọc, chưa sửa file</text>
+    <text x="432" y="26" class="lane-lb">LÀM TRỰC TIẾP</text>
+    <g><rect x="14" y="52" width="100" height="62" rx="6" class="b-hot"/><text x="64" y="76" class="t tb" text-anchor="middle">Explore</text><text x="64" y="92" class="ts" text-anchor="middle">subagent dò</text><text x="64" y="105" class="ts" text-anchor="middle">nhiều file</text></g>
+    <g><path d="M114,83 H152" class="ln-acc flow" marker-end="url(#m0506)"/>
+      <rect x="154" y="52" width="100" height="62" rx="6" class="b-step"/><text x="204" y="76" class="t tb" text-anchor="middle">Kế hoạch</text><text x="204" y="92" class="ts" text-anchor="middle">các bước, rủi ro,</text><text x="204" y="105" class="ts" text-anchor="middle">phương án</text></g>
+    <g><path d="M254,83 H292" class="ln-acc flow" marker-end="url(#m0506)"/>
+      <rect x="294" y="52" width="104" height="62" rx="6" class="b-sys"/><text x="346" y="76" class="t tb" text-anchor="middle">Bạn duyệt</text><text x="346" y="92" class="ts" text-anchor="middle">sửa kế hoạch</text><text x="346" y="105" class="ts" text-anchor="middle">nếu cần</text></g>
+    <g><path d="M398,83 H440" class="ln-acc flow" marker-end="url(#m0506)"/>
+      <rect x="442" y="52" width="180" height="62" rx="6" class="b-done"/><text x="532" y="76" class="t tb" text-anchor="middle">Sửa file</text><text x="532" y="92" class="ts" text-anchor="middle">theo đúng kế hoạch</text><text x="532" y="105" class="ts" text-anchor="middle">đã duyệt</text></g>
+    <text x="64" y="136" class="ts" text-anchor="middle">Output dài ở lại đó</text>
+    <text x="320" y="196" class="tw-good" text-anchor="middle">Sai hướng thì sửa ở kế hoạch, chưa tốn công sửa file</text>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Explore subagent dò code trong context riêng, nên phần dò tìm dài dòng không làm đầy phiên chính.</li>
+    <li>Claude viết kế hoạch dựa trên bản tóm tắt.</li>
+    <li>Bạn xem và chỉnh kế hoạch. Chưa có file nào bị sửa.</li>
+    <li>Chuyển sang làm trực tiếp, thực hiện đúng kế hoạch đã duyệt.</li>
+    <li>Phát hiện sai hướng ở bước kế hoạch thì chi phí rất thấp.</li>
+  </ol>
+  <figcaption>Hình 4. Plan để điều tra và thiết kế, rồi làm trực tiếp để triển khai.</figcaption>
+</figure>
+<ul>
+  <li>Kết hợp: plan để điều tra và thiết kế, rồi làm trực tiếp theo kế hoạch.</li>
+  <li><strong>Explore subagent</strong> cô lập phần dò tìm dài dòng, chỉ trả tóm tắt, tránh cạn context.</li>
+</ul>
+<p>Ví dụ: đội muốn đổi thư viện HTTP ở 45 file. Dùng plan mode để Claude tìm mọi chỗ dùng, đề xuất thứ tự đổi và rủi ro. Sau khi bạn duyệt, làm trực tiếp từng nhóm file. Ngược lại, “thêm kiểm tra ngày hợp lệ vào hàm <code>parseDate</code>” là việc một file, rõ phạm vi, nên làm trực tiếp.</p>
+<div class="alert"><strong>Bẫy.</strong> “Bắt đầu làm trực tiếp, gặp khó mới chuyển plan” khi đề đã nói rõ việc phức tạp.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Migration</dt><dd>Việc chuyển cả code sang thư viện hoặc phiên bản mới, thường chạm nhiều file.</dd>
+  <dt>Monolith / microservice</dt><dd>Một ứng dụng nguyên khối, và các dịch vụ nhỏ tách riêng. Tách cái trước thành cái sau là quyết định kiến trúc lớn.</dd>
+  <dt>Explore subagent</dt><dd>Subagent có sẵn chuyên đọc và tìm trong code, trả về bản tóm tắt.</dd>
+</dl></div>
+
+<h2 id="iterative-refinement">5. Tinh chỉnh lặp</h2>
+<p class="xtags"><span class="tag xt3">CCAR-F D3</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Bạn nhờ thợ may “may áo vừa vặn” thì mỗi người hiểu một kiểu. Đưa chiếc áo mẫu và số đo cụ thể thì thợ làm đúng ngay. Sau đó thử áo, chỉ chỗ chật, thợ sửa, thử lại, cho đến khi vừa. Làm việc với Claude cũng là vòng lặp “thử, chỉ chỗ sai, sửa”.
+</div>
+<p><strong>Tinh chỉnh lặp</strong> (iterative refinement) là cải thiện kết quả qua nhiều vòng nhỏ thay vì mong một lần đúng ngay. Có bốn kỹ thuật chính.</p>
+<ul>
+  <li>Mô tả bằng lời bị hiểu không nhất quán → đưa <strong>2–3 ví dụ vào/ra cụ thể</strong>.</li>
+  <li>TDD: viết test trước (hành vi, biên, hiệu năng), lặp bằng cách đưa lỗi test cho Claude.</li>
+  <li><strong>Interview pattern</strong>: để Claude hỏi lại nhằm lộ ra điều chưa nghĩ tới trước khi làm ở lĩnh vực lạ.</li>
+  <li>Lỗi <strong>tương tác nhau</strong> gửi chung một tin nhắn; lỗi <strong>độc lập</strong> sửa lần lượt.</li>
+</ul>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 230" role="img" aria-label="Vòng TDD: viết test, chạy test thấy lỗi, đưa lỗi cho Claude, Claude sửa, rồi chạy lại cho đến khi hết lỗi">
+    <defs>
+      <marker id="m0507" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker>
+      <marker id="m0508" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-warn"/></marker>
+    </defs>
+    <g><rect x="8" y="30" width="140" height="62" rx="6" class="b-sys"/><text x="78" y="54" class="t tb" text-anchor="middle">1. Viết test</text><text x="78" y="70" class="ts" text-anchor="middle">hành vi, biên,</text><text x="78" y="83" class="ts" text-anchor="middle">hiệu năng</text></g>
+    <g><path d="M148,61 H166" class="ln-acc flow" marker-end="url(#m0507)"/>
+      <rect x="168" y="30" width="140" height="62" rx="6" class="b-warn"/><text x="238" y="54" class="t tb" text-anchor="middle">2. Chạy test</text><text x="238" y="70" class="ts" text-anchor="middle">có test đỏ</text><text x="238" y="83" class="ts" text-anchor="middle">(chưa có code)</text></g>
+    <g><path d="M308,61 H326" class="ln-acc flow" marker-end="url(#m0507)"/>
+      <rect x="328" y="30" width="140" height="62" rx="6" class="b-step"/><text x="398" y="54" class="t tb" text-anchor="middle">3. Đưa lỗi</text><text x="398" y="70" class="ts" text-anchor="middle">dán thông báo lỗi</text><text x="398" y="83" class="ts" text-anchor="middle">cho Claude</text></g>
+    <g><path d="M468,61 H486" class="ln-acc flow" marker-end="url(#m0507)"/>
+      <rect x="488" y="30" width="140" height="62" rx="6" class="b-hot"/><text x="558" y="54" class="t tb" text-anchor="middle">4. Claude sửa</text><text x="558" y="70" class="ts" text-anchor="middle">chỉnh code theo</text><text x="558" y="83" class="ts" text-anchor="middle">từng lỗi test</text></g>
+    <g><path d="M558,92 V138 H238 V94" class="ln-warn-solid flow" marker-end="url(#m0508)"/>
+      <text x="398" y="158" class="ts" text-anchor="middle">còn test đỏ: chạy lại, đưa lỗi mới</text></g>
+    <g><rect x="168" y="178" width="300" height="38" rx="6" class="b-done"/><text x="318" y="201" class="tw-good" text-anchor="middle">Hết test đỏ: dừng vòng lặp</text></g>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Viết bộ test trước, gồm hành vi mong đợi, trường hợp biên và yêu cầu hiệu năng.</li>
+    <li>Chạy test: chưa có code nên có test đỏ.</li>
+    <li>Đưa thông báo lỗi test cho Claude.</li>
+    <li>Claude sửa code dựa trên các lỗi đó.</li>
+    <li>Chạy lại. Còn đỏ thì đưa lỗi mới và lặp.</li>
+    <li>Hết test đỏ thì dừng.</li>
+  </ol>
+  <figcaption>Hình 5. Vòng lặp theo test: lỗi test dẫn đường cho từng lần sửa.</figcaption>
+</figure>
+<h3>5.1 Ví dụ vào/ra thay cho lời mô tả</h3>
+<p>Câu “chuẩn hoá ngày tháng” có thể hiểu nhiều cách. Ba ví dụ cụ thể giúp Claude hiểu đúng, kể cả trường hợp biên như <code>null</code>:</p>
+<pre><code>"12/03/2024" -> "2024-03-12"
+"1/2/2024"   -> "2024-02-01"
+null         -> null            # biên: không được báo lỗi</code></pre>
+<p><strong>Interview pattern</strong> hợp khi bạn làm trong lĩnh vực chưa quen, ví dụ cache. Bạn nhờ: “Trước khi viết code, hãy hỏi tôi về cách làm mất hiệu lực cache và các kiểu lỗi có thể xảy ra.” Câu hỏi của Claude giúp bạn nghĩ ra điều mình chưa nghĩ tới.</p>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div><ul>
+    <li>Viết “xử lý ngày tháng cho tốt” rồi sửa mỗi lần Claude hiểu khác</li>
+    <li>Hai lỗi liên quan nhau mà báo từng cái, Claude vá cái này làm hỏng cái kia</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đúng</div><ul>
+    <li>Đưa 2–3 ví dụ vào/ra cụ thể, gồm cả trường hợp biên</li>
+    <li>Lỗi tương tác nhau thì gửi chung một tin nhắn. Lỗi độc lập thì sửa lần lượt</li>
+  </ul></div>
+</div>
+<div class="insight"><strong>Cốt lõi.</strong> Ví dụ cụ thể thắng mô tả bằng lời. Test cho Claude một thước đo khách quan. Interview pattern lộ ra yêu cầu ẩn trước khi code. Lỗi liên quan nhau thì xử lý cùng lúc.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>TDD (test-driven development)</dt><dd>Viết test trước, rồi viết code cho đến khi test qua.</dd>
+  <dt>Trường hợp biên (edge case)</dt><dd>Đầu vào lạ như rỗng, <code>null</code>, số rất lớn, nơi code hay hỏng.</dd>
+</dl></div>
+
+<h2 id="refactor">6. Refactor nhỏ và lớn với Claude Code</h2>
+<p class="xtags"><span class="tag xt1">CCDV-F D2</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Sửa một căn phòng thì làm luôn trong ngày. Cải tạo cả chung cư khi người vẫn ở thì phải làm từng tầng, kiểm tra điện nước sau mỗi tầng, và luôn có đường quay lại nếu một tầng gặp sự cố.
+</div>
+<p>Kỹ năng <strong>Software Engineering Foundations</strong> (7,4%, lớn thứ hai trong D2) nhắc tới version control, code review và refactor nhỏ lẫn lớn. Nguyên tắc chung: <strong>refactor giữ nguyên hành vi</strong>, nên phải có test chứng minh hành vi không đổi.</p>
+<div class="tw"><table>
+  <thead><tr><th></th><th>Refactor nhỏ (một file, một module)</th><th>Refactor lớn (cả codebase, đổi framework)</th></tr></thead>
+  <tbody>
+    <tr><td>Bắt đầu</td><td>Hỏi Claude tìm chỗ dùng API cũ, đề xuất cách viết lại</td><td>Plan mode: Claude đọc và lập kế hoạch, chưa sửa gì</td></tr>
+    <tr><td>Lưới an toàn</td><td>Chạy test hiện có trước và sau</td><td>Viết test giữ hành vi cho vùng chưa có test, trước khi sửa</td></tr>
+    <tr><td>Cách sửa</td><td>"Viết lại utils.js theo cú pháp mới, giữ nguyên hành vi"</td><td>Chia lô nhỏ; subagent khám phá, worktree hoặc <code>claude -p</code> chạy song song từng lô</td></tr>
+    <tr><td>Kiểm</td><td>Chạy test, đọc diff</td><td>Mỗi lô qua test và CI rồi mới làm lô sau</td></tr>
+    <tr><td>Giao</td><td>Một commit, một PR</td><td>Mỗi lô một commit hoặc PR riêng để review và revert được</td></tr>
+  </tbody>
+</table></div>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 210" role="img" aria-label="Quy trình refactor lớn: viết test giữ hành vi, plan mode lập kế hoạch, chia lô, chạy song song bằng worktree hoặc claude -p, kiểm từng lô bằng test và CI, commit hoặc PR theo lô; lô hỏng thì quay lại kế hoạch">
+    <defs><marker id="m2601" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker></defs>
+    <rect x="8" y="24" width="96" height="62" rx="6" class="b-warn"/><text x="56" y="48" class="t tb" text-anchor="middle">1 Test</text><text x="56" y="64" class="ts" text-anchor="middle">giữ hành vi</text><text x="56" y="77" class="ts" text-anchor="middle">trước khi sửa</text>
+    <rect x="114" y="24" width="96" height="62" rx="6" class="b-sys"/><text x="162" y="48" class="t tb" text-anchor="middle">2 Plan mode</text><text x="162" y="64" class="ts" text-anchor="middle">đọc code,</text><text x="162" y="77" class="ts" text-anchor="middle">lập kế hoạch</text>
+    <rect x="220" y="24" width="96" height="62" rx="6" class="b-step"/><text x="268" y="48" class="t tb" text-anchor="middle">3 Chia lô</text><text x="268" y="64" class="ts" text-anchor="middle">theo module,</text><text x="268" y="77" class="ts" text-anchor="middle">nhỏ, độc lập</text>
+    <rect x="326" y="24" width="96" height="62" rx="6" class="b-step"/><text x="374" y="48" class="t tb" text-anchor="middle">4 Song song</text><text x="374" y="64" class="ts" text-anchor="middle">worktree,</text><text x="374" y="77" class="ts" text-anchor="middle">claude -p</text>
+    <rect x="432" y="24" width="96" height="62" rx="6" class="b-warn"/><text x="480" y="48" class="t tb" text-anchor="middle">5 Kiểm lô</text><text x="480" y="64" class="ts" text-anchor="middle">test, CI,</text><text x="480" y="77" class="ts" text-anchor="middle">đọc diff</text>
+    <rect x="538" y="24" width="94" height="62" rx="6" class="b-done"/><text x="585" y="48" class="t tb" text-anchor="middle">6 Commit</text><text x="585" y="64" class="ts" text-anchor="middle">mỗi lô một PR,</text><text x="585" y="77" class="ts" text-anchor="middle">revert được</text>
+    <path class="ln-acc flow" d="M104,55 H112" marker-end="url(#m2601)"/>
+    <path class="ln-acc flow" d="M210,55 H218" marker-end="url(#m2601)"/>
+    <path class="ln-acc flow" d="M316,55 H324" marker-end="url(#m2601)"/>
+    <path class="ln-acc flow" d="M422,55 H430" marker-end="url(#m2601)"/>
+    <path class="ln-acc flow" d="M528,55 H536" marker-end="url(#m2601)"/>
+    <path class="ln-acc flow" d="M480,86 V150 H162 V88" marker-end="url(#m2601)"/>
+    <text x="320" y="170" class="ts" text-anchor="middle">lô hỏng test: không gộp, quay lại sửa kế hoạch cho lô đó</text>
+    <circle class="tok" r="7" style="transform:translate(56px,14px)"/>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Viết test giữ hành vi cho vùng sắp sửa, nếu chưa có.</li>
+    <li>Plan mode: Claude đọc code và đề xuất kế hoạch, chưa sửa file.</li>
+    <li>Chia việc thành lô nhỏ, ít phụ thuộc nhau.</li>
+    <li>Chạy song song: mỗi lô một worktree (<code>claude --worktree</code>) hoặc một lệnh <code>claude -p</code> có quyền hẹp.</li>
+    <li>Mỗi lô phải qua test, CI và có người đọc diff.</li>
+    <li>Mỗi lô một commit hoặc PR, để review dễ và revert được.</li>
+    <li>Lô nào hỏng test thì không gộp; sửa kế hoạch cho lô đó rồi làm lại.</li>
+  </ol>
+  <figcaption>Hình 6. Refactor lớn: test trước, chia lô, kiểm từng lô.</figcaption>
+</figure>
+<div class="alert"><strong>Bẫy.</strong> "Bảo Claude refactor cả repo trong một phiên rồi mở một PR lớn" nghe nhanh nhưng sai: context đầy, khó review, hỏng một chỗ phải bỏ cả PR. Đề thường thưởng đáp án chia nhỏ, có test và commit theo bước.</div>
+<div class="insight"><strong>Cốt lõi.</strong> Refactor là đổi cấu trúc mà không đổi hành vi. Test là bằng chứng; bước nhỏ và commit riêng là đường lui.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Refactor</dt><dd>Sắp xếp lại code cho dễ đọc, dễ bảo trì mà không đổi hành vi bên ngoài.</dd>
+  <dt>Git worktree</dt><dd>Một thư mục làm việc riêng trên nhánh riêng của cùng repo, để nhiều phiên sửa song song không đè nhau.</dd>
+  <dt>Characterization test</dt><dd>Test ghi lại hành vi hiện có của code cũ, dùng làm lưới an toàn trước khi sửa.</dd>
+</dl></div>
+
+<h2 id="ci-cd" class="pb">7. Claude Code trong CI/CD</h2>
+<p class="xtags"><span class="tag xt3">CCAR-F D3</span> <span class="tag xt1">CCDV-F D3</span> <span class="tag xt4">CCAR-P D7</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Nhà máy có một dây chuyền kiểm tra chạy tự động lúc nửa đêm. Không ai đứng đó để bấm nút “đồng ý”. Nếu một máy dừng lại chờ người xác nhận, cả dây chuyền treo. Vì vậy mọi thứ máy được phép làm phải khai báo sẵn, và kết quả phải ghi theo mẫu để máy khác đọc được. Claude Code trong CI cũng thế.
+</div>
+<p><strong>CI/CD</strong> là hệ thống tự chạy build, test, review mỗi khi có code mới. <strong>Headless mode</strong> là chạy <code>claude</code> không có người ngồi tương tác. Cờ <code>-p</code> bật chế độ này.</p>
+<pre><code>claude -p "Review the diff for security issues" \
+  --output-format json --json-schema review.schema.json \
+  --allowedTools "Read,Grep,Glob"</code></pre>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 250" role="img" aria-label="Luồng CI: push code, runner chạy claude -p, đọc CLAUDE.md và quyền tối thiểu, xuất JSON theo schema, đăng bình luận inline lên pull request">
+    <defs><marker id="m0509" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker></defs>
+    <g><rect x="8" y="88" width="104" height="60" rx="6" class="b-sys"/><text x="60" y="114" class="t tb" text-anchor="middle">Push code</text><text x="60" y="130" class="ts" text-anchor="middle">mở pull request</text></g>
+    <g><path d="M112,118 H146" class="ln-acc flow" marker-end="url(#m0509)"/>
+      <rect x="148" y="88" width="168" height="60" rx="6" class="b-hot"/><text x="232" y="112" class="tm" text-anchor="middle">claude -p "…"</text><text x="232" y="128" class="ts" text-anchor="middle">không tương tác,</text><text x="232" y="141" class="ts" text-anchor="middle">không chờ input</text></g>
+    <g><rect x="148" y="14" width="168" height="40" rx="6" class="b-opt"/><text x="232" y="31" class="tm" text-anchor="middle">CLAUDE.md</text><text x="232" y="46" class="ts" text-anchor="middle">chuẩn test, tiêu chí review</text>
+      <path d="M232,54 V86" class="ln-acc flow" marker-end="url(#m0509)"/>
+      <rect x="128" y="186" width="208" height="40" rx="6" class="b-opt"/><text x="232" y="203" class="tm" text-anchor="middle">--allowedTools</text><text x="232" y="218" class="ts" text-anchor="middle">Read,Grep,Glob: quyền tối thiểu</text>
+      <path d="M232,186 V150" class="ln-acc flow" marker-end="url(#m0509)"/></g>
+    <g><path d="M316,118 H356" class="ln-acc flow" marker-end="url(#m0509)"/>
+      <rect x="358" y="88" width="132" height="60" rx="6" class="b-step"/><text x="424" y="112" class="t tb" text-anchor="middle">JSON</text><text x="424" y="128" class="ts" text-anchor="middle">đúng --json-schema</text><text x="424" y="141" class="ts" text-anchor="middle">máy đọc được</text></g>
+    <g><path d="M490,118 H514" class="ln-acc flow" marker-end="url(#m0509)"/>
+      <rect x="516" y="88" width="118" height="60" rx="6" class="b-done"/><text x="575" y="112" class="t tb" text-anchor="middle">Comment</text><text x="575" y="128" class="ts" text-anchor="middle">inline trên PR</text><text x="575" y="141" class="ts" text-anchor="middle">do bot đăng</text></g>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Có commit mới, CI khởi động.</li>
+    <li>Runner chạy <code>claude -p</code>: chạy một lần rồi thoát, không treo chờ người trả lời.</li>
+    <li>CLAUDE.md đưa chuẩn của dự án vào, còn <code>--allowedTools</code> khai sẵn quyền ở mức tối thiểu.</li>
+    <li>Kết quả ra dạng JSON theo schema, nên máy đọc được.</li>
+    <li>Một bước sau chuyển từng phát hiện thành bình luận inline trên PR.</li>
+  </ol>
+  <figcaption>Hình 7. Một lần review tự động bằng Claude Code trong CI.</figcaption>
+</figure>
+<ul>
+  <li><code>-p</code> / <code>--print</code>: chạy không tương tác, không treo chờ input. <code>--output-format json</code> hoặc <code>stream-json</code>.</li>
+  <li>Trong CI không ai bấm duyệt: quyền phải <strong>khai báo sẵn</strong>, ở mức tối thiểu.</li>
+  <li>CLAUDE.md cung cấp chuẩn test, fixture, tiêu chí review cho Claude chạy trong CI.</li>
+  <li>Phiên đã sinh code review kém hơn một <strong>phiên độc lập</strong>.</li>
+  <li>Review lại sau commit mới: đưa kết quả review cũ vào, chỉ báo lỗi mới hoặc chưa sửa.</li>
+  <li>Sinh test: đưa file test hiện có vào context để tránh trùng kịch bản.</li>
+  <li>Phiên: <code>--continue</code> tiếp phiên gần nhất, <code>--resume</code> chọn phiên theo tên.</li>
+</ul>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 190" role="img" aria-label="So sánh review trong cùng phiên đã sinh code, vốn mang sẵn lập luận cũ, với review trong phiên độc lập chỉ nhận diff và tiêu chí">
+    <defs><marker id="m0510" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker></defs>
+    <rect x="4" y="4" width="312" height="182" rx="8" class="lane"/>
+    <rect x="324" y="4" width="312" height="182" rx="8" class="lane"/>
+    <text x="160" y="24" class="lane-lb" text-anchor="middle">CÙNG PHIÊN ĐÃ SINH CODE</text>
+    <text x="480" y="24" class="lane-lb" text-anchor="middle">PHIÊN REVIEW ĐỘC LẬP</text>
+    <rect x="20" y="40" width="280" height="44" rx="6" class="b-warn"/><text x="160" y="58" class="ts" text-anchor="middle">Context chứa lý do vì sao viết code như vậy</text><text x="160" y="73" class="ts" text-anchor="middle">và các quyết định đã đưa ra</text>
+    <text x="160" y="110" class="ts" text-anchor="middle">Dễ cho rằng code mình viết là đúng</text>
+    <text x="160" y="164" class="tw-warn" text-anchor="middle">✕ Review kém hiệu quả</text>
+    <rect x="340" y="40" width="280" height="44" rx="6" class="b-done"/><text x="480" y="58" class="ts" text-anchor="middle">Context mới: chỉ có diff, CLAUDE.md</text><text x="480" y="73" class="ts" text-anchor="middle">và tiêu chí review</text>
+    <text x="480" y="110" class="ts" text-anchor="middle">Nhìn code như người ngoài</text>
+    <text x="480" y="164" class="tw-good" text-anchor="middle">✓ Bắt được nhiều lỗi hơn</text>
+  </svg></div>
+  <figcaption>Hình 8. Review nên chạy trong phiên độc lập, không phải phiên đã viết code.</figcaption>
+</figure>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div><ul>
+    <li>CI chạy <code>claude</code> không có <code>-p</code>, job treo chờ input</li>
+    <li>Nhờ phiên vừa viết code tự review code đó</li>
+    <li>Mỗi lần review lại đăng cả lỗi cũ, comment lặp</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đúng</div><ul>
+    <li><code>-p</code> kèm <code>--output-format json</code> và <code>--json-schema</code></li>
+    <li>Phiên review độc lập, đã có CLAUDE.md về tiêu chí</li>
+    <li>Đưa kết quả review cũ vào, chỉ báo lỗi mới hoặc chưa sửa</li>
+  </ul></div>
+</div>
+<div class="alert"><strong>Bẫy.</strong> <code>CLAUDE_HEADLESS</code>, cờ <code>--batch</code>, <code>&lt; /dev/null</code> đều không phải cách đúng.</div>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Theo <a href="https://code.claude.com/docs/en/headless" target="_blank" rel="noopener">tài liệu chạy Claude Code theo chương trình</a>:
+<ul>
+  <li>Chế độ này nay nằm trong Agent SDK; <code>-p</code> vẫn là cách chạy không tương tác bằng CLI.</li>
+  <li>Khi dùng <code>--json-schema</code>, kết quả có cấu trúc nằm trong trường <code>structured_output</code> của JSON trả về, cùng metadata như session ID và usage.</li>
+  <li>Cờ <code>--bare</code> bỏ qua việc tự tìm hook, skill, plugin, MCP server, auto memory và CLAUDE.md, để cùng một kết quả trên mọi máy. Tài liệu khuyến nghị cho lời gọi theo script; nếu dùng thì phải đưa chỉ dẫn qua cờ, vì CLAUDE.md không được nạp.</li>
+  <li>Không có <code>--bare</code>, phiên <code>-p</code> vẫn chạy hook trong <code>.claude/settings.json</code> và kết nối MCP trong <code>.mcp.json</code> của project, không hiện hộp thoại tin cậy.</li>
+</ul>
+Đề thi chỉ cần biết <code>-p</code>, <code>--output-format</code>, <code>--json-schema</code> và vai trò CLAUDE.md.</div>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Muốn nhận từng token khi chạy headless thì dùng <code>--output-format stream-json</code> kèm <code>--verbose</code> và <code>--include-partial-messages</code>; mỗi dòng là một sự kiện JSON. Các cờ như <code>--headless</code>, <code>--stream</code> không tồn tại. Nguồn: <a href="https://code.claude.com/docs/en/headless" target="_blank" rel="noopener">code.claude.com/docs/en/headless</a>, <a href="https://code.claude.com/docs/en/cli-reference" target="_blank" rel="noopener">code.claude.com/docs/en/cli-reference</a>.</div>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Không có <code>--bare</code>, một lần chạy <code>claude -p</code> nạp mọi thứ như phiên tương tác: chạy hook trong <code>.claude/settings.json</code> của project và kết nối các server trong <code>.mcp.json</code>, <strong>kể cả ở thư mục bạn chưa từng tin cậy</strong>, vì <code>-p</code> không hiện hộp thoại workspace trust hay hỏi duyệt từng server. Với CI chạy trên repo hoặc pull request lạ, dùng <code>--bare</code> rồi truyền đúng thứ cần qua cờ (<code>--settings</code>, <code>--mcp-config</code>, <code>--agents</code>), hoặc chặn bằng <code>--strict-mcp-config</code>, <code>disabledMcpjsonServers</code>. Ở bare mode cần <code>ANTHROPIC_API_KEY</code> hoặc <code>apiKeyHelper</code> vì không đọc đăng nhập OAuth. Nguồn: <a href="https://code.claude.com/docs/en/headless" target="_blank" rel="noopener">code.claude.com/docs/en/headless</a>, <a href="https://code.claude.com/docs/en/mcp" target="_blank" rel="noopener">mcp</a>.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Pull request (PR)</dt><dd>Đề nghị gộp code mới vào nhánh chính, nơi đồng đội xem và nhận xét.</dd>
+  <dt>Diff</dt><dd>Phần khác biệt giữa code cũ và mới.</dd>
+  <dt>Fixture</dt><dd>Dữ liệu hoặc môi trường mẫu dựng sẵn cho test.</dd>
+  <dt>Inline comment</dt><dd>Bình luận gắn đúng vào một dòng code trong PR.</dd>
+</dl></div>
+
+<h2 id="settings">8. Settings và quyền</h2>
+<p class="xtags"><span class="tag xt1">CCDV-F D2</span> <span class="tag xt1">CCDV-F D3</span> <span class="tag xt4">CCAR-P D7</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Trong tòa nhà, có luật của chính quyền, nội quy của ban quản lý, và quy định riêng của từng căn hộ. Luật của chính quyền thắng tất cả. Còn thẻ ra vào thì có ba loại quyền: “cấm vào”, “phải hỏi bảo vệ”, “cho vào”. Bảo vệ kiểm tra theo thứ tự cấm trước, rồi hỏi, rồi mới cho, nên đã bị cấm thì không giấy cho phép nào cứu được.
+</div>
+<p><strong>Settings</strong> là file JSON cấu hình Claude Code. <strong>Permissions</strong> (quyền) là phần quyết định tool nào Claude được chạy mà không hỏi, phải hỏi, hoặc bị chặn. Có bốn nơi đặt settings.</p>
+<div class="tw"><table>
+  <thead><tr><th>File</th><th>Phạm vi</th><th>Commit?</th></tr></thead>
+  <tbody>
+    <tr><td><code>~/.claude/settings.json</code></td><td>User, mọi dự án</td><td>Không</td></tr>
+    <tr><td><code>.claude/settings.json</code></td><td>Project, cả đội</td><td class="yes">Có</td></tr>
+    <tr><td><code>.claude/settings.local.json</code></td><td>Project, riêng từng người</td><td>Không (tự gitignore)</td></tr>
+    <tr><td>Managed settings</td><td>Tổ chức, do admin đặt</td><td>Không ghi đè được</td></tr>
+  </tbody>
+</table></div>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 262" role="img" aria-label="Thứ tự ưu tiên của settings từ cao xuống thấp: managed, tham số dòng lệnh, local, project, user; deny ở bất kỳ cấp nào luôn thắng allow">
+    <text x="24" y="16" class="lane-lb">ƯU TIÊN CAO NHẤT Ở TRÊN</text>
+    <rect x="8" y="24" width="624" height="38" rx="6" class="b-warn"/><text x="24" y="48" class="t tb">1. Managed settings</text><text x="250" y="48" class="ts">do admin tổ chức đặt</text><text x="440" y="48" class="ts">không ghi đè được</text>
+    <rect x="8" y="68" width="624" height="38" rx="6" class="b-hot"/><text x="24" y="92" class="t tb">2. Tham số dòng lệnh</text><text x="250" y="92" class="ts">cờ khi chạy claude</text><text x="440" y="92" class="ts">chỉ cho phiên đó</text>
+    <rect x="8" y="112" width="624" height="38" rx="6" class="b-step"/><text x="24" y="136" class="t tb">3. Local</text><text x="250" y="136" class="tm">.claude/settings.local.json</text><text x="440" y="136" class="ts">riêng bạn, tự gitignore</text>
+    <rect x="8" y="156" width="624" height="38" rx="6" class="b-done"/><text x="24" y="180" class="t tb">4. Project</text><text x="250" y="180" class="tm">.claude/settings.json</text><text x="440" y="180" class="ts">cả đội, commit vào git</text>
+    <rect x="8" y="200" width="624" height="38" rx="6" class="b-sys"/><text x="24" y="224" class="t tb">5. User</text><text x="250" y="224" class="tm">~/.claude/settings.json</text><text x="440" y="224" class="ts">mọi dự án của bạn</text>
+    <text x="320" y="256" class="tw-warn" text-anchor="middle">Riêng danh sách permissions thì gộp lại, và deny ở cấp nào cũng thắng</text>
+  </svg></div>
+  <figcaption>Hình 9. Thứ tự ưu tiên của settings, từ cao xuống thấp.</figcaption>
+</figure>
+<ul>
+  <li>Ưu tiên từ cao xuống thấp: managed → tham số dòng lệnh → local → project → user.</li>
+  <li><code>permissions</code> có <code>allow</code>, <code>ask</code>, <code>deny</code>, đánh giá theo thứ tự <strong>deny → ask → allow</strong>; luật khớp đầu tiên theo thứ tự đó quyết định, độ cụ thể của luật không đổi được thứ tự. <strong>Deny luôn thắng</strong>: deny ở bất kỳ cấp nào chặn allow ở cấp khác; allow không “khoét” ngoại lệ trong deny. Tương tự, một luật <code>ask</code> vẫn hỏi dù có allow cụ thể hơn.</li>
+  <li>Danh sách như <code>permissions.allow</code> <strong>gộp</strong> giữa các cấp, không thay thế nhau. Khoá đơn (như <code>model</code>) thì cấp cao hơn thắng.</li>
+  <li>Allow trong <code>.claude/settings.json</code> của project chỉ có hiệu lực sau khi từng người <strong>tin cậy thư mục</strong> (workspace trust); deny và ask áp dụng ngay.</li>
+  <li>Quyết định của hook PreToolUse không vượt qua được luật deny, ask.</li>
+</ul>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 224" role="img" aria-label="Thứ tự đánh giá quyền: kiểm tra luật deny trước, rồi ask, rồi allow; luật nào khớp trước thì quyết định; không luật nào khớp thì theo chế độ quyền">
+    <defs>
+      <marker id="m0511" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker>
+      <marker id="m0512" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-warn"/></marker>
+      <marker id="m0513" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-good"/></marker>
+    </defs>
+    <g><rect x="6" y="30" width="88" height="50" rx="6" class="b-sys"/><text x="50" y="52" class="t tb" text-anchor="middle">Lời gọi</text><text x="50" y="68" class="t tb" text-anchor="middle">tool</text></g>
+    <g><path d="M94,55 H122" class="ln-acc flow" marker-end="url(#m0511)"/>
+      <rect x="124" y="30" width="112" height="50" rx="6" class="b-warn"/><text x="180" y="52" class="t tb" text-anchor="middle">1. deny</text><text x="180" y="68" class="ts" text-anchor="middle">có luật khớp?</text>
+      <path d="M180,80 V132" class="ln-warn-solid flow" marker-end="url(#m0512)"/><text x="186" y="110" class="ts">khớp</text>
+      <rect x="124" y="134" width="112" height="46" rx="6" class="b-warn"/><text x="180" y="154" class="t tb" text-anchor="middle">CHẶN</text><text x="180" y="169" class="ts" text-anchor="middle">dừng ở đây</text></g>
+    <g><path d="M236,55 H274" class="ln-acc flow" marker-end="url(#m0511)"/><text x="255" y="48" class="ts" text-anchor="middle">không</text>
+      <rect x="276" y="30" width="112" height="50" rx="6" class="b-hot"/><text x="332" y="52" class="t tb" text-anchor="middle">2. ask</text><text x="332" y="68" class="ts" text-anchor="middle">có luật khớp?</text>
+      <path d="M332,80 V132" class="ln-acc flow" marker-end="url(#m0511)"/><text x="338" y="110" class="ts">khớp</text>
+      <rect x="276" y="134" width="112" height="46" rx="6" class="b-hot"/><text x="332" y="154" class="t tb" text-anchor="middle">HỎI NGƯỜI</text><text x="332" y="169" class="ts" text-anchor="middle">dù có allow</text></g>
+    <g><path d="M388,55 H426" class="ln-acc flow" marker-end="url(#m0511)"/><text x="407" y="48" class="ts" text-anchor="middle">không</text>
+      <rect x="428" y="30" width="112" height="50" rx="6" class="b-done"/><text x="484" y="52" class="t tb" text-anchor="middle">3. allow</text><text x="484" y="68" class="ts" text-anchor="middle">có luật khớp?</text>
+      <path d="M484,80 V132" class="ln-good flow" marker-end="url(#m0513)"/><text x="490" y="110" class="ts">khớp</text>
+      <rect x="428" y="134" width="112" height="46" rx="6" class="b-done"/><text x="484" y="154" class="t tb" text-anchor="middle">CHẠY</text><text x="484" y="169" class="ts" text-anchor="middle">không hỏi</text></g>
+    <g><path d="M540,55 H558" class="ln-acc flow" marker-end="url(#m0511)"/>
+      <rect x="560" y="30" width="74" height="50" rx="6" class="b-opt"/><text x="597" y="52" class="ts" text-anchor="middle">Không khớp:</text><text x="597" y="66" class="ts" text-anchor="middle">theo chế độ</text></g>
+    <text x="320" y="208" class="ts" text-anchor="middle">deny ở bất kỳ cấp nào cũng chặn, và allow không khoét được ngoại lệ</text>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Claude xin chạy một tool, ví dụ <code>Bash(rm -rf …)</code>.</li>
+    <li>Kiểm tra <code>deny</code> trước. Khớp thì chặn ngay, dù có luật allow ở cấp khác.</li>
+    <li>Không khớp deny thì xét <code>ask</code>. Khớp thì hỏi người dùng, dù có allow cụ thể hơn.</li>
+    <li>Không khớp ask thì xét <code>allow</code>. Khớp thì chạy không hỏi.</li>
+    <li>Không luật nào khớp thì quyết định theo chế độ quyền đang dùng (xem bảng bên dưới).</li>
+  </ol>
+  <figcaption>Hình 10. Thứ tự đánh giá quyền: deny, rồi ask, rồi allow.</figcaption>
+</figure>
+<div class="tw"><table>
+  <thead><tr><th>Chế độ quyền</th><th>Hành vi</th></tr></thead>
+  <tbody>
+    <tr><td><code>default</code> (Manual)</td><td>Hỏi khi dùng mỗi tool lần đầu</td></tr>
+    <tr><td><code>acceptEdits</code></td><td>Tự chấp nhận sửa file và lệnh file thông dụng trong thư mục làm việc</td></tr>
+    <tr><td><code>plan</code></td><td>Chỉ đọc và chạy lệnh chỉ đọc để khám phá, không sửa mã nguồn</td></tr>
+    <tr><td><code>auto</code></td><td>Không hỏi thường lệ; một classifier kiểm tra hành động trước khi chạy</td></tr>
+    <tr><td><code>dontAsk</code></td><td>Tự từ chối mọi lời gọi lẽ ra phải hỏi; chỉ chạy những gì đã được allow sẵn (hợp với CI)</td></tr>
+    <tr><td><code>bypassPermissions</code></td><td>Bỏ qua hỏi quyền (trừ vài hành động không chế độ nào tự duyệt)</td></tr>
+  </tbody>
+</table></div>
+<p class="src"><code>defaultMode</code> là <code>auto</code> hoặc <code>bypassPermissions</code> không có hiệu lực khi đặt trong settings của project hay local; phải đặt ở user, managed, hoặc cờ <code>--permission-mode</code>. Nguồn: <a href="https://code.claude.com/docs/en/settings" target="_blank" rel="noopener">settings</a>, <a href="https://code.claude.com/docs/en/permissions" target="_blank" rel="noopener">permissions</a>.</p>
+<pre><code>// .claude/settings.json
+{ "permissions": {
+    "allow": ["Bash(npm test:*)", "Read"],
+    "deny":  ["Bash(rm -rf:*)", "Bash(terraform destroy:*)", "Read(./.env)"] } }</code></pre>
+<p>Trong ví dụ trên, cả đội chạy được <code>npm test</code> và đọc file mà không bị hỏi. Lệnh xoá hàng loạt, phá hạ tầng và đọc file <code>.env</code> (chứa bí mật) bị chặn hẳn, dù cá nhân nào đó có allow ở file local của họ.</p>
+<h3>8.1 Cú pháp một luật quyền</h3>
+<p>Mỗi phần tử trong <code>allow</code>, <code>ask</code>, <code>deny</code> là một <strong>luật</strong> nêu tên tool và, trong ngoặc, phạm vi của nó. File settings là JSON chặt: một dòng chú thích <code>//</code> hay dấu phẩy thừa làm Claude Code báo lỗi file ở lần khởi động sau. Dòng <code>// .claude/settings.json</code> trong ví dụ phía trên chỉ là nhãn tên file cho người đọc.</p>
+<div class="tw"><table>
+  <thead><tr><th>Luật</th><th>Khớp với</th></tr></thead>
+  <tbody>
+    <tr><td><code>Bash(npm run lint)</code></td><td>Đúng lệnh <code>npm run lint</code></td></tr>
+    <tr><td><code>Bash(npm run test *)</code></td><td>Lệnh bắt đầu bằng <code>npm run test</code>, kèm tham số bất kỳ</td></tr>
+    <tr><td><code>Read(./.env)</code></td><td>Việc đọc file <code>.env</code> ở thư mục làm việc</td></tr>
+    <tr><td><code>Read(./.env.*)</code></td><td>Các file như <code>.env.local</code>, <code>.env.production</code></td></tr>
+  </tbody>
+</table></div>
+<p>Ví dụ để cho phép lint, test mà không hỏi và chặn đọc file chứa bí mật: <code>allow</code> hai luật <code>Bash</code> ở trên, <code>deny</code> hai luật <code>Read</code>. Vì deny luôn thắng, không luật allow nào ở cấp khác mở lại được việc đọc <code>.env</code>.</p>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div><ul>
+    <li>Deny ở project, rồi allow cụ thể hơn ở local và tin rằng allow sẽ “mở” ngoại lệ</li>
+    <li>Cho rằng luật cụ thể hơn thì thắng</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đúng</div><ul>
+    <li>Deny ở bất kỳ cấp nào vẫn chặn. Muốn mở lại thì gỡ luật deny</li>
+    <li>Thứ tự cố định deny → ask → allow, độ cụ thể không đổi thứ tự</li>
+  </ul></div>
+</div>
+<div class="insight"><strong>Cốt lõi.</strong> Danh sách quyền gộp giữa các cấp, khoá đơn thì cấp cao hơn thắng. Trong quyền, <strong>deny luôn thắng</strong>.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Hook PreToolUse</dt><dd>Đoạn lệnh tự chạy ngay trước khi một tool được dùng, có thể kiểm tra hoặc từ chối.</dd>
+  <dt>Workspace trust</dt><dd>Bước bạn xác nhận “tôi tin thư mục này” trước khi cấu hình trong đó có hiệu lực.</dd>
+  <dt>Classifier</dt><dd>Một bộ phân loại tự động đánh giá hành động có an toàn không (dùng ở chế độ <code>auto</code>).</dd>
+  <dt>Gitignore</dt><dd>File liệt kê thứ không đưa vào git, như <code>settings.local.json</code>.</dd>
+</dl></div>
+
+<h2 id="permission-modes">9. Chế độ quyền và auto mode</h2>
+<p class="xtags"><span class="tag xt1">CCDV-F D3</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Nhân viên mới làm gì cũng hỏi sếp. Nhân viên lâu năm được tự làm việc thường ngày, chỉ hỏi khi có việc bất thường. Có công ty còn thuê kiểm soát viên đứng cạnh: nhân viên tự làm, nhưng việc nào vượt quá yêu cầu thì kiểm soát viên chặn lại.
+</div>
+<p><a href="#settings">Bài 13 §8</a> đã có luật <code>allow</code>, <code>ask</code>, <code>deny</code>. Chế độ quyền (permission mode) đặt mức nền, còn luật thì chồng lên trên mức nền đó.</p>
+<div class="tw"><table>
+  <thead><tr><th>Chế độ</th><th>Chạy không cần hỏi</th><th>Hợp với</th></tr></thead>
+  <tbody>
+    <tr><td class="nw"><code>default</code> (Manual)</td><td>Chỉ đọc</td><td>Việc nhạy cảm, muốn duyệt từng bước</td></tr>
+    <tr><td class="nw"><code>acceptEdits</code></td><td>Đọc, sửa file, lệnh file thông dụng (<code>mkdir</code>, <code>mv</code>, <code>cp</code>)</td><td>Đang lặp trên code bạn tự review</td></tr>
+    <tr><td class="nw"><code>plan</code></td><td>Đọc (và lệnh được classifier duyệt nếu có auto mode)</td><td>Khám phá codebase trước khi sửa</td></tr>
+    <tr><td class="nw"><code>auto</code></td><td>Mọi thứ, có classifier kiểm tra nền</td><td>Việc dài, giảm số lần phải bấm duyệt</td></tr>
+    <tr><td class="nw"><code>dontAsk</code></td><td>Chỉ những gì đã allow sẵn; việc lẽ ra phải hỏi thì bị từ chối</td><td>CI, script đã khoá chặt</td></tr>
+    <tr><td class="nw"><code>bypassPermissions</code></td><td>Mọi thứ</td><td>Chỉ trong container, VM cách ly</td></tr>
+  </tbody>
+</table></div>
+<p><strong>Auto mode</strong> hoạt động như sau:</p>
+<ul>
+  <li>Một <strong>model classifier riêng</strong> xem từng hành động trước khi chạy. Nó chặn việc vượt quá yêu cầu của bạn, việc nhắm vào hạ tầng lạ, và việc có vẻ bị nội dung độc hại Claude vừa đọc điều khiển (prompt injection).</li>
+  <li>Luật <code>ask</code> vẫn bắt hỏi; luật <code>deny</code> chặn ở mọi chế độ, kể cả <code>bypassPermissions</code>.</li>
+  <li>Hành động bị chặn hiện trong <code>/permissions</code> ở mục Recently blocked. Bạn duyệt ở đó thì Claude được thử lại.</li>
+  <li>Bị chặn 3 lần liên tiếp hoặc 20 lần tổng cộng thì auto mode tạm dừng và Claude Code quay lại hỏi bạn.</li>
+  <li>Admin Team, Enterprise tắt được cho cả tổ chức bằng <code>permissions.disableAutoMode</code> trong managed settings.</li>
+</ul>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Từ Claude Code v2.1.283, auto mode là chế độ khởi đầu mặc định cho phiên tương tác trong terminal và VS Code, trên mọi gói. Chạy <code>claude -p</code> hay Agent SDK thì vẫn nên khai báo quyền rõ ràng. Nguồn: code.claude.com/docs/en/permission-modes.</div>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div>Bật auto mode cho việc xoá dữ liệu production vì "đã có classifier lo".</div>
+  <div class="box right"><div class="hd">Đúng</div>Auto mode cho việc thường ngày mà bạn tin hướng đi. Thao tác nhạy cảm đặt luật <code>ask</code> hoặc <code>deny</code>, hoặc làm ở Manual.</div>
+</div>
+<div class="alert"><strong>Bẫy.</strong> Auto mode giảm số lần hỏi chứ không bảo đảm an toàn. Pipeline CI không có người bấm duyệt thì hợp với <code>dontAsk</code> cùng danh sách allow tối thiểu hơn là auto mode hay <code>bypassPermissions</code>.</div>
+<div class="insight"><strong>Cốt lõi.</strong> Chế độ là mức nền, luật là ngoại lệ chồng lên. Deny thắng mọi chế độ. Auto mode thay việc bấm duyệt bằng một classifier, không thay việc review thao tác nguy hiểm.</div>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Agent SDK xét một lời gọi tool qua sáu bước theo thứ tự: hook, luật deny, luật ask, permission mode, luật allow, rồi callback <code>canUseTool</code>. Hook trả <code>allow</code> không bỏ qua được luật deny và ask. Tool đã được duyệt ở bước trước (bởi <code>acceptEdits</code>, <code>bypassPermissions</code> hay luật allow) <strong>không bao giờ tới</strong> <code>canUseTool</code>, nên kiểm tra đặt trong callback bị bỏ qua lặng lẽ với tool đó; cần kiểm mọi lời gọi thì dùng hook <code>PreToolUse</code>. Muốn gỡ hẳn một tool thì dùng deny theo tên trần (<code>disallowed_tools=["Bash"]</code> xoá định nghĩa tool khỏi request); deny có phạm vi như <code>Bash(rm *)</code> thì giữ tool và chặn lệnh khớp ở mọi chế độ. Nguồn: <a href="https://code.claude.com/docs/en/agent-sdk/permissions" target="_blank" rel="noopener">code.claude.com/docs/en/agent-sdk/permissions</a>.</div>
+
+<h2 id="plugin">10. Plugin</h2>
+<p class="xtags"><span class="tag xt1">CCDV-F D2</span> <span class="tag xt1">CCDV-F D8</span> <span class="tag xt4">CCAR-P D7</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Một bộ dụng cụ đóng hộp: thay vì mỗi thợ tự mua từng món, công ty đóng sẵn một hộp đầy đủ rồi phát cho mọi chi nhánh. Cập nhật hộp thì mọi nơi nhận bản mới. Plugin là cái hộp đó cho Claude Code.
+</div>
+<p>Plugin gói command, skill, agent, hook, MCP server để cài một lần cho nhiều dự án, phân phối qua marketplace. Hợp khi một đội nền tảng muốn nhiều repo dùng chung một bộ công cụ.</p>
+<p>Nói chính xác hơn, một <strong>plugin</strong> là một thư mục chứa skill, agent, hook, MCP server hoặc thành phần khác, và Claude Code cài rồi nạp cả thư mục như một khối. Plugin thường có <strong>manifest</strong>: file JSON ở <code>.claude-plugin/plugin.json</code>, đặt tên cho plugin (dạng kebab-case) và có thể thêm <code>version</code>, mô tả. Manifest là tuỳ chọn. Thiếu nó thì Claude Code nạp các thành phần theo bố cục chuẩn, và lấy tên từ marketplace hoặc từ tên thư mục.</p>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 236" role="img" aria-label="Một plugin gói command, skill, agent, hook và MCP server, được phân phối qua marketplace tới nhiều repo">
+    <defs><marker id="m0514" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker></defs>
+    <rect x="4" y="8" width="300" height="196" rx="8" class="lane"/>
+    <text x="16" y="26" class="lane-lb">PLUGIN · đóng gói một lần</text>
+    <rect x="16" y="40" width="130" height="38" rx="5" class="b-step"/><text x="81" y="64" class="tm" text-anchor="middle">command</text>
+    <rect x="162" y="40" width="130" height="38" rx="5" class="b-step"/><text x="227" y="64" class="tm" text-anchor="middle">skill</text>
+    <rect x="16" y="90" width="130" height="38" rx="5" class="b-step"/><text x="81" y="114" class="tm" text-anchor="middle">agent</text>
+    <rect x="162" y="90" width="130" height="38" rx="5" class="b-step"/><text x="227" y="114" class="tm" text-anchor="middle">hook</text>
+    <rect x="16" y="140" width="130" height="38" rx="5" class="b-step"/><text x="81" y="164" class="tm" text-anchor="middle">MCP server</text>
+    <path d="M304,106 H344" class="ln-acc" marker-end="url(#m0514)"/>
+    <rect x="346" y="70" width="104" height="72" rx="8" class="b-hot"/><text x="398" y="100" class="t tb" text-anchor="middle">Marketplace</text><text x="398" y="118" class="ts" text-anchor="middle">nơi phân phối</text>
+    <path d="M450,106 L492,42 M450,106 H492 M450,106 L492,170" class="ln-acc" marker-end="url(#m0514)"/>
+    <rect x="494" y="24" width="138" height="36" rx="5" class="b-done"/><text x="563" y="47" class="t" text-anchor="middle">Repo web</text>
+    <rect x="494" y="88" width="138" height="36" rx="5" class="b-done"/><text x="563" y="111" class="t" text-anchor="middle">Repo API</text>
+    <rect x="494" y="152" width="138" height="36" rx="5" class="b-done"/><text x="563" y="175" class="t" text-anchor="middle">Repo mobile</text>
+    <text x="320" y="226" class="ts" text-anchor="middle">Cài một lần, nhiều repo dùng chung cùng một bộ công cụ</text>
+  </svg></div>
+  <figcaption>Hình 11. Plugin gom nhiều thành phần và phân phối qua marketplace.</figcaption>
+</figure>
+
+<h3>10.1 Plugin chứa gì và nằm ở đâu</h3>
+<p>Mỗi loại thành phần có một chỗ cố định trong thư mục plugin. Hình 12 cho thấy một plugin tên <code>deploy-tools</code> và thứ mà mỗi file trở thành trong phiên làm việc.</p>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 230" role="img" aria-label="Thư mục plugin deploy-tools gồm plugin.json, skills/deploy/SKILL.md, agents/reviewer.md, hooks/hooks.json và .mcp.json; mỗi file trở thành tên plugin, lệnh /deploy-tools:deploy, subagent deploy-tools:reviewer, hook theo sự kiện và MCP server">
+    <defs><marker id="m13k1" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker></defs>
+    <rect x="4" y="6" width="300" height="218" rx="8" class="lane"/>
+    <text x="16" y="26" class="lane-lb">THƯ MỤC PLUGIN: deploy-tools/</text>
+    <rect x="16" y="38" width="276" height="32" rx="5" class="b-code"/><text x="26" y="58" class="tm">.claude-plugin/plugin.json</text>
+    <rect x="16" y="76" width="276" height="32" rx="5" class="b-code"/><text x="26" y="96" class="tm">skills/deploy/SKILL.md</text>
+    <rect x="16" y="114" width="276" height="32" rx="5" class="b-code"/><text x="26" y="134" class="tm">agents/reviewer.md</text>
+    <rect x="16" y="152" width="276" height="32" rx="5" class="b-code"/><text x="26" y="172" class="tm">hooks/hooks.json</text>
+    <rect x="16" y="190" width="276" height="28" rx="5" class="b-code"/><text x="26" y="209" class="tm">.mcp.json</text>
+    <rect x="336" y="6" width="300" height="218" rx="8" class="lane"/>
+    <text x="348" y="26" class="lane-lb">TRONG PHIÊN LÀM VIỆC</text>
+    <path d="M292,54 H346" class="ln-acc" marker-end="url(#m13k1)"/><rect x="348" y="38" width="276" height="32" rx="5" class="b-done"/><text x="358" y="58" class="t">Tên plugin: deploy-tools</text>
+    <path d="M292,92 H346" class="ln-acc" marker-end="url(#m13k1)"/><rect x="348" y="76" width="276" height="32" rx="5" class="b-done"/><text x="358" y="96" class="t">Chạy bằng /deploy-tools:deploy</text>
+    <path d="M292,130 H346" class="ln-acc" marker-end="url(#m13k1)"/><rect x="348" y="114" width="276" height="32" rx="5" class="b-done"/><text x="358" y="134" class="t">Subagent deploy-tools:reviewer</text>
+    <path d="M292,168 H346" class="ln-acc" marker-end="url(#m13k1)"/><rect x="348" y="152" width="276" height="32" rx="5" class="b-done"/><text x="358" y="172" class="t">Hook chạy ở sự kiện vòng đời</text>
+    <path d="M292,204 H346" class="ln-acc" marker-end="url(#m13k1)"/><rect x="348" y="190" width="276" height="28" rx="5" class="b-done"/><text x="358" y="209" class="t">MCP server nối khi plugin bật</text>
+  </svg></div>
+  <figcaption>Hình 12. Mỗi file trong thư mục plugin trở thành một thành phần của phiên. Tên plugin đứng trước tên skill và agent làm namespace.</figcaption>
+</figure>
+<div class="tw"><table>
+  <thead><tr><th>Thành phần</th><th>Vị trí trong plugin</th><th>Trở thành</th></tr></thead>
+  <tbody>
+    <tr><td>Manifest</td><td><code>.claude-plugin/plugin.json</code></td><td>Tên plugin, <code>version</code>, mô tả</td></tr>
+    <tr><td>Skill</td><td><code>skills/&lt;tên&gt;/SKILL.md</code></td><td>Workflow Claude nạp khi cần, hoặc bạn gọi <code>/tên-plugin:tên-skill</code></td></tr>
+    <tr><td>Agent</td><td><code>agents/*.md</code></td><td>Subagent Claude giao việc cho, tên dạng <code>tên-plugin:tên-agent</code></td></tr>
+    <tr><td>Hook</td><td><code>hooks/hooks.json</code></td><td>Lệnh chạy ở các điểm trong vòng đời, ví dụ sau mỗi lần sửa file</td></tr>
+    <tr><td>MCP server</td><td><code>.mcp.json</code></td><td>Server công cụ Claude Code nối vào khi plugin được bật</td></tr>
+  </tbody>
+</table></div>
+<p><strong>Namespace</strong> (không gian tên) là tiền tố tên plugin đặt trước mọi thành phần của nó. Nhờ vậy skill <code>deploy</code> của plugin <code>deploy-tools</code> không đụng skill <code>deploy</code> bạn tự viết: một cái gọi là <code>/deploy-tools:deploy</code>, cái kia là <code>/deploy</code>. Khi đang phát triển plugin, bạn nạp thẳng từ thư mục bằng cờ <code>--plugin-dir</code> mà không cần marketplace.</p>
+
+<h3>10.2 Marketplace và cách cài</h3>
+<p>Một <strong>marketplace</strong> là một thư mục hoặc repo có file <code>.claude-plugin/marketplace.json</code> liệt kê các plugin và nơi lấy chúng. Nó là một cuốn danh mục, không phải cửa hàng lưu trữ. Bạn thêm marketplace một lần, rồi cài plugin theo tên dạng <code>tên-plugin@tên-marketplace</code>.</p>
+<pre><code>claude plugin marketplace add ./my-marketplace
+claude plugin install my-first-plugin@my-marketplace</code></pre>
+<p>Trong phiên tương tác, gõ <code>/plugin</code> để mở bảng quản lý, có tab Discover liệt kê plugin của các marketplace bạn đã thêm. Claude Code tự thêm marketplace chính thức của Anthropic (<code>claude-plugins-official</code>) vào lần đầu bạn mở phiên tương tác trong terminal. Lệnh <code>claude plugin validate</code> kiểm tra manifest và marketplace trước khi chia sẻ.</p>
+<p>Khi cài, bạn chọn <strong>scope</strong> (phạm vi), quyết định plugin bật cho ai:</p>
+<div class="tw"><table>
+  <thead><tr><th>Scope</th><th>Bật cho ai</th><th>Ghi ở đâu</th></tr></thead>
+  <tbody>
+    <tr><td>User</td><td>Riêng bạn, mọi dự án trên máy này</td><td>Settings cấp user</td></tr>
+    <tr><td>Project</td><td>Mọi người làm trong repo này</td><td><code>.claude/settings.json</code> được commit; mỗi người vẫn cài plugin trên máy mình</td></tr>
+    <tr><td>Local</td><td>Riêng bạn, chỉ trong repo này</td><td>Settings local, không commit</td></tr>
+  </tbody>
+</table></div>
+
+<h3>10.3 Bật plugin tốn gì và cần cân nhắc gì</h3>
+<p>Plugin đã bật là một phần của mọi phiên, không chỉ phiên bạn dùng đến nó. Có ba hệ quả.</p>
+<ul>
+  <li><strong>Context:</strong> với mỗi skill, agent, command mà Claude có thể tự gọi, tên và mô tả luôn nằm trong context ở mọi lượt. Cài nhiều plugin thì context bớt chỗ và tốn usage.</li>
+  <li><strong>Tiến trình:</strong> MCP server của plugin chạy cạnh mỗi phiên bật nó, và hook của nó chạy ở các sự kiện.</li>
+  <li><strong>Quyền:</strong> plugin chạy với quyền của chính bạn. Hãy đọc kỹ plugin của bên thứ ba trước khi cài, vì nó chạy được code với quyền user của bạn.</li>
+</ul>
+<p>Muốn ngưng một plugin mà chưa gỡ, tắt bằng <code>/plugin</code> hoặc <code>claude plugin disable</code>.</p>
+
+<h3>10.4 Chọn plugin hay cấu hình đứng riêng</h3><div class="tw"><table>
+  <thead><tr><th>Nhu cầu</th><th>Chọn</th></tr></thead>
+  <tbody>
+    <tr><td>Chuẩn chung luôn áp dụng cho một repo</td><td>CLAUDE.md của project</td></tr>
+    <tr><td>Quy trình theo việc, dùng trong một repo</td><td>Skill hoặc command trong <code>.claude/</code></td></tr>
+    <tr><td>Cùng một bộ command, skill, hook, MCP cho nhiều repo</td><td>Plugin qua marketplace</td></tr>
+  </tbody>
+</table></div>
+<p>Skill, subagent, hook, MCP server đều chạy được riêng, không cần plugin: một skill để trong <code>~/.claude/skills/</code> đã dùng được ở mọi dự án trên máy bạn. Plugin có ích khi bạn muốn <strong>đóng gói nhiều thành phần thành một đơn vị</strong>, để đồng đội cài bằng một lệnh, nhận cập nhật từ marketplace, và dùng chung ở nhiều repo.</p>
+
+<h3>10.5 Phiên bản</h3>
+<p>Trường <code>version</code> trong <code>plugin.json</code> là chuỗi phiên bản. Đặt nó nghĩa là ghim plugin ở bản đó cho tới khi bạn đổi. Phụ thuộc giữa các plugin và dải semver được giải thích ở <a href="/notes/lessons/14-app-lifecycle.html#versioning">bài 14, mục 2</a>.</p>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div><ul>
+    <li>Đặt <code>CLAUDE.md</code> ở gốc plugin để chuẩn của đội tự nạp vào mọi repo</li>
+    <li>Gọi extension VS Code hay JetBrains là “plugin Claude Code”</li>
+    <li>Cài thật nhiều plugin “cho chắc” rồi để bật hết</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đúng</div><ul>
+    <li><code>CLAUDE.md</code> ở gốc plugin không được nạp làm context; chỉ dẫn muốn nạp thì đặt vào một skill của plugin</li>
+    <li>Extension của IDE và plugin của Claude Code là hai thứ khác nhau</li>
+    <li>Chỉ bật plugin cần dùng, vì mỗi plugin bật tốn context và tiến trình</li>
+  </ul></div>
+</div>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Chi tiết ở mục này lấy từ tài liệu hiện hành, không phải exam guide: <a href="https://code.claude.com/docs/en/plugins" target="_blank" rel="noopener">Plugins overview</a> và <a href="https://code.claude.com/docs/en/plugins-reference" target="_blank" rel="noopener">Plugins reference</a>. Đề thi chỉ cần biết plugin gói nhiều thành phần (command, skill, agent, hook, MCP) và phân phối qua marketplace để dùng chung nhiều repo.</div>
+<div class="insight"><strong>Cốt lõi.</strong> Một repo thì để cấu hình trong <code>.claude/</code>. Nhiều repo cần cùng một bộ công cụ thì gói thành plugin để cài một lần và cập nhật tại một nơi.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Marketplace</dt><dd>Danh mục nơi plugin được đăng và cài.</dd>
+  <dt>Manifest</dt><dd>File <code>plugin.json</code> đặt tên và mô tả plugin.</dd>
+  <dt>Namespace</dt><dd>Tiền tố tên plugin đặt trước skill và agent của nó, như <code>deploy-tools:reviewer</code>.</dd>
+  <dt>Scope</dt><dd>Phạm vi cài: user, project hoặc local.</dd>
+  <dt>MCP server</dt><dd>Chương trình cho Claude kết nối công cụ hoặc dữ liệu bên ngoài (xem bài 06).</dd>
+  <dt>Hook</dt><dd>Lệnh tự chạy ở một thời điểm cố định trong vòng làm việc của Claude Code.</dd>
+</dl></div>
+
+<h2 id="claude-code-in-action">11. Ôn theo khoá Claude Code in Action</h2>
+<p class="xtags"><span class="tag xt3">CCAR-F D3</span> <span class="tag xt1">CCDV-F D2</span> <span class="tag xt1">CCDV-F D3</span></p>
+<p>Mục này tóm tắt khoá Claude Code in Action của Academy (9 bài). Phần lớn ý đã có ở các mục trước: plan mode ở mục 4, thứ bậc CLAUDE.md ở mục 1, hook và quyền ở mục 8 và 9, CI ở mục 7. Ở đây giữ những gì khoá học nói thêm hoặc nói khác: <code>/compact</code>, <code>/rewind</code>, quy tắc two-strikes, mã thoát của hook, chạy headless và GitHub Actions.</p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Một thợ phụ mới vào xưởng. Bạn bảo anh ta: “Vẽ phương án trước, chưa được đụng dụng cụ” (plan mode). Bạn dán nội quy lên tường (CLAUDE.md). Có một bảo vệ ở cửa kho kiểm tra phiếu trước khi cho lấy đồ (hooks). Và bạn quy định mức độ anh được tự quyết (permission modes). Nếu anh làm sai, bạn bấm “quay lại” (rewind).
+</div>
+<h3>11.1 Plan mode, compact, rewind</h3>
+<p><strong>Plan mode:</strong> Nhấn <kbd>Shift+Tab</kbd> (hoặc gõ <code>/plan</code>) để bật — Claude đọc/phân tích nhưng không viết code. Dùng để review kế hoạch trước khi thực thi. Nhấn lại để tắt.</p>
+<p><strong>Thu gọn hội thoại:</strong> dùng <code>/compact</code> khi context đầy; Claude tóm tắt lịch sử hội thoại để giải phóng context window. Có thể kèm lời dặn trọng tâm cho bản tóm tắt: <code>/compact Focus on the database schema changes.</code></p>
+<p><strong>Rewind:</strong> Nếu Claude đi sai hướng, nhấn <kbd>Escape</kbd> để dừng, sau đó dùng <code>/rewind</code> để quay về checkpoint trước. Checkpoint tạo tự động trước mỗi bước quan trọng.</p>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 238" role="img" aria-label="Plan mode: bật bằng Shift+Tab, Claude chỉ đọc và phân tích, đưa kế hoạch, người duyệt rồi tắt plan mode để Claude sửa code; bên dưới là Escape và rewind, compact">
+    <defs><marker id="m1304" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker></defs>
+    <g><rect x="10" y="18" width="140" height="78" rx="6" class="b-sys"/><text x="80" y="40" class="t tb" text-anchor="middle">Bật plan mode</text><text x="80" y="58" class="ts" text-anchor="middle">Shift+Tab</text><text x="80" y="72" class="ts" text-anchor="middle">hoặc /plan</text></g>
+    <g><path class="ln-acc flow" d="M150,57 H168" marker-end="url(#m1304)"/><rect x="170" y="18" width="140" height="78" rx="6" class="b-step"/><text x="240" y="40" class="t tb" text-anchor="middle">Chỉ đọc, phân tích</text><text x="240" y="58" class="ts" text-anchor="middle">Read, Grep: được</text><text x="240" y="72" class="ts" text-anchor="middle">Edit, Write: không</text></g>
+    <g><path class="ln-acc flow" d="M310,57 H328" marker-end="url(#m1304)"/><rect x="330" y="18" width="140" height="78" rx="6" class="b-hot"/><text x="400" y="40" class="t tb" text-anchor="middle">Đưa ra kế hoạch</text><text x="400" y="58" class="ts" text-anchor="middle">bạn đọc và chỉnh</text><text x="400" y="72" class="ts" text-anchor="middle">trước khi làm</text></g>
+    <g><path class="ln-acc flow" d="M470,57 H488" marker-end="url(#m1304)"/><rect x="490" y="18" width="140" height="78" rx="6" class="b-done"/><text x="560" y="40" class="t tb" text-anchor="middle">Duyệt, thực thi</text><text x="560" y="58" class="ts" text-anchor="middle">Shift+Tab tắt plan</text><text x="560" y="72" class="ts" text-anchor="middle">Claude mới sửa code</text></g>
+    <g><rect x="10" y="130" width="300" height="94" rx="6" class="b-warn"/><text x="160" y="152" class="t tb" text-anchor="middle">Đi sai hướng: Escape rồi /rewind</text><text x="160" y="172" class="ts" text-anchor="middle">Escape dừng Claude lại</text><text x="160" y="186" class="ts" text-anchor="middle">/rewind quay về checkpoint trước</text><text x="160" y="200" class="ts" text-anchor="middle">Checkpoint tạo tự động trước bước quan trọng</text></g>
+    <g><rect x="330" y="130" width="300" height="94" rx="6" class="b-opt"/><text x="480" y="152" class="t tb" text-anchor="middle">Context đầy: /compact</text><text x="480" y="172" class="ts" text-anchor="middle">Tóm tắt lịch sử, giải phóng context</text><text x="480" y="186" class="ts" text-anchor="middle">Có thể dặn trọng tâm:</text><text x="480" y="200" class="ts" text-anchor="middle">/compact Focus on the database schema</text></g>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Nhấn <kbd>Shift+Tab</kbd> (hoặc <code>/plan</code>) để vào plan mode.</li>
+    <li>Claude chỉ đọc và phân tích, không sửa file.</li>
+    <li>Claude đưa kế hoạch để bạn review, sửa hướng đi khi còn rẻ.</li>
+    <li>Bạn duyệt, tắt plan mode, Claude bắt đầu thực thi.</li>
+    <li>Nếu đi sai: <kbd>Escape</kbd> để dừng, <code>/rewind</code> để quay về checkpoint.</li>
+    <li>Nếu context đầy: <code>/compact</code> tóm tắt, có thể kèm câu dặn trọng tâm.</li>
+  </ol>
+  <figcaption>Hình 13. Plan mode, rewind và compact trong một phiên làm việc.</figcaption>
+</figure>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Tài liệu hiện hành mô tả <kbd>Shift+Tab</kbd> là phím <em>xoay vòng</em> các permission mode (default, acceptEdits, plan, rồi auto nếu có), và khởi động thẳng vào plan bằng <code>claude --permission-mode plan</code>. Checkpoint được tạo trước mỗi prompt bắt đầu một lượt; <code>/rewind</code> (bí danh <code>/undo</code>) hoặc nhấn <kbd>Esc</kbd> hai lần mở menu gồm: khôi phục code và hội thoại, chỉ hội thoại, chỉ code, hoặc “Summarize”. File chỉ bị đổi bởi lệnh Bash không được theo dõi, vì vậy checkpoint không thay thế git. Chưa tìm thấy lệnh <code>/plan</code> trong trang tài liệu đã tra; vẫn giữ theo bài giảng. Nguồn: <a href="https://code.claude.com/docs/en/permission-modes" target="_blank" rel="noopener">Permission modes</a>, <a href="https://code.claude.com/docs/en/checkpointing" target="_blank" rel="noopener">Checkpointing</a>.</div>
+
+<h3>11.2 Thứ bậc CLAUDE.md theo khoá học</h3>
+<p>Mục 1 trình bày ba cấp theo exam guide. Khoá học liệt kê bốn vị trí, theo thứ tự ưu tiên dưới đây; chỗ khoá học khác tài liệu hiện hành xem khối Thực tế ngay sau hình.</p>
+<ol>
+  <li><code>~/.claude/CLAUDE.md</code> — global, áp dụng mọi project</li>
+  <li><code>{project-root}/CLAUDE.md</code> — cấp project (commit vào git)</li>
+  <li><code>{subdirectory}/CLAUDE.md</code> — subdirectory scope (chỉ áp dụng khi làm việc trong thư mục đó)</li>
+  <li><code>.claude/CLAUDE.md</code> — không commit, cài đặt cá nhân trong project</li>
+</ol>
+<p>Dùng <code>/init</code> để tạo CLAUDE.md từ codebase analysis tự động. <strong>Two-strikes rule:</strong> sửa một lỗi lần đầu tay; nếu xảy ra lần thứ hai, thêm vào CLAUDE.md ngay.</p>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 262" role="img" aria-label="Bốn vị trí CLAUDE.md theo bài giảng: global, project root, subdirectory, và file cá nhân trong .claude; kèm two-strikes rule">
+    <text x="10" y="20" class="lane-lb">4 vị trí CLAUDE.md (theo thứ tự trong bài)</text>
+    <rect x="10" y="32" width="620" height="38" rx="6" class="b-sys"/><text x="22" y="56" class="t tb">1. ~/.claude/CLAUDE.md</text><text x="290" y="56" class="ts">global: áp dụng mọi project</text>
+    <rect x="10" y="78" width="620" height="38" rx="6" class="b-step"/><text x="22" y="102" class="t tb">2. {project-root}/CLAUDE.md</text><text x="290" y="102" class="ts">project-level: committed vào git, cả đội dùng</text>
+    <rect x="10" y="124" width="620" height="38" rx="6" class="b-step"/><text x="22" y="148" class="t tb">3. {subdirectory}/CLAUDE.md</text><text x="290" y="148" class="ts">chỉ áp dụng khi làm việc trong thư mục đó</text>
+    <rect x="10" y="170" width="620" height="38" rx="6" class="b-opt"/><text x="22" y="194" class="t tb">4. .claude/CLAUDE.md</text><text x="290" y="194" class="ts">không committed: cài đặt cá nhân trong project</text>
+    <rect x="10" y="220" width="620" height="34" rx="6" class="b-hot"/><text x="320" y="242" class="t tb" text-anchor="middle">Two-strikes: lần 1 sửa tay, lần 2 thêm vào CLAUDE.md</text>
+  </svg></div>
+  <figcaption>Hình 14. Bốn vị trí CLAUDE.md và quy tắc two-strikes.</figcaption>
+</figure>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Tài liệu hiện hành chia khác bài giảng. Có thêm bản <strong>managed policy</strong> cho cả tổ chức (macOS <code>/Library/Application Support/ClaudeCode/CLAUDE.md</code>, Linux <code>/etc/claude-code/CLAUDE.md</code>). Chỗ ghi cá nhân, không commit là <code>./CLAUDE.local.md</code> (nên thêm vào <code>.gitignore</code>), còn <code>./.claude/CLAUDE.md</code> được tính là vị trí project, dùng chung qua git như <code>./CLAUDE.md</code>. Các file được <strong>nối vào</strong> context (không ghi đè nhau), và file gần thư mục làm việc được đọc sau cùng. File trong thư mục con chỉ nạp khi Claude đọc hoặc sửa file ở đó. Nên giữ mỗi file dưới khoảng 200 dòng. CLAUDE.md là chỉ dẫn, không phải cơ chế ép buộc; muốn chặn chắc chắn thì dùng hook PreToolUse. Đề thi vẫn theo bốn vị trí như bài. Nguồn: <a href="https://code.claude.com/docs/en/memory" target="_blank" rel="noopener">Memory</a>.</div>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div><ul>
+    <li>Lỗi lặp lại lần hai mà vẫn nhắc bằng lời mỗi phiên</li>
+    <li>Nhồi quy trình dài, ít dùng vào CLAUDE.md</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đúng</div><ul>
+    <li>Lần hai gặp lỗi thì thêm một dòng cụ thể vào CLAUDE.md</li>
+    <li>Dùng <code>/init</code> tạo bản đầu, rồi chỉnh tay cho ngắn, rõ</li>
+  </ul></div>
+</div>
+
+<h3>11.3 Hook và quyền</h3>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Cổng kiểm soát ở kho hàng. Bảo vệ nhận phiếu lấy hàng, xem xét, rồi làm một trong ba việc: vẫy tay cho qua (exit 0), nhắc nhở nhưng vẫn cho qua (exit 1), hoặc chặn lại và nói lý do (exit 2). Chỉ có “chặn lại” mới thật sự giữ hàng ở trong kho.
+</div>
+<p><strong>Hooks</strong> = shell script chạy trước/sau khi Claude dùng tool. Cấu hình trong <code>.claude/settings.json</code>:</p>
+<pre><code class="language-json">{
+  "hooks": {
+    "PreToolUse": [{
+      "matcher": "Bash",
+      "hooks": [{
+        "type": "command",
+        "command": "node scripts/safety-check.js"
+      }]
+    }]
+  }
+}</code></pre>
+<p>Hook nhận input của tool qua stdin (JSON) và có thể:</p>
+<ul>
+  <li><strong>Cho qua:</strong> thoát với mã 0, không in gì</li>
+  <li><strong>Chặn:</strong> thoát với mã 2 và in lý do. <strong>Mã 1 KHÔNG chặn, chỉ mã 2 mới chặn.</strong></li>
+  <li><strong>Ask:</strong> output JSON <code>{"permissionDecision": "ask", "message": "..."}</code></li>
+</ul>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 292" role="img" aria-label="Hook PreToolUse chặn lệnh deploy: Claude gọi Bash, hook chạy npm test, test fail, hook thoát exit 2 kèm stderr, tool bị chặn và lý do quay về Claude; bên dưới ba mã thoát">
+    <defs>
+      <marker id="m1305" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker>
+      <marker id="m1306" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-warn"/></marker>
+    </defs>
+    <rect x="10" y="26" width="120" height="48" rx="6" class="b-sys"/><text x="70" y="46" class="t tb" text-anchor="middle">Claude</text><text x="70" y="62" class="ts" text-anchor="middle">muốn chạy deploy</text>
+    <rect x="230" y="26" width="190" height="48" rx="6" class="b-step"/><text x="325" y="46" class="t tb" text-anchor="middle">Hook PreToolUse</text><text x="325" y="62" class="ts" text-anchor="middle">check-test-pass.sh</text>
+    <rect x="510" y="26" width="120" height="48" rx="6" class="b-sys"/><text x="570" y="46" class="t tb" text-anchor="middle">Tool Bash</text><text x="570" y="62" class="ts" text-anchor="middle">git push, deploy</text>
+    <g><path class="ln-acc flow" d="M130,50 H228" marker-end="url(#m1305)"/><text x="179" y="42" class="ts halo" text-anchor="middle">stdin: JSON</text></g>
+    <g><text x="325" y="96" class="tw-warn" text-anchor="middle">npm test: FAIL</text></g>
+    <g><rect x="250" y="106" width="150" height="30" rx="6" class="b-hot"/><text x="325" y="126" class="tm" text-anchor="middle">exit 2 + stderr</text>
+      <path class="ln-warn-solid" d="M420,50 H490"/><text x="500" y="56" class="tw-warn" text-anchor="middle">✕</text></g>
+    <g><path class="ln-warn flow" d="M250,121 H70 V76" marker-end="url(#m1306)"/><text x="160" y="115" class="ts halo" text-anchor="middle">stderr: lý do chặn</text></g>
+    <g>
+      <rect x="10" y="164" width="200" height="118" rx="6" class="b-done"/><text x="110" y="186" class="t tb" text-anchor="middle">exit 0 = allow</text><text x="110" y="208" class="ts" text-anchor="middle">cho chạy tiếp</text><text x="110" y="222" class="ts" text-anchor="middle">không cần output</text><text x="110" y="246" class="ts" text-anchor="middle">hoặc in JSON quyết định</text>
+      <rect x="220" y="164" width="200" height="118" rx="6" class="b-warn"/><text x="320" y="186" class="t tb" text-anchor="middle">exit 1 = warning</text><text x="320" y="208" class="ts" text-anchor="middle">KHÔNG chặn</text><text x="320" y="222" class="ts" text-anchor="middle">tool vẫn chạy</text><text x="320" y="246" class="ts" text-anchor="middle">hay bị nhầm là block</text>
+      <rect x="430" y="164" width="200" height="118" rx="6" class="b-hot"/><text x="530" y="186" class="t tb" text-anchor="middle">exit 2 = block</text><text x="530" y="208" class="ts" text-anchor="middle">chặn hành động</text><text x="530" y="222" class="ts" text-anchor="middle">stderr gửi lại cho Claude</text><text x="530" y="246" class="ts" text-anchor="middle">cách duy nhất để chặn</text>
+    </g>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Trước khi Bash chạy, hook PreToolUse nhận mô tả lệnh qua stdin (JSON).</li>
+    <li>Script chạy <code>npm test</code> và test thất bại.</li>
+    <li>Script ghi lý do ra stderr và thoát với <strong>exit 2</strong>: lệnh bị chặn.</li>
+    <li>Lý do quay về Claude để nó sửa test thay vì cố deploy.</li>
+    <li>Nhớ ba mã thoát: 0 cho qua, 1 chỉ cảnh báo và không chặn, 2 mới chặn.</li>
+  </ol>
+  <figcaption>Hình 15. Hook PreToolUse chặn deploy bằng exit 2.</figcaption>
+</figure>
+<pre><code class="language-bash">#!/bin/bash
+# hooks/redact-secrets.sh — hook PreToolUse để redact PII trước khi log
+INPUT=$(cat)
+TOOL=$(echo "$INPUT" | jq -r '.name')
+if [ "$TOOL" = "Bash" ]; then
+    COMMAND=$(echo "$INPUT" | jq -r '.input.command')
+    # Check for secret patterns
+    if echo "$COMMAND" | grep -qE "(password|secret|token|key)="; then
+        echo '{"permissionDecision":"ask","message":"Command contains potential secrets. Review before proceeding."}'
+        exit 0
+    fi
+fi
+exit 0</code></pre>
+<p>Script này đọc JSON từ stdin, lấy tên tool và lệnh. Nếu lệnh Bash chứa mẫu như <code>password=</code> hoặc <code>token=</code>, nó in JSON “ask” rồi <code>exit 0</code>: Claude Code sẽ hỏi bạn trước khi chạy. Ngược lại nó thoát 0 và không in gì, tức cho qua.</p>
+<p><strong>Permission mode (theo khoá học):</strong> default (hỏi mọi thứ), auto-approve (tự duyệt mọi thứ), bypassPermissions (không hỏi gì, chỉ dùng trong CI có sandbox).</p>
+<div class="alert"><strong>Bẫy.</strong> Viết hook chặn nhưng dùng <code>exit 1</code>. Hook báo lỗi, nhưng lệnh vẫn chạy. Muốn chặn phải <code>exit 2</code>.</div>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Tài liệu hooks hiện hành xác nhận: exit 2 là cách chặn; mọi mã khác (kể cả 1) là “non-blocking error”, hành động vẫn đi tiếp. Muốn trả quyết định bằng JSON thì phải thoát <strong>exit 0</strong>; nếu thoát 2 thì JSON <code>allow</code> cũng không mở được cổng. JSON đầu vào của hook dùng khóa <code>tool_name</code> và <code>tool_input</code> (ví dụ <code>tool_input.command</code>), khác với <code>.name</code> và <code>.input.command</code> trong ví dụ trên. Về permission mode, tài liệu liệt kê: <code>default</code>, <code>acceptEdits</code>, <code>plan</code>, <code>auto</code>, <code>dontAsk</code>, <code>bypassPermissions</code>; <code>bypassPermissions</code> chỉ nên dùng trong container hoặc VM cô lập. Đề thi theo ba mode như bài. Nguồn: <a href="https://code.claude.com/docs/en/hooks" target="_blank" rel="noopener">Hooks reference</a>, <a href="https://code.claude.com/docs/en/permission-modes" target="_blank" rel="noopener">Permission modes</a>.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>PreToolUse / PostToolUse</dt><dd>Hook chạy trước / sau khi Claude dùng một tool.</dd>
+  <dt>matcher</dt><dd>Bộ lọc chọn hook áp dụng cho tool nào, ví dụ <code>Bash</code> hoặc <code>Edit</code>.</dd>
+  <dt>stdin / stderr</dt><dd>Kênh vào chuẩn và kênh lỗi chuẩn của một chương trình.</dd>
+  <dt>Sandbox</dt><dd>Môi trường cô lập để lỗi hoặc lệnh nguy hiểm không chạm tới hệ thống thật.</dd>
+</dl></div>
+
+<h3>11.4 Tác vụ định kỳ và chế độ headless</h3>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Máy giặt hẹn giờ: bạn bỏ đồ vào, bấm nút, máy tự chạy lúc 6 giờ sáng mà không cần bạn đứng cạnh. <strong>Headless mode</strong> là Claude Code chạy “không màn hình”, không hỏi gì giữa chừng. <strong>Scheduled task</strong> là hẹn giờ cho nó.
+</div>
+<p><strong>Chế độ headless:</strong> chạy Claude Code không cần tương tác, dùng trong script, CI, cron job.</p>
+<pre><code class="language-bash"># -p: prompt text
+# --bare: output chỉ content (không có markdown formatting)
+# --output-format json: machine-readable output
+claude -p "Review these test failures and suggest fixes" \
+       --input-file test-results.txt \
+       --bare \
+       --output-format json > review.json
+
+# Chạy từ Agent SDK (Python)
+result = subprocess.run(
+    ["claude", "-p", task_description, "--bare"],
+    capture_output=True, text=True, cwd=project_dir
+)</code></pre>
+<p><strong>Tác vụ định kỳ:</strong> dùng lệnh <code>/schedule</code> trong Claude Code (hoặc <code>claude schedule create</code>) để tạo cron job chạy trên cloud. Cũng có thể dùng GitHub Actions với trigger <code>schedule</code>.</p>
+<p><strong>Cron</strong> là cách viết lịch lặp bằng năm trường: phút, giờ, ngày trong tháng, tháng, thứ. Ví dụ <code>0 9 * * 1-5</code> là 9 giờ sáng các ngày trong tuần.</p>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Trang tài liệu hiện hành mô tả <code>--bare</code> theo nghĩa khác bài: nó bỏ qua việc tự nạp hook, skill, subagent, plugin, MCP server, auto memory và CLAUDE.md để chạy giống nhau trên mọi máy; không phải “chỉ in nội dung”. Dạng gọi là <code>claude --bare -p "…"</code>, và bare mode không dùng đăng nhập subscription nên cần <code>ANTHROPIC_API_KEY</code>. Đưa dữ liệu vào bằng pipe stdin (<code>cat file | claude -p "…"</code>), tôi chưa thấy cờ <code>--input-file</code> trong trang đã tra. Về lịch chạy, tài liệu liệt kê cloud scheduled tasks (routines), Desktop scheduled tasks, <code>/loop</code> trong phiên, và GitHub Actions; tôi chưa kiểm chứng được lệnh <code>/schedule</code> hay <code>claude schedule create</code>. Nguồn: <a href="https://code.claude.com/docs/en/headless" target="_blank" rel="noopener">Headless</a>, <a href="https://code.claude.com/docs/en/scheduled-tasks" target="_blank" rel="noopener">Scheduled tasks</a>.</div>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div><ul>
+    <li>Chạy <code>claude</code> tương tác trong cron job rồi chờ nó hỏi quyền</li>
+    <li>Dùng <code>bypassPermissions</code> trên máy làm việc thật</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đúng</div><ul>
+    <li>Dùng <code>-p</code> và <code>--output-format json</code> để script đọc được kết quả</li>
+    <li><code>bypassPermissions</code> chỉ trong CI sandboxed</li>
+  </ul></div>
+</div>
+
+<h3>11.5 Tích hợp GitHub Actions</h3>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Mỗi khi ai đó nộp bài (mở pull request), một người chấm tự động được gọi tới, đọc bài, rồi ghi nhận xét lên chính tờ bài. Bạn không phải nhắc. GitHub Actions là chuông báo, Claude là người chấm.
+</div>
+<pre><code class="language-yaml"># .github/workflows/claude-review.yml
+name: Claude Code Review
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Claude Code Review
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          review_type: "security,performance,correctness"
+          post_as_comment: true</code></pre>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 252" role="img" aria-label="Luồng GitHub Actions: PR mở hoặc có commit mới, workflow chạy, claude-code-action review, kết quả quay lại PR; bên dưới là quyền tối thiểu và dịch vụ Code Review của Anthropic">
+    <defs><marker id="m1307" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker></defs>
+    <g><rect x="10" y="20" width="140" height="82" rx="6" class="b-sys"/><text x="80" y="42" class="t tb" text-anchor="middle">PR mở / cập nhật</text><text x="80" y="60" class="ts" text-anchor="middle">types: opened,</text><text x="80" y="74" class="ts" text-anchor="middle">synchronize</text></g>
+    <g><path class="ln-acc flow" d="M150,61 H168" marker-end="url(#m1307)"/><rect x="170" y="20" width="140" height="82" rx="6" class="b-step"/><text x="240" y="42" class="t tb" text-anchor="middle">Workflow chạy</text><text x="240" y="60" class="ts" text-anchor="middle">ubuntu-latest</text><text x="240" y="74" class="ts" text-anchor="middle">checkout fetch-depth 0</text></g>
+    <g><path class="ln-acc flow" d="M310,61 H328" marker-end="url(#m1307)"/><rect x="330" y="20" width="140" height="82" rx="6" class="b-hot"/><text x="400" y="42" class="t tb" text-anchor="middle">Claude review</text><text x="400" y="60" class="ts" text-anchor="middle">claude-code-action@v1</text><text x="400" y="74" class="ts" text-anchor="middle">key lấy từ secrets</text></g>
+    <g><path class="ln-acc flow" d="M470,61 H488" marker-end="url(#m1307)"/><rect x="490" y="20" width="140" height="82" rx="6" class="b-done"/><text x="560" y="42" class="t tb" text-anchor="middle">Kết quả trên PR</text><text x="560" y="60" class="ts" text-anchor="middle">nhận xét về security,</text><text x="560" y="74" class="ts" text-anchor="middle">performance, correctness</text></g>
+    <g><rect x="10" y="128" width="300" height="108" rx="6" class="b-opt"/><text x="160" y="150" class="t tb" text-anchor="middle">Quyền tối thiểu</text><text x="160" y="172" class="ts" text-anchor="middle">contents: read</text><text x="160" y="186" class="ts" text-anchor="middle">pull-requests: write</text><text x="160" y="206" class="ts" text-anchor="middle">API key trong secrets, không ghi vào file</text></g>
+    <g><rect x="330" y="128" width="300" height="108" rx="6" class="b-sys"/><text x="480" y="150" class="t tb" text-anchor="middle">Claude Code Review service</text><text x="480" y="172" class="ts" text-anchor="middle">Anthropic-hosted, trigger qua GitHub App</text><text x="480" y="186" class="ts" text-anchor="middle">Không cần tự host</text><text x="480" y="206" class="ts" text-anchor="middle">Cấu hình qua CLAUDE.md trong repo</text></g>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Có người mở PR hoặc đẩy thêm commit vào PR, GitHub phát sự kiện <code>pull_request</code>.</li>
+    <li>Workflow chạy trên runner Ubuntu và checkout đủ lịch sử (<code>fetch-depth: 0</code>) để Claude xem được diff.</li>
+    <li>Bước <code>claude-code-action@v1</code> chạy với API key lấy từ secrets.</li>
+    <li>Kết quả review được ghi lại trên PR.</li>
+    <li>Chỉ cấp quyền cần thiết: đọc nội dung, ghi pull request.</li>
+    <li>Có thêm lựa chọn dịch vụ Code Review do Anthropic host, không cần tự dựng workflow.</li>
+  </ol>
+  <figcaption>Hình 16. Claude review pull request bằng GitHub Actions.</figcaption>
+</figure>
+<p><strong>Dịch vụ Claude Code Review:</strong> Anthropic chạy hộ, kích hoạt qua GitHub App, bạn không phải tự host. Cấu hình bằng <code>CLAUDE.md</code> trong repo hoặc cài đặt riêng cho review.</p>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Trang GitHub Actions hiện hành dùng các input <code>anthropic_api_key</code> (hoặc <code>claude_code_oauth_token</code>), <code>prompt</code> và <code>claude_args</code>; chưa thấy <code>review_type</code> và <code>post_as_comment</code> trong tài liệu đã tra. Workflow mẫu hiện dùng <code>actions/checkout@v6</code> và <code>id-token: write</code> cho xác thực GitHub App mặc định. Khi workflow có <code>prompt</code>, Claude chạy ở chế độ automation; không có <code>prompt</code> thì chờ nhắc <code>@claude</code>. Trang này cũng tách “Code Review” (review tự động, không viết workflow) thành sản phẩm riêng. Ví dụ ở trên vẫn giữ theo bài giảng. Nguồn: <a href="https://code.claude.com/docs/en/github-actions" target="_blank" rel="noopener">Claude Code GitHub Actions</a>.</div>
+<div class="alert"><strong>Bẫy.</strong> Dán API key thẳng vào file workflow. Luôn dùng <code>${{ secrets.… }}</code>, và cấp <code>permissions</code> vừa đủ.</div>
+
+<h2 id="exam-keywords" class="pb">12. Từ khoá đề thi</h2>
+<p>Các từ tiếng Anh dưới đây xuất hiện nguyên văn trong đề và tài liệu chính thức về Claude Code. Đọc cột giữa để nắm nghĩa, cột phải để biết đề hay gài ở đâu; bấm số mục để xem lại phần giải thích. Mọi từ khoá của các bài được gom ở trang <a href="/notes/lessons/glossary.html">Thuật ngữ</a>.</p>
+<div class="tw"><table class="kwt">
+  <thead><tr><th>Từ khoá</th><th>Nghĩa</th><th>Đề hay hỏi, dễ nhầm</th><th class="nw">Mục</th></tr></thead>
+  <tbody>
+    <tr data-kw="--allowedTools"><td><code>--allowedTools</code></td><td>Khai sẵn tool được chạy không cần hỏi</td><td>Trong CI không ai bấm duyệt nên phải khai sẵn, ở mức tối thiểu</td><td><a href="#ci-cd">§7</a></td></tr>
+    <tr data-kw="--output-format"><td><code>--output-format json</code>, <code>--json-schema</code></td><td>Xuất kết quả dạng máy đọc được, theo schema</td><td><code>CLAUDE_HEADLESS</code>, <code>--batch</code>, <code>--headless</code> không tồn tại</td><td><a href="#ci-cd">§7</a></td></tr>
+    <tr data-kw=".claude/rules/"><td><code>.claude/rules/</code></td><td>Thư mục chứa các rule, mỗi file một chủ đề</td><td>Test rải nhiều thư mục thì dùng rule glob, không chép CLAUDE.md vào từng thư mục</td><td><a href="#rules">§3</a></td></tr>
+    <tr data-kw="/memory"><td><code>/memory</code></td><td>Duyệt và mở các file memory (CLAUDE.md, auto memory)</td><td>Exam guide dùng nó để xác minh file đã nạp</td><td><a href="#claude-md">§1</a></td></tr>
+    <tr data-kw="/rewind"><td><code>/rewind</code>, two-strikes</td><td>Quay về checkpoint; lỗi lặp lần hai thì thêm vào CLAUDE.md</td><td>Checkpoint không phủ thay đổi do lệnh Bash</td><td><a href="#claude-code-in-action">§11</a></td></tr>
+    <tr data-kw="@import"><td><code>@import</code></td><td>Dòng <code>@đường-dẫn</code> kéo file khác vào CLAUDE.md</td><td>Giữ CLAUDE.md gọn; mỗi package chỉ import chuẩn liên quan</td><td><a href="#claude-md">§1</a></td></tr>
+    <tr data-kw="allowed-tools"><td><code>allowed-tools</code></td><td>Trường frontmatter của skill nói về tool được dùng</td><td>Exam guide: hạn chế tool; tài liệu hiện hành: cấp quyền không cần hỏi. Thi theo exam guide</td><td><a href="#command-skill">§2</a></td></tr>
+    <tr data-kw="argument-hint"><td><code>argument-hint</code></td><td>Gợi ý tham số khi gọi skill</td><td>Theo exam guide là cách nhắc nhập tham số</td><td><a href="#command-skill">§2</a></td></tr>
+    <tr data-kw="auto mode"><td>Auto mode</td><td>Một classifier kiểm tra từng hành động thay cho việc bấm duyệt</td><td>Giảm số lần hỏi chứ không bảo đảm an toàn</td><td><a href="#permission-modes">§9</a></td></tr>
+    <tr data-kw="bypassPermissions"><td><code>bypassPermissions</code></td><td>Bỏ qua hỏi quyền</td><td>Chỉ trong container hoặc VM cách ly; luật deny vẫn chặn</td><td><a href="#permission-modes">§9</a></td></tr>
+    <tr data-kw="CLAUDE.md hierarchy"><td>Thứ bậc CLAUDE.md (user, project, thư mục)</td><td>Ba cấp nạp ở các chỗ khác nhau, được nối lại, không ghi đè nhau</td><td>Quy ước của đội đặt ở cấp user thì đồng đội không nhận được</td><td><a href="#claude-md">§1</a></td></tr>
+    <tr data-kw="context: fork"><td><code>context: fork</code></td><td>Chạy skill trong subagent riêng, output dài không làm bẩn phiên chính</td><td>Dùng cho phân tích dài hay thăm dò</td><td><a href="#command-skill">§2</a></td></tr>
+    <tr data-kw="deny ask allow"><td><code>deny</code>, <code>ask</code>, <code>allow</code></td><td>Ba nhóm luật quyền, đánh giá theo thứ tự deny, ask, allow</td><td>Deny luôn thắng; độ cụ thể của luật không đổi thứ tự</td><td><a href="#settings">§8</a></td></tr>
+    <tr data-kw="description"><td><code>description</code> (skill)</td><td>Mô tả Claude đọc để quyết định có nạp skill hay không</td><td>Mơ hồ thì skill không được nạp; nêu việc làm, thời điểm dùng, cách người dùng hay nói</td><td><a href="#command-skill">§2</a></td></tr>
+    <tr data-kw="disable-model-invocation"><td><code>disable-model-invocation: true</code></td><td>Chỉ người dùng gọi được skill, Claude không tự gọi</td><td>Hợp với lệnh có tác dụng phụ như deploy</td><td><a href="#command-skill">§2</a></td></tr>
+    <tr data-kw="Explore subagent"><td>Explore subagent</td><td>Subagent có sẵn chuyên dò code, trả bản tóm tắt</td><td>Giữ phần dò dài dòng ở ngoài phiên chính</td><td><a href="#plan-mode">§4</a></td></tr>
+    <tr data-kw="git worktree"><td>Git worktree</td><td>Thư mục làm việc riêng, branch riêng, cùng repo</td><td>Cho nhiều phiên chạy song song không đè nhau; <code>claude --worktree</code></td><td><a href="#refactor">§6</a></td></tr>
+    <tr data-kw="glob"><td>Glob</td><td>Mẫu khớp đường dẫn: <code>*</code>, <code>**</code></td><td><code>**/*.test.tsx</code> khớp mọi file test ở mọi thư mục</td><td><a href="#rules">§3</a></td></tr>
+    <tr data-kw="headless"><td>Headless mode (<code>-p</code>)</td><td>Chạy <code>claude</code> không có người tương tác</td><td>Không có <code>-p</code> thì job CI treo chờ input</td><td><a href="#ci-cd">§7</a></td></tr>
+    <tr data-kw="hook exit 2"><td>Hook <code>exit 2</code></td><td>Mã thoát để hook PreToolUse chặn hành động</td><td>Mã 1 chỉ cảnh báo, không chặn</td><td><a href="#claude-code-in-action">§11</a></td></tr>
+    <tr data-kw="independent review"><td>Phiên review độc lập</td><td>Review trong phiên khác phiên đã viết code</td><td>Phiên sinh code tự review thì kém hơn</td><td><a href="#ci-cd">§7</a></td></tr>
+    <tr data-kw="interview pattern"><td>Interview pattern</td><td>Để Claude hỏi lại bạn trước khi làm</td><td>Hợp với lĩnh vực lạ, lộ ra yêu cầu ẩn</td><td><a href="#iterative-refinement">§5</a></td></tr>
+    <tr data-kw="iterative refinement"><td>Iterative refinement (tinh chỉnh lặp)</td><td>Cải thiện qua nhiều vòng nhỏ</td><td>Ví dụ vào/ra thắng mô tả lời; lỗi tương tác gửi chung, lỗi độc lập sửa lần lượt</td><td><a href="#iterative-refinement">§5</a></td></tr>
+    <tr data-kw="marketplace"><td>Marketplace</td><td>Danh mục liệt kê plugin và nơi lấy chúng</td><td>Cài bằng <code>tên-plugin@tên-marketplace</code></td><td><a href="#plugin">§10</a></td></tr>
+    <tr data-kw="paths"><td><code>paths</code> (rule)</td><td>Danh sách glob quyết định khi nào rule được nạp</td><td>Rule có paths chỉ nạp khi làm việc với file khớp; không có paths thì nạp lúc khởi động</td><td><a href="#rules">§3</a></td></tr>
+    <tr data-kw="permission modes"><td>Permission modes</td><td><code>default</code>, <code>acceptEdits</code>, <code>plan</code>, <code>auto</code>, <code>dontAsk</code>, <code>bypassPermissions</code></td><td>Chế độ là mức nền, luật chồng lên; CI không người hợp <code>dontAsk</code></td><td><a href="#permission-modes">§9</a></td></tr>
+    <tr data-kw="plan mode vs direct execution"><td>Plan mode và làm trực tiếp</td><td>Plan cho việc lớn, nhiều file, nhiều hướng; trực tiếp cho việc rõ phạm vi</td><td>Bẫy: làm trực tiếp rồi gặp khó mới plan khi đề đã nói việc phức tạp</td><td><a href="#plan-mode">§4</a></td></tr>
+    <tr data-kw="plugin"><td>Plugin</td><td>Gói skill, agent, hook, MCP server để cài một lần dùng nhiều repo</td><td>Một repo thì cấu hình trong <code>.claude/</code>; nhiều repo thì plugin</td><td><a href="#plugin">§10</a></td></tr>
+    <tr data-kw="plugin.json"><td><code>.claude-plugin/plugin.json</code></td><td>Manifest đặt tên, <code>version</code> cho plugin</td><td>Tuỳ chọn; <code>CLAUDE.md</code> ở gốc plugin không được nạp</td><td><a href="#plugin">§10</a></td></tr>
+    <tr data-kw="progressive disclosure"><td>Progressive disclosure</td><td>Chỉ nạp thêm chi tiết khi cần: tên và mô tả trước, thân skill sau</td><td>Khác CLAUDE.md, thứ luôn nạp</td><td><a href="#command-skill">§2</a></td></tr>
+    <tr data-kw="refactor"><td>Refactor</td><td>Đổi cấu trúc code, giữ nguyên hành vi</td><td>Cần test chứng minh hành vi không đổi; lớn thì chia lô, mỗi lô một PR</td><td><a href="#refactor">§6</a></td></tr>
+    <tr data-kw="settings.json"><td><code>settings.json</code> (user, project, local, managed)</td><td>File JSON cấu hình Claude Code ở bốn cấp</td><td>Ưu tiên: managed, dòng lệnh, local, project, user; danh sách gộp, khoá đơn cấp cao thắng</td><td><a href="#settings">§8</a></td></tr>
+    <tr data-kw="SKILL.md"><td><code>SKILL.md</code></td><td>File mô tả một skill, kèm frontmatter</td><td>Thân chỉ nạp khi việc khớp <code>description</code></td><td><a href="#command-skill">§2</a></td></tr>
+    <tr data-kw="slash command"><td>Slash command</td><td>Prompt soạn sẵn gọi bằng <code>/tên</code></td><td>Đặt ở <code>.claude/commands/</code> để cả đội dùng qua git</td><td><a href="#command-skill">§2</a></td></tr>
+  </tbody>
+</table></div>
+
+<p class="lesson-practice">Luyện câu hỏi của bài này trong <a href="/bank?lesson=13">🗂️ Ngân hàng</a>.</p>
+
+<div class="btns pager">
+  <a class="btn" href="/notes/lessons/12-claude-code-basics.html">← Bài 12 · Claude Code nhập môn</a>
+  <a class="btn primary" href="/notes/lessons/14-app-lifecycle.html">Bài 14 · Vòng đời ứng dụng và tổng kiểm CCDV-F →</a>
+</div>
+
+<footer>
+  Luyện thi chứng chỉ Claude · Bài 13 · Claude Code: cấu hình, CI và quyền · v0.39 · 2026-11-18. <a href="/notes/00-tong-quan.md">Tổng quan</a> · <a href="/new">Luyện đề</a>.
+</footer>

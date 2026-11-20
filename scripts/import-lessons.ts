@@ -1,7 +1,9 @@
 // node scripts/import-lessons.ts <srcDir>
-// Converts the 26 lesson pages of the public study artifact https://claude.ai/artifact/3NhHr42CxTHGEs33N1ntFf into
-// cleaned HTML fragments under notes/lessons/ (SPEC §2.3), plus notes/lessons/index.yaml.
-// <srcDir> holds the downloaded artifact: NN-*.html and assets/data.js.
+// Converts the lesson pages (and the glossary page) of the public study artifact https://claude.ai/artifact/3NhHr42CxTHGEs33N1ntFf
+// into cleaned HTML fragments under notes/lessons/ (SPEC §2.3), plus notes/lessons/index.yaml.
+// <srcDir> holds the downloaded artifact: NN-*.html, glossary.html and assets/data.js.
+// Lesson files in notes/lessons/ (NN-*.html) that the artifact no longer lists are deleted, so a restructure upstream
+// leaves no orphan pages; run `npm run import-ccx` first so the bank's refs already point at the new files.
 // Everything is processed statically by a small HTML tokenizer: no JS from the input is executed, and the output keeps no
 // scripts, no inline event handlers and no javascript: URLs. Styling for the fragments lives in web/styles-lesson.css
 // (every selector under `.lesson`; the page that shows a lesson wraps the fragment in an element with class "lesson").
@@ -15,6 +17,8 @@ const outDir = path.join(root, 'notes', 'lessons');
 const packFile = path.join(root, 'bank', 'packs', 'ccx.yaml');
 const examsFile = path.join(root, 'exams.yaml');
 const SOURCE = 'https://claude.ai/artifact/3NhHr42CxTHGEs33N1ntFf';
+const EXERCISE_IDS = new Set(['bai-tap', 'exercises']); // the quiz section's heading id (old / current artifact)
+const GLOSSARY = 'glossary.html'; // artifact page with every lesson's exam keywords; imported under the same name
 
 // ---------------------------------------------------------------- tokenizer + tree
 
@@ -272,7 +276,7 @@ function convert(html: string, file: string, nn: string, lessonFiles: Set<string
 
   // 2. The "Bài tập" section (h2#bai-tap + the quiz container) → one line pointing to the bank.
   const kids = main.children;
-  const h = kids.findIndex((c) => isEl(c) && /^h[1-6]$/.test(c.name) && attr(c, 'id') === 'bai-tap');
+  const h = kids.findIndex((c) => isEl(c) && /^h[1-6]$/.test(c.name) && EXERCISE_IDS.has(attr(c, 'id') ?? ''));
   if (h >= 0) {
     let end = h + 1;
     while (end < kids.length) {
@@ -294,7 +298,7 @@ function convert(html: string, file: string, nn: string, lessonFiles: Set<string
     const body = find(toc, (e) => hasClass(e, 'toc-body'));
     const list = body ? body.children : toc.children;
     const ol = list.filter(isEl);
-    for (const o of ol) removeWhere(o, (e) => e.name === 'li' && !!find(e, (a) => a.name === 'a' && attr(a, 'href') === '#bai-tap'));
+    for (const o of ol) removeWhere(o, (e) => e.name === 'li' && !!find(e, (a) => a.name === 'a' && EXERCISE_IDS.has((attr(a, 'href') ?? '').slice(1))));
     const det: El = {
       type: 'el',
       name: 'details',
@@ -352,7 +356,7 @@ function convert(html: string, file: string, nn: string, lessonFiles: Set<string
   const body = tidy(main.children.map(serialize).join(''));
   const head =
     `<p class="lesson-source">Nguồn: tài liệu ôn tập công khai <a href="${SOURCE}" target="_blank" rel="noopener">artifact 3NhHr42…</a> ` +
-    `(bài ${nn}). Không thuộc và không được Anthropic xác nhận.</p>`;
+    `(${nn === GLOSSARY ? 'trang thuật ngữ' : `bài ${nn}`}). Không thuộc và không được Anthropic xác nhận.</p>`;
   return `${head}\n${body}\n`;
 }
 
@@ -369,7 +373,7 @@ type Rewrite = { kind: 'anchor' | 'app' | 'lesson' | 'overview' | 'practice' | '
 
 function rewriteHref(href: string, nn: string, lessonFiles: Set<string>): Rewrite {
   const h = href.trim();
-  if (h === '#bai-tap') return { kind: 'bank', href: `/bank?lesson=${nn}` };
+  if (EXERCISE_IDS.has(h.slice(1)) && h.startsWith('#')) return { kind: 'bank', href: `/bank?lesson=${nn}` };
   if (h.startsWith('#')) return { kind: 'anchor', href: h };
   if (/^\/(?!\/)/.test(h)) return { kind: 'app', href: h }; // app routes this script inserted itself
   if (/^https?:\/\//i.test(h)) return { kind: 'external', href: h };
@@ -378,9 +382,11 @@ function rewriteHref(href: string, nn: string, lessonFiles: Set<string>): Rewrit
   if (m) {
     const [, f, , hash = ''] = m;
     if (f === 'index.html') return { kind: 'overview', href: '/notes/00-tong-quan.md' };
-    if (f === '30-luyen-de.html') return { kind: 'practice', href: '/new' };
+    if (f === '30-luyen-de.html' || f === 'practice.html')
+      return { kind: 'practice', href: /mode=mistakes/.test(m[2] ?? '') ? '/review' : '/new' };
+    if (f === GLOSSARY) return { kind: 'lesson', href: `/notes/lessons/${GLOSSARY}${hash}` };
     if (lessonFiles.has(f)) {
-      if (hash === '#bai-tap') return { kind: 'bank', href: `/bank?lesson=${f.slice(0, 2)}` };
+      if (EXERCISE_IDS.has(hash.slice(1))) return { kind: 'bank', href: `/bank?lesson=${f.slice(0, 2)}` };
       return { kind: 'lesson', href: `/notes/lessons/${f}${hash}` };
     }
   }
@@ -428,6 +434,8 @@ function main() {
   const lessons = readLessonList(srcDir);
   if (lessons.length === 0) throw new Error('no lessons found in assets/data.js');
   const lessonFiles = new Set(lessons.map((l) => l.file));
+  const pages: { nn: string; title: string; file: string }[] = [...lessons];
+  if (fs.existsSync(path.join(srcDir, GLOSSARY))) pages.push({ nn: GLOSSARY, title: 'Thuật ngữ và từ khoá đề thi', file: GLOSSARY });
 
   const pack = YAML.parse(fs.readFileSync(packFile, 'utf8')) as { questions: { id: string; ref?: string; exams?: Record<string, string> }[] };
   const examOrder = Object.keys((YAML.parse(fs.readFileSync(examsFile, 'utf8')) as { exams: Record<string, unknown> }).exams);
@@ -445,7 +453,7 @@ function main() {
   const index: { file: string; title: string; exams: string[] }[] = [];
   const outputs = new Map<string, string>();
   let total = 0;
-  for (const l of lessons) {
+  for (const l of pages) {
     const srcFile = path.join(srcDir, l.file);
     if (!fs.existsSync(srcFile)) {
       console.warn(`missing source page: ${l.file}`);
@@ -471,6 +479,10 @@ function main() {
       `exams: [${items.trim().split('\n').map((s) => s.replace(/^\s*- /, '')).join(', ')}]\n`,
     );
   fs.writeFileSync(path.join(outDir, 'index.yaml'), yaml);
+  // lesson pages the artifact no longer has (renamed / merged upstream)
+  const stale = fs.readdirSync(outDir).filter((f) => /^\d\d-.*\.html$/.test(f) && !outputs.has(f));
+  for (const f of stale) fs.unlinkSync(path.join(outDir, f));
+  if (stale.length) console.log(`removed ${stale.length} stale lesson file(s): ${stale.join(', ')}`);
 
   // ref check: every ref in ccx.yaml must hit an existing file and (if it has one) an existing heading id
   let ok = 0;

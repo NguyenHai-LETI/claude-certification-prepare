@@ -1,14 +1,14 @@
-<p class="lesson-source">Nguồn: tài liệu ôn tập công khai <a href="https://claude.ai/artifact/3NhHr42CxTHGEs33N1ntFf" target="_blank" rel="noopener">artifact 3NhHr42…</a> (bài 03). Không thuộc và không được Anthropic xác nhận.</p>
+<p class="lesson-source">Nguồn: tài liệu ôn tập công khai <a href="https://claude.ai/artifact/3NhHr42CxTHGEs33N1ntFf" target="_blank" rel="noopener">artifact 3NhHr42…</a> (bài 07). Không thuộc và không được Anthropic xác nhận.</p>
 <header class="cover">
-  <div class="eyebrow">Luyện thi chứng chỉ Claude · Bài 03</div>
+  <div class="eyebrow">Luyện thi chứng chỉ Claude · Bài 07 · Chặng 2 · CCDV-F · bước 6/13</div>
   <h1>Agent và điều phối <span class="ja">Agentic Architecture &amp; Orchestration</span></h1>
-  <p class="lead">Khi nào dùng workflow, khi nào dùng agent; vòng lặp tool-use; coordinator và subagent; ép thứ tự bằng hook; phân rã nhiệm vụ; resume và fork phiên; cách xây và triển khai agent.</p>
+  <p class="lead">Khi nào dùng workflow, khi nào dùng agent; vòng lặp tool-use, coordinator và subagent, ép thứ tự, hook của SDK, phân rã nhiệm vụ, phiên làm việc, triển khai, framework.</p>
   <dl class="meta">
-    <dt>Kỳ thi</dt><dd>CCAR-F D1 (27%) · CCDV-F D1 Agents and Workflows (14,7%)</dd>
-    <dt>Phục vụ</dt><dd><span class="tag xt1">CCDV-F</span> 8 mục · <span class="tag xt3">CCAR-F</span> 8 mục · <span class="tag xt4">CCAR-P</span> 4 mục · <a href="#xsum">bảng nhãn từng mục</a></dd>
+    <dt>Kỳ thi</dt><dd>CCDV-F D1, D6 · CCAR-F D1 · CCAR-P D1</dd>
+    <dt>Phục vụ</dt><dd><span class="tag xt1">CCDV-F</span> 10 mục · <span class="tag xt3">CCAR-F</span> 8 mục · <span class="tag xt4">CCAR-P</span> 4 mục · <a href="#xsum">bảng nhãn từng mục</a></dd>
 
-    <dt>Nguồn</dt><dd>Ghi chú «Đề cương chi tiết CCAR-F» Domain 1; «Đề cương CCDV-F và CCAO-F» D1</dd>
-    <dt>Cập nhật</dt><dd><span class="status">v0.22 · 2026-11-18</span> · theo exam guide v1.0</dd>
+    <dt>Nguồn</dt><dd>Ghi chú «Đề cương chi tiết CCAR-F» Domain 1; «Đề cương CCDV-F và CCAO-F» D1; Ghi chú «Đề cương CCDV-F và CCAO-F» Phần A; platform.claude.com/docs (rate limits, token counting, extended thinking, context editing, compaction, citations, MCP connector, Admin API) tra 17/11/2026; academy.claude.com · Building with the Claude API · Crawl 2026-11-17</dd>
+    <dt>Cập nhật</dt><dd><span class="status">v0.39 · 2026-11-18</span> · theo exam guide v1.0</dd>
   </dl>
 </header>
 
@@ -17,15 +17,18 @@
 
     <ol>
       <li><a href="#workflow-agent"><span class="n">1</span><span class="tx">Workflow hay agent</span><span class="xds" aria-hidden="true"><i class="xd xt1" title="CCDV-F"></i><i class="xd xt3" title="CCAR-F"></i><i class="xd xt4" title="CCAR-P"></i></span></a></li>
-      <li><a href="#vong-lap"><span class="n">2</span><span class="tx">Vòng lặp agent</span><span class="xds" aria-hidden="true"><i class="xd xt3" title="CCAR-F"></i><i class="xd xt1" title="CCDV-F"></i></span></a></li>
+      <li><a href="#agent-loop"><span class="n">2</span><span class="tx">Vòng lặp agent</span><span class="xds" aria-hidden="true"><i class="xd xt3" title="CCAR-F"></i><i class="xd xt1" title="CCDV-F"></i></span></a></li>
       <li><a href="#coordinator"><span class="n">3</span><span class="tx">Coordinator và subagent</span><span class="xds" aria-hidden="true"><i class="xd xt3" title="CCAR-F"></i><i class="xd xt1" title="CCDV-F"></i><i class="xd xt4" title="CCAR-P"></i></span></a></li>
       <li><a href="#task"><span class="n">4</span><span class="tx">Gọi subagent và truyền context</span><span class="xds" aria-hidden="true"><i class="xd xt3" title="CCAR-F"></i><i class="xd xt1" title="CCDV-F"></i></span></a></li>
-      <li><a href="#thu-tu"><span class="n">5</span><span class="tx">Ép thứ tự workflow và bàn giao</span><span class="xds" aria-hidden="true"><i class="xd xt3" title="CCAR-F"></i><i class="xd xt1" title="CCDV-F"></i></span></a></li>
+      <li><a href="#workflow-order"><span class="n">5</span><span class="tx">Ép thứ tự workflow và bàn giao</span><span class="xds" aria-hidden="true"><i class="xd xt3" title="CCAR-F"></i><i class="xd xt1" title="CCDV-F"></i></span></a></li>
       <li><a href="#hook-sdk"><span class="n">6</span><span class="tx">Hook trong Agent SDK</span><span class="xds" aria-hidden="true"><i class="xd xt3" title="CCAR-F"></i><i class="xd xt1" title="CCDV-F"></i></span></a></li>
-      <li><a href="#phan-ra"><span class="n">7</span><span class="tx">Phân rã nhiệm vụ</span><span class="xds" aria-hidden="true"><i class="xd xt3" title="CCAR-F"></i><i class="xd xt4" title="CCAR-P"></i></span></a></li>
-      <li><a href="#phien"><span class="n">8</span><span class="tx">Phiên làm việc: resume và fork</span><span class="xds" aria-hidden="true"><i class="xd xt3" title="CCAR-F"></i></span></a></li>
-      <li><a href="#trien-khai"><span class="n">9</span><span class="tx">Xây và triển khai agent</span><span class="xds" aria-hidden="true"><i class="xd xt1" title="CCDV-F"></i><i class="xd xt4" title="CCAR-P"></i></span></a></li>
+      <li><a href="#decomposition"><span class="n">7</span><span class="tx">Phân rã nhiệm vụ</span><span class="xds" aria-hidden="true"><i class="xd xt3" title="CCAR-F"></i><i class="xd xt4" title="CCAR-P"></i></span></a></li>
+      <li><a href="#sessions"><span class="n">8</span><span class="tx">Phiên làm việc: resume và fork</span><span class="xds" aria-hidden="true"><i class="xd xt3" title="CCAR-F"></i></span></a></li>
+      <li><a href="#deployment"><span class="n">9</span><span class="tx">Xây và triển khai agent</span><span class="xds" aria-hidden="true"><i class="xd xt1" title="CCDV-F"></i><i class="xd xt4" title="CCAR-P"></i></span></a></li>
       <li><a href="#memory"><span class="n">10</span><span class="tx">Memory</span><span class="xds" aria-hidden="true"><i class="xd xt1" title="CCDV-F"></i></span></a></li>
+      <li><a href="#framework"><span class="n">11</span><span class="tx">Agent framework bên ngoài</span><span class="xds" aria-hidden="true"><i class="xd xt1" title="CCDV-F"></i></span></a></li>
+      <li><a href="#module-9"><span class="n">12</span><span class="tx">Dựng các mẫu workflow bằng code</span><span class="xds" aria-hidden="true"><i class="xd xt1" title="CCDV-F"></i></span></a></li>
+      <li><a href="#exam-keywords"><span class="n">13</span><span class="tx">Từ khoá đề thi</span></a></li>
     </ol>
 
 </details>
@@ -37,15 +40,17 @@
 <thead><tr><th>Mục</th><th>Bài thi</th><th>Ghi chú</th></tr></thead>
 <tbody>
 <tr><td><a href="#workflow-agent">1. Workflow hay agent</a></td><td><span class="tag xt1">CCDV-F D1</span> <span class="tag xt3">CCAR-F D1</span> <span class="tag xt4">CCAR-P D1</span></td><td></td></tr>
-<tr><td><a href="#vong-lap">2. Vòng lặp agent</a></td><td><span class="tag xt3">CCAR-F D1</span> <span class="tag xt1">CCDV-F D1</span></td><td></td></tr>
+<tr><td><a href="#agent-loop">2. Vòng lặp agent</a></td><td><span class="tag xt3">CCAR-F D1</span> <span class="tag xt1">CCDV-F D1</span></td><td></td></tr>
 <tr><td><a href="#coordinator">3. Coordinator và subagent</a></td><td><span class="tag xt3">CCAR-F D1</span> <span class="tag xt1">CCDV-F D1</span> <span class="tag xt4">CCAR-P D1</span></td><td></td></tr>
 <tr><td><a href="#task">4. Gọi subagent và truyền context</a></td><td><span class="tag xt3">CCAR-F D1</span> <span class="tag xt1">CCDV-F D1</span> <span class="tag xt1">CCDV-F D6</span></td><td></td></tr>
-<tr><td><a href="#thu-tu">5. Ép thứ tự workflow và bàn giao</a></td><td><span class="tag xt3">CCAR-F D1</span> <span class="tag xt1">CCDV-F D1</span></td><td></td></tr>
+<tr><td><a href="#workflow-order">5. Ép thứ tự workflow và bàn giao</a></td><td><span class="tag xt3">CCAR-F D1</span> <span class="tag xt1">CCDV-F D1</span></td><td></td></tr>
 <tr><td><a href="#hook-sdk">6. Hook trong Agent SDK</a></td><td><span class="tag xt3">CCAR-F D1</span> <span class="tag xt1">CCDV-F D1</span></td><td></td></tr>
-<tr><td><a href="#phan-ra">7. Phân rã nhiệm vụ</a></td><td><span class="tag xt3">CCAR-F D1</span> <span class="tag xt4">CCAR-P D1</span></td><td></td></tr>
-<tr><td><a href="#phien">8. Phiên làm việc: resume và fork</a></td><td><span class="tag xt3">CCAR-F D1</span></td><td></td></tr>
-<tr><td><a href="#trien-khai">9. Xây và triển khai agent</a></td><td><span class="tag xt1">CCDV-F D1</span> <span class="tag xt4">CCAR-P D1</span></td><td></td></tr>
+<tr><td><a href="#decomposition">7. Phân rã nhiệm vụ</a></td><td><span class="tag xt3">CCAR-F D1</span> <span class="tag xt4">CCAR-P D1</span></td><td></td></tr>
+<tr><td><a href="#sessions">8. Phiên làm việc: resume và fork</a></td><td><span class="tag xt3">CCAR-F D1</span></td><td></td></tr>
+<tr><td><a href="#deployment">9. Xây và triển khai agent</a></td><td><span class="tag xt1">CCDV-F D1</span> <span class="tag xt4">CCAR-P D1</span></td><td></td></tr>
 <tr><td><a href="#memory">10. Memory</a></td><td><span class="tag xt1">CCDV-F D1</span> <span class="tag xt1">CCDV-F D6</span></td><td></td></tr>
+<tr><td><a href="#framework">11. Agent framework bên ngoài</a></td><td><span class="tag xt1">CCDV-F D1</span></td><td></td></tr>
+<tr><td><a href="#module-9">12. Dựng các mẫu workflow bằng code</a></td><td><span class="tag xt1">CCDV-F D1</span></td><td>Trùng với <a href="/notes/lessons/07-agents.html#workflow-agent">Bài 07 §Workflow hay agent</a>, đọc lướt</td></tr>
 </tbody></table></div>
 </details>
 
@@ -69,7 +74,6 @@
     <rect x="324" y="4" width="312" height="204" rx="8" class="lane"/>
     <text x="160" y="24" class="lane-lb" text-anchor="middle">WORKFLOW · code điều khiển</text>
     <text x="480" y="24" class="lane-lb" text-anchor="middle">AGENT · model điều khiển</text>
-
     <rect x="20" y="70" width="80" height="44" rx="6" class="b-step"/><text x="60" y="97" class="t tb" text-anchor="middle">Bước 1</text>
     <rect x="120" y="70" width="80" height="44" rx="6" class="b-step"/><text x="160" y="97" class="t tb" text-anchor="middle">Bước 2</text>
     <rect x="220" y="70" width="80" height="44" rx="6" class="b-step"/><text x="260" y="97" class="t tb" text-anchor="middle">Bước 3</text>
@@ -79,7 +83,6 @@
     <text x="160" y="170" class="ts" text-anchor="middle">Dễ đoán, rẻ, dễ test</text>
     <text x="160" y="196" class="tw-good" text-anchor="middle">✓ Xong sau đúng 3 bước</text>
     <circle class="tok" r="7" style="transform:translate(260px,58px)"/>
-
     <rect x="430" y="52" width="100" height="38" rx="6" class="b-sys"/><text x="480" y="76" class="t tb" text-anchor="middle">Model</text>
     <rect x="340" y="136" width="84" height="38" rx="6" class="b-step"/><text x="382" y="159" class="t" text-anchor="middle">Đọc file</text>
     <rect x="438" y="136" width="84" height="38" rx="6" class="b-step"/><text x="480" y="159" class="t" text-anchor="middle">Tìm kiếm</text>
@@ -167,7 +170,7 @@
   <dt>Harness</dt><dd>Phần code bao quanh model: chạy vòng lặp, chạy tool, kiểm tra quyền.</dd>
 </dl></div>
 
-<h2 id="vong-lap">2. Vòng lặp agent</h2>
+<h2 id="agent-loop">2. Vòng lặp agent</h2>
 <p class="xtags"><span class="tag xt3">CCAR-F D1</span> <span class="tag xt1">CCDV-F D1</span></p>
 <div class="analogy"><div class="hd">Hình dung đời thường</div>
   Bạn nhờ một nhân viên mới tra giúp đơn hàng. Nhân viên nói: “Anh cho tôi tra mã ORD-123456 nhé.” Bạn tra rồi đưa kết quả. Nhân viên đọc và hoặc xin tra thêm, hoặc báo lại cho khách. Cuộc trao đổi cứ lặp cho tới khi nhân viên nói “xong rồi”. Vòng lặp agent đúng là như vậy: <strong>Claude chỉ “xin” gọi tool, code của bạn mới chạy tool</strong> rồi đưa kết quả trở lại.
@@ -300,13 +303,11 @@ while True:                                                                # ②
     <path d="M190,198 H233" class="ln-warn"/>
     <text x="212" y="190" class="tw-warn" text-anchor="middle">✕</text>
     <text x="212" y="244" class="ts" text-anchor="middle">không nối trực tiếp</text>
-
     <g>
       <path class="ln-acc flow" d="M275,60 L130,168" marker-end="url(#m34)"/>
       <path class="ln-acc flow" d="M305,60 V168" marker-end="url(#m34)"/>
       <path class="ln-acc flow" d="M365,60 L510,168" marker-end="url(#m34)"/>
     </g>
-
     <g>
       <path class="ln-good flow" d="M80,168 L245,62" marker-end="url(#m34)"/>
       <path class="ln-good flow" d="M335,168 V62" marker-end="url(#m34)"/>
@@ -344,6 +345,7 @@ while True:                                                                # ②
   </ul></div>
 </div>
 <div class="alert"><strong>Bẫy.</strong> Khi các subagent đều làm <em>đúng</em> việc được giao mà báo cáo vẫn thiếu, <strong>lỗi nằm ở coordinator</strong> (phân rã quá hẹp), không phải ở subagent.</div>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Trong Claude Code, một subagent mặc định được tạo subagent của riêng nó, tới <strong>ba tầng</strong> dưới hội thoại chính. Ở tầng giới hạn, Claude Code rút tool <code>Agent</code> khỏi subagent (trừ fork), nên subagent đó tự làm việc được giao và trả một bản tóm tắt. Đổi giới hạn bằng <code>CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH</code> (đặt <code>1</code> để tắt lồng nhau); muốn một subagent không được tạo subagent thì bỏ <code>Agent</code> khỏi <code>tools</code> của nó. Ngoài ra mặc định chỉ 20 subagent chạy cùng lúc (<code>CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS</code>). Mô hình hub-and-spoke của đề thi (subagent không nói chuyện trực tiếp với nhau, mọi thứ đi qua coordinator) là cách đơn giản hoá để thi, và vẫn là đáp án đúng. Nguồn: <a href="https://code.claude.com/docs/en/sub-agents" target="_blank" rel="noopener">code.claude.com/docs/en/sub-agents</a>.</div>
 
 <h2 id="task">4. Gọi subagent và truyền context</h2>
 <p class="xtags"><span class="tag xt3">CCAR-F D1</span> <span class="tag xt1">CCDV-F D1</span> <span class="tag xt1">CCDV-F D6</span></p>
@@ -351,7 +353,7 @@ while True:                                                                # ②
   Bạn giao việc cho một người vừa vào công ty sáng nay. Người đó chưa dự cuộc họp hôm qua, chưa đọc email nào của bạn. Họ chỉ biết đúng những gì ghi trên <strong>tờ giấy giao việc</strong>. Subagent cũng vậy: nó không thấy lịch sử của coordinator, nên mọi thông tin cần thiết phải nằm trong prompt giao việc.
 </div>
 <ul>
-  <li>Subagent được tạo qua <strong>Task tool</strong>. Vì vậy <code>allowedTools</code> của coordinator phải có <code>Task</code>, nếu thiếu thì coordinator không tạo được subagent. (Đề v1.0 chấm theo guide; docs Agent SDK hiện hành: <code>allowedTools</code> chỉ tự duyệt, tool <code>Agent</code> chạy dù không liệt kê. Xem ghi chú bên dưới.)</li>
+  <li>Subagent được tạo qua <strong>Task tool</strong>. Vì vậy <code>allowedTools</code> của coordinator phải có <code>Task</code>, nếu thiếu thì coordinator không tạo được subagent. (Đề v1.0 chấm theo guide; docs Agent SDK hiện hành: <code>allowedTools</code> chỉ tự duyệt, tool <code>Agent</code> chạy dù không liệt kê; muốn ẩn hẳn tool thì dùng <code>disallowedTools</code>. Nguồn: <a href="https://code.claude.com/docs/en/agent-sdk/permissions" target="_blank" rel="noopener">Agent SDK, Configure permissions</a>.)</li>
   <li>Mỗi loại subagent khai báo bằng <code>AgentDefinition</code>: mô tả (để coordinator biết khi nào dùng), system prompt riêng, và danh sách tool được phép.</li>
 </ul>
 <pre><code>options = ClaudeAgentOptions(
@@ -415,7 +417,7 @@ while True:                                                                # ②
 </figure>
 <div class="alert"><strong>Bẫy.</strong> Giả định subagent “tự biết” những gì coordinator đã biết, hoặc hai lời gọi subagent “nhớ” nhau qua các lần chạy. Subagent không thừa kế context và không chia sẻ bộ nhớ giữa các lần gọi.</div>
 
-<h2 id="thu-tu" class="pb">5. Ép thứ tự workflow và bàn giao</h2>
+<h2 id="workflow-order" class="pb">5. Ép thứ tự workflow và bàn giao</h2>
 <p class="xtags"><span class="tag xt3">CCAR-F D1</span> <span class="tag xt1">CCDV-F D1</span></p>
 <div class="analogy"><div class="hd">Hình dung đời thường</div>
   Ở ngân hàng, nhân viên phải kiểm tra giấy tờ của khách trước khi chuyển tiền. Có hai cách bảo đảm điều này. Cách một: dán tờ nhắc “nhớ kiểm tra giấy tờ” lên bàn. Cách hai: <strong>máy chuyển tiền tự khoá</strong> cho tới khi nhân viên quét xong giấy tờ. Tờ nhắc thì thỉnh thoảng bị quên. Máy khoá thì không.
@@ -464,6 +466,7 @@ while True:                                                                # ②
   "actions_taken": ["đã xác minh danh tính", "đã tra đơn ORD-123456"],
   "recommended_action": "Duyệt ngoại lệ hoàn tiền một phần" }</code></pre>
 <div class="alert"><strong>Bẫy.</strong> Thêm một câu “luôn xác minh danh tính trước” vào system prompt rồi coi như xong. Đó là hướng dẫn xác suất. Đề thường coi đáp án “thêm hook hoặc cổng điều kiện” là đúng.</div>
+<div class="alert"><strong>Bẫy.</strong> Đề đưa “thêm classifier định tuyến” để chữa việc agent bỏ bước bắt buộc (ví dụ hoàn tiền trước khi xác minh khách). Classifier chỉ quyết định agent nào nhận yêu cầu; lỗi nằm <em>bên trong</em> chuỗi bước của agent. Cách đúng là cổng điều kiện chặn tool phía sau cho tới khi bước trước đã xong.</div>
 
 <h2 id="hook-sdk">6. Hook trong Agent SDK</h2>
 <p class="xtags"><span class="tag xt3">CCAR-F D1</span> <span class="tag xt1">CCDV-F D1</span></p>
@@ -494,7 +497,61 @@ while True:                                                                # ②
 </table></div>
 <div class="insight"><strong>Cốt lõi.</strong> Hook cho đảm bảo <strong>tất định</strong>; prompt cho tuân thủ <strong>xác suất</strong>. Quy tắc kinh doanh bắt buộc thì chọn hook.</div>
 
-<h2 id="phan-ra" class="pb">7. Phân rã nhiệm vụ</h2>
+<h3>6.1 Đăng ký hook và matcher</h3>
+<p>Hook truyền vào <code>options.hooks</code>. Khoá là tên sự kiện (phân biệt hoa thường: <code>PreToolUse</code>, không phải <code>preToolUse</code>), giá trị là mảng <code>HookMatcher</code>. Mỗi <code>HookMatcher</code> gồm <code>matcher</code> (mẫu lọc, không bắt buộc) và danh sách callback.</p>
+<pre><code class="language-python">options = ClaudeAgentOptions(
+    hooks={"PreToolUse": [HookMatcher(matcher="Bash", hooks=[chan_lenh_nguy_hiem])],
+           "PostToolUse": [HookMatcher(matcher="Write|Edit", hooks=[ghi_nhat_ky])]}
+)</code></pre>
+<ol>
+  <li>Trước mỗi lời gọi tool tên <code>Bash</code>, SDK chạy <code>chan_lenh_nguy_hiem</code>.</li>
+  <li>Sau mỗi lời gọi <code>Write</code> hoặc <code>Edit</code>, SDK chạy <code>ghi_nhat_ky</code>. Dấu <code>|</code> cho phép khớp nhiều tool.</li>
+  <li>Hook không có <code>matcher</code> chạy cho mọi sự kiện cùng loại.</li>
+</ol>
+<div class="alert"><strong>Bẫy.</strong> <code>matcher</code> chỉ so với <strong>tên tool</strong>, không so với đường dẫn file hay tham số. Muốn chỉ xử lý file <code>.md</code> thì khớp theo tên tool rồi kiểm tra <code>tool_input["file_path"]</code> bên trong callback.</div>
+<h3>6.2 Quyết định của PreToolUse</h3>
+<p>Callback nhận ba đối số: dữ liệu sự kiện (có <code>tool_name</code>, <code>tool_input</code>), <code>tool_use_id</code> (nối <code>PreToolUse</code> với <code>PostToolUse</code> của cùng lời gọi) và context. Nó trả về một đối tượng. Trả <code>{}</code> nghĩa là cho đi tiếp không đổi. Muốn quyết định thì đặt trong <code>hookSpecificOutput</code>:</p>
+<div class="tw"><table>
+  <thead><tr><th><code>permissionDecision</code></th><th>Hiệu quả</th><th>Ví dụ</th></tr></thead>
+  <tbody>
+    <tr><td><code>allow</code></td><td>Tự duyệt, không hỏi người dùng</td><td>Cho tool chỉ đọc chạy luôn</td></tr>
+    <tr><td><code>deny</code></td><td>Chặn; <code>permissionDecisionReason</code> trả về cho Claude</td><td>Hoàn tiền trên 500 USD thì chặn, dặn dùng <code>escalate_to_human</code></td></tr>
+    <tr><td><code>ask</code></td><td>Hiện cho người dùng duyệt</td><td>Ghi vào database production</td></tr>
+    <tr><td><code>defer</code></td><td>Kết thúc lượt để quay lại duyệt sau</td><td>Tạm dừng lời gọi, quay lại chạy tiếp sau</td></tr>
+  </tbody>
+</table></div>
+<p>Khi nhiều hook <code>PreToolUse</code> trả quyết định khác nhau, thứ tự ưu tiên là <code>deny</code>, rồi <code>defer</code>, rồi <code>ask</code>, rồi <code>allow</code>. Một hook chặn là đủ để chặn, dù hook khác cho phép. Hook còn có thể trả <code>updatedInput</code> để sửa tham số trước khi tool chạy, ví dụ đổi đường dẫn ghi file sang thư mục sandbox.</p>
+<h3>6.3 Ví dụ chạy từng bước: cổng hoàn tiền</h3>
+<ol>
+  <li>Khách đòi hoàn 640 USD. Claude gọi <code>process_refund</code> với <code>amount: 640</code>.</li>
+  <li>SDK thấy sự kiện <code>PreToolUse</code>, tool khớp matcher, gọi <code>chan_hoan_tien_lon</code>.</li>
+  <li>Callback thấy 640 &gt; 500 và trả <code>permissionDecision: "deny"</code> kèm lý do. Tool không chạy.</li>
+  <li>Claude nhận lý do dưới dạng kết quả tool bị từ chối và gọi <code>escalate_to_human</code>.</li>
+  <li>Khoản 120 USD đi qua: callback trả <code>{}</code>, tool chạy, rồi <code>PostToolUse</code> chuẩn hoá kết quả trước khi Claude đọc.</li>
+</ol>
+<p>Ở <code>PostToolUse</code>, callback có thể đặt <code>additionalContext</code> để thêm thông tin vào kết quả tool, hoặc <code>updatedToolOutput</code> để thay hẳn kết quả trước khi Claude thấy (dùng được với tool built-in và tool MCP). Đây là chỗ chuẩn hoá nhiều định dạng ngày hay mã trạng thái về một dạng.</p>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div><ul>
+    <li>Viết “không hoàn quá 500 USD” trong system prompt và coi là đủ</li>
+    <li>Để hook <code>PostToolUse</code> chặn việc hoàn tiền: tool đã chạy xong</li>
+    <li>Lọc theo đường dẫn file bằng <code>matcher</code>: matcher chỉ khớp tên tool</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đúng</div><ul>
+    <li>Hook <code>PreToolUse</code> kiểm số tiền bằng code, trả <code>deny</code></li>
+    <li>Chặn ở <code>PreToolUse</code>, biến đổi kết quả ở <code>PostToolUse</code></li>
+    <li>Matcher theo tên tool, điều kiện theo tham số nằm trong callback</li>
+  </ul></div>
+</div>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Hook <code>PreToolUse</code> quá hạn <code>timeout</code> thì Claude Code chặn lời gọi tool và phiên vẫn tiếp tục; <code>PostToolUse</code> quá hạn thì kết quả tool được giữ. Đặt <code>onFailure="block"</code> (Python: <code>on_failure</code>) nếu muốn callback lỗi thì chặn hành động. Sự kiện <code>Stop</code> bỏ qua matcher. Nguồn: <a href="https://code.claude.com/docs/en/agent-sdk/hooks" target="_blank" rel="noopener">Agent SDK, Hooks</a>.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt><code>HookMatcher</code></dt><dd>Đối tượng gồm mẫu lọc <code>matcher</code> và danh sách callback cho một sự kiện.</dd>
+  <dt><code>permissionDecision</code></dt><dd>Quyết định của hook <code>PreToolUse</code>: <code>allow</code>, <code>deny</code>, <code>ask</code>, <code>defer</code>.</dd>
+  <dt><code>updatedInput</code></dt><dd>Tham số mới của tool do hook trả về, thay cho tham số Claude đưa.</dd>
+  <dt><code>additionalContext</code>, <code>updatedToolOutput</code></dt><dd>Hai trường của <code>PostToolUse</code>: thêm thông tin vào kết quả, hoặc thay kết quả.</dd>
+  <dt>Deterministic</dt><dd>Tất định: cùng đầu vào luôn cùng kết quả, trái với tuân thủ prompt chỉ đúng phần lớn thời gian.</dd>
+</dl></div>
+
+<h2 id="decomposition" class="pb">7. Phân rã nhiệm vụ</h2>
 <p class="xtags"><span class="tag xt3">CCAR-F D1</span> <span class="tag xt4">CCAR-P D1</span></p>
 <div class="analogy"><div class="hd">Hình dung đời thường</div>
   Kiểm tra một toà nhà. Với toà nhà mới xây theo bản vẽ, bạn đi lần lượt từng phòng theo danh sách rồi kiểm tra tổng thể. Với toà nhà cũ không có bản vẽ, bạn phải đi một vòng xem cấu trúc, chọn chỗ dễ hỏng nhất, rồi vừa làm vừa đổi kế hoạch khi gặp thứ bất ngờ.
@@ -539,7 +596,46 @@ while True:                                                                # ②
 </div>
 <div class="alert"><strong>Bẫy.</strong> Dùng một lượt duy nhất để review cả chục file cùng lúc (dễ bỏ sót), hoặc dùng chuỗi cố định cho việc mở mà các bước thật sự phụ thuộc vào những gì sẽ tìm thấy.</div>
 
-<h2 id="phien">8. Phiên làm việc: resume và fork</h2>
+<h3>7.1 Prompt chaining: ví dụ có số</h3>
+<p>Cần review một pull request đổi 14 file. Có hai cách:</p>
+<div class="tw"><table>
+  <thead><tr><th></th><th>Một lượt cho cả 14 file</th><th>Chaining: từng file, rồi tích hợp</th></tr></thead>
+  <tbody>
+    <tr><td>Số lời gọi</td><td>1</td><td>14 lượt local và 1 lượt tích hợp, tổng 15</td></tr>
+    <tr><td>Chú ý của model</td><td>Dàn trải: góp ý nông, dễ bỏ sót, có lúc tự mâu thuẫn</td><td>Mỗi lượt chỉ một file, đủ sâu</td></tr>
+    <tr><td>Lỗi giữa các file (đổi chữ ký hàm, sai kiểu)</td><td>Dễ lọt</td><td>Lượt tích hợp nhận 14 bản tóm tắt và tìm riêng loại lỗi này</td></tr>
+    <tr><td>Hợp khi</td><td>Thay đổi nhỏ</td><td>Thay đổi lớn, khía cạnh cần xem đã biết trước</td></tr>
+  </tbody>
+</table></div>
+<p>Các lượt local chạy độc lập nên chạy song song được (mục 3, <code>Task</code> trong cùng một response). Lượt tích hợp phải chờ chúng xong.</p>
+<h3>7.2 Phân rã động: ví dụ từng bước</h3>
+<p>Yêu cầu: “Thêm test cho codebase cũ này”. Bạn chưa biết module nào quan trọng, module nào phụ thuộc module nào, nên không viết sẵn được danh sách bước.</p>
+<ol>
+  <li><strong>Vẽ cấu trúc.</strong> Agent liệt kê thư mục, đọc file cấu hình, tìm điểm vào. Kết quả là bản đồ các module.</li>
+  <li><strong>Tìm vùng tác động cao.</strong> Chọn phần nhiều người dùng gọi tới, hay sửa gần đây, hay chưa có test.</li>
+  <li><strong>Lập kế hoạch ưu tiên.</strong> Ví dụ: module thanh toán trước, tiện ích định dạng sau.</li>
+  <li><strong>Làm và sửa kế hoạch.</strong> Khi viết test cho thanh toán, agent phát hiện nó gọi một dịch vụ thuế chưa có test. Dịch vụ thuế được chèn lên trước trong kế hoạch.</li>
+</ol>
+<p>Bước 4 là điểm khác chaining: kế hoạch đổi theo thứ vừa tìm thấy. Nếu viết cứng bốn bước kiểu “test module A, B, C, D”, bạn sẽ bỏ sót phụ thuộc mới phát lộ.</p>
+<h3>7.3 Chọn kiểu phân rã</h3>
+<div class="tw"><table>
+  <thead><tr><th>Dấu hiệu của việc</th><th>Chọn</th><th>Vì sao</th></tr></thead>
+  <tbody>
+    <tr><td>Biết trước các khía cạnh cần xem (từng file, từng góc nhìn)</td><td>Prompt chaining, cố định</td><td>Dự đoán được, dễ test, chi phí ổn định</td></tr>
+    <tr><td>Chưa biết sẽ gặp gì, bước sau phụ thuộc điều tìm thấy</td><td>Phân rã động</td><td>Kế hoạch được viết lại giữa chừng</td></tr>
+    <tr><td>Các phần độc lập, không phụ thuộc nhau</td><td>Chạy song song</td><td>Tiết kiệm thời gian, kết quả gộp ở cuối</td></tr>
+  </tbody>
+</table></div>
+<div class="insight"><strong>Cốt lõi.</strong> Hỏi “tôi có liệt kê được các bước trước khi bắt đầu không?”. Liệt kê được thì chaining. Không liệt kê được vì bước sau tuỳ vào kết quả bước trước thì phân rã động.</div>
+<div class="alert"><strong>Bẫy.</strong> Coordinator chia đề tài quá hẹp (chỉ ba mảng hình ảnh trong đề tài “AI và ngành sáng tạo”) rồi mọi subagent đều làm đúng, báo cáo vẫn thiếu mảng. Lỗi nằm ở <strong>bước phân rã của coordinator</strong>, không ở subagent. Cách sửa là cho coordinator liệt kê đủ mảng trước khi giao việc và có vòng kiểm tra chỗ thiếu (mục 3).</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Prompt chaining</dt><dd>Chuỗi bước cố định: đầu ra bước trước làm đầu vào bước sau.</dd>
+  <dt>Dynamic decomposition</dt><dd>Phân rã động: kế hoạch được lập và sửa trong lúc làm, theo những gì tìm thấy.</dd>
+  <dt>Integration pass</dt><dd>Lượt tích hợp: một lượt xem mọi kết quả từng phần để bắt lỗi giữa các phần.</dd>
+  <dt>Coverage gap</dt><dd>Khoảng trống phạm vi: mảng của đề tài mà không subagent nào được giao.</dd>
+</dl></div>
+
+<h2 id="sessions">8. Phiên làm việc: resume và fork</h2>
 <p class="xtags"><span class="tag xt3">CCAR-F D1</span></p>
 <div class="analogy"><div class="hd">Hình dung đời thường</div>
   Bạn đang chơi game và có file lưu. <strong>Resume</strong> là tải lại file lưu để chơi tiếp. <strong>Fork</strong> là sao chép file lưu để thử hai cách đánh khác nhau mà không phá lẫn nhau. Nếu file lưu đã quá cũ so với thế giới game, bắt đầu ván mới kèm ghi chú những gì đã học còn nhanh hơn.
@@ -582,7 +678,7 @@ while True:                                                                # ②
 <div class="alert"><strong>Bẫy.</strong> Resume nguyên phiên cũ khi code đã đổi nhiều: agent sẽ tin vào kết quả đọc file đã lỗi thời.</div>
 <div class="note"><span class="tag t-new">Thực tế 11/2026</span> Trong Agent SDK, <code>fork_session</code> không thay cho <code>resume</code> mà đi <strong>kèm</strong> nó: <code>ClaudeAgentOptions(resume=session_id, fork_session=True)</code>. <code>resume</code> chọn phiên xuất phát, <code>fork_session</code> bảo SDK phân nhánh thành phiên mới (có ID riêng) thay vì nối tiếp phiên gốc; phiên gốc giữ nguyên và vẫn resume được. CLI cũng ghép như vậy: <code>claude --resume abc123 --fork-session</code>. Fork chỉ phân nhánh <em>lịch sử hội thoại</em>, không phân nhánh hệ thống file: nếu agent trong nhánh sửa file thì thay đổi đó là thật và các phiên khác trong cùng thư mục cũng thấy. Muốn hoàn tác file thì dùng file checkpointing. Nguồn: <a href="https://code.claude.com/docs/en/agent-sdk/sessions.md" target="_blank" rel="noopener">Work with sessions</a>.</div>
 
-<h2 id="trien-khai">9. Xây và triển khai agent</h2>
+<h2 id="deployment">9. Xây và triển khai agent</h2>
 <p class="xtags"><span class="tag xt1">CCDV-F D1</span> <span class="tag xt4">CCAR-P D1</span></p>
 <div class="analogy"><div class="hd">Hình dung đời thường</div>
   Mở quán ăn: bạn có thể tự xây bếp từ gạch (tự viết mọi thứ), mua bếp lắp sẵn (dùng thư viện), hoặc thuê hẳn mặt bằng có sẵn bếp và nhân viên (dịch vụ trọn gói). Càng về sau, bạn tự làm ít hơn, nhưng cũng kiểm soát ít hơn.
@@ -621,6 +717,7 @@ while True:                                                                # ②
   </tbody>
 </table></div>
 <p>Framework như LangGraph, Strands, PydanticAI trừu tượng hoá luồng (graph, state, retry). Đổi lại, bạn thêm phụ thuộc và khó gỡ lỗi hơn so với gọi API trực tiếp.</p>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Agent SDK có hai giới hạn cho vòng lặp: <code>max_turns</code> (TypeScript <code>maxTurns</code>) và <code>max_budget_usd</code> (<code>maxBudgetUsd</code>). Chạm giới hạn thì <code>ResultMessage</code> có subtype <code>error_max_turns</code> hoặc <code>error_max_budget_usd</code>, kèm <code>total_cost_usd</code> và <code>session_id</code> để resume. Đây là giới hạn cấu hình đã kích hoạt, không phải model kém: cách xử lý là resume với giới hạn cao hơn, thu hẹp việc hoặc chia nhỏ việc. Chi phí của subagent tính vào trần ngân sách; chạm trần thì spawn subagent mới bị từ chối (<code>Budget limit reached</code>) và subagent chạy nền bị dừng. Tên gần đúng như <code>max_iterations</code> hay <code>budget_limit</code> không phải tuỳ chọn của SDK. Nguồn: <a href="https://code.claude.com/docs/en/agent-sdk/agent-loop" target="_blank" rel="noopener">code.claude.com/docs/en/agent-sdk/agent-loop</a>.</div>
 
 <h2 id="memory">10. Memory</h2>
 <p class="xtags"><span class="tag xt1">CCDV-F D1</span> <span class="tag xt1">CCDV-F D6</span></p>
@@ -637,13 +734,272 @@ while True:                                                                # ②
   </tbody>
 </table></div>
 
-<p class="lesson-practice">Luyện câu hỏi của bài này trong <a href="/bank?lesson=03">🗂️ Ngân hàng</a>.</p>
+<h3>10.1 Memory tool: Claude xin, ứng dụng của bạn lưu</h3>
+<p><strong>Memory tool</strong> cho Claude đọc và ghi các file nhớ giữa nhiều cuộc hội thoại. Nó là tool <strong>phía client</strong>: Claude chỉ <em>yêu cầu</em> thao tác, ứng dụng của bạn chạy thao tác trên nơi lưu do bạn kiểm soát (thư mục, database) rồi trả kết quả bằng <code>tool_result</code>. Cấu hình duy nhất trong request là <code>{"type": "memory_20250818", "name": "memory"}</code>, không cần tự khai input schema.</p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Claude là thư ký giỏi nhưng mỗi sáng quên sạch. Bạn đặt một tủ hồ sơ ghi “/memories”. Thư ký tự mở tủ đọc trước khi làm việc, và ghi lại điều đáng nhớ trước khi về. Chìa khoá tủ nằm ở bạn: bạn quyết định tủ ở đâu và ai được mở.
+</div>
+<p>Claude tự kiểm tra thư mục <code>/memories</code> trước khi bắt đầu việc, và lưu điều học được vào file trong đó. Các lệnh Claude có thể yêu cầu gồm <code>view</code>, <code>create</code>, <code>str_replace</code>, <code>insert</code>, <code>delete</code> và <code>rename</code>. <code>/memories</code> chỉ là tiền tố; handler của bạn ánh xạ nó vào nơi lưu thật, ví dụ thư mục riêng của từng người dùng.</p>
+<h3>10.2 Ví dụ chạy từng bước</h3>
+<ol>
+  <li><strong>Phiên 1.</strong> Khách nói “luôn gọi tôi là anh Nam, tôi muốn câu trả lời ngắn”. Claude gửi <code>tool_use</code> với <code>command: "create"</code>, <code>path: "/memories/preferences.txt"</code> và nội dung.</li>
+  <li>Handler của bạn ghi file vào nơi lưu, rồi trả <code>tool_result</code> xác nhận.</li>
+  <li><strong>Phiên 2 (hôm sau).</strong> Hội thoại mới trống. Claude gọi <code>view /memories</code>, thấy <code>preferences.txt</code> rồi đọc lại. Claude trả lời ngay đúng giọng đã dặn.</li>
+  <li>Điều đã lưu chỉ vào context window của phiên 2 khi Claude <em>đọc</em> nó.</li>
+</ol>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div><ul>
+    <li>Tin rằng Anthropic lưu giúp file <code>/memories</code> trên server</li>
+    <li>Handler ghi mọi path Claude gửi, kể cả <code>/memories/../../secrets.env</code></li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đúng</div><ul>
+    <li>Bộ nhớ nằm hoàn toàn trong ứng dụng của bạn; bạn quyết định lưu ở đâu và giữ bao lâu</li>
+    <li>Handler kiểm tra từng path ở từng lệnh: bắt đầu bằng <code>/memories</code>, resolve về dạng chuẩn rồi xác nhận còn nằm trong thư mục nhớ, từ chối <code>../</code></li>
+  </ul></div>
+</div>
+<div class="alert"><strong>Bẫy.</strong> Bỏ qua kiểm tra path traversal. Mọi thao tác file đều do code của bạn chạy, nên mọi biện pháp an toàn (kiểm path, giới hạn dung lượng file, xoá file lâu không dùng, lọc dữ liệu nhạy cảm) là việc của bạn.</div>
+<h3>10.3 Memory, context editing, compaction</h3>
+<div class="tw"><table>
+  <thead><tr><th>Cơ chế</th><th>Làm gì</th><th>Thông tin còn lại sau đó</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Memory tool</strong></td><td>Lưu file ngoài context, qua nhiều phiên</td><td>Còn nguyên trong nơi lưu của bạn</td></tr>
+    <tr><td><strong>Context editing</strong></td><td>Xoá kết quả tool cũ khỏi context ở phía client</td><td>Phần bị xoá mất, trừ khi đã ghi vào memory</td></tr>
+    <tr><td><strong>Compaction</strong></td><td>Server tóm tắt cả hội thoại khi gần chạm giới hạn context</td><td>Chỉ còn bản tóm tắt; chi tiết cần giữ nên ghi vào memory</td></tr>
+  </tbody>
+</table></div>
+<p>Với agent chạy lâu, tài liệu khuyên dùng cả hai: compaction giữ context đang chạy gọn, memory giữ điều bắt buộc phải sống sót qua lần tóm tắt.</p>
+<h3>10.4 Trong Claude Code: CLAUDE.md và auto memory</h3>
+<div class="tw"><table>
+  <thead><tr><th></th><th>CLAUDE.md</th><th>Auto memory</th></tr></thead>
+  <tbody>
+    <tr><td>Ai viết</td><td>Bạn viết, để hướng dẫn Claude</td><td>Claude tự ghi theo lời bạn sửa và sở thích</td></tr>
+    <tr><td>Nạp khi nào</td><td>Mỗi phiên</td><td>Mỗi phiên, tối đa 200 dòng đầu hoặc 25KB</td></tr>
+  </tbody>
+</table></div>
+<p>Dùng CLAUDE.md để định hướng hành vi. Dùng auto memory để Claude học từ chỗ bạn sửa mà không cần bạn viết tay. <code>CLAUDE.local.md</code> ở gốc project chứa sở thích riêng của bạn và nên thêm vào <code>.gitignore</code>.</p>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Memory tool hiện ở trạng thái stable, tương thích ZDR vì dữ liệu lưu phía client. Nguồn: <a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/memory-tool" target="_blank" rel="noopener">Memory tool</a> và <a href="https://code.claude.com/docs/en/memory" target="_blank" rel="noopener">Claude Code, Memory</a>.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Memory tool (<code>memory_20250818</code>)</dt><dd>Tool để Claude đọc, ghi file nhớ trong <code>/memories</code>; ứng dụng của bạn chạy thao tác.</dd>
+  <dt>Client-side tool</dt><dd>Tool mà code của bạn chạy, Claude chỉ xin gọi.</dd>
+  <dt>Path traversal</dt><dd>Dùng <code>../</code> để chui ra ngoài thư mục được phép.</dd>
+  <dt>Context editing</dt><dd>Xoá bớt kết quả tool cũ khỏi context.</dd>
+  <dt>Compaction</dt><dd>Tóm tắt phía server để giữ hội thoại dài trong giới hạn context.</dd>
+  <dt>Auto memory</dt><dd>Ghi chú Claude Code tự lưu qua các phiên.</dd>
+</dl></div>
+
+<h2 id="framework">11. Agent framework bên ngoài</h2>
+<p class="xtags"><span class="tag xt1">CCDV-F D1</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Nấu ăn bằng bộ nồi đa năng thì nhanh với món nó hỗ trợ sẵn. Món lạ thì bạn phải hiểu bên trong nó nấu thế nào, và khi cháy thì khó biết cháy ở đâu.
+</div>
+<p>Ngoài Claude Agent SDK, nhiều đội dùng framework của bên thứ ba. Exam guide nêu tên ba cái:</p>
+<div class="tw"><table>
+  <thead><tr><th>Framework</th><th>Ý tưởng chính</th><th>Hợp khi</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Strands Agents</strong> (AWS, mã nguồn mở)</td><td>Model-driven: khai báo model, prompt, tool; model tự lập kế hoạch</td><td>Đội đã ở trên AWS, Bedrock</td></tr>
+    <tr><td><strong>LangGraph</strong></td><td>Luồng là đồ thị trạng thái: node, cạnh, checkpoint</td><td>Workflow nhiều nhánh, cần lưu và khôi phục trạng thái, có bước người duyệt</td></tr>
+    <tr><td><strong>PydanticAI</strong></td><td>Kiểu dữ liệu chặt: input, output validate bằng Pydantic</td><td>Ứng dụng Python cần output có cấu trúc đáng tin</td></tr>
+    <tr><td>Claude Agent SDK</td><td>Harness của Claude Code: built-in tool, subagent, hook, phiên</td><td>Agent làm việc với file, code, lệnh</td></tr>
+    <tr><td>Gọi API trực tiếp</td><td>Tự viết vòng lặp tool</td><td>Luồng đơn giản, cần kiểm soát hết, ít phụ thuộc</td></tr>
+  </tbody>
+</table></div>
+<p>Đánh đổi chung: framework cho sẵn trạng thái, retry, đồ thị, đổi nhà cung cấp model. Đổi lại thêm phụ thuộc, thêm prompt ẩn, và khó gỡ lỗi hơn vì phải đọc qua lớp trừu tượng. Dùng framework nào thì vẫn cần hiểu vòng lặp gốc (<code>stop_reason</code>, <code>tool_use</code>, <code>tool_result</code>) để đọc trace.</p>
+<div class="insight"><strong>Cốt lõi.</strong> Bắt đầu bằng cách đơn giản nhất. Chọn framework vì nó giải được một nhu cầu cụ thể (trạng thái bền, đồ thị nhiều nhánh, validate kiểu), không vì nó phổ biến.</div>
+<div class="alert"><strong>Bẫy.</strong> "Chuyển sang framework X" để chữa một lỗi nằm ở mô tả tool hay prompt: lỗi vẫn đi theo sang framework mới.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Harness</dt><dd>Phần mềm bao quanh model: vòng lặp, tool, quản lý context, quyền.</dd>
+  <dt>Checkpoint</dt><dd>Bản lưu trạng thái giữa chừng để chạy tiếp sau khi dừng hoặc lỗi.</dd>
+</dl></div>
+
+<h2 id="module-9">12. Dựng các mẫu workflow bằng code</h2>
+<p class="xtags"><span class="tag xt1">CCDV-F D1</span> <span class="xnote">Trùng với <a href="/notes/lessons/07-agents.html#workflow-agent">Bài 07 §Workflow hay agent</a>, đọc lướt</span></p>
+<p>Mục 1 đã phân biệt workflow với agent và nêu năm mẫu workflow. Mục này theo module 9 của khoá Building with the Claude API: xem code cho ba mẫu song song, nối chuỗi và định tuyến, cách cho agent tự kiểm tra môi trường, và nối lại với evaluator-optimizer.</p>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Parallelization</dt><dd>Chạy nhiều lần gọi Claude cùng lúc, mỗi lần một khía cạnh, rồi gộp.</dd>
+  <dt>Chaining</dt><dd>Chia việc thành các bước nối tiếp, bước sau dùng đầu ra bước trước.</dd>
+  <dt>Routing</dt><dd>Phân loại đầu vào trước, rồi chuyển tới pipeline chuyên biệt.</dd>
+  <dt>Evaluator-optimizer</dt><dd>Producer tạo kết quả, grader chấm và góp ý, producer sửa. Lặp cho tới khi đạt.</dd>
+  <dt>Environment inspection</dt><dd>Agent quan sát kết quả hành động của mình (đọc file, chạy test, chụp màn hình) để biết có làm đúng không.</dd>
+</dl></div>
+
+<h3>12.1 Lời khuyên của khoá học</h3>
+<div class="insight"><strong>Cốt lõi.</strong> Dùng workflow khi có thể; chỉ chuyển sang agent khi workflow không còn xử lý được độ đa dạng của yêu cầu. Người dùng cần sản phẩm chạy ổn định hơn là cách làm mới lạ. Bảng so sánh hai cách nằm ở mục 1.</div>
+
+<h3>12.2 Parallelization workflow</h3>
+<p>Gửi cùng một input cho nhiều lần gọi Claude chạy song song, mỗi lần tập trung vào một khía cạnh, rồi gộp kết quả:</p>
+<pre><code class="language-python">import asyncio
+
+async def evaluate_material(material_type, part_image, criteria):
+    return await claude_async(f"Evaluate {material_type} for this part.\nCriteria: {criteria}\nImage: [image]")
+
+async def material_selection(part_image):
+    # Parallel calls — mỗi cái focus 1 loại vật liệu
+    results = await asyncio.gather(
+        evaluate_material("metal", part_image, METAL_CRITERIA),
+        evaluate_material("polymer", part_image, POLYMER_CRITERIA),
+        evaluate_material("ceramic", part_image, CERAMIC_CRITERIA)
+    )
+    # Aggregation
+    return await claude_async(f"Compare these analyses and recommend:\n{results}")</code></pre>
+
+<h3>12.3 Chaining workflow</h3>
+<p>Chia việc phức tạp thành các bước nối tiếp, bước sau dựa trên kết quả bước trước. Hiệu quả khi một prompt lớn duy nhất cứ bỏ sót vài ràng buộc:</p>
+<pre><code class="language-python">async def create_social_video(topic):
+    # Step 1: Research
+    research = await claude_async(f"Research '{topic}' for a short video")
+    # Step 2: Script
+    script = await claude_async(f"Write a short video script:\n{research}")
+    # Step 3: Polish (focus only on fixing specific issues)
+    return await claude_async(f"""Revise this script:
+1. Remove AI-authorship references
+2. Remove emojis
+3. Replace cringey writing with professional prose
+
+Script: {script}""")</code></pre>
+
+<h3>12.4 Routing workflow</h3>
+<p>Phân loại input trước, rồi chuyển tới pipeline chuyên biệt, mỗi pipeline được tối ưu cho một loại:</p>
+<pre><code class="language-python">CATEGORIES = ["Entertainment", "Educational", "Comedy", "Personal vlog", "Reviews", "Storytelling"]
+
+async def create_video(topic):
+    # Step 1: Route
+    category = await claude_async(f"""
+&lt;topic&gt;{topic}&lt;/topic&gt;
+&lt;categories&gt;{', '.join(CATEGORIES)}&lt;/categories&gt;
+Which category best fits this topic? Reply with just the category name.""")
+    # Step 2: Specialized pipeline
+    prompt_template = SPECIALIZED_PROMPTS[category.strip()]
+    return await claude_async(prompt_template.format(topic=topic))</code></pre>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 214" role="img" aria-label="So sánh ba mẫu workflow: parallelization chạy song song rồi gộp, chaining chạy tuần tự, routing phân loại rồi chọn pipeline">
+    <defs><marker id="m1713" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah"/></marker></defs>
+    <rect x="4" y="4" width="204" height="206" rx="8" class="lane"/><rect x="218" y="4" width="204" height="206" rx="8" class="lane"/><rect x="432" y="4" width="204" height="206" rx="8" class="lane"/>
+    <text x="106" y="22" class="lane-lb" text-anchor="middle">PARALLELIZATION</text>
+    <text x="320" y="22" class="lane-lb" text-anchor="middle">CHAINING</text>
+    <text x="534" y="22" class="lane-lb" text-anchor="middle">ROUTING</text>
+    <rect x="66" y="34" width="80" height="24" rx="4" class="b-sys"/><text x="106" y="50" class="ts" text-anchor="middle">Input</text>
+    <path d="M106,58 L42,90 M106,58 V90 M106,58 L170,90" class="ln" marker-end="url(#m1713)"/>
+    <rect x="14" y="92" width="56" height="26" rx="4" class="b-step"/><text x="42" y="109" class="ts" text-anchor="middle">metal</text>
+    <rect x="78" y="92" width="56" height="26" rx="4" class="b-step"/><text x="106" y="109" class="ts" text-anchor="middle">polymer</text>
+    <rect x="142" y="92" width="56" height="26" rx="4" class="b-step"/><text x="170" y="109" class="ts" text-anchor="middle">ceramic</text>
+    <path d="M42,118 L106,146 M106,118 V146 M170,118 L106,146" class="ln"/>
+    <rect x="46" y="146" width="120" height="26" rx="4" class="b-done"/><text x="106" y="163" class="ts" text-anchor="middle">Aggregate</text>
+    <text x="106" y="196" class="ts" text-anchor="middle">cùng lúc, mỗi call một khía cạnh</text>
+    <rect x="250" y="34" width="140" height="28" rx="4" class="b-step"/><text x="320" y="52" class="ts" text-anchor="middle">1. Research</text>
+    <path d="M320,62 V80" class="ln" marker-end="url(#m1713)"/>
+    <rect x="250" y="82" width="140" height="28" rx="4" class="b-step"/><text x="320" y="100" class="ts" text-anchor="middle">2. Script</text>
+    <path d="M320,110 V128" class="ln" marker-end="url(#m1713)"/>
+    <rect x="250" y="130" width="140" height="28" rx="4" class="b-done"/><text x="320" y="148" class="ts" text-anchor="middle">3. Polish</text>
+    <text x="320" y="196" class="ts" text-anchor="middle">tuần tự, bước sau dùng bước trước</text>
+    <rect x="474" y="34" width="120" height="28" rx="4" class="b-hot"/><text x="534" y="52" class="ts" text-anchor="middle">Router: phân loại</text>
+    <path d="M534,62 L470,100 M534,62 V100 M534,62 L598,100" class="ln" marker-end="url(#m1713)"/>
+    <rect x="442" y="102" width="56" height="28" rx="4" class="b-step"/><text x="470" y="120" class="ts" text-anchor="middle">Comedy</text>
+    <rect x="506" y="102" width="56" height="28" rx="4" class="b-step"/><text x="534" y="120" class="ts" text-anchor="middle">Review</text>
+    <rect x="570" y="102" width="56" height="28" rx="4" class="b-step"/><text x="598" y="120" class="ts" text-anchor="middle">Vlog</text>
+    <text x="534" y="154" class="ts" text-anchor="middle">mỗi loại một prompt chuyên biệt</text>
+    <text x="534" y="196" class="ts" text-anchor="middle">phân loại rồi chọn pipeline</text>
+  </svg></div>
+  <figcaption>Hình 11. Ba mẫu workflow: parallelization, chaining, routing.</figcaption>
+</figure>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Dùng sai chỗ</div><ul>
+    <li>Một prompt khổng lồ liệt kê mọi ràng buộc, Claude bỏ sót vài cái: nên dùng chaining</li>
+    <li>Gọi tuần tự các phân tích độc lập nhau, chậm không cần thiết: nên dùng parallelization</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Dùng đúng chỗ</div><ul>
+    <li>Chaining khi bước sau phụ thuộc bước trước</li>
+    <li>Parallelization khi các phần độc lập. Routing khi mỗi loại đầu vào cần cách xử lý khác nhau</li>
+  </ul></div>
+</div>
+
+<h3>12.5 Tool cho agent và tự kiểm tra môi trường</h3>
+<p><strong>Tool trừu tượng thì kết hợp được.</strong> Claude Code dùng tool chung (bash, read, write, edit) thay vì tool riêng cho từng việc; Claude tự tìm cách kết hợp chúng cho việc phức tạp.</p>
+<p><strong>Tự kiểm tra môi trường:</strong> Claude cần vòng phản hồi để biết hành động có hiệu quả không, giống như chụp màn hình trong computer use:</p>
+<ul>
+  <li>Đọc file trước khi sửa (để không làm hỏng code đang có)</li>
+  <li>Chạy test sau khi viết xong (để xác nhận đã đúng)</li>
+  <li>Kiểm tra response của API (để xác nhận kết quả)</li>
+  <li>Chụp màn hình sau thao tác trên giao diện (để xác nhận trạng thái)</li>
+</ul>
+<div class="insight"><strong>Cốt lõi.</strong> Với mỗi hành động của agent, hỏi: “Làm sao Claude biết việc này đã thành công?” Cho Claude tool để quan sát kết quả; khi đó nó tự sửa lỗi thay vì làm mù.</div>
+
+<h3>12.6 Evaluator-optimizer (xem thêm bài 10, mục 3)</h3>
+<p>Mẫu này gắn producer và grader của Module 2 vào một vòng lặp ngay trong sản phẩm. Producer tạo kết quả, grader chấm và nêu điểm yếu, producer sửa theo góp ý. Lặp tới khi đạt ngưỡng hoặc hết số vòng tối đa (đặt giới hạn để không lặp vô hạn).</p>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 214" role="img" aria-label="Vòng evaluator-optimizer: producer tạo output, grader chấm, nếu chưa đạt thì feedback quay lại producer, nếu đạt thì hoàn tất">
+    <defs>
+      <marker id="m1714" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah"/></marker>
+      <marker id="m1715" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-warn"/></marker>
+      <marker id="m1716" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-good"/></marker>
+    </defs>
+    <g><rect x="10" y="40" width="140" height="56" rx="6" class="b-step"/><text x="80" y="64" class="t tb" text-anchor="middle">Producer</text><text x="80" y="82" class="ts" text-anchor="middle">tạo bản nháp</text></g>
+    <g><path d="M150,68 H244" class="ln" marker-end="url(#m1714)"/><text x="197" y="60" class="ts halo" text-anchor="middle">output</text></g>
+    <g><rect x="246" y="40" width="148" height="56" rx="6" class="b-hot"/><text x="320" y="64" class="t tb" text-anchor="middle">Grader</text><text x="320" y="82" class="ts" text-anchor="middle">điểm + điểm yếu</text></g>
+    <g><path d="M320,96 V150 H80 V98" class="ln-warn-solid flow" marker-end="url(#m1715)"/><text x="200" y="146" class="ts halo" text-anchor="middle">chưa đạt: feedback cụ thể, sửa lại</text></g>
+    <g><path d="M394,68 H488" class="ln-good flow" marker-end="url(#m1716)"/><text x="441" y="60" class="ts halo" text-anchor="middle">đạt</text>
+      <rect x="490" y="40" width="140" height="56" rx="6" class="b-done"/><text x="560" y="64" class="t tb" text-anchor="middle">Hoàn tất</text><text x="560" y="82" class="ts" text-anchor="middle">trả cho người dùng</text></g>
+    <text x="320" y="190" class="ts" text-anchor="middle">Đặt số vòng tối đa để tránh lặp vô hạn</text>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Producer tạo bản nháp.</li>
+    <li>Chuyển output cho grader.</li>
+    <li>Grader chấm, nêu điểm mạnh, điểm yếu, lý do.</li>
+    <li>Chưa đạt: gửi feedback cụ thể quay lại producer, vòng mới bắt đầu.</li>
+    <li>Đạt ngưỡng thì trả kết quả. Luôn có giới hạn số vòng.</li>
+  </ol>
+  <figcaption>Hình 12. Vòng evaluator-optimizer: producer, grader, feedback.</figcaption>
+</figure>
+<div class="insight"><strong>Cốt lõi.</strong> Evaluator-optimizer là workflow vì bạn quyết định vòng lặp và điều kiện dừng. Nó khác agent ở chỗ các bước không do Claude tự chọn.</div>
+
+<h2 id="exam-keywords" class="pb">13. Từ khoá đề thi</h2>
+<p>Các từ tiếng Anh dưới đây xuất hiện nguyên văn trong đề và tài liệu chính thức. Đọc cột giữa để nắm nghĩa, cột phải để biết đề hay gài ở đâu; bấm số mục để xem lại phần giải thích. Mọi từ khoá của các bài được gom ở trang <a href="/notes/lessons/glossary.html">Thuật ngữ</a>.</p>
+<div class="tw"><table class="kwt">
+  <thead><tr><th>Từ khoá</th><th>Nghĩa</th><th>Đề hay hỏi, dễ nhầm</th><th class="nw">Mục</th></tr></thead>
+  <tbody>
+    <tr data-kw="workflow"><td>Workflow</td><td>Chuỗi bước do code của bạn nối sẵn</td><td>Code chọn bước tiếp theo; số bước biết trước; rẻ và dễ test hơn agent</td><td><a href="#workflow-agent">§1</a></td></tr>
+    <tr data-kw="agent"><td>Agent</td><td>Claude tự chọn bước tiếp theo trong một vòng lặp</td><td>Model-driven; số bước không biết trước; chỉ dùng khi workflow không đủ</td><td><a href="#workflow-agent">§1</a></td></tr>
+    <tr data-kw="prompt chaining"><td>Prompt chaining</td><td>Chuỗi bước, đầu ra bước trước là đầu vào bước sau</td><td>Việc đoán trước được; khác phân rã động</td><td><a href="#decomposition">§7</a></td></tr>
+    <tr data-kw="routing"><td>Routing</td><td>Phân loại đầu vào rồi chuyển nhánh phù hợp</td><td>Không chữa được lỗi bỏ bước bên trong chuỗi của agent</td><td><a href="#workflow-agent">§1</a></td></tr>
+    <tr data-kw="parallelization"><td>Parallelization</td><td>Chạy nhiều việc cùng lúc, chia phần hoặc bỏ phiếu</td><td>Các phần độc lập; khác orchestrator-workers vì phần việc biết trước</td><td><a href="#workflow-agent">§1</a></td></tr>
+    <tr data-kw="orchestrator-workers"><td>Orchestrator-workers</td><td>Model trung tâm tự chia việc cho worker rồi gộp</td><td>Chia theo tình huống, chưa biết trước file nào</td><td><a href="#workflow-agent">§1</a></td></tr>
+    <tr data-kw="evaluator-optimizer"><td>Evaluator-optimizer</td><td>Một lời gọi tạo, một lời gọi chấm, lặp tới khi đạt</td><td>Cần tiêu chí chấm rõ ràng</td><td><a href="#workflow-agent">§1</a></td></tr>
+    <tr data-kw="agent loop"><td>Agent loop</td><td>Vòng lặp: gọi API, chạy tool, gửi kết quả, gọi lại</td><td>Claude chỉ xin gọi tool, code của bạn mới chạy</td><td><a href="#agent-loop">§2</a></td></tr>
+    <tr data-kw="stop_reason tool_use end_turn"><td><code>stop_reason</code>: <code>tool_use</code>, <code>end_turn</code></td><td>Lý do Claude dừng; quyết định vòng lặp tiếp hay thoát</td><td>Dừng theo <code>stop_reason</code>, không theo chữ trong câu trả lời, không theo giới hạn số vòng</td><td><a href="#agent-loop">§2</a></td></tr>
+    <tr data-kw="tool_result tool_use_id"><td><code>tool_result</code>, <code>tool_use_id</code></td><td>Khối kết quả tool, mang id khớp với khối <code>tool_use</code></td><td>Mọi <code>tool_result</code> của một lượt đi trong MỘT message user</td><td><a href="#agent-loop">§2</a></td></tr>
+    <tr data-kw="model-driven"><td>Model-driven</td><td>Model tự quyết bước tiếp theo</td><td>Trái với cây quyết định viết sẵn</td><td><a href="#agent-loop">§2</a></td></tr>
+    <tr data-kw="hub-and-spoke"><td>Hub-and-spoke</td><td>Coordinator ở giữa, subagent ở rìa, mọi liên lạc qua coordinator</td><td>Subagent không nói chuyện trực tiếp với nhau</td><td><a href="#coordinator">§3</a></td></tr>
+    <tr data-kw="coordinator"><td>Coordinator</td><td>Agent trung tâm phân rã việc, giao việc, kiểm tra và tổng hợp</td><td>Báo cáo thiếu mà subagent đều làm đúng thì lỗi ở phân rã của coordinator</td><td><a href="#coordinator">§3</a></td></tr>
+    <tr data-kw="subagent"><td>Subagent</td><td>Agent con có context, system prompt và tool riêng</td><td>Không thừa kế lịch sử của coordinator</td><td><a href="#coordinator">§3</a></td></tr>
+    <tr data-kw="Task tool allowedTools"><td>Task tool, <code>allowedTools</code></td><td>Tool tạo subagent; coordinator phải có <code>Task</code> trong danh sách</td><td>Thiếu <code>Task</code> thì không tạo được subagent; từ v2.1.63 tool đổi tên thành <code>Agent</code></td><td><a href="#task">§4</a></td></tr>
+    <tr data-kw="AgentDefinition"><td><code>AgentDefinition</code></td><td>Khai báo một loại subagent: description, prompt, tools</td><td><code>description</code> để coordinator chọn; <code>tools</code> chỉ đúng vai</td><td><a href="#task">§4</a></td></tr>
+    <tr data-kw="context passing"><td>Truyền context</td><td>Đưa nguyên kết quả có cấu trúc vào prompt của subagent kế tiếp</td><td>Tách nội dung khỏi metadata (URL, tên tài liệu, số trang) để giữ nguồn</td><td><a href="#task">§4</a></td></tr>
+    <tr data-kw="parallel subagents"><td>Chạy song song</td><td>Phát nhiều lời gọi Task trong cùng một response</td><td>Chia ra nhiều lượt thì chạy tuần tự</td><td><a href="#task">§4</a></td></tr>
+    <tr data-kw="prerequisite gate"><td>Prerequisite gate</td><td>Cổng bằng code chặn bước sau cho tới khi bước trước xong</td><td>Việc bắt buộc dùng code; prompt chỉ giảm xác suất sai</td><td><a href="#workflow-order">§5</a></td></tr>
+    <tr data-kw="deterministic probabilistic"><td>Deterministic vs probabilistic</td><td>Đảm bảo tất định bằng code, tuân thủ xác suất bằng prompt</td><td>Quy tắc bắt buộc chọn hook hay cổng, không chọn thêm câu dặn</td><td><a href="#workflow-order">§5</a></td></tr>
+    <tr data-kw="structured handoff"><td>Structured handoff</td><td>Tóm tắt có cấu trúc khi bàn giao cho người</td><td>Người nhận ca không đọc được transcript</td><td><a href="#workflow-order">§5</a></td></tr>
+    <tr data-kw="PreToolUse"><td><code>PreToolUse</code></td><td>Hook chạy trước khi tool chạy; chặn hoặc sửa lời gọi</td><td>Chặn phải ở đây; <code>PostToolUse</code> thì tool đã chạy xong</td><td><a href="#hook-sdk">§6</a></td></tr>
+    <tr data-kw="PostToolUse"><td><code>PostToolUse</code></td><td>Hook chạy sau tool, trước khi model đọc kết quả</td><td>Chuẩn hoá kết quả; có <code>additionalContext</code>, <code>updatedToolOutput</code></td><td><a href="#hook-sdk">§6</a></td></tr>
+    <tr data-kw="permissionDecision"><td><code>permissionDecision</code></td><td>Quyết định của <code>PreToolUse</code>: allow, deny, ask, defer</td><td>Nhiều hook khác nhau thì <code>deny</code> thắng; lý do trả lại cho Claude</td><td><a href="#hook-sdk">§6</a></td></tr>
+    <tr data-kw="HookMatcher matcher"><td><code>HookMatcher</code>, <code>matcher</code></td><td>Mẫu lọc hook theo tên tool, ví dụ <code>Write|Edit</code></td><td>Chỉ khớp tên tool, không khớp đường dẫn file</td><td><a href="#hook-sdk">§6</a></td></tr>
+    <tr data-kw="updatedInput"><td><code>updatedInput</code></td><td>Tham số mới do hook trả để thay tham số của Claude</td><td>Dùng để chuyển hướng đường dẫn hay làm sạch input</td><td><a href="#hook-sdk">§6</a></td></tr>
+    <tr data-kw="dynamic decomposition"><td>Dynamic decomposition</td><td>Phân rã động: kế hoạch được lập và sửa trong lúc làm</td><td>Việc mở như thêm test cho codebase cũ</td><td><a href="#decomposition">§7</a></td></tr>
+    <tr data-kw="resume fork_session"><td><code>resume</code>, <code>fork_session</code></td><td>Tiếp tục phiên cũ; phân nhánh phiên mới từ phiên cũ</td><td><code>fork_session</code> đi kèm <code>resume</code>; fork không tách file trên đĩa</td><td><a href="#sessions">§8</a></td></tr>
+    <tr data-kw="Managed Agents"><td>Managed Agents</td><td>Anthropic chạy cả vòng lặp lẫn sandbox</td><td>Khác Agent SDK, nơi bạn tự host</td><td><a href="#deployment">§9</a></td></tr>
+    <tr data-kw="max_turns max_budget_usd"><td><code>max_turns</code>, <code>max_budget_usd</code></td><td>Hai giới hạn vòng lặp của Agent SDK</td><td>Lưới an toàn, không phải cách dừng chính</td><td><a href="#deployment">§9</a></td></tr>
+    <tr data-kw="memory tool"><td>Memory tool (<code>memory_20250818</code>)</td><td>Tool để Claude đọc, ghi file nhớ trong <code>/memories</code></td><td>Client-side: ứng dụng của bạn chạy thao tác và lưu dữ liệu</td><td><a href="#memory">§10</a></td></tr>
+    <tr data-kw="path traversal memory"><td>Path traversal protection</td><td>Chặn path như <code>/memories/../../secrets.env</code></td><td>Handler phải kiểm từng path ở từng lệnh</td><td><a href="#memory">§10</a></td></tr>
+    <tr data-kw="CLAUDE.md auto memory"><td>CLAUDE.md, auto memory</td><td>Hướng dẫn bạn viết / ghi chú Claude Code tự lưu</td><td>Cả hai nạp mỗi phiên; auto memory chỉ 200 dòng đầu hoặc 25KB</td><td><a href="#memory">§10</a></td></tr>
+    <tr data-kw="LangGraph"><td>LangGraph</td><td>Framework luồng dạng đồ thị trạng thái, có checkpoint</td><td>Hợp khi nhiều nhánh và cần khôi phục trạng thái</td><td><a href="#framework">§11</a></td></tr>
+  </tbody>
+</table></div>
+
+<p class="lesson-practice">Luyện câu hỏi của bài này trong <a href="/bank?lesson=07">🗂️ Ngân hàng</a>.</p>
 
 <div class="btns pager">
-  <a class="btn" href="/notes/lessons/02-model-toi-uu.html">← Bài 02 · Chọn model và tối ưu chi phí</a>
-  <a class="btn primary" href="/notes/lessons/04-tool-mcp.html">Bài 04 · Tool và MCP →</a>
+  <a class="btn" href="/notes/lessons/06-mcp.html">← Bài 06 · Model Context Protocol (MCP)</a>
+  <a class="btn primary" href="/notes/lessons/08-platform-subagents-skills.html">Bài 08 · Claude Platform, subagent và skill →</a>
 </div>
 
 <footer>
-  Luyện thi chứng chỉ Claude · Bài 03 · Agent và điều phối · v0.22 · 2026-11-18. Tổng quan: <a href="/notes/00-tong-quan.md">00</a> · Luyện đề: <a href="/new">30</a>.
+  Luyện thi chứng chỉ Claude · Bài 07 · Agent và điều phối · v0.39 · 2026-11-18. <a href="/notes/00-tong-quan.md">Tổng quan</a> · <a href="/new">Luyện đề</a>.
 </footer>

@@ -1,0 +1,888 @@
+<p class="lesson-source">Nguồn: tài liệu ôn tập công khai <a href="https://claude.ai/artifact/3NhHr42CxTHGEs33N1ntFf" target="_blank" rel="noopener">artifact 3NhHr42…</a> (bài 09). Không thuộc và không được Anthropic xác nhận.</p>
+<header class="cover">
+  <div class="eyebrow">Luyện thi chứng chỉ Claude · Bài 09 · Chặng 2 · CCDV-F · bước 8/13</div>
+  <h1>Context và độ tin cậy <span class="ja">Context Management &amp; Reliability</span></h1>
+  <p class="lead">Giữ thông tin quan trọng trong hội thoại dài, context editing và compaction, escalation, lan truyền lỗi giữa nhiều agent, khám phá codebase lớn, human review, nguồn gốc thông tin, RAG.</p>
+  <dl class="meta">
+    <dt>Kỳ thi</dt><dd>CCDV-F D1, D2, D6 · CCAR-F D5 · CCAR-P D2, D3, D5</dd>
+    <dt>Phục vụ</dt><dd><span class="tag xt1">CCDV-F</span> 5 mục · <span class="tag xt3">CCAR-F</span> 6 mục · <span class="tag xt4">CCAR-P</span> 3 mục · <a href="#xsum">bảng nhãn từng mục</a></dd>
+
+    <dt>Nguồn</dt><dd>Ghi chú «Đề cương chi tiết CCAR-F» Domain 5; «Đề cương CCDV-F và CCAO-F» D4, D6; Ghi chú «Đề cương CCDV-F và CCAO-F» Phần A; platform.claude.com/docs (rate limits, token counting, extended thinking, context editing, compaction, citations, MCP connector, Admin API) tra 17/11/2026; academy.claude.com · Building with the Claude API · Crawl 2026-11-17</dd>
+    <dt>Cập nhật</dt><dd><span class="status">v0.39 · 2026-11-18</span> · theo exam guide v1.0</dd>
+  </dl>
+</header>
+
+<details class="toc">
+<summary>Mục lục</summary>
+
+    <ol>
+      <li><a href="#case-facts"><span class="n">1</span><span class="tx">Giữ thông tin quan trọng trong hội thoại dài</span><span class="xds" aria-hidden="true"><i class="xd xt3" title="CCAR-F"></i><i class="xd xt1" title="CCDV-F"></i><i class="xd xt4" title="CCAR-P"></i></span></a></li>
+      <li><a href="#long-context"><span class="n">2</span><span class="tx">Context dài: context editing, compaction, memory</span><span class="xds" aria-hidden="true"><i class="xd xt1" title="CCDV-F"></i></span></a></li>
+      <li><a href="#escalation"><span class="n">3</span><span class="tx">Escalation và xử lý mơ hồ</span><span class="xds" aria-hidden="true"><i class="xd xt3" title="CCAR-F"></i></span></a></li>
+      <li><a href="#error-propagation"><span class="n">4</span><span class="tx">Lan truyền lỗi trong hệ nhiều agent</span><span class="xds" aria-hidden="true"><i class="xd xt3" title="CCAR-F"></i><i class="xd xt1" title="CCDV-F"></i></span></a></li>
+      <li><a href="#large-codebase"><span class="n">5</span><span class="tx">Context khi khám phá codebase lớn</span><span class="xds" aria-hidden="true"><i class="xd xt3" title="CCAR-F"></i><i class="xd xt1" title="CCDV-F"></i></span></a></li>
+      <li><a href="#human-review"><span class="n">6</span><span class="tx">Human review và hiệu chỉnh độ tin cậy</span><span class="xds" aria-hidden="true"><i class="xd xt3" title="CCAR-F"></i><i class="xd xt4" title="CCAR-P"></i></span></a></li>
+      <li><a href="#provenance"><span class="n">7</span><span class="tx">Nguồn gốc thông tin và sự không chắc chắn</span><span class="xds" aria-hidden="true"><i class="xd xt3" title="CCAR-F"></i></span></a></li>
+      <li><a href="#module-5"><span class="n">8</span><span class="tx">RAG và tìm kiếm cho agent (module 5 của khoá Building with the Claude API)</span><span class="xds" aria-hidden="true"><i class="xd xt1" title="CCDV-F"></i><i class="xd xt4" title="CCAR-P"></i></span></a></li>
+      <li><a href="#exam-keywords"><span class="n">9</span><span class="tx">Từ khoá đề thi</span></a></li>
+    </ol>
+
+</details>
+
+<details class="xsum" id="xsum">
+<summary>Mục nào phục vụ bài thi nào</summary>
+<p class="xnote">Mã đầu là bài thi chính của mục. <b>Nền</b>: cần để hiểu các mục sau. <b>Nâng cao</b>: ngoài phạm vi các exam guide. Ôn cho một bài thi thì đọc các mục có mã của bài đó trước.</p>
+<div class="tw"><table>
+<thead><tr><th>Mục</th><th>Bài thi</th><th>Ghi chú</th></tr></thead>
+<tbody>
+<tr><td><a href="#case-facts">1. Giữ thông tin quan trọng trong hội thoại dài</a></td><td><span class="tag xt3">CCAR-F D5</span> <span class="tag xt1">CCDV-F D6</span> <span class="tag xt4">CCAR-P D2</span></td><td></td></tr>
+<tr><td><a href="#long-context">2. Context dài: context editing, compaction, memory</a></td><td><span class="tag xt1">CCDV-F D6</span></td><td></td></tr>
+<tr><td><a href="#escalation">3. Escalation và xử lý mơ hồ</a></td><td><span class="tag xt3">CCAR-F D5</span></td><td></td></tr>
+<tr><td><a href="#error-propagation">4. Lan truyền lỗi trong hệ nhiều agent</a></td><td><span class="tag xt3">CCAR-F D5</span> <span class="tag xt1">CCDV-F D1</span></td><td></td></tr>
+<tr><td><a href="#large-codebase">5. Context khi khám phá codebase lớn</a></td><td><span class="tag xt3">CCAR-F D5</span> <span class="tag xt1">CCDV-F D6</span></td><td></td></tr>
+<tr><td><a href="#human-review">6. Human review và hiệu chỉnh độ tin cậy</a></td><td><span class="tag xt3">CCAR-F D5</span> <span class="tag xt4">CCAR-P D5</span></td><td></td></tr>
+<tr><td><a href="#provenance">7. Nguồn gốc thông tin và sự không chắc chắn</a></td><td><span class="tag xt3">CCAR-F D5</span></td><td></td></tr>
+<tr><td><a href="#module-5">8. RAG và tìm kiếm cho agent (module 5 của khoá Building with the Claude API)</a></td><td><span class="tag xt1">CCDV-F D2</span> <span class="tag xt4">CCAR-P D3</span></td><td>Embedding, vector DB là nâng cao với CCAR-F (ngoài phạm vi); CCDV-F và CCAR-P có hỏi RAG.</td></tr>
+</tbody></table></div>
+</details>
+
+<h2 id="case-facts">1. Giữ thông tin quan trọng trong hội thoại dài</h2>
+<p class="xtags"><span class="tag xt3">CCAR-F D5</span> <span class="tag xt1">CCDV-F D6</span> <span class="tag xt4">CCAR-P D2</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Bạn trực tổng đài cả ngày và ghi chú vào sổ. Đến cuối ngày, sếp bảo “tóm tắt lại trong ba dòng”. Bản tóm tắt ghi “khách muốn hoàn tiền”. Số tiền, mã đơn và hạn chót khách nêu đã biến mất. Mai người khác đọc sổ sẽ không biết khách cần gì và gấp tới đâu. Cách chữa là một <strong>tờ ghi nhớ riêng</strong> dán ở đầu sổ: mã đơn, số tiền, hạn chót. Dù phần dưới có bị tóm tắt mấy lần, tờ ghi nhớ vẫn nguyên.
+</div>
+<p>Claude không nhớ gì giữa các lần gọi API. Mỗi lần, bạn phải gửi lại <strong>toàn bộ lịch sử</strong> cần thiết (đây là cách giữ cuộc trò chuyện mạch lạc). Khi hội thoại dài, ta phải rút gọn lịch sử, và rút gọn sẽ làm rơi chi tiết. Các thuật ngữ cần biết:</p>
+<ul>
+  <li><strong>Context</strong> (ngữ cảnh): toàn bộ chữ Claude nhìn thấy trong một lần gọi. Context có giới hạn, và càng đầy thì càng kém chính xác.</li>
+  <li><strong>Progressive summarization</strong> (tóm tắt dần): cứ khi lịch sử dài thì tóm tắt phần cũ. Mỗi lần tóm tắt là một lần mất chi tiết.</li>
+  <li><strong>Case facts</strong>: khối dữ kiện giao dịch (số tiền, ngày, mã đơn, trạng thái) được trích ra và <strong>đưa vào mọi prompt</strong>, nằm ngoài phần lịch sử đã tóm tắt.</li>
+</ul>
+
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 258" role="img" aria-label="Tóm tắt dần làm mất mã đơn, số tiền và hạn chót; khối case facts được đưa vào mọi prompt nên giữ nguyên số liệu">
+    <defs>
+      <marker id="m0701" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker>
+      <marker id="m0701g" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-good"/></marker>
+    </defs>
+    <g><rect x="10" y="12" width="620" height="60" rx="6" class="b-done"/>
+      <text x="320" y="34" class="t tb" text-anchor="middle">Case facts: khối bền, nằm ngoài lịch sử đã tóm tắt</text>
+      <text x="320" y="56" class="ts" text-anchor="middle">customer C-88412 · đơn ORD-551203 · hoàn $182.40 · hạn 2026-11-20</text>
+      <path class="ln-good flow" d="M105,72 V126" marker-end="url(#m0701g)"/>
+      <path class="ln-good flow" d="M535,72 V126" marker-end="url(#m0701g)"/>
+      <path class="ln-good flow" d="M320,72 V126" marker-end="url(#m0701g)"/>
+      <text x="326" y="104" class="ts halo">đưa vào mọi prompt</text></g>
+    <g><rect x="10" y="128" width="190" height="84" rx="6" class="b-step"/>
+      <text x="105" y="150" class="t tb" text-anchor="middle">Lượt 1–10, nguyên văn</text>
+      <text x="105" y="171" class="ts" text-anchor="middle">đơn ORD-551203, hoàn $182.40</text>
+      <text x="105" y="187" class="ts" text-anchor="middle">cần trước 20/11</text></g>
+    <g><path class="ln-acc flow" d="M200,170 H223" marker-end="url(#m0701)"/>
+      <rect x="225" y="128" width="190" height="84" rx="6" class="b-warn"/>
+      <text x="320" y="150" class="t tb" text-anchor="middle">Sau tóm tắt lần 1</text>
+      <text x="320" y="171" class="ts" text-anchor="middle">“khách muốn hoàn tiền”</text>
+      <text x="320" y="187" class="ts" text-anchor="middle">số tiền và hạn bị mờ</text></g>
+    <g><path class="ln-acc flow" d="M415,170 H438" marker-end="url(#m0701)"/>
+      <rect x="440" y="128" width="190" height="84" rx="6" class="b-warn"/>
+      <text x="535" y="150" class="t tb" text-anchor="middle">Sau tóm tắt lần 2</text>
+      <text x="535" y="171" class="ts" text-anchor="middle">“khách có vấn đề đơn hàng”</text>
+      <text x="535" y="187" class="ts" text-anchor="middle">mất mã đơn, số tiền, hạn</text></g>
+    <text x="320" y="242" class="tw-good" text-anchor="middle">✓ Số liệu còn nguyên dù lịch sử bị tóm tắt nhiều lần</text>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Giai đoạn đầu: hội thoại còn nguyên văn, có đủ mã đơn, số tiền và hạn chót.</li>
+    <li>Lịch sử dài ra nên bị tóm tắt lần 1. Số tiền và hạn đã mờ đi.</li>
+    <li>Tóm tắt lần 2 chỉ còn “có vấn đề đơn hàng”. Số liệu thật đã mất.</li>
+    <li>Giải pháp: trích dữ kiện giao dịch thành khối case facts và gắn vào mọi prompt.</li>
+    <li>Dù phần lịch sử bị tóm tắt bao nhiêu lần, Claude vẫn thấy đúng số liệu.</li>
+  </ol>
+  <figcaption>Hình 1. Tóm tắt dần làm rơi số liệu. Case facts nằm ngoài phần bị tóm tắt.</figcaption>
+</figure>
+
+<pre><code>&lt;case_facts&gt;
+customer_id: C-88412 · order: ORD-551203 · refund requested: $182.40
+customer deadline: before 2026-11-20 (travel) · verified: yes
+&lt;/case_facts&gt;</code></pre>
+<ul>
+  <li>Tóm tắt dần làm mất số liệu, phần trăm, ngày tháng, kỳ vọng của khách. Giải pháp: khối <strong>“case facts”</strong> bền vững đưa vào mọi prompt, nằm ngoài phần lịch sử đã tóm tắt.</li>
+  <li>Phiên có nhiều vấn đề cùng lúc (khách hỏi hoàn tiền một đơn và đổi địa chỉ đơn khác): lưu dữ liệu có cấu trúc của từng vấn đề (mã đơn, số tiền, trạng thái) vào một <strong>lớp context riêng</strong>, không trộn vào văn xuôi.</li>
+  <li>Agent phía trước nên trả dữ liệu có cấu trúc (sự kiện chính, trích dẫn, điểm liên quan) thay vì văn dài khi agent phía sau có ngân sách context hạn chế. Subagent cũng nên kèm metadata (ngày, nguồn, bối cảnh phương pháp) để bước tổng hợp dùng đúng.</li>
+</ul>
+
+<h3>1.1 Ví dụ chạy từng bước: số liệu rơi qua hai lần tóm tắt</h3>
+<p>Khách nhắn: “Đơn ORD-551203 giao thiếu hàng, tôi cần hoàn $182.40 trước 20/11 vì đi công tác.” Hội thoại kéo dài nên bị tóm tắt hai lần. Bảng dưới cho thấy Claude còn nhìn thấy gì ở mỗi giai đoạn.</p>
+<div class="tw"><table>
+  <thead><tr><th>Giai đoạn</th><th>Claude nhìn thấy</th><th>Trả lời được “hoàn bao nhiêu, trước ngày nào”?</th></tr></thead>
+  <tbody>
+    <tr><td>Còn nguyên văn</td><td>Mã đơn, số tiền, hạn chót</td><td class="yes">Có</td></tr>
+    <tr><td>Tóm tắt lần 1</td><td>“Khách báo đơn giao thiếu, xin hoàn tiền, có hạn gấp”</td><td class="no">Không: mất mã đơn, số tiền, ngày</td></tr>
+    <tr><td>Tóm tắt lần 2</td><td>“Khách có vấn đề với đơn hàng”</td><td class="no">Không: chỉ còn chủ đề chung</td></tr>
+    <tr><td>Tóm tắt lần 2 và case facts</td><td>Bản tóm tắt cộng khối case facts ở trên</td><td class="yes">Có</td></tr>
+  </tbody>
+</table></div>
+<p>Mỗi request nên gồm bốn phần, theo thứ tự: system prompt, khối case facts, bản tóm tắt phần cũ, rồi vài lượt gần nhất còn nguyên văn. Mỗi phần có chức năng riêng:</p>
+<div class="tw"><table>
+  <thead><tr><th>Phần</th><th>Chứa gì</th><th>Có bị tóm tắt không</th></tr></thead>
+  <tbody>
+    <tr><td>System prompt</td><td>Luật và vai trò dùng lâu dài</td><td>Không</td></tr>
+    <tr><td>Case facts</td><td>Dữ kiện của ca này: mã đơn, số tiền, ngày, trạng thái. Ứng dụng cập nhật khi dữ kiện đổi, ví dụ trạng thái từ <code>pending</code> sang <code>refunded</code></td><td>Không</td></tr>
+    <tr><td>Tóm tắt phần cũ</td><td>Diễn biến cuộc trò chuyện</td><td>Có, mỗi lần dài thêm</td></tr>
+    <tr><td>Các lượt gần nhất</td><td>Nguyên văn vài lượt cuối</td><td>Chưa</td></tr>
+  </tbody>
+</table></div>
+<div class="insight"><strong>Cốt lõi.</strong> Bản tóm tắt giữ <em>ý</em>, case facts giữ <em>số</em>. Thứ nào mà sai một chữ số là hỏng việc thì phải nằm trong case facts, không nằm trong văn xuôi bị tóm tắt.</div>
+
+<h3>1.2 Hiệu ứng vị trí và kết quả tool phình to</h3>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 230" role="img" aria-label="Bên trái: model xử lý tốt đầu và cuối đầu vào dài, dễ sót phần giữa. Bên phải: kết quả tool 40 trường được cắt còn 5 trường liên quan trước khi tích tụ.">
+    <defs><marker id="m0702" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah"/></marker></defs>
+    <rect x="4" y="4" width="312" height="222" rx="8" class="lane"/>
+    <rect x="324" y="4" width="312" height="222" rx="8" class="lane"/>
+    <text x="160" y="24" class="lane-lb" text-anchor="middle">VỊ TRÍ TRONG INPUT DÀI</text>
+    <text x="480" y="24" class="lane-lb" text-anchor="middle">KẾT QUẢ TOOL PHÌNH TO</text>
+    <rect x="45" y="70" width="70" height="80" rx="4" class="b-done"/><text x="80" y="114" class="ts" text-anchor="middle">nhớ tốt</text>
+    <rect x="130" y="110" width="70" height="40" rx="4" class="b-warn"/><text x="165" y="134" class="ts" text-anchor="middle">dễ sót</text>
+    <rect x="215" y="70" width="70" height="80" rx="4" class="b-done"/><text x="250" y="114" class="ts" text-anchor="middle">nhớ tốt</text>
+    <text x="80" y="168" class="ts" text-anchor="middle">Đầu</text>
+    <text x="165" y="168" class="ts" text-anchor="middle">Giữa</text>
+    <text x="250" y="168" class="ts" text-anchor="middle">Cuối</text>
+    <text x="160" y="196" class="ts" text-anchor="middle">Đặt tóm tắt chính ở đầu, chia phần có tiêu đề rõ</text>
+    <text x="160" y="214" class="ts" text-anchor="middle">để phát hiện ở giữa ít bị bỏ sót</text>
+    <rect x="350" y="44" width="260" height="50" rx="6" class="b-warn"/>
+    <text x="480" y="66" class="t tb" text-anchor="middle">lookup_order trả 40+ trường</text>
+    <text x="480" y="84" class="ts" text-anchor="middle">chỉ cần khoảng 5 trường</text>
+    <path d="M480,94 V122" class="ln" marker-end="url(#m0702)"/>
+    <text x="492" y="112" class="ts">cắt bớt trước khi tích tụ</text>
+    <rect x="350" y="124" width="260" height="50" rx="6" class="b-done"/>
+    <text x="480" y="146" class="t tb" text-anchor="middle">Giữ 5 trường liên quan</text>
+    <text x="480" y="164" class="ts" text-anchor="middle">mã đơn · trạng thái · hạn trả · số tiền · hàng</text>
+    <text x="480" y="204" class="ts" text-anchor="middle">Để nguyên, vài lượt tra cứu là đầy context</text>
+  </svg></div>
+  <figcaption>Hình 2. Hai nguồn làm hỏng context: hiệu ứng vị trí và kết quả tool thừa trường.</figcaption>
+</figure>
+<ul>
+  <li><strong>Lost in the middle</strong>: model xử lý tốt đầu và cuối, dễ bỏ sót phần giữa. Đặt tóm tắt chính ở <strong>đầu</strong>, chia phần có tiêu đề rõ.</li>
+  <li>Kết quả tool chiếm token không tương xứng (40+ trường khi chỉ cần 5): <strong>cắt bớt</strong> trước khi tích tụ.</li>
+  <li><strong>Context drift</strong>: context còn chỗ chưa chắc đã ổn; thông tin cũ làm Claude sai. Dùng compact hoặc mở phiên mới kèm tóm tắt; luật cần giữ lâu thì ghi vào CLAUDE.md.</li>
+</ul>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div><ul>
+    <li>Tóm tắt “khách muốn hoàn tiền” và bỏ số tiền, hạn chót</li>
+    <li>Để nguyên 40 trường của mỗi lần tra đơn trong context</li>
+    <li>Đặt phát hiện quan trọng nhất ở giữa một đầu vào rất dài</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đúng</div><ul>
+    <li>Trích số tiền, mã đơn, hạn chót vào khối case facts</li>
+    <li>Chỉ giữ 5 trường liên quan sau mỗi lần tra</li>
+    <li>Tóm tắt chính ở đầu, các phần sau có tiêu đề rõ</li>
+  </ul></div>
+</div>
+<div class="alert"><strong>Bẫy.</strong> “Context vẫn còn chỗ nên chưa cần làm gì” là sai. Chỗ trống chưa nói lên chất lượng: thông tin cũ và kết quả thừa vẫn làm model trả lời sai.</div>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Tài liệu hiện hành xem <strong>server-side compaction</strong> (API tự tóm tắt khi hội thoại dài) là cách chính để quản lý context dài. <strong>Context editing</strong> (đang beta) bổ sung điều khiển chi tiết: tự xoá các <em>tool result</em> cũ (<code>clear_tool_uses_20250919</code>) hoặc <em>thinking block</em> cũ. Exam guide dựa vào cách làm thủ công: case facts, cắt trường, đặt tóm tắt ở đầu. Nguồn: <a href="https://platform.claude.com/docs/en/build-with-claude/context-editing" target="_blank" rel="noopener">Context editing</a>, <a href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents" target="_blank" rel="noopener">Effective context engineering</a>.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Context</dt><dd>Toàn bộ chữ Claude nhìn thấy trong một lần gọi. Có giới hạn kích thước.</dd>
+  <dt>Case facts</dt><dd>Khối dữ kiện giao dịch (số tiền, ngày, mã đơn) gắn vào mọi prompt, ngoài phần lịch sử bị tóm tắt.</dd>
+  <dt>Lost in the middle</dt><dd>Model xử lý tốt đầu và cuối đầu vào dài, dễ bỏ sót phần giữa.</dd>
+  <dt>Context drift</dt><dd>Thông tin cũ hoặc thừa tích tụ làm câu trả lời kém dần, dù context chưa đầy.</dd>
+  <dt><code>/compact</code></dt><dd>Lệnh trong Claude Code để tóm tắt và thu gọn context đang dùng.</dd>
+  <dt>Progressive summarization</dt><dd>Tóm tắt dần: mỗi lần lịch sử dài thì tóm tắt lại phần cũ, nên mỗi lần mất thêm chi tiết.</dd>
+</dl></div>
+
+<h2 id="long-context">2. Context dài: context editing, compaction, memory</h2>
+<p class="xtags"><span class="tag xt1">CCDV-F D6</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Bàn làm việc có ba cách giữ gọn. Dọn bỏ giấy nháp đã dùng xong (xoá). Gom chồng tài liệu cũ thành một trang tóm tắt (nén). Cất hồ sơ quan trọng vào tủ để tuần sau còn dùng (lưu trữ). Ba cách giải ba vấn đề khác nhau.
+</div>
+<p>Model hiện hành có context window tới 1M token. Context lớn hơn <strong>không</strong> làm mất các vấn đề cũ: chi phí tăng theo số token gửi lại mỗi lượt, độ trễ tăng, và thông tin cũ, thừa vẫn kéo chất lượng xuống (context drift, lost in the middle; xem <a href="#case-facts">bài 09</a>). API có ba công cụ:</p>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 214" role="img" aria-label="Ba cách quản lý context: context editing xoá tool result và thinking cũ, compaction tóm tắt phần đầu hội thoại khi gần đầy, memory tool lưu file để dùng qua nhiều phiên">
+    <rect x="10" y="10" width="200" height="194" rx="6" class="b-step"/>
+    <text x="110" y="32" class="t tb" text-anchor="middle">Context editing</text>
+    <text x="110" y="50" class="ts" text-anchor="middle">xoá tool result cũ,</text>
+    <text x="110" y="63" class="ts" text-anchor="middle">thinking cũ theo ngưỡng</text>
+    <text x="110" y="88" class="t" text-anchor="middle">Khi nào</text>
+    <text x="110" y="104" class="ts" text-anchor="middle">agent gọi tool nhiều,</text>
+    <text x="110" y="117" class="ts" text-anchor="middle">kết quả cũ đã hết giá trị</text>
+    <text x="110" y="142" class="t" text-anchor="middle">Phạm vi</text>
+    <text x="110" y="158" class="ts" text-anchor="middle">trong một hội thoại</text>
+    <text x="110" y="184" class="ts" text-anchor="middle">clear_tool_uses, clear_thinking</text>
+    <rect x="220" y="10" width="200" height="194" rx="6" class="b-sys"/>
+    <text x="320" y="32" class="t tb" text-anchor="middle">Compaction</text>
+    <text x="320" y="50" class="ts" text-anchor="middle">API tóm tắt phần đầu</text>
+    <text x="320" y="63" class="ts" text-anchor="middle">thành một compaction block</text>
+    <text x="320" y="88" class="t" text-anchor="middle">Khi nào</text>
+    <text x="320" y="104" class="ts" text-anchor="middle">hội thoại sắp chạm</text>
+    <text x="320" y="117" class="ts" text-anchor="middle">ngưỡng context</text>
+    <text x="320" y="142" class="t" text-anchor="middle">Phạm vi</text>
+    <text x="320" y="158" class="ts" text-anchor="middle">trong một hội thoại</text>
+    <text x="320" y="184" class="ts" text-anchor="middle">phải nối nguyên response.content</text>
+    <rect x="430" y="10" width="200" height="194" rx="6" class="b-done"/>
+    <text x="530" y="32" class="t tb" text-anchor="middle">Memory tool</text>
+    <text x="530" y="50" class="ts" text-anchor="middle">Claude đọc, ghi file</text>
+    <text x="530" y="63" class="ts" text-anchor="middle">trong thư mục memory</text>
+    <text x="530" y="88" class="t" text-anchor="middle">Khi nào</text>
+    <text x="530" y="104" class="ts" text-anchor="middle">cần nhớ qua nhiều phiên,</text>
+    <text x="530" y="117" class="ts" text-anchor="middle">sau khi khởi động lại</text>
+    <text x="530" y="142" class="t" text-anchor="middle">Phạm vi</text>
+    <text x="530" y="158" class="ts" text-anchor="middle">nhiều phiên</text>
+    <text x="530" y="184" class="ts" text-anchor="middle">client tool: bạn giữ storage</text>
+  </svg></div>
+  <figcaption>Hình 3. Xoá, nén và lưu trữ: ba công cụ cho ba vấn đề khác nhau. Agent chạy dài thường dùng cả ba.</figcaption>
+</figure>
+<div class="tw"><table>
+  <thead><tr><th>Công cụ</th><th>Cách bật</th><th>Điểm phải nhớ</th></tr></thead>
+  <tbody>
+    <tr><td>Context editing</td><td><code>context_management.edits</code>, beta</td><td>Xoá chứ không tóm tắt. Thường xoá tool result cũ nhất, giữ vài lượt gần nhất</td></tr>
+    <tr><td>Compaction</td><td>Bật phía server, beta</td><td>Nối <strong>cả</strong> <code>response.content</code> vào lịch sử, không chỉ phần chữ, vì compaction block thay cho phần đã nén ở request sau</td></tr>
+    <tr><td>Memory tool</td><td>Tool <code>memory</code> do Anthropic định nghĩa</td><td>Là client tool: lệnh tạo, đọc, sửa, xoá file do ứng dụng của bạn thực thi; phải chặn đường dẫn ra ngoài thư mục memory</td></tr>
+  </tbody>
+</table></div>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div>Bật compaction nhưng mỗi lượt chỉ lưu <code>response.content[0].text</code> vào lịch sử. Phần đã nén biến mất, Claude quên hết đầu hội thoại.</div>
+  <div class="box right"><div class="hd">Đúng</div>Lưu nguyên mảng <code>response.content</code>, gồm cả compaction block, rồi gửi lại ở lượt sau.</div>
+</div>
+<div class="insight"><strong>Cốt lõi.</strong> Context editing và compaction làm gọn <strong>trong</strong> một hội thoại; memory giữ thông tin <strong>giữa</strong> các phiên. Context 1M không thay được việc giữ context gọn.</div>
+<div class="alert"><strong>Bẫy.</strong> "Chuyển sang model có context lớn hơn" để chữa việc agent trả lời sai sau nhiều lượt: vấn đề là thông tin cũ gây nhiễu, không phải thiếu chỗ.</div>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Context editing dùng beta <code>context-management-2025-06-27</code> với chiến lược <code>clear_tool_uses_20250919</code>, <code>clear_thinking_20251015</code>; compaction dùng beta <code>compact-2026-01-12</code>, ngưỡng mặc định 150K token; memory tool có type <code>memory_20250818</code>. Haiku 4.5 vẫn là 200K. Nguồn: docs về context editing, compaction, memory tool trên platform.claude.com.</div>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Compaction có tham số <code>instructions</code> để đặt prompt tóm tắt riêng. Chuỗi này <strong>thay hoàn toàn</strong> prompt mặc định chứ không bổ sung, nên phải tự liệt kê đủ những gì cần giữ (trạng thái việc, bước tiếp theo, ràng buộc của người dùng). Ràng buộc cần sống lâu nên để ở system prompt hoặc memory, không chỉ trông vào bản tóm tắt. Nguồn: <a href="https://platform.claude.com/docs/en/build-with-claude/compaction-threshold" target="_blank" rel="noopener">platform.claude.com/docs/en/build-with-claude/compaction-threshold</a>.</div>
+<h3>2.1 Chọn công cụ theo triệu chứng</h3>
+<div class="tw"><table>
+  <thead><tr><th>Triệu chứng</th><th>Công cụ</th><th>Lý do</th></tr></thead>
+  <tbody>
+    <tr><td>Agent chạy nhiều lượt gọi tool, kết quả tool cũ chiếm phần lớn prompt</td><td>Context editing</td><td>Xoá tool result cũ, giữ vài cặp gần nhất</td></tr>
+    <tr><td>Hội thoại dài, cần giữ mạch nhưng sắp đầy</td><td>Compaction</td><td>Tóm tắt phần cũ thành một compaction block</td></tr>
+    <tr><td>Ngày mai phiên mới phải nhớ quyết định và sở thích của hôm nay</td><td>Memory tool</td><td>File bền, sống qua nhiều phiên</td></tr>
+    <tr><td>Một ràng buộc phải đúng ở mọi lượt</td><td>System prompt hoặc case facts</td><td>Không phụ thuộc vào chất lượng bản tóm tắt</td></tr>
+  </tbody>
+</table></div>
+<h3>2.2 Context editing: các tham số điều khiển</h3>
+<p>Chiến lược <code>clear_tool_uses_20250919</code> có năm tham số. Giá trị mặc định lấy từ tài liệu Context editing:</p>
+<div class="tw"><table>
+  <thead><tr><th>Tham số</th><th>Mặc định</th><th>Tác dụng</th></tr></thead>
+  <tbody>
+    <tr><td><code>trigger</code></td><td>100.000 input token</td><td>Prompt vượt ngưỡng này thì bắt đầu xoá. Tính được theo <code>input_tokens</code> hoặc <code>tool_uses</code></td></tr>
+    <tr><td><code>keep</code></td><td>3 tool use</td><td>Số cặp tool use và result gần nhất được giữ lại; xoá từ cặp cũ nhất</td></tr>
+    <tr><td><code>clear_at_least</code></td><td>Không đặt</td><td>Số token tối thiểu phải xoá được. Xoá không đủ thì chiến lược không áp dụng</td></tr>
+    <tr><td><code>exclude_tools</code></td><td>Không đặt</td><td>Danh sách tool mà kết quả không bao giờ bị xoá</td></tr>
+    <tr><td><code>clear_tool_inputs</code></td><td><code>false</code></td><td>Mặc định chỉ xoá kết quả, giữ nguyên lời gọi tool của Claude</td></tr>
+  </tbody>
+</table></div>
+<p>Ví dụ chạy từng bước với cấu hình <code>trigger</code> 30.000 input token, <code>keep</code> 3, <code>clear_at_least</code> 5.000, <code>exclude_tools</code> là <code>["web_search"]</code>:</p>
+<ol class="principles">
+  <li>Prompt đạt 34.000 input token, vượt ngưỡng 30.000, nên chiến lược bắt đầu chạy.</li>
+  <li>API xoá tool result theo thứ tự thời gian, cũ nhất trước, và chừa lại 3 cặp gần nhất. Mỗi kết quả bị xoá được thay bằng một dòng chữ báo cho Claude biết nó đã bị gỡ.</li>
+  <li>Kết quả của <code>web_search</code> được bỏ qua vì nằm trong <code>exclude_tools</code>.</li>
+  <li>Nếu cộng lại xoá được ít hơn 5.000 token thì API không xoá gì cả, vì xoá làm mất prompt cache và xoá ít thì không đáng.</li>
+  <li>Việc xoá xảy ra phía server. Ứng dụng của bạn vẫn giữ nguyên lịch sử đầy đủ, không cần đồng bộ lại.</li>
+</ol>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Giá trị mặc định và cách hoạt động ở mục 2.2 lấy từ tài liệu hiện hành, không nằm trong exam guide. Nguồn: <a href="https://platform.claude.com/docs/en/build-with-claude/context-editing" target="_blank" rel="noopener">Context editing</a>.</div>
+<h3>2.3 Memory tool: sáu lệnh và chặn đường dẫn</h3>
+<p>Memory tool cho Claude đọc và ghi file trong thư mục <code>/memories</code>. Vì là <strong>client tool</strong> (tool do ứng dụng của bạn thực thi), Claude chỉ <em>yêu cầu</em> thao tác; code của bạn chạy thao tác và trả kết quả bằng <code>tool_result</code>, giống vòng lặp tool use thông thường. Sáu lệnh: <code>view</code>, <code>create</code>, <code>str_replace</code>, <code>insert</code>, <code>delete</code>, <code>rename</code>.</p>
+<pre><code>{ "command": "view", "path": "/memories" }</code></pre>
+<ol class="principles">
+  <li>Phiên mới bắt đầu. Trước khi làm, Claude yêu cầu <code>view /memories</code> để xem đã ghi gì.</li>
+  <li>Handler của bạn ánh xạ tiền tố <code>/memories</code> sang nơi lưu thật (thư mục riêng của từng người dùng hoặc khoá trong database), rồi trả danh sách file.</li>
+  <li>Claude đọc file liên quan, làm việc, rồi dùng <code>create</code> hoặc <code>str_replace</code> để ghi điều mới học được.</li>
+  <li>Phiên sau gửi lại cùng khai báo tool và handler đọc đúng kho đó, nên Claude tiếp tục từ chỗ cũ.</li>
+</ol>
+<div class="alert"><strong>Bẫy.</strong> Handler không kiểm tra đường dẫn thì một đường dẫn dạng <code>/memories/../..</code> (path traversal) có thể đọc hay ghi file ngoài thư mục memory. Phải từ chối mọi đường dẫn thoát khỏi <code>/memories</code>.</div>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Sáu lệnh, tiền tố <code>/memories</code> và yêu cầu chặn path traversal lấy từ tài liệu Memory tool. Nguồn: <a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/memory-tool" target="_blank" rel="noopener">Memory tool</a>.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Compaction block</dt><dd>Khối nội dung chứa bản tóm tắt API tạo ra, thay cho phần đầu hội thoại đã nén.</dd>
+  <dt>Context drift</dt><dd>Chất lượng trả lời trượt dần khi hội thoại dài và nhiều thông tin cũ.</dd>
+  <dt>Placeholder</dt><dd>Dòng chữ thay cho tool result đã bị xoá, để Claude biết có một kết quả từng ở đó.</dd>
+  <dt>Client tool</dt><dd>Tool do ứng dụng của bạn thực thi, không phải Anthropic. Memory tool thuộc loại này.</dd>
+  <dt>Path traversal</dt><dd>Dùng <code>..</code> trong đường dẫn để thoát khỏi thư mục được phép.</dd>
+</dl></div>
+
+<h2 id="escalation" class="pb">3. Escalation và xử lý mơ hồ</h2>
+<p class="xtags"><span class="tag xt3">CCAR-F D5</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Bạn là nhân viên quầy. Khách nói thẳng “cho tôi gặp quản lý”. Bạn không hỏi “để tôi thử giúp xem sao” rồi giữ họ lại. Bạn mời quản lý ra. Nhưng khách chỉ đang bực vì đổi địa chỉ chưa xong: bạn xin lỗi và đổi địa chỉ luôn. Khách đòi một ưu đãi mà quy định không nói tới: bạn không tự bịa luật, bạn chuyển lên quản lý. Còn nếu có ba khách tên “Minh Nguyễn”: bạn hỏi thêm số điện thoại thay vì chọn đại.
+</div>
+<p><strong>Escalation</strong> là chuyển ca từ agent sang người xử lý. Câu hỏi là khi nào nên chuyển và khi nào agent tự giải quyết.</p>
+
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 264" role="img" aria-label="Bốn tình huống và hành động tương ứng: khách đòi người thì chuyển ngay; khách bực việc đơn giản thì giải quyết; chính sách mơ hồ thì chuyển; nhiều khách trùng khớp thì hỏi thêm định danh">
+    <defs><marker id="m0703" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker></defs>
+    <g><rect x="10" y="12" width="270" height="48" rx="6" class="b-sys"/>
+      <text x="22" y="32" class="t tb">Khách đòi gặp người</text><text x="22" y="49" class="ts">“cho tôi nói chuyện với nhân viên”</text>
+      <path class="ln-acc flow" d="M282,36 H328" marker-end="url(#m0703)"/>
+      <rect x="330" y="12" width="300" height="48" rx="6" class="b-hot"/>
+      <text x="342" y="32" class="t tb">Chuyển người ngay</text><text x="342" y="49" class="ts">không điều tra hay tra cứu thêm trước</text></g>
+    <g><rect x="10" y="72" width="270" height="48" rx="6" class="b-sys"/>
+      <text x="22" y="92" class="t tb">Khách bực, việc đơn giản</text><text x="22" y="109" class="ts">ví dụ đổi địa chỉ giao hàng</text>
+      <path class="ln-acc flow" d="M282,96 H328" marker-end="url(#m0703)"/>
+      <rect x="330" y="72" width="300" height="48" rx="6" class="b-done"/>
+      <text x="342" y="92" class="t tb">Ghi nhận cảm xúc, rồi giải quyết</text><text x="342" y="109" class="ts">khách nhắc lại việc đòi người thì chuyển</text></g>
+    <g><rect x="10" y="132" width="270" height="48" rx="6" class="b-sys"/>
+      <text x="22" y="152" class="t tb">Chính sách im lặng hoặc mơ hồ</text><text x="22" y="169" class="ts">khách đòi khớp giá đối thủ</text>
+      <path class="ln-acc flow" d="M282,156 H328" marker-end="url(#m0703)"/>
+      <rect x="330" y="132" width="300" height="48" rx="6" class="b-hot"/>
+      <text x="342" y="152" class="t tb">Chuyển người</text><text x="342" y="169" class="ts">ngoại lệ chính sách, agent không tự quyết</text></g>
+    <g><rect x="10" y="192" width="270" height="48" rx="6" class="b-sys"/>
+      <text x="22" y="212" class="t tb">Tool trả nhiều khách trùng khớp</text><text x="22" y="229" class="ts">ba khách cùng tên</text>
+      <path class="ln-acc flow" d="M282,216 H328" marker-end="url(#m0703)"/>
+      <rect x="330" y="192" width="300" height="48" rx="6" class="b-step"/>
+      <text x="342" y="212" class="t tb">Hỏi thêm định danh</text><text x="342" y="229" class="ts">email, số điện thoại, mã đơn; không đoán</text></g>
+    <text x="320" y="258" class="ts" text-anchor="middle">Cảm xúc và điểm tự tin do model tự báo không phải thước đo độ phức tạp</text>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Khách yêu cầu gặp người: chuyển ngay, không thử giữ khách để điều tra.</li>
+    <li>Khách bực nhưng việc nằm trong khả năng: ghi nhận cảm xúc và giải quyết. Chuyển nếu khách nhắc lại.</li>
+    <li>Chính sách không nói tới yêu cầu: đó là ngoại lệ hoặc khoảng trống, nên chuyển.</li>
+    <li>Nhiều khách trùng khớp: hỏi thêm định danh, không chọn theo phỏng đoán.</li>
+  </ol>
+  <figcaption>Hình 4. Bốn tình huống thường gặp và hành động đúng của từng tình huống.</figcaption>
+</figure>
+
+<div class="tw"><table>
+  <thead><tr><th>Escalate</th><th>Không escalate</th></tr></thead>
+  <tbody>
+    <tr><td>Khách <strong>yêu cầu gặp người</strong>: chuyển ngay, không điều tra trước</td><td>Khách bực nhưng việc đơn giản: ghi nhận cảm xúc, đề nghị giải quyết; chỉ chuyển nếu khách nhắc lại</td></tr>
+    <tr><td>Chính sách <strong>mơ hồ hoặc không nói tới</strong> (khớp giá đối thủ khi chính sách chỉ nói giá trên site mình)</td><td>Ca phức tạp nhưng nằm trong khả năng và chính sách</td></tr>
+    <tr><td>Không tiến triển được</td><td></td></tr>
+  </tbody>
+</table></div>
+<ul>
+  <li>Sentiment và điểm tự tin do model tự báo <strong>không</strong> phải thước đo tốt cho độ phức tạp. Khách bình tĩnh vẫn có thể gặp ca khó, khách giận dữ có thể chỉ cần một thao tác đơn giản.</li>
+  <li>Tool trả về nhiều khách trùng khớp → <strong>hỏi thêm thông tin định danh</strong>, không đoán.</li>
+  <li>Sửa escalation sai: thêm <strong>tiêu chí rõ kèm few-shot</strong> vào system prompt, trước khi dựng hạ tầng (classifier riêng). Few-shot nên có cả ví dụ “chuyển” lẫn ví dụ “tự giải quyết”, xem <a href="/notes/lessons/04-prompt-output.html#few-shot">bài 04 §3</a>.</li>
+</ul>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div><ul>
+    <li>Khách đòi gặp người, agent đáp “để tôi thử giúp trước” rồi tra cứu tiếp</li>
+    <li>Chuyển mọi khách đang bực, kể cả việc chỉ cần một thao tác</li>
+    <li>Chọn khách đầu tiên trong danh sách khi có ba khách trùng tên</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đúng</div><ul>
+    <li>Tôn trọng yêu cầu gặp người ngay lập tức</li>
+    <li>Ghi nhận cảm xúc rồi giải quyết nếu trong khả năng</li>
+    <li>Hỏi thêm email hoặc mã đơn để xác định đúng khách</li>
+  </ul></div>
+</div>
+<div class="alert"><strong>Bẫy.</strong> Đề hay đưa hai phương án hấp dẫn: “chuyển khi điểm tự tin của model dưới ngưỡng” và “chuyển khi sentiment tiêu cực”. Cả hai đều là thước đo kém. Phương án đúng là tiêu chí rõ theo tình huống kèm few-shot.</div>
+<h3>3.1 Ví dụ few-shot cho quyết định escalation</h3>
+<p>Few-shot tốt cho escalation phải có cả ví dụ chuyển lẫn ví dụ tự giải quyết, kèm lý do. Ba ví dụ dưới đây nằm trong system prompt:</p>
+<pre><code>&lt;example&gt;
+Customer: "I want to talk to a human. Now."
+Decision: ESCALATE. Reason: explicit request for a human. Do not investigate first.
+&lt;/example&gt;
+&lt;example&gt;
+Customer: "This is so annoying, my address still shows the old one!"
+Decision: RESOLVE. Reason: upset, but an address update is within policy and tools. Acknowledge, then update it.
+&lt;/example&gt;
+&lt;example&gt;
+Customer: "Another shop sells it for $20 less. Match that price."
+Decision: ESCALATE. Reason: policy covers only our own prices and says nothing about competitors.
+&lt;/example&gt;</code></pre>
+<p>Hai thước đo “tiện” nhưng sai, vì chúng đo thứ không liên quan tới việc ca có vượt khả năng của agent hay không:</p>
+<div class="tw"><table>
+  <thead><tr><th>Tình huống</th><th>Sentiment</th><th>Quyết định đúng</th><th>Vì sao</th></tr></thead>
+  <tbody>
+    <tr><td>Khách lịch sự xin hoàn tiền một khoản mà chính sách không nói tới</td><td>Tích cực</td><td>Escalate</td><td>Khoảng trống chính sách, dù khách bình tĩnh</td></tr>
+    <tr><td>Khách chửi vì địa chỉ giao chưa đổi</td><td>Rất tiêu cực</td><td>Tự giải quyết</td><td>Việc đơn giản, nằm trong khả năng</td></tr>
+  </tbody>
+</table></div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Escalation</dt><dd>Chuyển ca từ agent sang người xử lý.</dd>
+  <dt>Sentiment</dt><dd>Cảm xúc ước lượng từ lời khách (tích cực hay tiêu cực).</dd>
+  <dt>Policy gap</dt><dd>Khoảng trống chính sách: quy định không nói tới yêu cầu của khách.</dd>
+</dl></div>
+
+<h2 id="error-propagation">4. Lan truyền lỗi trong hệ nhiều agent</h2>
+<p class="xtags"><span class="tag xt3">CCAR-F D5</span> <span class="tag xt1">CCDV-F D1</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Một phóng viên được giao tìm tin ở thư viện, nhưng thư viện đóng cửa. Anh ta có ba cách báo lại. Cách một: im lặng nộp giấy trắng “không có tin gì”. Tổng biên tập sẽ tưởng là không có tin thật. Cách hai: bỏ cả dự án, báo “thất bại”. Cách ba: báo “thư viện đóng, tôi đã thử gọi và email, có ba bài đọc được từ trước, có thể thử kho lưu trữ khác”. Cách ba cho tổng biên tập đủ dữ kiện để quyết định.
+</div>
+<p><strong>Lan truyền lỗi</strong> (error propagation) là cách một lỗi ở subagent đi lên coordinator. Hai kiểu đều xấu: <strong>nuốt lỗi</strong> (trả rỗng như thể thành công) và <strong>dừng cả workflow</strong> vì một lỗi. Kiểu tốt là trả <strong>lỗi có cấu trúc</strong>.</p>
+
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 270" role="img" aria-label="Lan truyền lỗi: subagent gọi nguồn web bị timeout, tự thử lại tại chỗ, rồi gửi lỗi có cấu trúc lên coordinator; coordinator chọn hướng xử lý và báo cáo có chú thích độ phủ">
+    <defs>
+      <marker id="m0704" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker>
+      <marker id="m0704w" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-warn"/></marker>
+    </defs>
+    <rect x="10" y="40" width="150" height="56" rx="6" class="b-step"/>
+    <text x="85" y="64" class="t tb" text-anchor="middle">Subagent tìm</text><text x="85" y="82" class="ts" text-anchor="middle">tool: web_search</text>
+    <rect x="245" y="40" width="150" height="56" rx="6" class="b-sys"/>
+    <text x="320" y="64" class="t tb" text-anchor="middle">Coordinator</text><text x="320" y="82" class="ts" text-anchor="middle">chọn bước tiếp theo</text>
+    <g><path class="ln-warn-solid flow" d="M85,96 V152" marker-end="url(#m0704w)"/>
+      <rect x="10" y="154" width="150" height="46" rx="6" class="b-warn"/>
+      <text x="85" y="174" class="t tb" text-anchor="middle">Nguồn web</text><text x="85" y="190" class="ts" text-anchor="middle">timeout</text></g>
+    <text x="96" y="124" class="ts">↻ tự thử lại, vẫn lỗi</text>
+    <g><path class="ln-acc flow" d="M160,68 H243" marker-end="url(#m0704)"/>
+      <path d="M320,96 V128" class="ln-dash"/>
+      <rect x="215" y="130" width="225" height="84" rx="6" class="b-hot"/>
+      <text x="327" y="150" class="t tb" text-anchor="middle">Lỗi có cấu trúc</text>
+      <text x="227" y="168" class="ts">failure_type: timeout</text>
+      <text x="227" y="182" class="ts">attempted: “xe điện 2026”</text>
+      <text x="227" y="196" class="ts">partial: đã đọc 3 nguồn</text>
+      <text x="227" y="210" class="ts">alternative: thử nguồn khác</text></g>
+
+    <g><text x="560" y="140" class="ts" text-anchor="middle">thử nguồn khác hoặc</text>
+      <text x="560" y="154" class="ts" text-anchor="middle">chấp nhận kết quả một phần</text></g>
+    <g><path class="ln-good flow" d="M395,68 H478" marker-end="url(#m0704)"/>
+      <rect x="480" y="40" width="150" height="56" rx="6" class="b-done"/>
+      <text x="555" y="60" class="t tb" text-anchor="middle">Báo cáo</text>
+      <text x="555" y="76" class="ts" text-anchor="middle">phủ tốt: A, B</text><text x="555" y="90" class="ts" text-anchor="middle">thiếu: C (nguồn lỗi)</text></g>
+    <text x="320" y="238" class="ts" text-anchor="middle">Hai cách sai: nuốt lỗi (trả rỗng như thành công) · dừng cả workflow vì một lỗi</text>
+    <text x="320" y="256" class="ts" text-anchor="middle">Phân biệt lỗi truy cập (timeout) với kết quả rỗng hợp lệ (tìm được 0 kết quả)</text>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Subagent gọi nguồn web và gặp timeout.</li>
+    <li>Lỗi tạm thời nên subagent tự xử lý tại chỗ: thử lại. Vẫn lỗi.</li>
+    <li>Nó chỉ báo lên phần không tự giải quyết được, kèm loại lỗi, truy vấn đã thử, kết quả một phần và phương án thay thế.</li>
+    <li>Coordinator có đủ dữ kiện để chọn: thử nguồn khác hoặc chấp nhận kết quả một phần.</li>
+    <li>Báo cáo cuối nêu rõ mảng nào có căn cứ vững, mảng nào thiếu vì nguồn không truy cập được.</li>
+  </ol>
+  <figcaption>Hình 5. Lỗi đi lên có cấu trúc, và báo cáo cuối ghi rõ độ phủ.</figcaption>
+</figure>
+
+<ul>
+  <li>Lỗi trả về gồm: loại lỗi, truy vấn đã thử, kết quả một phần, phương án thay thế.</li>
+  <li>Báo cáo tổng hợp có chú thích <strong>độ phủ</strong>: phần nào có căn cứ vững, phần nào thiếu do nguồn không truy cập được.</li>
+  <li>Subagent tự xử lý lỗi tạm thời (thử lại) và chỉ báo lên coordinator những lỗi nó không giải quyết được.</li>
+  <li>Phân biệt <strong>lỗi truy cập</strong> (timeout, cần quyết định có thử lại không) với <strong>kết quả rỗng hợp lệ</strong> (truy vấn chạy tốt nhưng không có kết quả). Hai trường hợp đòi hỏi hành động khác nhau.</li>
+  <li>Trạng thái chung chung như “search unavailable” làm coordinator mất thông tin để chọn hướng xử lý.</li>
+</ul>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div><ul>
+    <li>Subagent timeout rồi trả danh sách rỗng như đã tìm xong</li>
+    <li>Một nguồn lỗi, cả pipeline dừng và báo “thất bại”</li>
+    <li>Chỉ trả “search unavailable”</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đúng</div><ul>
+    <li>Trả loại lỗi, truy vấn đã thử, kết quả một phần, phương án thay thế</li>
+    <li>Tự thử lại lỗi tạm thời, chỉ báo lên lỗi không giải quyết được</li>
+    <li>Báo cáo có chú thích độ phủ cho từng mảng</li>
+  </ul></div>
+</div>
+<div class="alert"><strong>Bẫy.</strong> <strong>Nuốt lỗi</strong> (trả rỗng như thành công) và <strong>dừng cả workflow</strong> vì một lỗi. Coordinator sẽ không biết mình đang thiếu gì, hoặc mất cả phần đã làm được.</div>
+<h3>4.1 Lỗi có cấu trúc trông như thế nào</h3>
+<p>Subagent tìm tin gặp timeout ở một nguồn. Thay vì trả mảng rỗng, nó trả một object có bốn thông tin mà exam guide yêu cầu (tên trường dưới đây chỉ để minh hoạ):</p>
+<pre><code>{ "status": "partial",
+  "failure_type": "timeout",
+  "attempted_query": "EV sales Vietnam Q3 2026",
+  "partial_results": [ { "claim": "...", "source_url": "..." } ],
+  "alternatives": ["retry with a narrower query", "use the archive source"] }</code></pre>
+<p>Coordinator đọc object này và biết phải làm gì: thử lại truy vấn hẹp hơn, đổi nguồn, hoặc chấp nhận kết quả một phần. Hai tình huống trông giống nhau nhưng đòi hỏi hành động khác nhau:</p>
+<div class="tw"><table>
+  <thead><tr><th></th><th>Lỗi truy cập</th><th>Kết quả rỗng hợp lệ</th></tr></thead>
+  <tbody>
+    <tr><td>Chuyện đã xảy ra</td><td>Truy vấn không chạy được (timeout, nguồn đóng)</td><td>Truy vấn chạy tốt và không có bản ghi nào khớp</td></tr>
+    <tr><td>Điều ta biết</td><td>Chưa biết có dữ liệu hay không</td><td>Biết chắc là không có</td></tr>
+    <tr><td>Hành động</td><td>Thử lại, đổi nguồn, hoặc ghi vào báo cáo là thiếu</td><td>Ghi “không có dữ liệu”, không cần thử lại</td></tr>
+  </tbody>
+</table></div>
+<p>Báo cáo cuối có chú thích độ phủ, ví dụ: “Mục 1 đến 3 có căn cứ vững từ 5 nguồn. Mục 4 chưa có căn cứ vì nguồn B timeout hai lần.”</p>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Lỗi tạm thời (transient)</dt><dd>Lỗi có thể qua đi nếu thử lại, như timeout.</dd>
+  <dt>Kết quả một phần</dt><dd>Phần dữ liệu đã lấy được trước khi lỗi xảy ra.</dd>
+  <dt>Độ phủ (coverage)</dt><dd>Báo cáo ghi mảng nào đã có căn cứ, mảng nào còn thiếu.</dd>
+</dl></div>
+
+<h2 id="large-codebase">5. Context khi khám phá codebase lớn</h2>
+<p class="xtags"><span class="tag xt3">CCAR-F D5</span> <span class="tag xt1">CCDV-F D6</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Bạn tìm hiểu một toà nhà lớn mà bản vẽ thất lạc. Sau nhiều giờ đi qua hàng trăm phòng, đầu bạn bắt đầu rối: bạn nói “mấy phòng này kiểu thường thấy” thay vì “phòng 204 có ống nước chạy sau tường”. Người khôn ngoan làm ba việc: ghi lại điều đã thấy vào sổ tay, nhờ người khác kiểm tra từng khu rồi báo ngắn gọn, và để lại ghi chú tiến độ để nếu bị gián đoạn thì người sau tiếp tục được.
+</div>
+<p>Khi khám phá codebase lớn, đầu ra dò tìm (liệt kê file, đọc code) lấp đầy context rất nhanh. Dấu hiệu suy giảm: model nói “pattern thông thường” thay vì class cụ thể đã tìm thấy trước đó, hoặc trả lời mâu thuẫn.</p>
+
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 256" role="img" aria-label="Khám phá codebase lớn: agent chính giao câu hỏi cụ thể cho subagent, nhận tóm tắt, ghi phát hiện vào scratchpad, mỗi agent xuất trạng thái ra manifest, và sau crash coordinator đọc manifest để tiếp tục">
+    <defs>
+      <marker id="m0705" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker>
+      <marker id="m0705g" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-good"/></marker>
+    </defs>
+    <rect x="10" y="100" width="150" height="56" rx="6" class="b-sys"/>
+    <text x="85" y="124" class="t tb" text-anchor="middle">Agent chính</text><text x="85" y="142" class="ts" text-anchor="middle">giữ bức tranh tổng</text>
+    <rect x="250" y="24" width="170" height="40" rx="6" class="b-step"/>
+    <text x="335" y="42" class="t tb" text-anchor="middle">Subagent: tìm file test</text><text x="335" y="57" class="ts" text-anchor="middle">câu hỏi cụ thể</text>
+    <rect x="250" y="78" width="170" height="40" rx="6" class="b-step"/>
+    <text x="335" y="96" class="t tb" text-anchor="middle">Subagent: luồng refund</text><text x="335" y="111" class="ts" text-anchor="middle">context riêng</text>
+    <rect x="250" y="150" width="170" height="48" rx="6" class="b-opt"/>
+    <text x="335" y="172" class="t tb" text-anchor="middle">scratchpad.md</text><text x="335" y="188" class="ts" text-anchor="middle">phát hiện chính</text>
+    <rect x="470" y="70" width="160" height="56" rx="6" class="b-code"/>
+    <text x="550" y="94" class="t tb" text-anchor="middle">manifest.json</text><text x="550" y="112" class="ts" text-anchor="middle">trạng thái từng agent</text>
+    <g><path class="ln-acc flow" d="M160,110 L248,46" marker-end="url(#m0705)"/>
+      <path class="ln-acc flow" d="M160,132 L248,100" marker-end="url(#m0705)"/></g>
+    <g><path class="ln-good flow" d="M248,60 L162,122" marker-end="url(#m0705g)"/>
+      <path class="ln-good flow" d="M248,112 L162,146" marker-end="url(#m0705g)"/></g>
+    <g><path class="ln-acc flow" d="M110,156 V174 H248" marker-end="url(#m0705)"/></g>
+    <g><path class="ln-acc flow" d="M420,44 H540 V68" marker-end="url(#m0705)"/>
+      <path class="ln-acc flow" d="M420,98 H468" marker-end="url(#m0705)"/>
+      <text x="545" y="150" class="ts" text-anchor="middle">mỗi agent xuất</text>
+      <text x="545" y="164" class="ts" text-anchor="middle">trạng thái ra file</text></g>
+    <g><path class="ln-good flow" d="M600,126 V222 H85 V158" marker-end="url(#m0705g)"/>
+      <text x="300" y="244" class="tw-good" text-anchor="middle">Resume sau crash: đọc manifest, đưa trạng thái vào prompt agent</text></g>
+
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Agent chính giao câu hỏi cụ thể (“tìm mọi file test”, “lần theo luồng refund”) cho các subagent.</li>
+    <li>Subagent đọc nhiều file trong context riêng của nó, chỉ trả về tóm tắt gọn.</li>
+    <li>Agent chính ghi phát hiện chính vào scratchpad để đọc lại khi cần, kể cả khi context cũ bị cắt.</li>
+    <li>Mỗi agent xuất trạng thái ra vị trí cố định, tổng hợp trong manifest.</li>
+    <li>Nếu phiên bị crash, coordinator đọc manifest và đưa trạng thái vào prompt các agent để làm tiếp.</li>
+  </ol>
+  <figcaption>Hình 6. Subagent, scratchpad và manifest giữ context gọn và phục hồi được sau crash.</figcaption>
+</figure>
+
+<ul>
+  <li>Dấu hiệu suy giảm: model nói “pattern thông thường” thay vì class cụ thể đã tìm thấy.</li>
+  <li><strong>Scratchpad file</strong> ghi phát hiện chính, đọc lại khi cần.</li>
+  <li>Giao subagent câu hỏi cụ thể (“tìm mọi file test”, “lần theo luồng refund”); agent chính giữ bức tranh tổng.</li>
+  <li>Tóm tắt kết quả giai đoạn trước rồi đưa vào context ban đầu của subagent giai đoạn sau.</li>
+  <li>Khôi phục sau crash: mỗi agent xuất trạng thái ra vị trí cố định; coordinator đọc <strong>manifest</strong> khi resume.</li>
+  <li><code>/compact</code> giảm context khi đầy output dò tìm.</li>
+</ul>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div><ul>
+    <li>Để một agent đọc hết hàng trăm file trong cùng một context</li>
+    <li>Tin vào trí nhớ của phiên dài thay vì ghi phát hiện ra file</li>
+    <li>Sau crash, bắt đầu lại từ đầu</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đúng</div><ul>
+    <li>Giao câu hỏi cụ thể cho subagent, chỉ nhận lại tóm tắt</li>
+    <li>Ghi phát hiện vào scratchpad, đọc lại cho câu hỏi sau</li>
+    <li>Xuất trạng thái ra manifest để resume</li>
+  </ul></div>
+</div>
+<div class="alert"><strong>Bẫy.</strong> Đề đưa ra tình huống model “nói chung chung” sau phiên dài. Đừng chọn “mở context lớn hơn”. Hãy chọn scratchpad, subagent cho câu hỏi cụ thể và <code>/compact</code> khi cần.</div>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Ngoài <code>/compact</code> thủ công, tài liệu hiện hành có <strong>server-side compaction</strong> ở phía API và <strong>context editing</strong> để xoá tool result cũ. Ý tưởng giống nhau: giữ phần cần, bỏ phần thừa. Nguồn: <a href="https://platform.claude.com/docs/en/build-with-claude/context-editing" target="_blank" rel="noopener">Context editing</a>.</div>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Exam guide v1.0 dạy khôi phục sau crash bằng <strong>manifest</strong> mà coordinator đọc khi resume. Tài liệu subagents của Claude Code mô tả thêm một cách nữa: transcript của subagent được lưu theo phiên, nên có thể <strong>resume subagent sau khi khởi động lại Claude Code</strong> bằng cách resume đúng phiên đó rồi nhờ Claude tiếp tục việc trước. Subagent được resume giữ nguyên toàn bộ lịch sử hội thoại, gồm mọi lời gọi tool, kết quả và suy luận. Ngoại lệ: subagent dựng sẵn <strong>Explore</strong> và <strong>Plan</strong> chạy một lần, không trả agent ID nên không resume được; cần tiếp tục việc thì dùng subagent <code>general-purpose</code> hoặc subagent tự định nghĩa. Khi thi, đáp án cho tình huống crash vẫn là manifest. Nguồn: <a href="https://code.claude.com/docs/en/sub-agents.md" target="_blank" rel="noopener">Subagents của Claude Code</a>.</div>
+<h3>5.1 Ví dụ manifest và cách resume</h3>
+<p>Manifest là một file nhỏ liệt kê trạng thái và nơi lưu kết quả của từng agent. Ví dụ minh hoạ:</p>
+<pre><code>{ "run_id": "refund-flow-audit",
+  "agents": [
+    { "name": "tests-finder", "status": "done", "output": "state/tests-finder.json" },
+    { "name": "refund-tracer", "status": "in_progress", "output": "state/refund-tracer.json" } ] }</code></pre>
+<p>Phiên bị crash giữa chừng. Coordinator đọc manifest: <code>tests-finder</code> đã xong nên bỏ qua và nạp kết quả của nó vào prompt các agent sau; <code>refund-tracer</code> đang dở nên chạy lại, kèm trạng thái đã lưu trong file của nó.</p>
+<div class="tw"><table>
+  <thead><tr><th>Công cụ</th><th>Giải quyết vấn đề gì</th></tr></thead>
+  <tbody>
+    <tr><td>Subagent với câu hỏi cụ thể</td><td>Đọc nhiều file trong context riêng, chỉ trả bản tóm tắt gọn</td></tr>
+    <tr><td>Scratchpad file</td><td>Phát hiện chính vẫn còn dù context cũ bị cắt hay nén</td></tr>
+    <tr><td><code>/compact</code></td><td>Thu gọn context khi đầy output dò tìm</td></tr>
+    <tr><td>Manifest</td><td>Tiếp tục sau crash mà không làm lại từ đầu</td></tr>
+  </tbody>
+</table></div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Scratchpad</dt><dd>File nháp nơi agent ghi phát hiện chính để đọc lại sau.</dd>
+  <dt>Manifest</dt><dd>File danh mục ghi trạng thái từng agent, dùng để khôi phục sau sự cố.</dd>
+  <dt>Resume</dt><dd>Tiếp tục công việc sau khi bị gián đoạn.</dd>
+</dl></div>
+
+<h2 id="human-review" class="pb">6. Human review và hiệu chỉnh độ tin cậy</h2>
+<p class="xtags"><span class="tag xt3">CCAR-F D5</span> <span class="tag xt4">CCAR-P D5</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Nhà máy báo “97% sản phẩm đạt chuẩn”. Nghe tốt. Nhưng kiểm theo từng dây chuyền thì dây chuyền A, B đạt 99%, còn dây chuyền C chỉ đạt 71% vì máy cũ. Con số 97% che mất dây chuyền C. Muốn biết sự thật, bạn lấy mẫu ngẫu nhiên từ <em>từng</em> dây chuyền, kể cả những lô được máy chấm là “chắc chắn đạt”.
+</div>
+<p><strong>Human review</strong> là người kiểm tra kết quả của Claude. Người có hạn, nên ta dồn sức người vào đúng chỗ cần. Muốn biết chỗ nào cần, ta đo độ chính xác theo từng nhóm.</p>
+
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 232" role="img" aria-label="Ví dụ minh hoạ: độ chính xác tổng thể 97 phần trăm che nhóm ghi chú viết tay chỉ đạt 71 phần trăm">
+    <text x="10" y="22" class="lane-lb">Ví dụ minh hoạ: độ chính xác theo loại tài liệu</text>
+    <text x="10" y="60" class="ts">Tổng thể</text><rect x="150" y="44" width="388" height="24" rx="4" class="b-done"/><text x="546" y="61" class="tw-good">97%</text>
+    <text x="10" y="96" class="ts">Hoá đơn in</text><rect x="150" y="80" width="396" height="24" rx="4" class="b-done"/><text x="554" y="97" class="tw-good">99%</text>
+    <text x="10" y="132" class="ts">Biên lai</text><rect x="150" y="116" width="392" height="24" rx="4" class="b-done"/><text x="550" y="133" class="tw-good">98%</text>
+    <text x="10" y="168" class="ts">Ghi chú viết tay</text><rect x="150" y="152" width="284" height="24" rx="4" class="b-warn"/><text x="442" y="169" class="tw-warn">71%</text>
+    <text x="320" y="204" class="ts" text-anchor="middle">Trung bình 97% che nhóm viết tay chỉ đạt 71%</text>
+    <text x="320" y="222" class="ts" text-anchor="middle">→ đo theo loại tài liệu và theo trường, bằng lấy mẫu ngẫu nhiên phân tầng</text>
+  </svg></div>
+  <figcaption>Hình 7. Độ chính xác tổng có thể che một nhóm kém. Số liệu chỉ để minh hoạ.</figcaption>
+</figure>
+
+<ul>
+  <li>Độ chính xác tổng (97%) có thể che kết quả kém ở một loại tài liệu hoặc một trường.</li>
+  <li><strong>Lấy mẫu ngẫu nhiên phân tầng</strong> trên kết quả độ tin cậy cao để đo tỷ lệ lỗi và phát hiện mẫu lỗi mới. “Phân tầng” nghĩa là lấy mẫu riêng trong từng nhóm (loại tài liệu), để nhóm nhỏ không bị chìm.</li>
+  <li>Điểm tin cậy <strong>theo từng trường</strong>, hiệu chỉnh ngưỡng bằng tập validation có nhãn (tập ví dụ đã có đáp án đúng do người gán).</li>
+  <li>Kiểm theo loại tài liệu và theo trường <strong>trước</strong> khi giảm human review.</li>
+  <li>Đưa cho người xem: kết quả độ tin cậy thấp, tài liệu mơ hồ hoặc mâu thuẫn.</li>
+</ul>
+<h3>6.1 Ví dụ: tự động hoá trích xuất hoá đơn</h3>
+<ol class="principles">
+  <li>Claude trích từng trường (số tiền, ngày, nhà cung cấp) kèm điểm tin cậy cho từng trường.</li>
+  <li>Dùng tập validation có nhãn để chọn ngưỡng: điểm tin cậy từ mức nào trở lên thì thực sự đúng đủ nhiều.</li>
+  <li>Kết quả dưới ngưỡng, hoặc tài liệu mơ hồ và mâu thuẫn, đi thẳng tới người xem.</li>
+  <li>Kết quả trên ngưỡng vẫn được lấy mẫu ngẫu nhiên theo từng loại tài liệu để phát hiện nhóm kém và kiểu lỗi mới.</li>
+  <li>Chỉ giảm human review ở nhóm nào đã kiểm và thấy ổn định.</li>
+</ol>
+<div class="alert"><strong>Bẫy.</strong> “Độ chính xác tổng 97% nên có thể bỏ review” là sai. Phải kiểm theo từng loại tài liệu và từng trường trước. Cũng sai nếu coi điểm tin cậy tự báo của model là đã được hiệu chỉnh: ngưỡng phải đối chiếu với tập có nhãn.</div>
+<div class="alert"><strong>Bẫy.</strong> Chia đều thời gian của người review cho mọi bản trích xuất. Năng lực review có hạn nên dồn vào các bản <strong>kém chắc chắn nhất</strong> (tin cậy thấp, mâu thuẫn, loại tài liệu mới), nơi phán đoán của người có giá trị nhất; phần tin cậy cao chỉ cần lấy mẫu ngẫu nhiên phân tầng để bắt lỗi kiểu mới.</div>
+<h3>6.2 Ví dụ có số: 97% che một nhóm chỉ đạt 62%</h3>
+<p>Một hệ thống trích xuất 1.000 tài liệu. Số liệu minh hoạ:</p>
+<div class="tw"><table>
+  <thead><tr><th>Loại tài liệu</th><th>Số tài liệu</th><th>Trích đúng</th><th>Độ chính xác</th></tr></thead>
+  <tbody>
+    <tr><td>Hoá đơn điện tử</td><td>800</td><td>792</td><td>99%</td></tr>
+    <tr><td>Hợp đồng</td><td>150</td><td>147</td><td>98%</td></tr>
+    <tr><td>Biên lai chụp ảnh</td><td>50</td><td>31</td><td class="no">62%</td></tr>
+    <tr><td><strong>Tổng</strong></td><td>1.000</td><td>970</td><td>97%</td></tr>
+  </tbody>
+</table></div>
+<p>Lấy 30 tài liệu ngẫu nhiên từ cả 1.000 thì trung bình chỉ có 1,5 biên lai, nên rất dễ không thấy nhóm kém. Lấy mẫu <strong>phân tầng</strong>, 20 tài liệu mỗi loại, thì chắc chắn có 20 biên lai để đo.</p>
+<p>Ngưỡng điểm tin cậy cũng chọn từ số liệu, không chọn theo cảm giác. Giả sử chạy 300 trường trên tập validation có nhãn (số liệu minh hoạ):</p>
+<div class="tw"><table>
+  <thead><tr><th>Điểm tin cậy tự báo</th><th>Số trường</th><th>Đúng</th><th>Tỷ lệ đúng</th><th>Xử lý</th></tr></thead>
+  <tbody>
+    <tr><td>Từ 0,90</td><td>180</td><td>178</td><td>98,9%</td><td>Tự động nhận, lấy mẫu phân tầng để kiểm</td></tr>
+    <tr><td>0,70 đến dưới 0,90</td><td>70</td><td>56</td><td>80%</td><td>Chuyển người xem</td></tr>
+    <tr><td>Dưới 0,70</td><td>50</td><td>25</td><td>50%</td><td>Chuyển người xem</td></tr>
+  </tbody>
+</table></div>
+<p>Nếu mục tiêu là tự động nhận khi đúng ít nhất 98%, ngưỡng 0,90 đạt yêu cầu còn 0,70 thì không. Điểm tin cậy của model chỉ có ý nghĩa sau khi đối chiếu với bảng như vậy.</p>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Stratified sampling</dt><dd>Lấy mẫu ngẫu nhiên riêng trong từng nhóm, để nhóm nhỏ vẫn được đo.</dd>
+  <dt>Calibration (hiệu chỉnh)</dt><dd>Chỉnh ngưỡng độ tin cậy sao cho khớp với tỷ lệ đúng thực tế.</dd>
+  <dt>Validation set</dt><dd>Tập ví dụ có nhãn đúng do người gán, dùng để đo và chỉnh ngưỡng.</dd>
+</dl></div>
+
+<h2 id="provenance">7. Nguồn gốc thông tin và sự không chắc chắn</h2>
+<p class="xtags"><span class="tag xt3">CCAR-F D5</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Bạn viết bài báo từ ba nguồn. Ghi chú đầu tiên: “GDP tăng 3,2% (Tổng cục Thống kê, quý 3)”. Sau hai lần chép tóm tắt, ghi chú chỉ còn “kinh tế tăng trưởng tốt”. Bạn không còn biết số nào, ai nói, khi nào. Biên tập viên hỏi nguồn thì bạn bó tay. Nếu hai nguồn đáng tin báo 3,2% và 2,9%, bạn không tự chọn số nào “nghe hợp lý hơn”. Bạn ghi cả hai kèm nguồn và ngày.
+</div>
+<p><strong>Provenance</strong> (nguồn gốc) là việc mỗi nhận định đi kèm nơi nó đến từ đâu. Khi nhiều agent tóm tắt nối tiếp nhau, liên kết nhận định–nguồn rất dễ đứt.</p>
+
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 234" role="img" aria-label="So sánh: tóm tắt làm mất nguồn với giữ cặp nhận định và nguồn; khi hai nguồn lệch số thì ghi cả hai kèm nguồn">
+    <defs><marker id="m0706" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah"/></marker></defs>
+    <rect x="4" y="4" width="312" height="226" rx="8" class="lane"/>
+    <rect x="324" y="4" width="312" height="226" rx="8" class="lane"/>
+    <text x="160" y="24" class="lane-lb" text-anchor="middle">TÓM TẮT LÀM MẤT NGUỒN</text>
+    <text x="480" y="24" class="lane-lb" text-anchor="middle">GIỮ CẶP NHẬN ĐỊNH–NGUỒN</text>
+    <rect x="30" y="40" width="260" height="50" rx="6" class="b-step"/>
+    <text x="160" y="62" class="t tb" text-anchor="middle">Phát hiện của subagent</text>
+    <text x="160" y="80" class="ts" text-anchor="middle">“+18%” · Báo cáo Q3 · tr.12 · 09/2026</text>
+    <path d="M160,90 V120" class="ln" marker-end="url(#m0706)"/>
+    <text x="170" y="110" class="ts">tóm tắt</text>
+    <rect x="30" y="122" width="260" height="50" rx="6" class="b-warn"/>
+    <text x="160" y="144" class="t tb" text-anchor="middle">Bản tóm tắt</text>
+    <text x="160" y="162" class="ts" text-anchor="middle">“doanh số tăng mạnh”: hết số, hết nguồn</text>
+    <text x="160" y="200" class="tw-warn" text-anchor="middle">✕ không kiểm chứng được</text>
+    <rect x="350" y="40" width="260" height="50" rx="6" class="b-step"/>
+    <text x="480" y="62" class="t tb" text-anchor="middle">Cặp nhận định–nguồn</text>
+    <text x="480" y="80" class="ts" text-anchor="middle">claim · source_url · excerpt · date</text>
+    <path d="M480,90 V120" class="ln" marker-end="url(#m0706)"/>
+    <text x="490" y="110" class="ts">giữ nguyên</text>
+    <rect x="350" y="122" width="260" height="50" rx="6" class="b-done"/>
+    <text x="480" y="144" class="t tb" text-anchor="middle">Báo cáo tổng hợp</text>
+    <text x="480" y="162" class="ts" text-anchor="middle">“+18%” (Báo cáo Q3, 09/2026)</text>
+    <text x="480" y="196" class="ts" text-anchor="middle">Hai nguồn lệch số: ghi cả hai kèm nguồn</text>
+    <text x="480" y="214" class="ts" text-anchor="middle">“18% (nguồn A) · 14% (nguồn B)”</text>
+  </svg></div>
+  <figcaption>Hình 8. Giữ cặp nhận định–nguồn qua mọi bước tóm tắt, và ghi cả hai số khi nguồn lệch nhau.</figcaption>
+</figure>
+
+<ul>
+  <li>Tóm tắt làm mất liên kết nhận định–nguồn. Subagent xuất <strong>cặp nhận định–nguồn</strong> (URL, tên tài liệu, trích đoạn); agent tổng hợp giữ nguyên.</li>
+  <li>Hai nguồn uy tín cho số khác nhau: <strong>ghi cả hai kèm nguồn</strong>, không tự chọn; để coordinator quyết định.</li>
+  <li>Bắt buộc có <strong>ngày xuất bản hoặc thu thập</strong> để khác biệt theo thời gian không bị hiểu nhầm là mâu thuẫn. Ví dụ “dân số 98 triệu” (2020) và “100 triệu” (2023) không mâu thuẫn, chỉ khác năm.</li>
+  <li>Báo cáo tách phần đã xác lập với phần còn tranh cãi.</li>
+  <li>Trình bày theo loại nội dung: số liệu tài chính dùng bảng, tin tức viết văn xuôi, kết quả kỹ thuật dùng danh sách.</li>
+</ul>
+<pre><code>{ "claim": "Doanh số xe điện quý 3 tăng 18%",
+  "source_url": "https://example.com/report", "doc_name": "Báo cáo thị trường Q3",
+  "excerpt": "…tăng 18% so với cùng kỳ…", "published": "2026-09-30" }</code></pre>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div><ul>
+    <li>Chọn số “nghe hợp lý hơn” khi hai nguồn lệch nhau</li>
+    <li>Coi hai số khác ngày là mâu thuẫn</li>
+    <li>Đổi mọi thứ thành văn xuôi, kể cả bảng số liệu tài chính</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đúng</div><ul>
+    <li>Ghi cả hai số kèm nguồn, để coordinator quyết định</li>
+    <li>Có ngày xuất bản hoặc thu thập để phân biệt khác biệt theo thời gian</li>
+    <li>Số liệu dùng bảng, tin tức dùng văn xuôi, kỹ thuật dùng danh sách</li>
+  </ul></div>
+</div>
+<div class="alert"><strong>Bẫy.</strong> Đề hay cho phương án “tự chọn nguồn đáng tin hơn” hoặc “lấy trung bình hai số”. Cả hai đều che mất mâu thuẫn. Cách đúng là giữ cả hai, ghi nguồn, và để coordinator xử lý.</div>
+<h3>7.1 Khác thời điểm hay mâu thuẫn thật</h3>
+<div class="tw"><table>
+  <thead><tr><th>Hai nguồn nói</th><th>Loại khác biệt</th><th>Cách ghi</th></tr></thead>
+  <tbody>
+    <tr><td>“98 triệu dân” (2020) và “100 triệu” (2023)</td><td>Khác thời điểm</td><td>Ghi cả hai kèm năm; không phải mâu thuẫn</td></tr>
+    <tr><td>“Tăng 3,2%” (cơ quan thống kê, quý 3) và “2,9%” (ngân hàng X, quý 3)</td><td>Mâu thuẫn thật, cùng kỳ</td><td>Ghi cả hai kèm nguồn, đánh dấu còn tranh cãi, để coordinator quyết</td></tr>
+  </tbody>
+</table></div>
+<h3>7.2 Citations của API: để API giữ liên kết nguồn giúp bạn</h3>
+<p>Thay vì nhờ model tự ghi nguồn, bạn có thể bật <code>citations: {"enabled": true}</code> trên từng document trong request. API tự tách trích dẫn trong câu trả lời và trả về trường <code>cited_text</code>. Ba điểm cần nhớ: <code>cited_text</code> không tính vào output token; API phân tích trích dẫn nên con trỏ tới tài liệu bạn gửi luôn hợp lệ; trong một request phải bật citations cho tất cả document hoặc không document nào. Chi tiết cách gửi document xem <a href="/notes/lessons/02-messages-api.html#citations">bài 02 §11</a>.</p>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Ba điểm trên lấy từ tài liệu Citations. Nguồn: <a href="https://platform.claude.com/docs/en/build-with-claude/citations" target="_blank" rel="noopener">Citations</a>.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Provenance</dt><dd>Nguồn gốc: một nhận định đến từ tài liệu nào, trang nào, ngày nào.</dd>
+  <dt>Claim-source mapping</dt><dd>Cặp liên kết từng nhận định với nguồn của nó.</dd>
+  <dt>Excerpt</dt><dd>Đoạn trích nguyên văn từ nguồn làm bằng chứng.</dd>
+</dl></div>
+
+<h2 id="module-5">8. RAG và tìm kiếm cho agent (module 5 của khoá Building with the Claude API)</h2>
+<p class="xtags"><span class="tag xt1">CCDV-F D2</span> <span class="tag xt4">CCAR-P D3</span> <span class="xnote">Embedding, vector DB là nâng cao với CCAR-F (ngoài phạm vi); CCDV-F và CCAR-P có hỏi RAG.</span></p>
+<p>Mục này là phần RAG duy nhất của CCDV-F: chia đoạn, embedding và tìm theo vector, BM25 và pipeline nhiều chỉ mục. Với CCAR-P, RAG và chiến lược truy xuất ở <a href="/notes/lessons/20-integration.html#rag">bài 20, mục 4 và 5</a>.</p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Bạn hỏi thủ thư về một chi tiết trong bộ bách khoa 30 tập. Thủ thư không đọc cả 30 tập cho bạn. Họ tra mục lục, rút ra đúng vài trang liên quan và đưa bạn. RAG làm tương tự: cắt tài liệu thành đoạn nhỏ, tìm vài đoạn gần với câu hỏi nhất, chỉ gửi chúng cho Claude.
+</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>RAG</dt><dd>Retrieval-Augmented Generation: tìm đoạn liên quan rồi mới cho Claude trả lời dựa trên đoạn đó.</dd>
+  <dt>Chunk</dt><dd>Một đoạn nhỏ cắt ra từ tài liệu lớn.</dd>
+  <dt>Embedding</dt><dd>Dãy số biểu diễn nghĩa của một đoạn văn. Hai đoạn gần nghĩa có dãy số gần nhau.</dd>
+  <dt>Vector DB</dt><dd>Kho lưu embedding và tìm nhanh các embedding gần nhất.</dd>
+  <dt>Semantic vs lexical</dt><dd>Semantic tìm theo nghĩa (embedding). Lexical tìm theo đúng từ khóa (BM25).</dd>
+</dl></div>
+
+<h3>8.1 RAG là gì</h3>
+<p>RAG giải quyết chuyện tài liệu quá lớn, không vừa prompt: (1) chia tài liệu thành đoạn nhỏ (chunk); (2) chuyển câu hỏi và các đoạn thành vector (embedding); (3) truy xuất: tìm các đoạn gần câu hỏi nhất; (4) sinh câu trả lời: chỉ gửi các đoạn liên quan cho Claude.</p>
+<div class="tw"><table>
+  <thead><tr><th></th><th>Dùng full doc</th><th>RAG</th></tr></thead>
+  <tbody>
+    <tr><td>Scale</td><td>Giới hạn bởi context window</td><td>Không giới hạn</td></tr>
+    <tr><td>Chi phí</td><td>Cao (nhiều tokens)</td><td>Thấp hơn</td></tr>
+    <tr><td>Complexity</td><td>Thấp</td><td>Cao hơn (preprocessing)</td></tr>
+  </tbody>
+</table></div>
+
+<h3>8.2 Chunking strategies</h3>
+<div class="tw"><table>
+  <thead><tr><th>Strategy</th><th>Cách hoạt động</th><th>Khi nào dùng</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Size-based</strong></td><td>Cắt theo số ký tự cố định, có phần gối đầu</td><td>Mặc định cho mọi loại tài liệu: đơn giản và ổn định</td></tr>
+    <tr><td><strong>Structure-based</strong></td><td>Cắt theo tiêu đề hoặc đoạn văn</td><td>Markdown/HTML với cấu trúc rõ ràng</td></tr>
+    <tr><td><strong>Semantic-based</strong></td><td>Gom câu theo nghĩa</td><td>Chất lượng cao nhất nhưng phức tạp nhất</td></tr>
+    <tr><td><strong>Sentence-based</strong></td><td>Gom N câu một, có phần gối đầu</td><td>Mức trung gian, hợp với văn bản thường</td></tr>
+  </tbody>
+</table></div>
+<p><strong>Overlap quan trọng</strong> — giữ context giữa chunks, tránh cắt giữa câu hoặc từ.</p>
+
+<h3>8.3 Embedding và tìm theo vector</h3>
+<p>Embedding là cách biểu diễn nghĩa bằng số (một mảng số thực). Khoá học dùng VoyageAI, vì Anthropic không có API embedding:</p>
+<pre><code class="language-python">import voyageai
+voyage_client = voyageai.Client()
+
+def embed(text, model="voyage-3-large", input_type="query"):
+    return voyage_client.embed([text], model=model, input_type=input_type).embeddings[0]
+
+# Similarity: cosine similarity (1 = identical, 0 = unrelated, -1 = opposite)
+# cosine_distance = 1 - cosine_similarity (0 = identical)</code></pre>
+<p>Luồng RAG: embed mọi đoạn (<code>input_type="document"</code>) → lưu vào vector DB → embed câu hỏi (<code>input_type="query"</code>) → tìm đoạn gần nhất → dựng prompt với đoạn vừa tìm được.</p>
+
+<h3>8.4 BM25 và pipeline nhiều chỉ mục</h3>
+<p><strong>BM25</strong> (tìm theo từ khoá) bổ sung cho tìm theo nghĩa: nó bắt được đúng các từ chính xác (mã, thuật ngữ kỹ thuật) mà embedding có thể bỏ sót:</p>
+<pre><code class="language-python">store = BM25Index()
+for chunk in chunks: store.add_document({"content": chunk})
+results = store.search("INC-2023-Q4-011", 3)  # tìm exact ID</code></pre>
+<p><strong>Reciprocal Rank Fusion (RRF)</strong> gộp kết quả của hai chỉ mục theo thứ hạng: điểm = Σ 1/(k + hạng_i(tài liệu)), thường k = 60. Đoạn được cả hai chỉ mục xếp cao sẽ có tổng điểm cao và được lấy ra.</p>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 236" role="img" aria-label="Pipeline RAG: lập chỉ mục tài liệu, truy vấn bằng embedding, và kết hợp BM25 với vector search bằng RRF">
+    <defs><marker id="m1710" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah"/></marker></defs>
+    <g>
+      <text x="6" y="18" class="lane-lb">1. LẬP CHỈ MỤC (làm trước)</text>
+      <rect x="5" y="26" width="120" height="34" rx="6" class="b-sys"/><text x="65" y="48" class="t" text-anchor="middle">Document lớn</text>
+      <path d="M125,43 H173" class="ln" marker-end="url(#m1710)"/>
+      <rect x="175" y="26" width="120" height="34" rx="6" class="b-step"/><text x="235" y="48" class="t" text-anchor="middle">Chunk + overlap</text>
+      <path d="M295,43 H343" class="ln" marker-end="url(#m1710)"/>
+      <rect x="345" y="26" width="120" height="34" rx="6" class="b-step"/><text x="405" y="48" class="t" text-anchor="middle">Embed chunk</text>
+      <path d="M465,43 H513" class="ln" marker-end="url(#m1710)"/>
+      <rect x="515" y="26" width="120" height="34" rx="6" class="b-done"/><text x="575" y="48" class="t" text-anchor="middle">Vector DB</text>
+    </g>
+    <g>
+      <text x="6" y="88" class="lane-lb">2. TRUY VẤN (mỗi câu hỏi)</text>
+      <rect x="5" y="96" width="120" height="34" rx="6" class="b-sys"/><text x="65" y="118" class="t" text-anchor="middle">Câu hỏi</text>
+      <path d="M125,113 H173" class="ln" marker-end="url(#m1710)"/>
+      <rect x="175" y="96" width="120" height="34" rx="6" class="b-step"/><text x="235" y="118" class="t" text-anchor="middle">Embed query</text>
+      <path d="M295,113 H343" class="ln" marker-end="url(#m1710)"/>
+      <rect x="345" y="96" width="120" height="34" rx="6" class="b-step"/><text x="405" y="118" class="t" text-anchor="middle">Chunk gần nhất</text>
+      <path d="M465,113 H513" class="ln" marker-end="url(#m1710)"/>
+      <rect x="515" y="96" width="120" height="34" rx="6" class="b-done"/><text x="575" y="118" class="t" text-anchor="middle">Claude + chunk</text>
+    </g>
+    <g>
+      <text x="6" y="158" class="lane-lb">3. KẾT HỢP BM25 VÀ VECTOR</text>
+      <rect x="5" y="166" width="120" height="34" rx="6" class="b-step"/><text x="65" y="188" class="t" text-anchor="middle">BM25 (từ khóa)</text>
+      <rect x="175" y="166" width="120" height="34" rx="6" class="b-step"/><text x="235" y="188" class="t" text-anchor="middle">Vector (nghĩa)</text>
+      <path d="M125,183 H173" class="ln-dash"/>
+      <path d="M295,183 H343" class="ln" marker-end="url(#m1710)"/>
+      <rect x="345" y="166" width="120" height="34" rx="6" class="b-hot"/><text x="405" y="188" class="t" text-anchor="middle">RRF gộp rank</text>
+      <path d="M465,183 H513" class="ln" marker-end="url(#m1710)"/>
+      <rect x="515" y="166" width="120" height="34" rx="6" class="b-done"/><text x="575" y="188" class="t" text-anchor="middle">Top chunk</text>
+      <text x="320" y="222" class="ts" text-anchor="middle">score = tổng 1/(k + rank) trên từng index, k thường 60</text>
+    </g>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Làm trước một lần: cắt tài liệu, embed từng chunk (input_type document), lưu vào vector DB.</li>
+    <li>Mỗi câu hỏi: embed (input_type query), tìm chunk gần nhất, đưa vào prompt cho Claude.</li>
+    <li>Thêm BM25 cho mã, ID, thuật ngữ chính xác. RRF gộp hai bảng xếp hạng.</li>
+  </ol>
+  <figcaption>Hình 9. Pipeline RAG và multi-index bằng RRF.</figcaption>
+</figure>
+<h3>8.5 Ví dụ có số: overlap và RRF</h3>
+<p><strong>Overlap.</strong> Tài liệu dài 3.000 ký tự, chunk 1.000 ký tự, overlap 200. Mỗi chunk bắt đầu sau chunk trước 800 ký tự, nên có bốn chunk: 0 đến 1.000, 800 đến 1.800, 1.600 đến 2.600, 2.400 đến 3.000. Không overlap thì có ba chunk 0 đến 1.000, 1.000 đến 2.000, 2.000 đến 3.000. Một câu nằm ở ký tự 950 đến 1.050 bị cắt đôi khi không overlap, nhưng nằm trọn trong chunk 800 đến 1.800 khi có overlap.</p>
+<p><strong>RRF</strong> với k = 60. Bốn đoạn có thứ hạng ở hai bảng xếp hạng như sau:</p>
+<div class="tw"><table>
+  <thead><tr><th>Đoạn</th><th>Hạng embedding</th><th>Hạng BM25</th><th>Điểm RRF</th><th>Thứ tự cuối</th></tr></thead>
+  <tbody>
+    <tr><td>Y</td><td>2</td><td>1</td><td>1/62 + 1/61 = 0,03252</td><td>1</td></tr>
+    <tr><td>X</td><td>1</td><td>3</td><td>1/61 + 1/63 = 0,03227</td><td>2</td></tr>
+    <tr><td>W</td><td>Không có</td><td>2</td><td>1/62 = 0,01613</td><td>3</td></tr>
+    <tr><td>Z</td><td>3</td><td>Không có</td><td>1/63 = 0,01587</td><td>4</td></tr>
+  </tbody>
+</table></div>
+<p>Đoạn Y đứng đầu dù X là hạng 1 của embedding, vì Y được cả hai bảng xếp cao. RRF chỉ dùng thứ hạng, không dùng điểm gốc, nên không cần quy đổi thang điểm giữa embedding và BM25.</p>
+<div class="tw"><table>
+  <thead><tr><th>Câu hỏi của người dùng</th><th>Tìm bằng</th><th>Lý do</th></tr></thead>
+  <tbody>
+    <tr><td>“Mã sự cố INC-2023-Q4-011 xử lý thế nào?”</td><td>BM25</td><td>Cần khớp đúng chuỗi mã</td></tr>
+    <tr><td>“Khách muốn trả hàng thì làm sao?”</td><td>Embedding</td><td>Tài liệu có thể viết “hoàn trả”, “đổi trả”: khác từ, cùng nghĩa</td></tr>
+    <tr><td>Hai kiểu trộn lẫn</td><td>Cả hai, gộp bằng RRF</td><td>Không bỏ sót kiểu nào</td></tr>
+  </tbody>
+</table></div>
+<div class="insight"><strong>Cốt lõi.</strong> Embedding giỏi bắt <em>nghĩa</em>, BM25 giỏi bắt <em>từ khóa chính xác</em> như <code>INC-2023-Q4-011</code>. Dùng cả hai rồi gộp bằng RRF để không bỏ sót.</div>
+
+<h2 id="exam-keywords" class="pb">9. Từ khoá đề thi</h2>
+<p>Các từ tiếng Anh dưới đây xuất hiện nguyên văn trong đề và tài liệu chính thức. Đọc cột giữa để nắm nghĩa, cột phải để biết đề hay gài ở đâu; bấm số mục để xem lại phần giải thích. Mọi từ khoá của các bài được gom ở trang <a href="/notes/lessons/glossary.html">Thuật ngữ</a>.</p>
+<div class="tw"><table class="kwt">
+  <thead><tr><th>Từ khoá</th><th>Nghĩa</th><th>Đề hay hỏi, dễ nhầm</th><th class="nw">Mục</th></tr></thead>
+  <tbody>
+    <tr data-kw="/compact"><td><code>/compact</code></td><td>Lệnh Claude Code thu gọn context đang dùng</td><td>Dùng khi đầy output dò tìm; ràng buộc cần giữ lâu thì ghi vào CLAUDE.md</td><td><a href="#large-codebase">§5</a></td></tr>
+    <tr data-kw="access failure vs empty result"><td>Access failure vs valid empty result</td><td>Lỗi truy cập (không chạy được) khác kết quả rỗng hợp lệ (chạy được, không có gì)</td><td>Hai trường hợp đòi hành động khác nhau; đừng gộp</td><td><a href="#error-propagation">§4</a></td></tr>
+    <tr data-kw="bm25"><td><strong>BM25</strong></td><td>Tìm theo từ khoá chính xác</td><td>Bắt mã, ID, thuật ngữ mà embedding bỏ sót</td><td><a href="#module-5">§8</a></td></tr>
+    <tr data-kw="calibration"><td>Calibration, validation set</td><td>Chỉnh ngưỡng tin cậy bằng tập có nhãn đúng do người gán</td><td>Điểm tự báo của model chưa phải đã hiệu chỉnh</td><td><a href="#human-review">§6</a></td></tr>
+    <tr data-kw="case facts"><td><strong>Case facts</strong></td><td>Khối dữ kiện giao dịch (số tiền, ngày, mã đơn, trạng thái) đưa vào mọi prompt, ngoài phần lịch sử bị tóm tắt</td><td>Đáp án đúng khi tóm tắt làm mất số liệu; sai nếu chỉ tóm tắt kỹ hơn hay dùng context lớn hơn</td><td><a href="#case-facts">§1</a></td></tr>
+    <tr data-kw="chunking"><td>Chunking, overlap</td><td>Cắt tài liệu thành đoạn, có phần gối đầu giữa các đoạn</td><td>Size-based là mặc định; overlap tránh cắt đôi câu</td><td><a href="#module-5">§8</a></td></tr>
+    <tr data-kw="citations"><td><code>citations</code>, <code>cited_text</code></td><td>API tự trả trích dẫn từ document bạn gửi</td><td>Bật trên tất cả document hoặc không document nào; <code>cited_text</code> không tính output token</td><td><a href="#provenance">§7</a></td></tr>
+    <tr data-kw="clear_at_least"><td><code>clear_at_least</code></td><td>Số token tối thiểu mỗi lần xoá phải đạt</td><td>Xoá đủ nhiều mới đáng đánh đổi việc mất prompt cache</td><td><a href="#long-context">§2</a></td></tr>
+    <tr data-kw="clear_tool_uses"><td><code>clear_tool_uses_20250919</code></td><td>Chiến lược của context editing để xoá tool result cũ</td><td>Tham số <code>trigger</code> (mặc định 100.000 input token), <code>keep</code> (mặc định 3), <code>clear_at_least</code>, <code>exclude_tools</code></td><td><a href="#long-context">§2</a></td></tr>
+    <tr data-kw="compaction"><td><strong>Compaction</strong></td><td>API tự tóm tắt phần cũ của hội thoại khi đạt ngưỡng token</td><td>Phải nối cả <code>response.content</code> vào lịch sử, không chỉ phần chữ</td><td><a href="#long-context">§2</a></td></tr>
+    <tr data-kw="compaction block"><td>Compaction block</td><td>Khối chứa bản tóm tắt, thay cho phần hội thoại đã nén</td><td>Lưu mất block này thì Claude quên đầu hội thoại</td><td><a href="#long-context">§2</a></td></tr>
+    <tr data-kw="conflicting sources"><td>Conflicting sources</td><td>Hai nguồn uy tín cho số khác nhau</td><td>Ghi cả hai kèm nguồn; không tự chọn, không lấy trung bình</td><td><a href="#provenance">§7</a></td></tr>
+    <tr data-kw="context drift"><td>Context drift</td><td>Chất lượng trượt dần vì thông tin cũ và thừa tích tụ</td><td>Context còn chỗ vẫn có thể drift; chọn compact, phiên mới kèm tóm tắt, hoặc ghi luật vào CLAUDE.md</td><td><a href="#case-facts">§1</a></td></tr>
+    <tr data-kw="context editing"><td><strong>Context editing</strong> (<code>context_management.edits</code>)</td><td>Xoá tool result hoặc thinking block cũ ở phía server (beta)</td><td>Xoá chứ không tóm tắt; khác compaction (tóm tắt) và memory (lưu giữa các phiên)</td><td><a href="#long-context">§2</a></td></tr>
+    <tr data-kw="coverage annotation"><td>Coverage annotation</td><td>Chú thích độ phủ trong báo cáo cuối</td><td>Nêu rõ mảng nào có căn cứ vững, mảng nào thiếu vì nguồn không truy cập được</td><td><a href="#error-propagation">§4</a></td></tr>
+    <tr data-kw="embedding"><td>Embedding (<code>input_type</code>)</td><td>Dãy số biểu diễn nghĩa; Voyage AI cung cấp embedding</td><td>Đoạn dùng <code>"document"</code>, câu hỏi dùng <code>"query"</code>; Anthropic không có API embedding</td><td><a href="#module-5">§8</a></td></tr>
+    <tr data-kw="error propagation"><td><strong>Error propagation</strong></td><td>Cách lỗi của subagent đi lên coordinator</td><td>Hai kiểu sai: nuốt lỗi (trả rỗng như thành công) và dừng cả workflow</td><td><a href="#error-propagation">§4</a></td></tr>
+    <tr data-kw="escalation"><td><strong>Escalation</strong></td><td>Chuyển ca từ agent sang người</td><td>Khách yêu cầu gặp người thì chuyển ngay, không điều tra trước</td><td><a href="#escalation">§3</a></td></tr>
+    <tr data-kw="field-level confidence"><td>Field-level confidence</td><td>Điểm tin cậy cho từng trường được trích</td><td>Kiểm theo loại tài liệu và theo trường trước khi giảm human review</td><td><a href="#human-review">§6</a></td></tr>
+    <tr data-kw="lost in the middle"><td>Lost in the middle</td><td>Model xử lý tốt đầu và cuối đầu vào dài, dễ bỏ sót phần giữa</td><td>Chữa bằng cách đặt tóm tắt chính ở đầu và chia phần có tiêu đề, không phải bằng context lớn hơn</td><td><a href="#case-facts">§1</a></td></tr>
+    <tr data-kw="manifest"><td><strong>Manifest</strong></td><td>File ghi trạng thái từng agent để coordinator resume sau crash</td><td>Đáp án cho tình huống crash; không bắt đầu lại từ đầu</td><td><a href="#large-codebase">§5</a></td></tr>
+    <tr data-kw="memory tool"><td><strong>Memory tool</strong> (<code>memory_20250818</code>)</td><td>Tool cho Claude đọc ghi file trong <code>/memories</code> để nhớ giữa các phiên</td><td>Là client tool: code của bạn thực thi; phải chặn path traversal</td><td><a href="#long-context">§2</a></td></tr>
+    <tr data-kw="multiple matches"><td>Multiple matches</td><td>Tool tra cứu trả về nhiều khách trùng khớp</td><td>Hỏi thêm thông tin định danh, không chọn theo phỏng đoán</td><td><a href="#escalation">§3</a></td></tr>
+    <tr data-kw="policy gap"><td>Policy gap</td><td>Chính sách mơ hồ hoặc không nói tới yêu cầu của khách</td><td>Là lý do chuyển ca, ví dụ khớp giá đối thủ khi chính sách chỉ nói giá của mình</td><td><a href="#escalation">§3</a></td></tr>
+    <tr data-kw="progressive summarization"><td>Progressive summarization</td><td>Tóm tắt dần phần cũ mỗi khi lịch sử dài</td><td>Mỗi lần tóm tắt mất thêm chi tiết; là nguyên nhân gốc để dùng case facts</td><td><a href="#case-facts">§1</a></td></tr>
+    <tr data-kw="provenance"><td><strong>Provenance</strong>, claim-source mapping</td><td>Mỗi nhận định đi kèm nguồn: URL, tên tài liệu, trích đoạn</td><td>Tóm tắt nối tiếp dễ làm đứt liên kết; subagent phải xuất cặp nhận định và nguồn</td><td><a href="#provenance">§7</a></td></tr>
+    <tr data-kw="publication date"><td>Publication date</td><td>Ngày xuất bản hoặc thu thập của nguồn</td><td>Giúp phân biệt khác thời điểm với mâu thuẫn thật</td><td><a href="#provenance">§7</a></td></tr>
+    <tr data-kw="rag"><td><strong>RAG</strong></td><td>Tìm đoạn liên quan rồi cho Claude trả lời dựa trên đoạn đó</td><td>Dùng khi tài liệu quá lớn cho prompt; đổi lại pipeline phức tạp hơn dùng full doc</td><td><a href="#module-5">§8</a></td></tr>
+    <tr data-kw="rrf"><td><strong>Reciprocal Rank Fusion (RRF)</strong></td><td>Gộp hai bảng xếp hạng: điểm là tổng 1/(k + hạng), thường k = 60</td><td>Chỉ dùng thứ hạng, không dùng điểm gốc của từng chỉ mục</td><td><a href="#module-5">§8</a></td></tr>
+    <tr data-kw="scratchpad"><td><strong>Scratchpad file</strong></td><td>File nháp ghi phát hiện chính để đọc lại sau</td><td>Chữa model nói “pattern thông thường” sau phiên dài; không phải “mở context lớn hơn”</td><td><a href="#large-codebase">§5</a></td></tr>
+    <tr data-kw="sentiment"><td>Sentiment, self-reported confidence</td><td>Cảm xúc của khách; điểm tự tin do model tự báo</td><td>Cả hai là thước đo kém cho việc có nên escalate; đáp án đúng là tiêu chí rõ kèm few-shot</td><td><a href="#escalation">§3</a></td></tr>
+    <tr data-kw="stratified sampling"><td><strong>Stratified random sampling</strong></td><td>Lấy mẫu ngẫu nhiên riêng trong từng nhóm</td><td>Dùng trên kết quả tin cậy cao để đo lỗi và bắt kiểu lỗi mới; không thay bằng độ chính xác tổng</td><td><a href="#human-review">§6</a></td></tr>
+    <tr data-kw="structured error context"><td>Structured error context</td><td>Lỗi trả lên gồm loại lỗi, truy vấn đã thử, kết quả một phần, phương án thay thế</td><td>Trạng thái chung chung như “search unavailable” làm coordinator mất dữ kiện</td><td><a href="#error-propagation">§4</a></td></tr>
+    <tr data-kw="subagent delegation"><td>Subagent delegation</td><td>Giao câu hỏi cụ thể cho subagent, chỉ nhận bản tóm tắt</td><td>Giữ context agent chính gọn; đừng để một agent đọc hết mọi file</td><td><a href="#large-codebase">§5</a></td></tr>
+    <tr data-kw="tool result trimming"><td>Tool result trimming</td><td>Cắt kết quả tool còn các trường liên quan (5 trong 40) trước khi tích tụ</td><td>Làm trước khi kết quả vào context, không đợi đầy rồi mới xử lý</td><td><a href="#case-facts">§1</a></td></tr>
+  </tbody>
+</table></div>
+
+<p class="lesson-practice">Luyện câu hỏi của bài này trong <a href="/bank?lesson=09">🗂️ Ngân hàng</a>.</p>
+
+<div class="btns pager">
+  <a class="btn" href="/notes/lessons/08-platform-subagents-skills.html">← Bài 08 · Claude Platform, subagent và skill</a>
+  <a class="btn primary" href="/notes/lessons/10-evals-debug.html">Bài 10 · Eval, test và debug →</a>
+</div>
+
+<footer>
+  Luyện thi chứng chỉ Claude · Bài 09 · Context và độ tin cậy · v0.39 · 2026-11-18. <a href="/notes/00-tong-quan.md">Tổng quan</a> · <a href="/new">Luyện đề</a>.
+</footer>

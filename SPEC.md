@@ -49,7 +49,7 @@ questions:
     options: ["…", "…", "…", "…"]       # 4 (2–6 allowed); letters by index
     answer: [B]              # letters; >1 = multiple answer
     explanation: "…"         # Vietnamese Markdown: why the key is right + why each distractor is wrong
-    ref: lessons/01-api-tich-hop.html#batch   # optional note link
+    ref: lessons/02-messages-api.html#batch   # optional note link
     status: active           # default active; draft = not served in tests; retired = hidden
     difficulty: medium       # optional
     tags: [batch, cost]      # optional
@@ -71,7 +71,7 @@ from the History page). Filenames never collide across machines → git sync nev
 - `notes/00-tong-quan.md` — overview of the four exams (format, rules, scoring, registration, official links).
 - `notes/exams/<CODE>.md` — per exam: domains with weights and the official task statements (paraphrased), what to study, links
   to lessons. Frontmatter `exams: [CCAR-F]`.
-- `notes/lessons/NN-*.html` — the study artifact's 26 lessons as cleaned HTML fragments (headings keep their `id` so question
+- `notes/lessons/NN-*.html` — the study artifact's 23 lessons (plus `glossary.html`) as cleaned HTML fragments (headings keep their `id` so question
   `ref` anchors work; inline SVG diagrams kept; scripts removed). Styling: `web/styles-lesson.css` scoped under `.lesson`.
 - `notes/lessons/index.yaml` — lesson list: `{file, title, exams: [...]}`.
 - Markdown files may start with YAML frontmatter (`title`, `exams`). Title fallback: first `# heading`, else `<h1>`, else filename.

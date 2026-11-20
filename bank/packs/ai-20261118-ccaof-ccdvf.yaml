@@ -15,7 +15,7 @@ questions:
       - "Switch to the most capable model, which follows negative rules without needing any more detail."
     answer: [A]
     explanation: "Hướng dẫn prompting của Anthropic khuyên nêu lý do (context/motivation) đằng sau chỉ dẫn: khi biết script được text-to-speech đọc to và engine không phát âm được ký hiệu, Claude tự khái quát ra mọi trường hợp tương tự (ví dụ chính thức: “never use ellipses” vì TTS không đọc được). Nhắc lại bằng chữ in hoa chỉ tăng nhấn mạnh, không cho Claude hiểu mục tiêu. Giới hạn số từ mỗi câu giải bài toán khác và không ngăn được “&”. Đổi sang model mạnh hơn không thay thế được việc cung cấp ngữ cảnh còn thiếu. Nguồn: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
-    ref: lessons/09-ccao-f.html#prompting
+    ref: lessons/15-ccao-f-work.html#prompting
     status: active
     difficulty: medium
     tags: [prompting, context]
@@ -32,7 +32,7 @@ questions:
       - "Ask for the newsletter as a PDF file so that any markdown formatting is removed automatically."
     answer: [B, D]
     explanation: "Hai kỹ thuật kiểm soát định dạng trong tài liệu Anthropic: (1) nói Claude cần làm gì thay vì cấm điều gì (“smoothly flowing prose paragraphs” thay cho “do not use markdown”); (2) viết prompt theo đúng phong cách output mong muốn, vì prompt dày đặc markdown kéo output về markdown. Lặp lại câu cấm vẫn là chỉ dẫn phủ định, không cho Claude hình mẫu thay thế. Extended thinking tăng suy luận chứ không sửa nguyên nhân về phong cách prompt. Xuất PDF chỉ đổi định dạng tệp, đoạn văn vẫn có thể bị chia thành bullet. Nguồn: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
-    ref: lessons/09-ccao-f.html#prompting
+    ref: lessons/15-ccao-f-work.html#prompting
     status: active
     difficulty: medium
     tags: [prompting, formatting]
@@ -48,7 +48,7 @@ questions:
       - "Let Claude write all 40 summaries first, then manually delete the price line from each one."
     answer: [B]
     explanation: "Ví dụ (few-shot) là cách điều khiển format và giọng văn đáng tin nhất, nhưng Claude bám rất sát chi tiết của ví dụ. Tài liệu Anthropic yêu cầu ví dụ phải liên quan, đa dạng (để Claude không học nhầm khuôn mẫu ngoài ý muốn như “luôn mở đầu bằng giá”) và có cấu trúc trong thẻ example; khuyến nghị 3–5 ví dụ. Bỏ hết ví dụ làm mất công cụ điều khiển mạnh nhất. Nhắc “sáng tạo hơn” không gỡ được khuôn mẫu mà ví dụ đang dạy. Sửa tay 40 bản là xử lý triệu chứng, tốn công và không khắc phục nguyên nhân. Nguồn: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
-    ref: lessons/09-ccao-f.html#prompting
+    ref: lessons/15-ccao-f-work.html#prompting
     status: active
     difficulty: medium
     tags: [few-shot, examples]
@@ -64,7 +64,7 @@ questions:
       - "Send the instructions in one chat and paste the supplier text into a separate new chat."
     answer: [C]
     explanation: "Khi prompt trộn chỉ dẫn, ngữ cảnh và dữ liệu đầu vào, Anthropic khuyên bọc mỗi loại trong thẻ XML riêng (ví dụ <instructions>, <input>) để Claude phân tách rõ, giảm hiểu nhầm nội dung dán vào thành yêu cầu của người dùng. Cắt bớt văn bản có thể bỏ sót điều khoản rủi ro. Câu “bỏ qua chỗ khó hiểu” quá mơ hồ, Claude không biết đâu là dữ liệu. Tách hai chat thì chat chứa chỉ dẫn không có hợp đồng để phân tích. Lưu ý thẻ XML giúp phân tách chứ không phải biện pháp bảo mật tuyệt đối. Nguồn: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
-    ref: lessons/09-ccao-f.html#prompting
+    ref: lessons/15-ccao-f-work.html#prompting
     status: active
     difficulty: medium
     tags: [xml-tags, prompt-structure]
@@ -80,7 +80,7 @@ questions:
       - "“Include a filter panel, a chart per workstream and a list of late tasks; go beyond the basics.”"
     answer: [D]
     explanation: "Tài liệu Anthropic: Claude làm theo chỉ dẫn rõ ràng; nếu muốn Claude làm nhiều hơn mức tối thiểu của yêu cầu, phải nói rõ thay vì trông chờ model tự suy ra từ prompt mơ hồ (ví dụ chính thức chính là “Create an analytics dashboard” cần thêm “go beyond the basics”). Bảo “nghĩ kỹ hơn” không bổ sung yêu cầu còn thiếu. Làm lại từ đầu với “cách khác” vẫn không nói rõ cần gì. “Trông chuyên nghiệp hơn” chỉ đổi hình thức, không nêu tính năng cụ thể. Nguồn: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
-    ref: lessons/09-ccao-f.html#prompting
+    ref: lessons/15-ccao-f-work.html#prompting
     status: active
     difficulty: easy
     tags: [prompting, explicit-instructions, artifacts]
@@ -96,7 +96,7 @@ questions:
       - "Split each form into its own chat and paste the same paragraph into each."
     answer: [B]
     explanation: "Anthropic khuyên trình bày chỉ dẫn thành các bước tuần tự bằng danh sách đánh số hoặc gạch đầu dòng khi thứ tự hoặc tính đầy đủ của các bước là quan trọng. Ở đây lỗi chính là sai thứ tự và bỏ sót bước, nên danh sách đánh số xử lý đúng gốc. Viết đoạn văn dài hơn làm thứ tự càng khó theo dõi. Yêu cầu trả lời nhanh không liên quan tới việc tuân thủ thứ tự. Tách mỗi biểu mẫu ra chat riêng vẫn giữ nguyên đoạn chỉ dẫn mơ hồ nên lỗi lặp lại, lại tốn công hơn. Nguồn: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
-    ref: lessons/09-ccao-f.html#prompting
+    ref: lessons/15-ccao-f-work.html#prompting
     status: active
     difficulty: easy
     tags: [prompting, sequential-steps]
@@ -112,7 +112,7 @@ questions:
       - "Tell Claude to act as a senior procurement specialist reviewing for the buyer."
     answer: [D]
     explanation: "Gán vai trò (role) cho Claude giúp tập trung hành vi và giọng điệu vào đúng góc nhìn của công việc; tài liệu Anthropic nói chỉ một câu vai trò cũng tạo khác biệt. Vai “chuyên viên mua hàng, đứng về phía bên mua” hướng Claude vào điều khoản thanh toán và phạt thay vì chất lượng câu chữ. Chấm điểm 1–10 cho ra đánh giá chung chung, không chỉ rõ rủi ro. Thêm hợp đồng không liên quan làm loãng ngữ cảnh. Đòi câu trả lời ngắn nhất không định hướng nội dung review, còn có thể bỏ sót vấn đề. Nguồn: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
-    ref: lessons/09-ccao-f.html#prompting
+    ref: lessons/15-ccao-f-work.html#prompting
     status: active
     difficulty: easy
     tags: [prompting, role]
@@ -128,7 +128,7 @@ questions:
       - "Upload last year's competitor brochure so that Claude can estimate the change."
     answer: [C]
     explanation: "Trang hỗ trợ về web search gợi ý ghi rõ “Use web search” trong prompt để chắc chắn Claude tìm kiếm; câu trả lời có web search luôn kèm citation để tự kiểm chứng. Hỏi lại trong chat mới vẫn dựa trên kiến thức huấn luyện nên không có tin tuần trước. Tăng effort chỉ làm suy luận kỹ hơn trên cùng dữ liệu cũ, không thêm thông tin mới. Tài liệu năm ngoái không chứa thay đổi giá vừa công bố, chỉ dẫn Claude tới ước đoán. Nguồn: https://support.claude.com/en/articles/10684626-enabling-and-using-web-search"
-    ref: lessons/20-san-pham-du-lieu.html#che-do
+    ref: lessons/17-ccao-f-products-policy.html#modes
     status: active
     difficulty: easy
     tags: [web-search, prompting]
@@ -144,7 +144,7 @@ questions:
       - "Generate five different versions of the release and publish the one that reads most fluently."
     answer: [A]
     explanation: "Kỹ thuật “verify with citations” của Anthropic: yêu cầu Claude tìm trích dẫn nguyên văn hỗ trợ từng khẳng định; khẳng định nào không có trích dẫn phải rút lại (ví dụ chính thức chính là thông cáo báo chí từ product brief). Cách này khiến bản nháp kiểm toán được trước khi người duyệt. Giọng tự tin làm lỗi khó phát hiện hơn. Disclaimer không sửa được nội dung sai trong tài liệu sẽ công bố. Chọn bản trôi chảy nhất đánh giá văn phong chứ không đánh giá độ chính xác. Nguồn: https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations"
-    ref: lessons/09-ccao-f.html#danh-gia
+    ref: lessons/15-ccao-f-work.html#output-evaluation
     status: active
     difficulty: medium
     tags: [citations, verification]
@@ -160,7 +160,7 @@ questions:
       - "Tell Claude to say “I don't have enough information” wherever the report is silent."
     answer: [D]
     explanation: "Chiến lược cơ bản đầu tiên trong tài liệu giảm hallucination: cho phép Claude nói “I don't know” một cách rõ ràng; ví dụ chính thức là phân tích báo cáo M&A với câu “I don't have enough information to confidently assess this.” Kỹ thuật này giảm mạnh thông tin bịa. Bắt viết dài và phủ mọi hạng mục càng thúc Claude lấp chỗ trống. Dùng kiến thức chung để hoàn thiện phần thiếu chính là nguồn gốc của chi tiết bịa. Ép mọi phát hiện thành kết luận chắc chắn che mất mức độ không chắc chắn mà người phân tích cần thấy. Nguồn: https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations"
-    ref: lessons/09-ccao-f.html#danh-gia
+    ref: lessons/15-ccao-f-work.html#output-evaluation
     status: active
     difficulty: medium
     tags: [hallucination, uncertainty]
@@ -176,7 +176,7 @@ questions:
       - "Ask Claude to skip the policy text and list the typical requirements of each regulation."
     answer: [A]
     explanation: "Với tài liệu dài, Anthropic khuyên yêu cầu Claude trích nguyên văn các đoạn liên quan trước, rồi chỉ phân tích dựa trên các trích dẫn đó (và nói “No relevant quotes found” nếu không có); ví dụ chính thức là rà soát privacy policy theo GDPR/CCPA. Cách này neo câu trả lời vào văn bản thật. Dựa vào “trí nhớ” về chính sách tương tự mở đường cho nội dung bịa. Tóm tắt một đoạn làm mất chi tiết cần cho đánh giá tuân thủ. Bỏ qua văn bản thì không còn đánh giá chính sách này nữa. Nguồn: https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations"
-    ref: lessons/09-ccao-f.html#danh-gia
+    ref: lessons/15-ccao-f-work.html#output-evaluation
     status: active
     difficulty: medium
     tags: [grounding, long-documents]
@@ -192,7 +192,7 @@ questions:
       - "Ask Claude to confirm that its recommendation is correct before using it."
     answer: [B]
     explanation: "Khi bật thinking, claude.ai hiển thị phần “Thinking” mở rộng được, tóm tắt cách Claude tiếp cận, giúp kiểm tra Claude đi tới kết luận ra sao; tài liệu giảm hallucination cũng gợi ý xem lại suy luận tóm tắt khi đáp án có vẻ sai để lộ ra giả định hay logic lỗi. Xoá chat và hỏi lại không có thinking làm mất chính dấu vết cần xem. Lấy giá xuất hiện nhiều nhất giữa các model không cho biết giả định nào sai. Bảo Claude tự xác nhận “đúng chưa” không phải là kiểm chứng. Nguồn: https://support.claude.com/en/articles/10574485-using-extended-thinking ; https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations"
-    ref: lessons/09-ccao-f.html#danh-gia
+    ref: lessons/15-ccao-f-work.html#output-evaluation
     status: active
     difficulty: medium
     tags: [extended-thinking, verification]
@@ -208,7 +208,7 @@ questions:
       - "Remove the citation from the plan so the legal team relies on the date alone."
     answer: [C]
     explanation: "Web search trong Claude kèm citation để người dùng tự kiểm chứng nguồn; trang hỗ trợ khuyên kiểm tra citation và dùng nguồn có thẩm quyền cho quyết định quan trọng. Blog của nhà cung cấp không phải nguồn gốc, nên phải đối chiếu với văn bản chính thức của cơ quan quản lý trước khi đưa vào kế hoạch pháp lý. Có citation không có nghĩa là nguồn đáng tin hay được trích đúng. Mức tự tin Claude tự báo không phải bằng chứng. Xoá citation làm mất khả năng truy vết cho nhóm pháp lý. Nguồn: https://support.claude.com/en/articles/10684626-enabling-and-using-web-search"
-    ref: lessons/09-ccao-f.html#danh-gia
+    ref: lessons/15-ccao-f-work.html#output-evaluation
     status: active
     difficulty: easy
     tags: [web-search, citations, verification]
@@ -224,7 +224,7 @@ questions:
       - "Ask Claude to score its own draft out of ten and publish it if the score is above eight."
     answer: [A]
     explanation: "Mẫu chaining phổ biến nhất theo Anthropic là self-correction: tạo bản nháp → cho Claude review bản nháp theo tiêu chí rõ ràng → cho Claude sửa dựa trên review; mỗi bước tách riêng để kiểm tra kết quả trung gian. Người duyệt vẫn giữ bước kiểm tra cuối. Yêu cầu “viết cẩn thận” không tạo bước kiểm tra nào. Bản dài nhất không đồng nghĩa với chính xác nhất. Điểm tự chấm không có tiêu chí cụ thể là thước đo tuỳ tiện, và đăng ngay bỏ qua bước người duyệt. Nguồn: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
-    ref: lessons/09-ccao-f.html#danh-gia
+    ref: lessons/15-ccao-f-work.html#output-evaluation
     status: active
     difficulty: medium
     tags: [self-correction, review]
@@ -240,7 +240,7 @@ questions:
       - "Copy the whole leave policy into a new chat outside the Project and ask the question once more."
     answer: [B]
     explanation: "Khi kiến thức Project vượt ngưỡng context, Claude tự bật RAG và dùng project knowledge search tool để lấy thông tin liên quan thay vì đọc toàn bộ. Bước đầu hợp lý là truy nguồn: hỏi Claude dựa vào tệp/mục nào rồi kiểm tra; trang hỗ trợ cũng gợi ý gọi tên tài liệu để tập trung tìm kiếm. Xoá bớt tệp là thay đổi cấu hình lớn, có thể mất tài liệu cần thiết. Tài liệu nói RAG giữ chất lượng ổn định nhưng không có gì “bảo đảm” câu trả lời đúng. Chuyển sang chat ngoài Project bỏ mất instructions và ngữ cảnh của Project. Nguồn: https://support.claude.com/en/articles/11473015-retrieval-augmented-generation-rag-for-projects"
-    ref: lessons/09-ccao-f.html#danh-gia
+    ref: lessons/15-ccao-f-work.html#output-evaluation
     status: active
     difficulty: hard
     tags: [projects, rag, verification]
@@ -256,7 +256,7 @@ questions:
       - "Shorten the report to one page, because Research reports are too long to share."
     answer: [C]
     explanation: "Research dùng web search và các connector đang bật (Gmail, Drive…), và trong lúc research Claude có thể dùng công cụ của connector tự động, không hỏi duyệt từng lần. Vì vậy báo cáo có thể chứa thông tin nội bộ lấy từ email hay tài liệu; trước khi gửi ra ngoài phải rà soát mức phù hợp của nội dung. Giả định Research đã hỏi duyệt từng lần là sai với tài liệu. Chạy lại chỉ với nguồn nội bộ còn làm tăng rủi ro lộ thông tin. Cắt ngắn không phải là bước kiểm tra nội dung. Nguồn: https://support.claude.com/en/articles/11088861-using-research-on-claude"
-    ref: lessons/09-ccao-f.html#danh-gia
+    ref: lessons/15-ccao-f-work.html#output-evaluation
     status: active
     difficulty: hard
     tags: [research, connectors, confidentiality]
@@ -272,7 +272,7 @@ questions:
       - "Ask Claude to cross-check key facts across several sources and state its confidence in each."
     answer: [D]
     explanation: "Hướng dẫn của Anthropic cho tác vụ nghiên cứu: khuyến khích Claude kiểm chứng thông tin qua nhiều nguồn, và theo dõi mức độ tin cậy (confidence) của từng giả thuyết. Hai yếu tố này cho người dùng tín hiệu phân biệt phát hiện vững với phát hiện yếu. Dựa vào một nguồn duy nhất bỏ mất kiểm chứng chéo. Xoá citation khiến không thể truy vết khi trình bày. Viết mọi phát hiện với cùng mức chắc chắn che giấu đúng thông tin cô ấy cần để đánh giá. Nguồn: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
-    ref: lessons/09-ccao-f.html#danh-gia
+    ref: lessons/15-ccao-f-work.html#output-evaluation
     status: active
     difficulty: medium
     tags: [research, source-verification]
@@ -289,7 +289,7 @@ questions:
       - "Longer, more detailed answers are less likely to contain errors than short, direct answers."
     answer: [A, C]
     explanation: "Tài liệu Anthropic ghi rõ: các kỹ thuật giảm hallucination làm giảm đáng kể nhưng không loại bỏ hoàn toàn, nên luôn phải kiểm chứng thông tin quan trọng, nhất là với quyết định rủi ro cao. Kỹ thuật best-of-N verification: chạy cùng prompt nhiều lần và so sánh, sự không nhất quán có thể là dấu hiệu hallucination. Citation giúp kiểm toán được chứ không bảo đảm đúng. Giọng tự tin không làm nội dung chính xác hơn, chỉ khiến lỗi khó nhận ra. Độ dài câu trả lời không tỉ lệ nghịch với lỗi; nội dung dài còn có thêm chỗ cho chi tiết bịa. Nguồn: https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations"
-    ref: lessons/09-ccao-f.html#danh-gia
+    ref: lessons/15-ccao-f-work.html#output-evaluation
     status: active
     difficulty: medium
     tags: [hallucination, verification]
@@ -305,7 +305,7 @@ questions:
       - "A new Project, with the prospect's annual report uploaded as project knowledge"
     answer: [B]
     explanation: "Theo hướng dẫn chọn chế độ, web search hợp với câu hỏi thực tế đơn giản trả lời được bằng một hai lần gọi công cụ (tin mới, thông tin công ty). Research dành cho thu thập toàn diện cần từ năm lần gọi công cụ trở lên trong 1–3 phút, và tốn giới hạn sử dụng nhanh hơn, thừa với một dữ kiện. Extended thinking không tra cứu web nên không biết CEO vừa được bổ nhiệm. Báo cáo thường niên có thể đã cũ hơn quyết định bổ nhiệm, và lập Project là thừa cho một câu hỏi. Nguồn: https://support.claude.com/en/articles/11095361-when-should-i-use-web-search-extended-thinking-and-research ; https://support.claude.com/en/articles/11088861-using-research-on-claude"
-    ref: lessons/20-san-pham-du-lieu.html#che-do
+    ref: lessons/17-ccao-f-products-policy.html#modes
     status: active
     difficulty: easy
     tags: [web-search, research, usage-limits]
@@ -321,7 +321,7 @@ questions:
       - "A standard chat on a fast model, to keep the responses short and quick"
     answer: [A]
     explanation: "Trang hỗ trợ của Anthropic nêu: kết hợp extended thinking với Research giúp Claude lập kế hoạch cẩn thận rồi thu thập thông tin rộng; ví dụ chính thức là nghiên cứu công nghệ mới nổi cho đề xuất kinh doanh, ra báo cáo dài có citation. Web search đơn lẻ hợp với câu hỏi một hai lần tra cứu, không đủ độ rộng. Extended thinking một mình không tra cứu nguồn web nên không có citation. Chat thường trên model nhanh tối ưu tốc độ, trái với yêu cầu phân tích sâu và rộng. Nguồn: https://support.claude.com/en/articles/11095361-when-should-i-use-web-search-extended-thinking-and-research"
-    ref: lessons/20-san-pham-du-lieu.html#che-do
+    ref: lessons/17-ccao-f-products-policy.html#modes
     status: active
     difficulty: medium
     tags: [research, extended-thinking]
@@ -337,7 +337,7 @@ questions:
       - "Choose a lower effort level, such as Low or Medium, in the model menu."
     answer: [D]
     explanation: "Trong claude.ai, effort và thinking là hai thiết lập riêng. Với model luôn bật thinking, nút thinking không xuất hiện; muốn Claude nghĩ ít hơn thì chọn effort thấp hơn. Low và Medium phù hợp việc thường ngày và giúp dùng giới hạn lâu hơn, còn effort cao tốn token và chạm giới hạn nhanh hơn. Không có nút thinking để tắt trên model này. Incognito chỉ ảnh hưởng lịch sử và memory, không giảm mức dùng. Research chạy nhiều lần tìm kiếm nên tốn giới hạn hơn, không nhanh hơn. Nguồn: https://support.claude.com/en/articles/10574485-using-extended-thinking"
-    ref: lessons/20-san-pham-du-lieu.html#che-do
+    ref: lessons/17-ccao-f-products-policy.html#modes
     status: active
     difficulty: hard
     tags: [effort, extended-thinking, usage-limits]
@@ -353,7 +353,7 @@ questions:
       - "Create a shared Project and have everyone post their emails into one shared chat."
     answer: [C]
     explanation: "Artifact AI-powered gọi Claude trực tiếp, không cần API key và không tốn chi phí cho người tạo; người dùng đăng nhập bằng tài khoản Claude của mình và mức dùng tính vào giới hạn gói của từng người. Trên Team/Enterprise, thành viên dùng artifact được chia sẻ mà không cộng chi phí cho người tạo. Nhúng API key vào bảng tính vừa cần quản lý key, vừa dồn chi phí về một nơi, lại rủi ro lộ key. Gửi prompt mẫu qua email không tạo ra công cụ, kết quả thiếu nhất quán. Dồn email khách hàng của nhiều người vào một chat không phải là công cụ và làm lẫn dữ liệu. Nguồn: https://support.claude.com/en/articles/9487310-what-are-artifacts-and-how-do-i-use-them"
-    ref: lessons/09-ccao-f.html#quy-trinh
+    ref: lessons/15-ccao-f-work.html#workflow-integration
     status: active
     difficulty: medium
     tags: [artifacts, ai-powered-artifacts]
@@ -369,7 +369,7 @@ questions:
       - "Keep the data in a Project's knowledge files and re-upload them after every change."
     answer: [A]
     explanation: "Artifact có hai loại lưu trữ: dữ liệu personal chỉ riêng từng người dùng thấy, dữ liệu shared thì mọi người dùng artifact đều thấy, và người xây artifact quyết định phần nào dùng loại nào. Danh sách yêu cầu đổi ca cần mọi người thấy nên để shared; ghi chú cá nhân để personal. Để tất cả ở personal thì không ai thấy yêu cầu của người khác. Để tất cả ở shared rồi dặn “đừng đọc” không bảo vệ được riêng tư. Project knowledge là tài liệu tĩnh, cập nhật bằng tay mỗi lần thay đổi là sai công cụ. Nguồn: https://support.claude.com/en/articles/9487310-what-are-artifacts-and-how-do-i-use-them"
-    ref: lessons/09-ccao-f.html#quy-trinh
+    ref: lessons/15-ccao-f-work.html#workflow-integration
     status: active
     difficulty: medium
     tags: [artifacts, storage]
@@ -385,7 +385,7 @@ questions:
       - "Create a skill that describes the team's ticket conventions and how to use the tools."
     answer: [D]
     explanation: "Theo trang hỗ trợ về skills: connector (MCP) cho Claude quyền truy cập công cụ, còn skill dạy Claude cách dùng công cụ đó hiệu quả bằng kiến thức quy trình. Vấn đề ở đây không phải thiếu quyền mà thiếu quy ước của nhóm (nhãn, tiêu chí chấp nhận, link spec), nên skill là lời giải; skill chỉ được nạp khi liên quan. Thêm connector thứ hai cho cùng công cụ chỉ thêm công cụ, không thêm quy ước. Research dùng để thu thập thông tin, không chuẩn hoá cách tạo ticket. Giới hạn sử dụng không liên quan tới chất lượng ticket. Nguồn: https://support.claude.com/en/articles/12512176-what-are-skills"
-    ref: lessons/20-san-pham-du-lieu.html#connector-skill
+    ref: lessons/17-ccao-f-products-policy.html#connector-skill
     status: active
     difficulty: hard
     tags: [skills, connectors]
@@ -401,7 +401,7 @@ questions:
       - "Delete her other clients' Projects so their memory is gone."
     answer: [C]
     explanation: "Mỗi Project có memory riêng; trong một Project, Claude dùng memory của Project đó cộng với memory ngoài Project, nhưng không dùng memory của Project khác. Muốn Project tách biệt hoàn toàn thì tắt “Use account memory” trên trang Project. Reset memory xoá vĩnh viễn mọi memory, kể cả memory của các Project khác, trái yêu cầu giữ nguyên chúng. Incognito không lưu lịch sử chat, mất các cuộc trò chuyện của khách hàng mới. Xoá Project của khách khác vừa phá hoại vừa không cần thiết, vì memory Project khác vốn không được dùng chéo. Nguồn: https://support.claude.com/en/articles/11817273-using-claude-s-chat-search-and-memory-to-build-on-previous-context"
-    ref: lessons/20-san-pham-du-lieu.html#memory-project
+    ref: lessons/17-ccao-f-products-policy.html#memory-project
     status: active
     difficulty: hard
     tags: [memory, projects]
@@ -417,7 +417,7 @@ questions:
       - "Give the connector one shared service credential so that it reaches every mailbox."
     answer: [B]
     explanation: "Trên Team và Enterprise, Owner đặt quy tắc cho từng công cụ của connector: Always allow, Needs approval hoặc Blocked; quy tắc áp dụng toàn tổ chức và người dùng không thể ghi đè. Vì vậy đọc/tìm mail để Always allow, gửi mail để Needs approval. Dựa vào thiết lập cá nhân thì thành viên có thể tắt, không đáp ứng yêu cầu “không ai nới lỏng”. Chặn hẳn connector làm mất khả năng đọc mail mà nhóm bảo mật cho phép. Credential dùng chung khiến connector truy cập mọi thứ credential đó chạm tới, mở rộng quyền thay vì kiểm soát. Nguồn: https://support.claude.com/en/articles/11176164-use-connectors-to-extend-claude-s-capabilities"
-    ref: lessons/20-san-pham-du-lieu.html#connector-skill
+    ref: lessons/17-ccao-f-products-policy.html#connector-skill
     status: active
     difficulty: medium
     tags: [connectors, admin, permissions]
@@ -433,7 +433,7 @@ questions:
       - "Pause memory, then turn it back on when the assignment ends."
     answer: [D]
     explanation: "Pause memory giữ nguyên memory hiện có nhưng Claude không dùng memory và không tạo memory mới; bật lại thì memory cũ trở lại (các chat trong thời gian tạm dừng không được thêm vào). Reset xoá vĩnh viễn toàn bộ memory, kể cả memory của Project, không hoàn tác được, nên phải xây lại từ đầu. Xoá từng topic rồi nhập lại tốn công và dễ sai, không giữ “y như cũ”. Owner không thể xem hay sửa memory của từng thành viên. Nguồn: https://support.claude.com/en/articles/11817273-using-claude-s-chat-search-and-memory-to-build-on-previous-context"
-    ref: lessons/20-san-pham-du-lieu.html#memory-project
+    ref: lessons/17-ccao-f-products-policy.html#memory-project
     status: active
     difficulty: medium
     tags: [memory]
@@ -449,7 +449,7 @@ questions:
       - "Ask an Owner to enable Drive for mobile Research in organization settings."
     answer: [C]
     explanation: "Trang hỗ trợ về Research nêu rõ: trên Claude Mobile, Research chỉ tìm trên web và không dùng connector, cũng không báo là đã bỏ qua connector; muốn dùng connector phải bắt đầu Research trên web hoặc Claude Desktop. Tài liệu không nói uỷ quyền Drive hết hạn sau khi dùng mobile; nguyên nhân là Research trên mobile không dùng connector, nên kết nối lại không giải quyết. Extended thinking chỉ giúp lập kế hoạch, không mở được connector trên mobile. Không có thiết lập tổ chức nào bật Drive cho Research trên mobile. Nguồn: https://support.claude.com/en/articles/11088861-using-research-on-claude"
-    ref: lessons/09-ccao-f.html#xu-ly-su-co
+    ref: lessons/15-ccao-f-work.html#troubleshooting
     status: active
     difficulty: hard
     tags: [research, connectors, mobile]
@@ -465,7 +465,7 @@ questions:
       - "The server needs a higher usage tier before claude.ai may send it any requests."
     answer: [A]
     explanation: "Custom connector dùng remote MCP: Claude kết nối tới MCP server từ hạ tầng cloud của Anthropic, không phải từ máy người dùng. Vì vậy server chỉ truy cập được trong mạng nội bộ sẽ báo lỗi kết nối; server phải truy cập được công khai hoặc dùng các tuỳ chọn private network mà tài liệu mô tả. Desktop extension là cơ chế khác, không phải điều kiện của custom connector. Skill không thay thế MCP server; skill dạy cách dùng công cụ, MCP cung cấp công cụ. Không có “usage tier” nào cho server của bạn. Nguồn: https://support.claude.com/en/articles/11176164-use-connectors-to-extend-claude-s-capabilities"
-    ref: lessons/20-san-pham-du-lieu.html#connector-skill
+    ref: lessons/17-ccao-f-products-policy.html#connector-skill
     status: active
     difficulty: hard
     tags: [connectors, mcp, custom-connector]
@@ -481,7 +481,7 @@ questions:
       - "Memory is not offered on Team plans at all; it exists only on individual paid plans."
     answer: [B]
     explanation: "Trên Team và Enterprise, Owner quyết định memory có khả dụng hay không qua Organization settings > Capabilities, áp dụng cho cả tổ chức; khi tắt, thành viên không tự bật lại được, và Owner cũng không thể bật memory cho riêng từng người. Vì vậy yêu cầu bật cho một tài khoản là không làm được. Project có memory riêng nhưng không vượt qua thiết lập cấp tổ chức. Memory vẫn có trên Team plan, chỉ do Owner kiểm soát, nên nói “không có trên Team” là sai. Nguồn: https://support.claude.com/en/articles/11817273-using-claude-s-chat-search-and-memory-to-build-on-previous-context"
-    ref: lessons/20-san-pham-du-lieu.html#memory-project
+    ref: lessons/17-ccao-f-products-policy.html#memory-project
     status: active
     difficulty: medium
     tags: [memory, admin]
@@ -497,7 +497,7 @@ questions:
       - "Parallelization by voting, running the same task several times for diverse outputs"
     answer: [D]
     explanation: "Trong “Building effective agents”, parallelization có hai biến thể: sectioning (chia việc thành các phần độc lập chạy song song) và voting (chạy cùng một tác vụ nhiều lần để có nhiều output khác nhau). Ví dụ chính thức của voting chính là nhiều prompt cùng review code tìm lỗ hổng và gắn cờ nếu bất kỳ prompt nào phát hiện vấn đề. Prompt chaining là các bước nối tiếp, không chạy song song cùng một việc. Orchestrator-workers để model trung tâm tự quyết định subtask theo input. Routing phân loại input rồi gửi tới một nhánh duy nhất. Nguồn: https://www.anthropic.com/engineering/building-effective-agents"
-    ref: lessons/03-agent.html#workflow-agent
+    ref: lessons/07-agents.html#workflow-agent
     status: active
     difficulty: medium
     tags: [workflow-patterns, parallelization]
@@ -513,7 +513,7 @@ questions:
       - "Run the translation step first so that any problems surface earlier in the process."
     answer: [C]
     explanation: "Prompt chaining theo Anthropic: mỗi lần gọi xử lý output của bước trước, và có thể thêm “gate” kiểm tra bằng code ở các bước trung gian để bảo đảm quy trình đi đúng hướng. Một gate sau bước outline chặn outline yếu trước khi tốn token cho viết và dịch. Gộp ba bước vào một prompt mất khả năng kiểm tra kết quả trung gian. Chuyển sang agent tự chủ làm tăng chi phí và độ phức tạp trong khi các bước vốn cố định; Anthropic khuyên giữ giải pháp đơn giản nhất. Dịch trước khi có tài liệu là vô nghĩa. Nguồn: https://www.anthropic.com/engineering/building-effective-agents"
-    ref: lessons/03-agent.html#workflow-agent
+    ref: lessons/07-agents.html#workflow-agent
     status: active
     difficulty: medium
     tags: [prompt-chaining, gates]
@@ -529,7 +529,7 @@ questions:
       - "Rely only on automatic compaction and tell the agent not to write any progress files at all."
     answer: [B]
     explanation: "Hướng dẫn của Anthropic cho tác vụ kéo dài nhiều context window: cho Claude ghi test ở định dạng có cấu trúc (ví dụ tests.json) và nhắc rằng xoá hay sửa test là không chấp nhận được; đồng thời tạo script tiện ích (ví dụ init.sh) để khởi động server, chạy test và linter, tránh làm lại khi bắt đầu window mới. Context lớn hơn không loại bỏ nhu cầu chuyển window và không ngăn sửa test. Tắt test làm mất cơ chế kiểm chứng. Chỉ dựa vào compaction mà cấm ghi file bỏ qua lợi thế Claude khôi phục trạng thái từ filesystem và git. Nguồn: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
-    ref: lessons/03-agent.html#memory
+    ref: lessons/07-agents.html#memory
     status: active
     difficulty: hard
     tags: [long-horizon, state-management]
@@ -546,7 +546,7 @@ questions:
       - "Posting a review comment on a teammate's pull request"
     answer: [C, E]
     explanation: "Mẫu prompt của Anthropic khuyến khích agent tự làm các hành động cục bộ, đảo ngược được (sửa file, chạy test), nhưng phải hỏi người dùng trước các hành động khó đảo ngược, ảnh hưởng hệ thống dùng chung hoặc có tính phá huỷ. Ví dụ được nêu: git push --force (khó đảo ngược) và các thao tác người khác nhìn thấy như push code, bình luận trên PR/issue, gửi tin nhắn. Sửa file cục bộ, chạy unit test và đọc log là bước cục bộ, đảo ngược được hoặc chỉ đọc, nên bắt hỏi sẽ làm mất tính tự chủ mà nhóm muốn. Nguồn: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
-    ref: lessons/08-bao-mat.html#guardrail
+    ref: lessons/11-security-data.html#guardrail
     status: active
     difficulty: medium
     tags: [agent-safety, autonomy]
@@ -563,7 +563,7 @@ questions:
       - "Keep the prefill but send it as an extra assistant message placed before the user turn."
     answer: [A]
     explanation: "Từ các model Claude 4.6 trở đi, prefill ở lượt assistant cuối không còn được hỗ trợ và trả lỗi 400. Hướng dẫn chuyển đổi của Anthropic cho trường hợp ép định dạng JSON/YAML: dùng structured outputs để ràng buộc theo schema, hoặc yêu cầu model tuân theo cấu trúc (model mới làm tốt, nhất là khi có retry). Đặt dấu ngoặc trong system prompt không biến nó thành prefix của câu trả lời. Temperature không ràng buộc cấu trúc output. Thêm assistant message ở vị trí khác không ép được định dạng câu trả lời cuối. Nguồn: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
-    ref: lessons/06-prompt-output.html#schema
+    ref: lessons/04-prompt-output.html#schema
     status: active
     difficulty: medium
     tags: [prefill, structured-outputs, migration]
@@ -579,7 +579,7 @@ questions:
       - "Move the request to the Message Batches API, which still accepts prefilled turns."
     answer: [B]
     explanation: "Hướng dẫn bỏ prefill của Anthropic cho trường hợp “continuations”: chuyển yêu cầu viết tiếp vào user message và kèm đoạn cuối của câu trả lời bị gián đoạn (“Your previous response was interrupted and ended with … Continue from where you left off.”); nếu đây là xử lý lỗi và không ảnh hưởng trải nghiệm thì có thể retry. Lặp lại nguyên văn trong system prompt không làm model viết tiếp. Tăng temperature chỉ đổi cách diễn đạt, không nối tiếp nội dung. Không có tài liệu nào nói Batches API giữ lại prefill cho model mới; giới hạn nằm ở model. Nguồn: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
-    ref: lessons/01-api-tich-hop.html#stop-reason
+    ref: lessons/02-messages-api.html#stop-reason
     status: active
     difficulty: hard
     tags: [prefill, continuation, migration]
@@ -595,7 +595,7 @@ questions:
       - "Raise max_tokens so the model has room to explain its reasoning before naming the label."
     answer: [A]
     explanation: "Với tác vụ phân loại, hướng dẫn chuyển đổi khỏi prefill của Anthropic nêu rõ: dùng tool có trường enum chứa các nhãn hợp lệ, hoặc dùng structured outputs. Cả hai ràng buộc output vào đúng tập nhãn. Chấp nhận văn bản tự do “có chứa nhãn” dễ sai khi câu trả lời nhắc nhiều nhãn hoặc diễn đạt khác. Đổi sang số 1–6 vẫn là văn bản tự do không bị ràng buộc, chỉ dời vấn đề. Tăng max_tokens chỉ cho chỗ để giải thích, không bảo đảm định dạng nhãn. Nguồn: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
-    ref: lessons/06-prompt-output.html#schema
+    ref: lessons/04-prompt-output.html#schema
     status: active
     difficulty: medium
     tags: [classification, tool-use, structured-outputs]
@@ -611,7 +611,7 @@ questions:
       - "Give it a tool that queues payment requests for a person to release, and no tool that moves money."
     answer: [D]
     explanation: "Tài liệu prompting của Anthropic về thanh toán: nếu agent không bao giờ được trả tiền, hãy cho nó công cụ yêu cầu hoặc xếp hàng lệnh thanh toán để người phê duyệt, và không cấp công cụ nào chuyển được tiền. Tài liệu cũng nhấn mạnh khối chỉ dẫn trong prompt chỉ định hướng chứ không cưỡng chế, nên chỉ dựa vào system prompt là chưa đủ. Cho phép khoản nhỏ vẫn để agent tự chuyển tiền, vi phạm chính sách. Rà soát hằng tuần là phát hiện sau sự việc, không ngăn được giao dịch. Nguồn: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
-    ref: lessons/08-bao-mat.html#guardrail
+    ref: lessons/11-security-data.html#guardrail
     status: active
     difficulty: hard
     tags: [tool-design, payments, human-in-the-loop]
@@ -627,7 +627,7 @@ questions:
       - "Start by training a custom small model on the papers before testing any Claude model."
     answer: [C]
     explanation: "Trang “Choosing the right model” mô tả hai cách bắt đầu. Capability-first (dùng model mạnh, tối ưu prompt, đánh giá, rồi giảm effort hoặc hạ model khi tối ưu dần) hợp với suy luận phức tạp, ứng dụng khoa học/toán và khi độ chính xác quan trọng hơn chi phí, đúng tình huống này. Efficiency-first hợp cho prototype, yêu cầu độ trễ chặt hoặc tác vụ đơn giản khối lượng lớn; chờ người dùng phàn nàn thay vì dùng eval cũng sai cách. Chọn theo context window bỏ qua năng lực và chi phí, lại không đánh giá lại. Huấn luyện model riêng không nằm trong quy trình được khuyến nghị. Nguồn: https://platform.claude.com/docs/en/about-claude/models/choosing-a-model"
-    ref: lessons/02-model-toi-uu.html#chon-model
+    ref: lessons/03-models-cost.html#model-selection
     status: active
     difficulty: medium
     tags: [model-selection]
@@ -643,7 +643,7 @@ questions:
       - "Turn on fast mode, which lowers the price per token while also raising the speed."
     answer: [A]
     explanation: "Theo hướng dẫn chọn model, effort đánh đổi trí tuệ lấy độ trễ và chi phí ngay trong một model, và chỉnh effort thường là đòn bẩy tốt hơn đổi model; sau đó chạy lại eval để xác nhận chất lượng. Hạ thẳng xuống model nhỏ nhất mà bỏ eval là đổi model mù quáng. Xoá system prompt có thể phá hành vi đang đạt eval. Fast mode tăng tốc độ output nhưng với giá cao hơn (premium pricing), nên không giảm chi phí. Nguồn: https://platform.claude.com/docs/en/about-claude/models/choosing-a-model"
-    ref: lessons/02-model-toi-uu.html#thinking
+    ref: lessons/03-models-cost.html#thinking
     status: active
     difficulty: hard
     tags: [effort, cost, latency]
@@ -660,7 +660,7 @@ questions:
       - "Stream the response so that users see text as soon as it is generated."
     answer: [B, E]
     explanation: "Trang “Reducing latency”: tối ưu độ dài prompt và output; vì LLM đếm token chứ không đếm từ, giới hạn theo số câu/đoạn hiệu quả hơn giới hạn số từ. Streaming giúp người dùng thấy output ngay khi được sinh, cải thiện đáng kể cảm nhận phản hồi. Thêm nhiều ví dụ dài làm tăng token đầu vào, trái với lời khuyên giảm token. max_tokens là cách cắt thô, có thể cắt giữa câu, chỉ hợp với câu trả lời ngắn nằm ở đầu. Tăng effort làm model suy luận nhiều hơn, chậm hơn chứ không nhanh hơn. Nguồn: https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-latency"
-    ref: lessons/01-api-tich-hop.html#streaming
+    ref: lessons/02-messages-api.html#streaming
     status: active
     difficulty: medium
     tags: [latency, streaming]
@@ -676,7 +676,7 @@ questions:
       - "max_tokens counts words rather than tokens, so long words use up the limit too early."
     answer: [B]
     explanation: "Tài liệu giảm độ trễ: max_tokens đặt giới hạn cứng cho độ dài output; khi chạm giới hạn, API cắt câu trả lời, có thể giữa câu hoặc giữa từ. Đây là kỹ thuật thô, phù hợp nhất với câu trả lời trắc nghiệm hoặc ngắn khi đáp án nằm ngay đầu. Muốn câu trả lời ngắn mà trọn vẹn thì yêu cầu ngắn gọn trong prompt. max_tokens áp dụng cho mọi request, không riêng streaming. Nó không khiến model “lập kế hoạch” ngắn hơn. Đơn vị là token chứ không phải từ. Nguồn: https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-latency"
-    ref: lessons/01-api-tich-hop.html#stop-reason
+    ref: lessons/02-messages-api.html#stop-reason
     status: active
     difficulty: easy
     tags: [max-tokens, latency]
@@ -692,7 +692,7 @@ questions:
       - "Instruct the model in the system prompt to respond directly without any preamble."
     answer: [D]
     explanation: "Hướng dẫn chuyển đổi khỏi prefill của Anthropic cho trường hợp loại bỏ lời mở đầu: dùng chỉ dẫn trực tiếp trong system prompt (“Respond directly without preamble…”), hoặc yêu cầu output trong thẻ XML, dùng structured outputs hay tool calling; nếu thỉnh thoảng vẫn lọt thì loại bỏ ở bước hậu xử lý. Hạ max_tokens cắt cả nội dung tóm tắt. Thêm assistant message ở cuối chính là prefill, model mới trả lỗi 400. Tóm tắt dài hơn không loại bỏ lời mở đầu mà chỉ che lấp nó. Nguồn: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
-    ref: lessons/06-prompt-output.html#cau-truc-prompt
+    ref: lessons/04-prompt-output.html#prompt-structure
     status: active
     difficulty: easy
     tags: [prefill, preamble, system-prompt]
@@ -708,7 +708,7 @@ questions:
       - "Turn the files into one bullet list of facts and remove the original file names."
     answer: [C]
     explanation: "Hướng dẫn long context prompting của Anthropic: với nhiều tài liệu, bọc mỗi tài liệu trong thẻ <document> có thẻ con <source> và <document_content> (cùng metadata khác), và đặt tài liệu dài ở đầu prompt, câu hỏi ở cuối (cải thiện chất lượng tới 30% trong thử nghiệm). Metadata nguồn giúp Claude biết dữ kiện đến từ tệp nào. Gộp văn bản thô và đặt câu hỏi lên trước làm mất ranh giới nguồn và đi ngược khuyến nghị. Tách ba request làm mất khả năng tổng hợp chéo tài liệu. Bỏ tên tệp xoá chính thông tin nguồn cần giữ. Nguồn: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
-    ref: lessons/06-prompt-output.html#cau-truc-prompt
+    ref: lessons/04-prompt-output.html#prompt-structure
     status: active
     difficulty: medium
     tags: [long-context, xml-tags, documents]
@@ -724,7 +724,7 @@ questions:
       - "Tell the agent nothing about context, and reduce max_tokens to force it to pick shorter tasks."
     answer: [B]
     explanation: "Một số model Claude có context awareness, theo dõi được ngân sách token còn lại; nếu không được cho biết, Claude có thể tự kết thúc công việc sớm khi gần chạm giới hạn. Anthropic gợi ý khi harness có compaction hoặc cho lưu context ra file, hãy nói rõ trong prompt rằng context sẽ tự compact, đừng dừng sớm vì lo ngân sách token, và lưu tiến độ/trạng thái trước khi context được làm mới. Giới hạn nửa context làm trầm trọng việc dừng sớm. Hỏi người dùng ở mỗi ngưỡng phá vỡ tính tự chủ. Giảm max_tokens không giải quyết hành vi kết thúc sớm. Nguồn: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
-    ref: lessons/19-api-nang-cao.html#context-dai
+    ref: lessons/09-context-reliability.html#long-context
     status: active
     difficulty: hard
     tags: [context-awareness, compaction, agents]

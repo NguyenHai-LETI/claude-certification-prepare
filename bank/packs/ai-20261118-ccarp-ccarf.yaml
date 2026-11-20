@@ -15,7 +15,7 @@ questions:
       - "Start with a multi-agent design, so that the framework's orchestration features are used from day one"
     answer: [A]
     explanation: "Anthropic khuyên bắt đầu bằng gọi LLM API trực tiếp vì nhiều pattern chỉ cần vài dòng code; nếu dùng framework thì phải hiểu code bên dưới, vì framework thường thêm lớp trừu tượng che khuất prompt và response, khiến khó debug. Framework không thay được việc thiết kế tool, prompt và điều kiện dừng. Giấu prompt do framework sinh ra đúng là điều làm hệ thống khó chẩn đoán. Nhảy ngay vào multi-agent đi ngược nguyên tắc giữ thiết kế đơn giản, chỉ thêm phức tạp khi số liệu cho thấy cần. Nguồn: https://www.anthropic.com/engineering/building-effective-agents"
-    ref: lessons/22-thiet-ke-giai-phap.html#chon-mau
+    ref: lessons/19-solution-design.html#choose-pattern
     status: active
     difficulty: easy
     tags: [agent-design, frameworks]
@@ -31,7 +31,7 @@ questions:
       - "Send every message to a human moderator first, then pass approved messages to the model"
     answer: [A]
     explanation: "Đây là pattern parallelization dạng sectioning: một instance model xử lý câu hỏi, một instance khác sàng lọc nội dung; Anthropic ghi nhận cách này thường cho kết quả tốt hơn so với để cùng một lời gọi gánh cả guardrail lẫn câu trả lời chính, vì mỗi lời gọi tập trung vào một việc. Dồn thêm luật vào cuối prompt vẫn để một lời gọi làm hai việc. Chạy nhiều lần rồi bỏ phiếu (voting) dùng để tăng độ tin cậy cho cùng một nhiệm vụ, không tách guardrail ra. Cho người duyệt mọi tin nhắn không khả thi với lưu lượng lớn và độ trễ của chat. Nguồn: https://www.anthropic.com/engineering/building-effective-agents"
-    ref: lessons/22-thiet-ke-giai-phap.html#chon-mau
+    ref: lessons/19-solution-design.html#choose-pattern
     status: active
     difficulty: medium
     tags: [parallelization, guardrails]
@@ -48,7 +48,7 @@ questions:
       - "A single instruction asking the agent to be careful with production systems"
     answer: [B, D]
     explanation: "Bài \"Building effective agents\": agent tự chủ thường có điều kiện dừng (ví dụ số vòng lặp tối đa) để giữ kiểm soát, và có thể dừng lại xin phản hồi của con người tại checkpoint hoặc khi gặp trở ngại; kèm kiểm thử kỹ trong sandbox với guardrail phù hợp. Cấp quyền production rộng làm tăng thiệt hại khi lỗi cộng dồn. Giấu lỗi tool khiến agent mất \"ground truth\" từ môi trường, thứ nó cần ở mỗi bước để tự điều chỉnh. Một câu dặn \"cẩn thận\" chỉ là hướng dẫn, không phải cơ chế kiểm soát. Nguồn: https://www.anthropic.com/engineering/building-effective-agents"
-    ref: lessons/22-thiet-ke-giai-phap.html#chon-mau
+    ref: lessons/19-solution-design.html#choose-pattern
     status: active
     difficulty: medium
     tags: [autonomy, human-in-the-loop]
@@ -64,7 +64,7 @@ questions:
       - "It mainly lowers token usage, because asynchronous subagents read less context than synchronous ones"
     answer: [B]
     explanation: "Anthropic mô tả: lead agent chạy subagent đồng bộ giúp điều phối đơn giản nhưng tạo nút thắt — lead không lái được subagent, subagent không phối hợp được, và cả hệ thống có thể bị chặn khi chờ một subagent. Thực thi bất đồng bộ cho thêm song song nhưng thêm thách thức về điều phối kết quả, nhất quán trạng thái và lan truyền lỗi giữa các subagent, nên đây là đánh đổi phải cân nhắc. Subagent có context riêng chứ không dùng chung; API phục vụ nhiều request song song bình thường; bất đồng bộ không phải kỹ thuật giảm token. Nguồn: https://www.anthropic.com/engineering/multi-agent-research-system"
-    ref: lessons/22-thiet-ke-giai-phap.html#multi-agent
+    ref: lessons/19-solution-design.html#multi-agent
     status: active
     difficulty: hard
     tags: [multi-agent, orchestration]
@@ -80,7 +80,7 @@ questions:
       - "One call with a higher max_tokens value, so the whole reasoning process fits in one response"
     answer: [C]
     explanation: "Doc prompting best practices: với adaptive thinking và subagent, Claude tự xử lý phần lớn suy luận nhiều bước, nhưng prompt chaining tường minh vẫn hữu ích khi cần kiểm tra output trung gian hoặc ép một cấu trúc pipeline. Mẫu phổ biến là self-correction: nháp → review theo tiêu chí → sửa, mỗi bước là một lời gọi API riêng để log, chấm điểm hoặc rẽ nhánh. Một lời gọi, dù có thinking hay max_tokens lớn, không tạo ra các artifact trung gian độc lập để kiểm toán. Ba subagent song song giải bài toán khác (chọn bản tốt nhất), tốn gấp ba và không có bước review rồi sửa. Nguồn: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
-    ref: lessons/22-thiet-ke-giai-phap.html#phan-ra
+    ref: lessons/19-solution-design.html#decomposition
     status: active
     difficulty: medium
     tags: [prompt-chaining, auditability]
@@ -96,7 +96,7 @@ questions:
       - "A self-assessment prompt asking the agent to confirm that the file follows every listed rule"
     answer: [A]
     explanation: "Theo bài về Claude Agent SDK, vòng lặp agent là gather context → take action → verify work. Dạng phản hồi tốt nhất là quy tắc được định nghĩa rõ cho output (linting là ví dụ điển hình): lỗi cụ thể, trả lại để agent tự sửa. LLM-as-judge hợp với tiêu chí mơ hồ nhưng thường kém bền và tốn độ trễ, chỉ đáng dùng khi lợi ích bù được chi phí. Người duyệt từng file là chậm và không cần khi luật đã đặc tả đầy đủ. Agent tự xác nhận không phải kiểm tra độc lập. Nguồn: https://claude.com/blog/building-agents-with-the-claude-agent-sdk"
-    ref: lessons/22-thiet-ke-giai-phap.html#kien-truc
+    ref: lessons/19-solution-design.html#architecture
     status: active
     difficulty: medium
     tags: [verification, agent-loop]
@@ -112,7 +112,7 @@ questions:
       - "The memory tool, with a client-side handler that maps memory paths to per-client storage the firm runs"
     answer: [D]
     explanation: "Memory tool chạy phía client: Claude chỉ yêu cầu thao tác file, ứng dụng thực thi trên storage do bạn kiểm soát; đường dẫn /memories được ánh xạ tới thư mục theo từng người dùng hoặc khoá trong database. Doc nêu các trách nhiệm của bạn: xoá file lâu không dùng (memory expiration), giới hạn kích thước, chặn path traversal. Compaction chỉ tóm tắt bên trong một hội thoại, không phải kho nhớ theo khách hàng. Dán toàn bộ lịch sử làm phình context và chi phí. Files API có lưu qua nhiều request, nhưng file nằm trong storage của Anthropic và có phạm vi theo workspace chứ không theo từng khách, nên trái yêu cầu dữ liệu nằm trong storage của công ty và phân vùng theo khách; đính kèm cả transcript cũng làm phình context. Nguồn: https://platform.claude.com/docs/en/agents-and-tools/tool-use/memory-tool ; https://platform.claude.com/docs/en/build-with-claude/files"
-    ref: lessons/03-agent.html#memory
+    ref: lessons/07-agents.html#memory
     status: active
     difficulty: hard
     tags: [memory, data-control]
@@ -128,7 +128,7 @@ questions:
       - "Show the agent's planned steps as a live checklist, and let users intervene at any point"
     answer: [D]
     explanation: "Một trong ba nguyên tắc xây agent của Anthropic là minh bạch: hiện rõ các bước lập kế hoạch của agent. Khung phát triển agent an toàn của Anthropic lấy ví dụ Claude Code hiển thị kế hoạch dưới dạng to-do checklist thời gian thực và người dùng có thể can thiệp bất cứ lúc nào, giữ con người trong vòng kiểm soát. Điểm tin cậy không cho thấy agent định làm gì. Bớt tool làm yếu năng lực mà không giải quyết sự mù mờ. Log xem lại sau kỳ đóng sổ là kiểm toán hậu kỳ, không cho người dùng dừng agent kịp thời. Nguồn: https://www.anthropic.com/engineering/building-effective-agents ; https://www.anthropic.com/news/our-framework-for-developing-safe-and-trustworthy-agents"
-    ref: lessons/24-danh-gia-governance.html#hitl
+    ref: lessons/21-evaluation-governance.html#hitl
     status: active
     difficulty: medium
     tags: [transparency, agent-design]
@@ -144,7 +144,7 @@ questions:
       - "Both prompts merged, so the agent receives Team A's rules together with Team B's guidance"
     answer: [A]
     explanation: "Anthropic gọi đây là \"right altitude\": vùng giữa hai lỗi phổ biến — hard-code logic phức tạp, giòn trong prompt để ép hành vi chính xác, hoặc hướng dẫn chung chung, mơ hồ không cho model tín hiệu cụ thể. System prompt nên đủ cụ thể để dẫn hành vi nhưng đủ linh hoạt để cung cấp heuristic mạnh. Mở rộng thêm nhánh làm prompt càng giòn. Tăng effort không bù được thông tin còn thiếu. Ghép hai prompt giữ nguyên cả hai lỗi và còn tạo mâu thuẫn. Nguồn: https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents"
-    ref: lessons/22-thiet-ke-giai-phap.html#prompt-he-thong
+    ref: lessons/19-solution-design.html#system-prompt
     status: active
     difficulty: medium
     tags: [system-prompt, context-engineering]
@@ -160,7 +160,7 @@ questions:
       - "Move all 35 examples to the end of the prompt so the model reads them most recently"
     answer: [C]
     explanation: "Anthropic vẫn khuyên dùng few-shot nhưng không nên nhồi một \"laundry list\" các edge case vào prompt; hãy chọn bộ ví dụ đa dạng, mang tính chuẩn mực, khắc hoạ đúng hành vi mong muốn. Doc prompting cũng khuyên ví dụ phải liên quan, đa dạng, bọc trong thẻ <example>, khoảng 3–5 ví dụ là tốt nhất. Tiếp tục thêm ví dụ sau mỗi lỗi lặp lại chính nguyên nhân đang gây rối. Bỏ hết ví dụ làm mất công cụ định hướng định dạng và giọng văn đáng tin nhất. Dời vị trí không giải quyết việc quá nhiều ví dụ. Nguồn: https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents ; https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
-    ref: lessons/06-prompt-output.html#few-shot
+    ref: lessons/04-prompt-output.html#few-shot
     status: active
     difficulty: medium
     tags: [few-shot, context-engineering]
@@ -176,7 +176,7 @@ questions:
       - "Send each contract in a separate request, then concatenate the five answers in application code"
     answer: [B]
     explanation: "Doc prompting best practices (long context): với input lớn (20k+ token), đặt tài liệu dài gần đầu prompt, phía trên câu hỏi, hướng dẫn và ví dụ; đặt câu hỏi ở cuối có thể cải thiện chất lượng tới khoảng 30% trong thử nghiệm, nhất là với nhiều tài liệu phức tạp. Mỗi tài liệu nên bọc trong <document> với <source> và <document_content>. Lặp câu hỏi trước từng hợp đồng gây nhiễu. Tóm tắt trước làm mất chi tiết điều khoản. Tách thành nhiều request phá vỡ suy luận chéo giữa các hợp đồng mà đề bài cần. Nguồn: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
-    ref: lessons/06-prompt-output.html#cau-truc-prompt
+    ref: lessons/04-prompt-output.html#prompt-structure
     status: active
     difficulty: easy
     tags: [long-context, prompt-structure]
@@ -192,7 +192,7 @@ questions:
       - "State the desired form instead, such as “Write the answer as smoothly flowing prose paragraphs”"
     answer: [D]
     explanation: "Doc prompting best practices (control the format): hãy nói Claude nên làm gì thay vì không được làm gì, ví dụ thay \"Do not use markdown\" bằng yêu cầu viết các đoạn văn xuôi liền mạch; có thể dùng chỉ báo định dạng bằng thẻ XML. Doc cũng lưu ý phong cách của prompt ảnh hưởng tới output: bỏ markdown khỏi prompt giúp giảm markdown trong câu trả lời, nên thêm header markdown vào prompt đi ngược mục tiêu. Viết hoa và lặp lại lệnh phủ định không giải quyết gốc. Chuyển sang JSON đổi bài toán và vẫn phải tự xử lý định dạng. Nguồn: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
-    ref: lessons/06-prompt-output.html#cau-truc-prompt
+    ref: lessons/04-prompt-output.html#prompt-structure
     status: active
     difficulty: easy
     tags: [output-format, prompting]
@@ -208,7 +208,7 @@ questions:
       - "In CLAUDE.md loaded through setting sources, since its content is re-injected on every request"
     answer: [D]
     explanation: "Doc agent loop: khi context gần đầy, SDK tự compact — tóm tắt lịch sử cũ, nên chỉ dẫn cụ thể từ đầu hội thoại có thể không được giữ. Luật lâu dài nên đặt trong CLAUDE.md (nạp qua settingSources), vì nội dung CLAUDE.md được đưa lại vào mỗi request; có thể thêm mục hướng dẫn tóm tắt trong CLAUDE.md hoặc dùng PreCompact hook. Đầu prompt ban đầu chính là phần bị tóm tắt. Kết quả tool cũng là lịch sử hội thoại và cũng bị tóm tắt. Câu trả lời gần nhất không phải nơi đặt luật lâu dài. Nguồn: https://code.claude.com/docs/en/agent-sdk/agent-loop"
-    ref: lessons/22-thiet-ke-giai-phap.html#context-token
+    ref: lessons/19-solution-design.html#context-token
     status: active
     difficulty: medium
     tags: [compaction, claude-md]
@@ -224,7 +224,7 @@ questions:
       - "Lower the maximum output tokens, so each turn uses less space and the context window lasts longer"
     answer: [A]
     explanation: "Doc prompting best practices: các model có context awareness theo dõi phần ngân sách token còn lại. Nếu harness tự compact hoặc cho lưu context ra file (như Claude Code), hãy nói điều đó trong prompt; nếu không, Claude đôi khi tự kết thúc công việc khi gần giới hạn. Prompt mẫu của doc: context sẽ được compact tự động nên đừng dừng sớm vì lo ngân sách token; lưu tiến độ và trạng thái trước khi context làm mới. Rút ngắn tool call hay giảm max_tokens không đổi hành vi dừng sớm. Bỏ file tiến độ làm mất cơ chế nối giữa các cửa sổ context. Nguồn: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
-    ref: lessons/22-thiet-ke-giai-phap.html#context-token
+    ref: lessons/19-solution-design.html#context-token
     status: active
     difficulty: hard
     tags: [context-awareness, long-running]
@@ -240,7 +240,7 @@ questions:
       - "Raise the effort level, so the model reasons longer before it decides to delegate"
     answer: [B]
     explanation: "Doc prompting best practices: model mới điều phối subagent một cách tự nhiên và có thể dùng quá mức, ví dụ spawn subagent để khám phá code khi một lệnh grep trực tiếp là đủ. Cách xử lý được khuyên là thêm hướng dẫn rõ: dùng subagent khi việc chạy song song được, cần context tách biệt hoặc là luồng độc lập không chia sẻ trạng thái; với việc đơn giản, tuần tự, sửa một file thì làm trực tiếp. Bỏ hẳn tool mất lợi ích ở các đợt audit lớn. Quay về model cũ là bỏ qua cách điều chỉnh bằng prompt. Tăng effort làm chậm thêm. Nguồn: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
-    ref: lessons/22-thiet-ke-giai-phap.html#multi-agent
+    ref: lessons/19-solution-design.html#multi-agent
     status: active
     difficulty: medium
     tags: [subagents, model-migration]
@@ -256,7 +256,7 @@ questions:
       - "Convert the server into a Claude Code plugin, since the Messages API cannot use MCP capabilities"
     answer: [A]
     explanation: "MCP connector cho phép gọi MCP server **từ xa** trực tiếp trong Messages API mà không cần tự viết MCP client: server phải được công khai qua HTTP (Streamable HTTP hoặc SSE); server stdio cục bộ không kết nối trực tiếp được. Đây là lý do chính, ổn định theo bản chất của connector. Ngoài ra, ở bản beta hiện tại connector chỉ hỗ trợ tool calls trong các tính năng của đặc tả MCP (giới hạn này có thể thay đổi). Khi cần server cục bộ, prompts, resources hoặc kiểm soát kết nối, doc khuyên tự quản MCP client và dùng helper của SDK để chuyển kiểu MCP sang kiểu Claude API. Connector không proxy stdio, nên dùng nó \"như dự định\" hay chỉ cho tools và resources đều không chạy với server này. Plugin Claude Code không phục vụ ứng dụng gọi API, và Messages API vẫn dùng được MCP. Nguồn: https://platform.claude.com/docs/en/agents-and-tools/mcp-connector"
-    ref: lessons/23-tich-hop.html#giao-thuc
+    ref: lessons/20-integration.html#integration-mechanism
     status: active
     difficulty: hard
     tags: [mcp-connector, mcp]
@@ -272,7 +272,7 @@ questions:
       - "Place session IDs in the tool descriptions, so that only the model knows which session is in use"
     answer: [B]
     explanation: "MCP security best practices (session hijacking): kẻ tấn công đoán hoặc lấy được session ID có thể mạo danh client hoặc chèn sự kiện độc vào hàng đợi chung. Server có authorization PHẢI xác minh mọi request đến và KHÔNG được dùng session để xác thực; session ID phải ngẫu nhiên an toàn, không đoán được; NÊN gắn session với thông tin riêng của người dùng, ví dụ khoá <user_id>:<session_id> với user ID lấy từ token chứ không do client cung cấp. ID tuần tự dễ đoán; kéo dài phiên mở rộng cửa sổ tấn công; đưa ID vào mô tả tool vừa vô nghĩa vừa làm lộ. Nguồn: https://modelcontextprotocol.io/specification/2025-06-18/basic/security_best_practices"
-    ref: lessons/23-tich-hop.html#xac-thuc
+    ref: lessons/20-integration.html#auth
     status: active
     difficulty: hard
     tags: [mcp-security, sessions]
@@ -288,7 +288,7 @@ questions:
       - "Start with a minimal read-oriented scope set, and step up through targeted scope challenges"
     answer: [D]
     explanation: "MCP security best practices (scope minimization): token mang scope rộng nếu bị lộ cho phép truy cập lan rộng, khó thu hồi và làm audit log mất ý nghĩa. Khuyến nghị mô hình quyền tối thiểu, tăng dần: bộ scope ban đầu chỉ gồm thao tác khám phá, đọc rủi ro thấp; nâng quyền bằng thử thách WWW-Authenticate scope=\"…\" khi thao tác đặc quyền được dùng lần đầu. Lỗi thường gặp được nêu tên: công bố mọi scope trong scopes_supported, dùng scope wildcard hoặc omnibus, gom quyền trước để khỏi hỏi lại. Xoay vòng token không thu hẹp phạm vi thiệt hại khi token còn hiệu lực. Nguồn: https://modelcontextprotocol.io/specification/2025-11-25/basic/security_best_practices"
-    ref: lessons/23-tich-hop.html#xac-thuc
+    ref: lessons/20-integration.html#auth
     status: active
     difficulty: hard
     tags: [mcp-security, oauth-scopes]
@@ -305,7 +305,7 @@ questions:
       - "Launch local servers in a sandbox with minimal default file system and network access"
     answer: [A, E]
     explanation: "MCP security best practices (local MCP server compromise): client hỗ trợ cấu hình một chạm PHẢI có cơ chế đồng ý trước khi chạy lệnh — hiển thị đúng lệnh sẽ chạy, đầy đủ không cắt bớt, nêu rõ đây là thao tác có thể nguy hiểm và yêu cầu người dùng chấp thuận; NÊN chạy server trong sandbox với quyền tối thiểu (hạn chế file system, mạng) và cho người dùng cấp thêm quyền khi cần. Chạy âm thầm hay rút gọn lệnh giúp kẻ tấn công che giấu lệnh độc. Server cục bộ nên dùng stdio, hoặc nếu dùng HTTP thì phải yêu cầu token hay IPC có giới hạn. Nguồn: https://modelcontextprotocol.io/specification/2025-11-25/basic/security_best_practices"
-    ref: lessons/23-tich-hop.html#xac-thuc
+    ref: lessons/20-integration.html#auth
     status: active
     difficulty: medium
     tags: [mcp-security, local-servers]
@@ -321,7 +321,7 @@ questions:
       - "Hand-write a regex that rejects any URL containing the literal text 169.254 before fetching"
     answer: [B]
     explanation: "Đây là SSRF: khi khám phá OAuth, client lấy URL do server cung cấp (resource_metadata, authorization_servers, token_endpoint…), và server độc có thể trỏ tới IP nội bộ, endpoint metadata của cloud (169.254.169.254) hay localhost để đánh cắp credential. Khuyến nghị: bắt buộc HTTPS (trừ loopback khi dev), chặn dải private, loopback, link-local, áp kiểm tra tương tự cho đích redirect, dùng egress proxy, lưu ý DNS rebinding. Doc cảnh báo tránh tự viết kiểm tra IP vì kẻ tấn công lách bằng mã hoá octal, hex hay IPv6. Bỏ chi tiết lỗi chỉ giảm rò rỉ một phần; token của server không chứng minh URL an toàn. Nguồn: https://modelcontextprotocol.io/specification/2025-11-25/basic/security_best_practices"
-    ref: lessons/23-tich-hop.html#xac-thuc
+    ref: lessons/20-integration.html#auth
     status: active
     difficulty: hard
     tags: [mcp-security, ssrf]
@@ -337,7 +337,7 @@ questions:
       - "Remove the tool descriptions, so the assistant decides from the tool names and its own knowledge"
     answer: [B]
     explanation: "Writing tools for agents: khi agent có nhiều tool từ nhiều nguồn, namespacing — gom tool liên quan dưới tiền tố chung theo dịch vụ hoặc tài nguyên — giúp phân định ranh giới và giảm chọn nhầm; mô tả tool nên rõ như giải thích cho một nhân viên mới. Gộp thành một search truy vấn mọi hệ thống tốn token và trả kết quả lẫn lộn. Thứ tự tool không giải quyết sự mơ hồ về tên. Bỏ mô tả làm mất tín hiệu quan trọng nhất để chọn đúng tool. Nguồn: https://www.anthropic.com/engineering/writing-tools-for-agents"
-    ref: lessons/04-tool-mcp.html#mo-ta-tool
+    ref: lessons/05-tool-use.html#tool-interface
     status: active
     difficulty: easy
     tags: [tool-design, namespacing]
@@ -353,7 +353,7 @@ questions:
       - "One `get_customer_context` tool that compiles the relevant recent information in a single call"
     answer: [D]
     explanation: "Writing tools for agents: tool nên gom các thao tác thường đi cùng nhau thành một tool có ý nghĩa ở mức công việc, ví dụ get_customer_context tổng hợp mọi thông tin gần đây và liên quan của khách thay vì nhiều lời gọi riêng lẻ; làm vậy giảm số bước, token và nguy cơ bỏ sót. Chia nhỏ thêm làm chuỗi dài hơn. Luật trong prompt không bảo đảm thứ tự. SQL thô cấp quyền quá rộng và đẩy gánh nặng hiểu schema sang agent. Nguồn: https://www.anthropic.com/engineering/writing-tools-for-agents"
-    ref: lessons/04-tool-mcp.html#phan-bo-tool
+    ref: lessons/05-tool-use.html#tool-distribution
     status: active
     difficulty: medium
     tags: [tool-design, consolidation]
@@ -369,7 +369,7 @@ questions:
       - "Start with an embedding index, then remove file tools so the agent cannot bypass the index"
     answer: [A]
     explanation: "Bài về Claude Agent SDK: semantic search thường nhanh hơn agentic search nhưng kém chính xác hơn, khó bảo trì hơn và kém minh bạch hơn; khuyên bắt đầu bằng agentic search (grep, tool đọc file) và chỉ thêm semantic search khi cần tốc độ hoặc độ đa dạng truy vấn. Repo thay đổi liên tục càng làm index khó giữ đồng bộ. Dựng cả hai ngay từ đầu là phức tạp chưa cần thiết. Bỏ tool file làm mất khả năng đọc mã nguồn chính xác. Nguồn: https://claude.com/blog/building-agents-with-the-claude-agent-sdk"
-    ref: lessons/23-tich-hop.html#truy-xuat
+    ref: lessons/20-integration.html#retrieval
     status: active
     difficulty: medium
     tags: [retrieval, agentic-search]
@@ -385,7 +385,7 @@ questions:
       - "Change the tool to require absolute file paths, and state that requirement in its description"
     answer: [D]
     explanation: "Building effective agents: hãy \"poka-yoke\" tool — đổi tham số để khó mắc lỗi hơn. Ví dụ của chính Anthropic: model nhầm với đường dẫn tương đối sau khi rời thư mục gốc, nên họ đổi tool để luôn yêu cầu đường dẫn tuyệt đối và vấn đề biến mất. Lời nhắc trong prompt không loại bỏ lỗi về mặt cấu trúc. Mã lỗi chung chung không giúp agent tự sửa (thông báo lỗi nên cụ thể, có hướng hành động). Chấp nhận cả hai kiểu đường dẫn giữ nguyên chỗ dễ sai. Nguồn: https://www.anthropic.com/engineering/building-effective-agents"
-    ref: lessons/04-tool-mcp.html#mo-ta-tool
+    ref: lessons/05-tool-use.html#tool-interface
     status: active
     difficulty: easy
     tags: [tool-design, poka-yoke]
@@ -401,7 +401,7 @@ questions:
       - "The 60 lawyer-graded cases, rerun on every release and then extrapolated to estimate accuracy at scale"
     answer: [B]
     explanation: "Doc develop tests nêu ba nguyên tắc thiết kế eval: bám sát nhiệm vụ (mô phỏng phân phối thật, có edge case), tự động hoá khi có thể (multiple-choice, string match, code-graded, LLM-graded), và ưu tiên số lượng hơn chất lượng: nhiều câu với chấm tự động tín hiệu hơi thấp tốt hơn ít câu chấm tay chất lượng cao. Chấm bằng người là chuẩn vàng nhưng chậm và đắt, hợp để hiệu chỉnh grader hơn là thay khối lượng. Chờ dữ liệu production mới làm eval là trì hoãn vòng phản hồi. Nguồn: https://platform.claude.com/docs/en/test-and-evaluate/develop-tests ; https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents"
-    ref: lessons/24-danh-gia-governance.html#bo-du-lieu
+    ref: lessons/21-evaluation-governance.html#eval-datasets
     status: active
     difficulty: medium
     tags: [eval-design, grading]
@@ -417,7 +417,7 @@ questions:
       - "Drop the booking checks, and grade only whether the agent's final message sounds confident"
     answer: [C]
     explanation: "Demystifying evals for AI agents: thường nên chấm cái agent tạo ra, không phải con đường nó đi; kiểm tra cứng chuỗi bước sẽ phạt những lời giải hợp lệ và sáng tạo. Bài multi-agent research cũng khuyên đánh giá agent có đạt đúng trạng thái cuối hay không. Liệt kê thêm chuỗi vẫn giòn trước lời giải hợp lệ mới. Ép agent đi theo chuỗi để điểm đẹp là tối ưu sai mục tiêu. Chấm giọng tự tin không đo được kết quả thật; với việc nhiều bước có thể cho điểm từng phần. Nguồn: https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents ; https://www.anthropic.com/engineering/multi-agent-research-system"
-    ref: lessons/24-danh-gia-governance.html#bo-du-lieu
+    ref: lessons/21-evaluation-governance.html#eval-datasets
     status: active
     difficulty: medium
     tags: [agent-evals, grading]
@@ -433,7 +433,7 @@ questions:
       - "It was run before launch, when real user questions were not yet available for testing"
     answer: [C]
     explanation: "Demystifying evals: bộ bài nên cân bằng — kiểm tra cả trường hợp một hành vi nên xảy ra lẫn trường hợp không nên xảy ra. Eval một phía dẫn tới tối ưu một phía; chính bài viết nêu ví dụ agent đi tìm kiếm cho gần như mọi thứ. Số lượng task không phải nguyên nhân. Grader dạng code vẫn chấm được nếu bộ bài có ca \"không cần tìm kiếm\". Chạy eval trước launch là đúng; điều cần là dựng task từ cách dùng thật và các lỗi thật. Nguồn: https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents"
-    ref: lessons/24-danh-gia-governance.html#bo-du-lieu
+    ref: lessons/21-evaluation-governance.html#eval-datasets
     status: active
     difficulty: medium
     tags: [agent-evals, balanced-sets]
@@ -449,7 +449,7 @@ questions:
       - "Increase the number of trials, so the effect of leftover files averages out across the whole run"
     answer: [A]
     explanation: "Demystifying evals: mỗi trial phải được cô lập, bắt đầu từ môi trường sạch. Trạng thái dùng chung giữa các lần chạy (file còn sót, cache, lịch sử) gây lỗi tương quan hoặc thổi phồng điểm; bài viết nêu đúng trường hợp agent đọc git history của trial trước. Đổi thứ tự hay tăng số trial không loại bỏ rò rỉ trạng thái. Lời dặn trong prompt không thay được cô lập môi trường và vẫn để điểm phụ thuộc vào việc agent có nghe lời hay không. Nguồn: https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents"
-    ref: lessons/24-danh-gia-governance.html#bo-du-lieu
+    ref: lessons/21-evaluation-governance.html#eval-datasets
     status: active
     difficulty: hard
     tags: [agent-evals, isolation]
@@ -465,7 +465,7 @@ questions:
       - "The graders are broken, because agents can never reach a perfect score on capability evals"
     answer: [C]
     explanation: "Demystifying evals: eval saturation xảy ra khi agent qua hết các task giải được, không còn chỗ thể hiện cải thiện; suite bão hoà vẫn bắt được regression nhưng không phân biệt được model tốt hơn. Capability eval nên bắt đầu ở tỷ lệ đạt thấp; regression eval nên ở gần 100%. Vì vậy chuyển suite hiện có sang vai trò regression và bổ sung task khó hơn. Kết luận \"không có lợi ích\" chỉ phản ánh thước đo đã hết tầm. Điểm tuyệt đối không tự chứng minh grader hỏng, dù vẫn nên đọc transcript để kiểm tra. Nguồn: https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents"
-    ref: lessons/24-danh-gia-governance.html#bo-du-lieu
+    ref: lessons/21-evaluation-governance.html#eval-datasets
     status: active
     difficulty: hard
     tags: [eval-saturation, model-upgrade]
@@ -482,7 +482,7 @@ questions:
       - "Let each reviewer apply personal criteria, then average the verdicts across all reviewers"
     answer: [C, D]
     explanation: "Demystifying evals: một task tốt là task mà hai chuyên gia trong lĩnh vực sẽ độc lập đưa ra cùng kết luận pass hay fail; lời giải tham chiếu giúp xác nhận task giải được và grader được cấu hình đúng. Mô tả mơ hồ làm điểm số phản ánh nhiễu của đề chứ không phải năng lực agent. Chỉ giữ các task đã qua làm suite bão hoà, mất khả năng đo cải thiện. Mỗi người chấm một kiểu chính là nguồn gốc của bất đồng. Nguồn: https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents"
-    ref: lessons/24-danh-gia-governance.html#bo-du-lieu
+    ref: lessons/21-evaluation-governance.html#eval-datasets
     status: active
     difficulty: medium
     tags: [agent-evals, task-design]
@@ -498,7 +498,7 @@ questions:
       - "Letting the tool descriptions grow without limit, so that every past failure is covered"
     answer: [B]
     explanation: "Writing tools for agents: khi dùng Claude để tối ưu tool dựa trên transcript eval, Anthropic dựa vào held-out test set để bảo đảm không overfit vào bộ eval dùng để \"huấn luyện\". Điểm eval cao mà production không đổi là dấu hiệu overfit. Lặp thêm trên cùng bộ task làm overfit nặng hơn. Bỏ transcript là mất nguồn chẩn đoán chính. Để mô tả phình vô hạn nhằm vá từng lỗi cũ cũng là một dạng overfit. Bài viết còn khuyên theo dõi số lời gọi tool, lỗi, token và thời gian chạy. Nguồn: https://www.anthropic.com/engineering/writing-tools-for-agents"
-    ref: lessons/04-tool-mcp.html#mo-ta-tool
+    ref: lessons/05-tool-use.html#tool-interface
     status: active
     difficulty: hard
     tags: [tool-evals, overfitting]
@@ -515,7 +515,7 @@ questions:
       - "Limit every response to one sentence, so the rubric can never fit inside an answer"
     answer: [A, C]
     explanation: "Doc reduce prompt leak: chỉ dùng kỹ thuật prompt chống rò rỉ khi thật cần, vì làm nhiệm vụ phức tạp hơn có thể giảm hiệu năng ở phần khác; nên thử giám sát trước như sàng lọc output và hậu xử lý (regex, lọc từ khoá, hoặc một LLM lọc rò rỉ tinh vi), và không đưa vào prompt chi tiết độc quyền mà nhiệm vụ không cần, vì nội dung thừa làm giảm mức tuân thủ lệnh \"không tiết lộ\". Không biện pháp nào chắc chắn tuyệt đối. Đưa rubric sang user turn vẫn là input có thể lộ. Ép câu trả lời một câu làm hỏng chất lượng. Nguồn: https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-prompt-leak"
-    ref: lessons/08-bao-mat.html#guardrail
+    ref: lessons/11-security-data.html#guardrail
     status: active
     difficulty: medium
     tags: [prompt-leak, guardrails]
@@ -531,7 +531,7 @@ questions:
       - "Move those accounts to a larger model, since larger models need no additional guardrails"
     answer: [C]
     explanation: "Doc mitigate jailbreaks: với người dùng liên tục tìm cách vượt guardrail (cùng một loại refusal lặp lại nhiều lần), hãy điều chỉnh phản hồi, thông báo rằng hành vi vi phạm chính sách sử dụng và cân nhắc throttle hoặc ban; kết hợp với harmlessness screen bằng model nhẹ, input validation, system prompt nêu rõ ranh giới và giám sát liên tục. Nới guardrail là thưởng cho hành vi xấu. Giấu refusal không làm giảm động cơ tấn công. Model lớn hơn không miễn nhiễm jailbreak. Nguồn: https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/mitigate-jailbreaks"
-    ref: lessons/24-danh-gia-governance.html#guardrail
+    ref: lessons/21-evaluation-governance.html#guardrail
     status: active
     difficulty: easy
     tags: [jailbreak, abuse-handling]
@@ -547,7 +547,7 @@ questions:
       - "Keep the payment tool, but cap the amount so that any single payment stays under a limit"
     answer: [C]
     explanation: "Doc prompting best practices (payments, account numbers, financial records): khối chỉ dẫn về thanh toán chỉ định hướng Claude chứ không cưỡng chế. Nếu agent không bao giờ được trả tiền, hãy cho nó tool yêu cầu hoặc xếp hàng thanh toán để người giải ngân, và không có tool nào chuyển được tiền; nếu có tool chuyển tiền thì người phải duyệt từng lời gọi. Luật trong prompt không bảo đảm. Email xác nhận từ bên ngoài là nội dung không tin cậy, dễ bị prompt injection. Giới hạn số tiền vẫn để agent tự chuyển tiền, trái chính sách. Nguồn: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
-    ref: lessons/24-danh-gia-governance.html#hitl
+    ref: lessons/21-evaluation-governance.html#hitl
     status: active
     difficulty: medium
     tags: [payments, human-approval]
@@ -563,7 +563,7 @@ questions:
       - "Phrase future requests more precisely, since agents always act exactly as their users intend"
     answer: [B]
     explanation: "Khung phát triển agent an toàn của Anthropic dùng đúng ví dụ \"organize my files\": agent có thể xoá thứ nó cho là trùng lặp — agent không phải lúc nào cũng hành động như con người muốn, nên con người cần giữ quyền kiểm soát với quyết định rủi ro cao. Doc prompting gợi ý: khuyến khích hành động cục bộ, đảo ngược được (sửa file, chạy test), nhưng hỏi trước hành động khó đảo ngược, ảnh hưởng hệ thống dùng chung hoặc mang tính phá huỷ (xoá file, force-push, gửi tin). Hỏi cho mọi thao tác làm mất tự chủ. Khôi phục sau khi có khiếu nại là phản ứng muộn. Giả định agent luôn hiểu đúng ý là sai. Nguồn: https://www.anthropic.com/news/our-framework-for-developing-safe-and-trustworthy-agents ; https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
-    ref: lessons/24-danh-gia-governance.html#hitl
+    ref: lessons/21-evaluation-governance.html#hitl
     status: active
     difficulty: medium
     tags: [autonomy, reversibility]
@@ -579,7 +579,7 @@ questions:
       - "Pass each raw tool output to a small classifier call with structured output, forwarding only clean content"
     answer: [D]
     explanation: "Doc mitigate jailbreaks (indirect prompt injection): ngoài việc chỉ đặt nội dung không tin cậy trong tool_result, nêu chính sách trong system prompt, JSON-encode và cấp quyền tối thiểu, nên sàng lọc output của tool: đưa output thô vào một lời gọi phân loại nhỏ (model nhẹ, structured output trả về boolean) và chỉ trả nội dung về dưới dạng tool_result khi không nghi có injection; coi refusal của bộ lọc như kết quả nguy hiểm. Đưa nội dung lạ vào system prompt đảo ngược ranh giới tin cậy. Lệnh của bạn đặt trong tool result có thể bị bỏ qua hoặc bị coi là injection. Nối chuỗi không phân tách làm mờ ranh giới dữ liệu. Nguồn: https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/mitigate-jailbreaks"
-    ref: lessons/08-bao-mat.html#injection
+    ref: lessons/11-security-data.html#injection
     status: active
     difficulty: hard
     tags: [prompt-injection, tool-results]
@@ -595,7 +595,7 @@ questions:
       - "A freeze on all agent updates until no sessions are running anywhere in the system at all"
     answer: [B]
     explanation: "Bài multi-agent research: agent có trạng thái và có thể đang ở giữa quy trình khi bản cập nhật ra mắt, nên không thể cập nhật tất cả cùng lúc. Anthropic dùng rainbow deployment: chuyển dần traffic từ phiên bản cũ sang mới trong khi cả hai cùng chạy, để không làm gián đoạn agent đang chạy. Restart đồng loạt làm mất tiến độ đang dở. Thay prompt giữa phiên tạo trạng thái lai không nhất quán. Đóng băng chờ tới lúc không còn phiên nào là không thực tế với hệ chạy liên tục. Nguồn: https://www.anthropic.com/engineering/multi-agent-research-system"
-    ref: lessons/25-ben-lien-quan-van-hanh.html#vong-doi
+    ref: lessons/22-stakeholders-operations.html#lifecycle
     status: active
     difficulty: hard
     tags: [deployment, stateful-agents]
@@ -611,7 +611,7 @@ questions:
       - "The deprecations page lists dates only for Bedrock, so the Claude API date is still unknown"
     answer: [C]
     explanation: "Trang model deprecations: các ngày trên trang áp dụng cho nền tảng do Anthropic vận hành (Claude API và các nền tảng Anthropic quản lý); nền tảng do đối tác vận hành, như Amazon Bedrock hay Google Cloud bản do Google quản lý, tự đặt lịch retire, nên trạng thái và ngày của cùng một model có thể khác. Model đã retire thì request thất bại, vì vậy mỗi nền tảng cần lịch chuyển đổi riêng, kiểm theo bảng model của nền tảng đó. Các phương án còn lại đều mô tả sai cách vòng đời model vận hành. Nguồn: https://platform.claude.com/docs/en/about-claude/model-deprecations"
-    ref: lessons/25-ben-lien-quan-van-hanh.html#vong-doi
+    ref: lessons/22-stakeholders-operations.html#lifecycle
     status: active
     difficulty: medium
     tags: [model-lifecycle, cloud-platforms]
@@ -627,7 +627,7 @@ questions:
       - "Search team chat channels for the model name, then contact the people who mention it"
     answer: [A]
     explanation: "Trang model deprecations hướng dẫn audit: vào trang Usage trong Claude Console, bấm Export, xem file CSV phân theo API key và model để tìm nơi còn dùng model deprecated, rồi ưu tiên cập nhật trước ngày retire và test model thay thế sớm. Chờ tới ngày retire là để sự cố xảy ra, vì request tới model đã retire sẽ thất bại. Anthropic không tự đổi model ID trong code của bạn. Tìm trong kênh chat vừa chậm vừa không đầy đủ. Nguồn: https://platform.claude.com/docs/en/about-claude/model-deprecations"
-    ref: lessons/25-ben-lien-quan-van-hanh.html#vong-doi
+    ref: lessons/22-stakeholders-operations.html#lifecycle
     status: active
     difficulty: easy
     tags: [model-lifecycle, usage-audit]
@@ -643,7 +643,7 @@ questions:
       - "The model should beat every competitor's classifier on public benchmarks before it is allowed to launch"
     answer: [B]
     explanation: "Doc define success criteria: tiêu chí tốt phải cụ thể, đo được, khả thi và liên quan; đa số use case cần đánh giá nhiều chiều. Ví dụ \"tốt\" của chính Anthropic: trên tập held-out 10.000 bài đăng, F1 tối thiểu 0,85, 99,5% output không độc hại, 95% thời gian phản hồi dưới 200 ms. \"Phân loại tốt\" theo cảm nhận trong demo là mơ hồ, không đo được. 100% không khả thi với năng lực model hiện tại. Benchmark công khai không gắn với dữ liệu và mục tiêu của chính doanh nghiệp. Nguồn: https://platform.claude.com/docs/en/test-and-evaluate/define-success"
-    ref: lessons/25-ben-lien-quan-van-hanh.html#discovery
+    ref: lessons/22-stakeholders-operations.html#discovery
     status: active
     difficulty: medium
     tags: [success-criteria, discovery]
@@ -659,7 +659,7 @@ questions:
       - "Store full transcripts indefinitely in a separate bucket, opened only after a major incident"
     answer: [A]
     explanation: "Bài multi-agent research: Anthropic dùng production tracing đầy đủ để chẩn đoán vì sao agent thất bại, theo dõi mẫu quyết định và cấu trúc tương tác của agent mà không giám sát nội dung từng cuộc hội thoại, nhằm giữ quyền riêng tư của người dùng. Cách này đáp ứng cả nhu cầu debug lẫn yêu cầu của bộ phận privacy. Cấp quyền đọc transcript thô kèm lời dặn không phải kiểm soát thật. Tắt tracing làm mất khả năng chẩn đoán. Lưu transcript vô thời hạn đi ngược nguyên tắc tối thiểu hoá dữ liệu. Nguồn: https://www.anthropic.com/engineering/multi-agent-research-system"
-    ref: lessons/23-tich-hop.html#quan-sat
+    ref: lessons/20-integration.html#observability
     status: active
     difficulty: medium
     tags: [observability, privacy]
@@ -675,7 +675,7 @@ questions:
       - "Multi-agent runs cost more only at launch, since token usage falls once prompt caches have warmed up"
     answer: [C]
     explanation: "Theo bài multi-agent research, agent thường dùng khoảng 4 lần token so với chat, còn hệ multi-agent khoảng 15 lần; vì vậy multi-agent chỉ khả thi về kinh tế với nhiệm vụ có giá trị đủ cao để trả cho hiệu năng tăng thêm. Truyền đạt với bên tài chính nên gắn chi phí với giá trị và chọn đúng loại truy vấn, không bật mặc định cho mọi câu hỏi. Đây không phải lỗi hoá đơn. Multi-agent không luôn tốt hơn (kém hợp với việc cần chung context hoặc phụ thuộc chặt). Cache không xoá bỏ hệ số token đó. Nguồn: https://www.anthropic.com/engineering/multi-agent-research-system"
-    ref: lessons/25-ben-lien-quan-van-hanh.html#truyen-dat
+    ref: lessons/22-stakeholders-operations.html#communicating-decisions
     status: active
     difficulty: medium
     tags: [cost, multi-agent]
@@ -691,7 +691,7 @@ questions:
       - "Legacy and Deprecated are the same state, used interchangeably on different documentation pages"
     answer: [A]
     explanation: "Vòng đời model theo trang deprecations: Active (hỗ trợ đầy đủ, được khuyến nghị); Legacy (không còn được cập nhật, có thể bị deprecate trong tương lai); Deprecated (vẫn chạy nhưng không còn khuyến nghị, có model thay thế và ngày retire; thường kém tin cậy hơn model active); Retired (không dùng được nữa, request thất bại). Vì vậy hệ dùng model Deprecated cần kế hoạch chuyển trước ngày retire, còn hệ dùng model Legacy cần theo dõi và chuẩn bị đánh giá model thay thế. Anthropic báo trước ít nhất 60 ngày với model công khai. Nguồn: https://platform.claude.com/docs/en/about-claude/model-deprecations"
-    ref: lessons/25-ben-lien-quan-van-hanh.html#vong-doi
+    ref: lessons/22-stakeholders-operations.html#lifecycle
     status: active
     difficulty: medium
     tags: [model-lifecycle, stakeholders]
@@ -707,7 +707,7 @@ questions:
       - "Agents are not supported on the Claude API, so the review had no choice except to build a workflow"
     answer: [A]
     explanation: "Building effective agents: workflow mang lại tính dự đoán được và nhất quán cho nhiệm vụ đã xác định rõ; agent hợp khi cần linh hoạt và quyết định do model dẫn dắt ở quy mô lớn; tính tự chủ của agent kéo theo chi phí cao hơn và khả năng lỗi cộng dồn. Giải thích quyết định bằng đặc điểm của bài toán và đánh đổi là cách truyền đạt kiến trúc đúng với stakeholder. Các phương án còn lại dựa trên khẳng định sai sự thật hoặc tuyệt đối hoá. Nguồn: https://www.anthropic.com/engineering/building-effective-agents"
-    ref: lessons/25-ben-lien-quan-van-hanh.html#truyen-dat
+    ref: lessons/22-stakeholders-operations.html#communicating-decisions
     status: active
     difficulty: easy
     tags: [architecture-decisions, communication]
@@ -724,7 +724,7 @@ questions:
       - "Restrict the container's network egress to an allowlist of domains"
     answer: [B, E]
     explanation: "Doc dev container: vì container chạy Claude Code bằng user không phải root và giới hạn việc thực thi lệnh bên trong container, có thể dùng --dangerously-skip-permissions để chạy không giám sát; CLI từ chối cờ này khi chạy bằng root. Nên kết hợp giới hạn egress (ví dụ firewall allowlist trong container tham chiếu) để hạn chế những gì phiên bỏ qua quyền có thể truy cập. Doc cảnh báo: với cờ này, container không ngăn dự án độc hại lấy cắp mọi thứ có trong container, kể cả credential của Claude Code; vì vậy không mount secret của host như ~/.ssh hay file credential cloud, ưu tiên token ngắn hạn theo repo và chỉ dùng với repo tin cậy. Nguồn: https://code.claude.com/docs/en/devcontainer"
-    ref: lessons/25-ben-lien-quan-van-hanh.html#claude-code-doi
+    ref: lessons/22-stakeholders-operations.html#team-claude-code
     status: active
     difficulty: medium
     tags: [devcontainer, claude-code]
@@ -741,7 +741,7 @@ questions:
       - "Subagents do not receive the parent's system prompt, so put the citation rule in the subagent's own prompt"
     answer: [D]
     explanation: "Agent SDK: subagent (không phải fork) bắt đầu với context mới — nhận system prompt riêng (AgentDefinition.prompt), chuỗi prompt của Agent tool, CLAUDE.md của dự án và định nghĩa tool; không nhận lịch sử hội thoại, kết quả tool hay system prompt của parent. Vì vậy ràng buộc chất lượng như yêu cầu trích dẫn phải nằm trong prompt của subagent (hoặc trong prompt giao việc). Nhấn mạnh hơn ở coordinator không truyền xuống được. maxTurns chỉ giới hạn số lượt. Tool không mang theo system prompt của parent. Nguồn: https://code.claude.com/docs/en/agent-sdk/subagents"
-    ref: lessons/03-agent.html#task
+    ref: lessons/07-agents.html#task
     status: active
     difficulty: medium
     tags: [subagents, context-passing]
@@ -758,7 +758,7 @@ questions:
       - "Remove the Agent tool, so that the agent can no longer start subagents for any of its queries"
     answer: [A]
     explanation: "Doc agent loop: max_budget_usd (maxBudgetUsd) dừng vòng lặp khi chi phí ước tính chạm ngưỡng và tính cả chi phí của subagent; khi chạm trần, việc spawn subagent mới bị từ chối và kết quả có subtype error_max_budget_usd (nên chừa headroom vì phản hồi cuối có thể vượt một chút). Doc coi đặt budget là mặc định tốt cho agent production. max_turns chỉ đếm lượt của vòng lặp chính, không phải trần tiền. Effort giảm token mỗi lượt nhưng không phải trần cứng. Bỏ Agent tool làm mất subagent mà đề yêu cầu giữ. Nguồn: https://code.claude.com/docs/en/agent-sdk/agent-loop ; https://code.claude.com/docs/en/agent-sdk/subagents"
-    ref: lessons/03-agent.html#vong-lap
+    ref: lessons/07-agents.html#agent-loop
     status: active
     difficulty: medium
     tags: [agent-sdk, cost-control]
@@ -775,7 +775,7 @@ questions:
       - "Check the result subtype first; on error_max_turns, resume the saved session with a higher turn limit"
     answer: [D]
     explanation: "Doc agent loop: khi chạm giới hạn, SDK trả ResultMessage có subtype error_max_turns; trường result chỉ có ở subtype success, nên phải kiểm tra subtype trước khi đọc. Mọi subtype vẫn mang session_id, chi phí và num_turns, nên có thể resume phiên với giới hạn cao hơn — đúng như ví dụ trong doc. Bỏ hẳn giới hạn đi ngược khuyến nghị đặt giới hạn cho agent production. Chạy lại từ đầu với cùng giới hạn vừa lãng phí công việc đã làm vừa dễ chạm giới hạn lần nữa. Nguồn: https://code.claude.com/docs/en/agent-sdk/agent-loop"
-    ref: lessons/03-agent.html#vong-lap
+    ref: lessons/07-agents.html#agent-loop
     status: active
     difficulty: hard
     tags: [agent-sdk, result-handling]
@@ -792,7 +792,7 @@ questions:
       - "allowed_tools only pre-approves tools and does not limit bypass mode; block Bash with disallowed_tools"
     answer: [D]
     explanation: "Doc permissions: allowed_tools chỉ tự phê duyệt các tool được liệt kê; tool khác vẫn tồn tại. Ở chế độ bypassPermissions, lời gọi tới tool không liệt kê cũng được duyệt (trừ vài hành động không chế độ nào tự duyệt). Muốn chặn hẳn hãy dùng disallowed_tools (bỏ định nghĩa Bash khỏi request) hoặc deny rule — deny áp dụng cả trong bypass; với job chỉ đọc, doc gợi ý dontAsk kèm allow list tối thiểu. Lời dặn trong prompt không phải cơ chế kiểm soát. Read không cấp quyền shell. Nguồn: https://code.claude.com/docs/en/agent-sdk/permissions"
-    ref: lessons/03-agent.html#hook-sdk
+    ref: lessons/07-agents.html#hook-sdk
     status: active
     difficulty: hard
     tags: [agent-sdk, permissions]
@@ -809,7 +809,7 @@ questions:
       - "Keep the allow rule and raise max_turns, so the callback has enough turns to run before refunds"
     answer: [B]
     explanation: "Doc permissions: thứ tự đánh giá là hooks → deny rules → ask rules → permission mode → allow rules → canUseTool. Lời gọi đã được tự phê duyệt ở bước trước (allow rule, acceptEdits hay bypassPermissions) không bao giờ tới canUseTool, nên kiểm tra đặt ở đó bị bỏ qua âm thầm. Doc khuyên dùng PreToolUse hook, vốn chạy cả cho các lời gọi đó, và lệnh deny của hook áp dụng cả ở bypassPermissions (hoặc bỏ process_refund khỏi allowedTools). bypassPermissions càng bỏ qua callback nhiều hơn. Prompt không cưỡng chế được. max_turns không liên quan. Nguồn: https://code.claude.com/docs/en/agent-sdk/permissions"
-    ref: lessons/03-agent.html#hook-sdk
+    ref: lessons/07-agents.html#hook-sdk
     status: active
     difficulty: hard
     tags: [agent-sdk, hooks]
@@ -826,7 +826,7 @@ questions:
       - "Merge every subagent into the coordinator, so that all search results land in one context window"
     answer: [C]
     explanation: "Bài multi-agent research: để tránh \"trò chơi tam sao thất bản\" khi mọi thứ phải đi qua coordinator, subagent gọi tool lưu kết quả vào hệ thống bên ngoài (filesystem, artifact) rồi chỉ trả về tham chiếu nhẹ; agent phía sau đọc trực tiếp, vừa giữ độ trung thực vừa tiết kiệm token. Diễn giải kỹ hơn vẫn làm mất chi tiết. Fork mang toàn bộ context vào mỗi subagent làm phình context. Gộp hết vào coordinator đánh mất lợi ích tách context của subagent. Nguồn: https://www.anthropic.com/engineering/multi-agent-research-system"
-    ref: lessons/03-agent.html#coordinator
+    ref: lessons/07-agents.html#coordinator
     status: active
     difficulty: medium
     tags: [multi-agent, artifacts]
@@ -843,7 +843,7 @@ questions:
       - "Have the lead agent save its plan to external memory early, and retrieve it after context resets"
     answer: [D]
     explanation: "Bài multi-agent research: lead agent bắt đầu bằng việc lập kế hoạch và lưu kế hoạch vào Memory để giữ lại ngữ cảnh; khi hội thoại kéo dài và gần giới hạn context, agent lấy lại ngữ cảnh đã lưu như kế hoạch nghiên cứu thay vì mất công việc đã làm, và có thể sinh subagent mới với context sạch để bàn giao. Tắt tóm tắt sẽ làm tràn context. Làm lại từ đầu lãng phí kết quả của subagent. Rút kế hoạch còn một câu làm mất chi tiết cần cho điều phối. Nguồn: https://www.anthropic.com/engineering/multi-agent-research-system"
-    ref: lessons/03-agent.html#memory
+    ref: lessons/07-agents.html#memory
     status: active
     difficulty: medium
     tags: [multi-agent, memory]
@@ -860,7 +860,7 @@ questions:
       - "Each session judges completion by reviewing the code it wrote, without running the app end to end"
     answer: [C]
     explanation: "Bài effective harnesses: hai kiểu thất bại là agent cố làm cả ứng dụng một lần, và phiên sau thấy đã có tiến triển rồi tuyên bố xong quá sớm. Cách khắc phục: phiên initializer với prompt riêng dựng môi trường (init.sh, file tiến độ claude-progress.txt, commit git đầu tiên, danh sách tính năng JSON mỗi mục có trường passes); các phiên coding chỉ làm một tính năng mỗi lần, kiểm tra end-to-end (ví dụ bằng browser automation) rồi mới đổi passes, không được xoá hay sửa test. Model ít ghi đè sai file JSON hơn Markdown. Một phiên dài không giải quyết; tự đánh giá bằng đọc code bỏ qua kiểm thử thật. Nguồn: https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents"
-    ref: lessons/03-agent.html#phien
+    ref: lessons/07-agents.html#sessions
     status: active
     difficulty: medium
     tags: [long-running, harness]
@@ -877,7 +877,7 @@ questions:
       - "Shorten the tool description, so that the agent spends fewer tokens reading about the tool itself"
     answer: [B]
     explanation: "Writing tools for agents: tool nên trả thông tin có tín hiệu cao, tránh định danh kỹ thuật cấp thấp (uuid, mime_type, URL ảnh); chuyển UUID khó hiểu thành ngôn ngữ hoặc định danh có nghĩa giúp agent truy xuất chính xác hơn; có thể thêm tham số enum response_format (concise hoặc detailed) để agent chọn mức chi tiết và tiết kiệm token. Trả nguyên bản ghi làm phình context. 40 tool một trường làm tăng số lời gọi và nhầm lẫn. Rút ngắn mô tả không giải quyết output nhiễu. Nguồn: https://www.anthropic.com/engineering/writing-tools-for-agents"
-    ref: lessons/04-tool-mcp.html#mo-ta-tool
+    ref: lessons/05-tool-use.html#tool-interface
     status: active
     difficulty: medium
     tags: [tool-design, tool-responses]
@@ -894,7 +894,7 @@ questions:
       - "Move the rule out of the system prompt and into a reminder added to every user turn"
     answer: [C]
     explanation: "Doc prompting best practices: cung cấp ngữ cảnh hoặc động cơ đằng sau chỉ dẫn — giải thích vì sao hành vi đó quan trọng — giúp Claude hiểu mục tiêu và phản hồi đúng hơn. Ví dụ chính trong doc: thay \"NEVER use ellipses\" bằng giải thích rằng câu trả lời sẽ được engine text-to-speech đọc to nên không dùng dấu ba chấm vì engine không biết đọc; Claude khái quát hoá được từ lời giải thích. Viết hoa và lặp lại không thêm thông tin. Danh sách cấm dài gây nhiễu. Dời vị trí không bù được lý do còn thiếu. Nguồn: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
-    ref: lessons/06-prompt-output.html#cau-truc-prompt
+    ref: lessons/04-prompt-output.html#prompt-structure
     status: active
     difficulty: easy
     tags: [prompting, context]

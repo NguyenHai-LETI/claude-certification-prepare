@@ -1,0 +1,1022 @@
+<p class="lesson-source">Nguồn: tài liệu ôn tập công khai <a href="https://claude.ai/artifact/3NhHr42CxTHGEs33N1ntFf" target="_blank" rel="noopener">artifact 3NhHr42…</a> (bài 05). Không thuộc và không được Anthropic xác nhận.</p>
+<header class="cover">
+  <div class="eyebrow">Luyện thi chứng chỉ Claude · Bài 05 · Chặng 2 · CCDV-F · bước 4/13</div>
+  <h1>Tool use <span class="ja">Tool Design · Tool Use with the Messages API</span></h1>
+  <p class="lead">Thiết kế giao diện và định nghĩa tool để model chọn đúng, lỗi có cấu trúc, phân bổ tool, tool_choice, gọi tool song song, client tool và server tool, built-in tool, chọn cách mở rộng.</p>
+  <dl class="meta">
+    <dt>Kỳ thi</dt><dd>CCDV-F D2, D8 · CCAR-F D2 · CCAR-P D3</dd>
+    <dt>Phục vụ</dt><dd><span class="tag xt1">CCDV-F</span> 8 mục · <span class="tag xt3">CCAR-F</span> 6 mục · <span class="tag xt4">CCAR-P</span> 2 mục · <a href="#xsum">bảng nhãn từng mục</a></dd>
+
+    <dt>Nguồn</dt><dd>Ghi chú «Đề cương chi tiết CCAR-F» Domain 2; «Đề cương CCDV-F và CCAO-F» D8; «15 tổ hợp Claude Code»; «30 thứ nên cài vào Claude»; academy.claude.com · Tool use with the Messages API · Crawl 2026-11-17; academy.claude.com · Building with the Claude API · Crawl 2026-11-17</dd>
+    <dt>Cập nhật</dt><dd><span class="status">v0.39 · 2026-11-18</span> · theo exam guide v1.0</dd>
+  </dl>
+</header>
+
+<details class="toc">
+<summary>Mục lục</summary>
+
+    <ol>
+      <li><a href="#tool-interface"><span class="n">1</span><span class="tx">Thiết kế giao diện tool</span><span class="xds" aria-hidden="true"><i class="xd xt3" title="CCAR-F"></i><i class="xd xt1" title="CCDV-F"></i></span></a></li>
+      <li><a href="#tool-definition"><span class="n">2</span><span class="tx">Một khai báo đầy đủ và gộp tool trùng</span><span class="xds" aria-hidden="true"><i class="xd xt1" title="CCDV-F"></i><i class="xd xt3" title="CCAR-F"></i></span></a></li>
+      <li><a href="#module-4"><span class="n">3</span><span class="tx">Vòng lặp tool use từ đầu đến cuối</span><span class="xds" aria-hidden="true"><i class="xd xt1" title="CCDV-F"></i></span></a></li>
+      <li><a href="#tool-errors"><span class="n">4</span><span class="tx">Lỗi có cấu trúc</span><span class="xds" aria-hidden="true"><i class="xd xt3" title="CCAR-F"></i><i class="xd xt1" title="CCDV-F"></i></span></a></li>
+      <li><a href="#tool-distribution"><span class="n">5</span><span class="tx">Phân bổ tool</span><span class="xds" aria-hidden="true"><i class="xd xt3" title="CCAR-F"></i><i class="xd xt1" title="CCDV-F"></i><i class="xd xt4" title="CCAR-P"></i></span></a></li>
+      <li><a href="#tool-choice"><span class="n">6</span><span class="tx">tool_choice</span><span class="xds" aria-hidden="true"><i class="xd xt3" title="CCAR-F"></i></span></a></li>
+      <li><a href="#parallel-tools"><span class="n">7</span><span class="tx">Gọi tool song song</span><span class="xds" aria-hidden="true"><i class="xd xt1" title="CCDV-F"></i></span></a></li>
+      <li><a href="#client-server"><span class="n">8</span><span class="tx">Client tool và server tool</span><span class="xds" aria-hidden="true"><i class="xd xt1" title="CCDV-F"></i></span></a></li>
+      <li><a href="#built-in"><span class="n">9</span><span class="tx">Built-in tool của Claude Code</span><span class="xds" aria-hidden="true"><i class="xd xt3" title="CCAR-F"></i></span></a></li>
+      <li><a href="#choose-extension"><span class="n">10</span><span class="tx">Chọn cách mở rộng</span><span class="xds" aria-hidden="true"><i class="xd xt1" title="CCDV-F"></i><i class="xd xt4" title="CCAR-P"></i></span></a></li>
+      <li><a href="#exam-keywords"><span class="n">11</span><span class="tx">Từ khoá đề thi</span></a></li>
+    </ol>
+
+</details>
+
+<details class="xsum" id="xsum">
+<summary>Mục nào phục vụ bài thi nào</summary>
+<p class="xnote">Mã đầu là bài thi chính của mục. <b>Nền</b>: cần để hiểu các mục sau. <b>Nâng cao</b>: ngoài phạm vi các exam guide. Ôn cho một bài thi thì đọc các mục có mã của bài đó trước.</p>
+<div class="tw"><table>
+<thead><tr><th>Mục</th><th>Bài thi</th><th>Ghi chú</th></tr></thead>
+<tbody>
+<tr><td><a href="#tool-interface">1. Thiết kế giao diện tool</a></td><td><span class="tag xt3">CCAR-F D2</span> <span class="tag xt1">CCDV-F D8</span></td><td></td></tr>
+<tr><td><a href="#tool-definition">2. Một khai báo đầy đủ và gộp tool trùng</a></td><td><span class="tag xt1">CCDV-F D8</span> <span class="tag xt3">CCAR-F D2</span></td><td></td></tr>
+<tr><td><a href="#module-4">3. Vòng lặp tool use từ đầu đến cuối</a></td><td><span class="tag xt1">CCDV-F D8</span></td><td></td></tr>
+<tr><td><a href="#tool-errors">4. Lỗi có cấu trúc</a></td><td><span class="tag xt3">CCAR-F D2</span> <span class="tag xt1">CCDV-F D8</span></td><td></td></tr>
+<tr><td><a href="#tool-distribution">5. Phân bổ tool</a></td><td><span class="tag xt3">CCAR-F D2</span> <span class="tag xt1">CCDV-F D8</span> <span class="tag xt4">CCAR-P D3</span></td><td></td></tr>
+<tr><td><a href="#tool-choice">6. tool_choice</a></td><td><span class="tag xt3">CCAR-F D2</span></td><td></td></tr>
+<tr><td><a href="#parallel-tools">7. Gọi tool song song</a></td><td><span class="tag xt1">CCDV-F D8</span></td><td></td></tr>
+<tr><td><a href="#client-server">8. Client tool và server tool</a></td><td><span class="tag xt1">CCDV-F D8</span> <span class="tag xt1">CCDV-F D2</span></td><td></td></tr>
+<tr><td><a href="#built-in">9. Built-in tool của Claude Code</a></td><td><span class="tag xt3">CCAR-F D2</span></td><td></td></tr>
+<tr><td><a href="#choose-extension">10. Chọn cách mở rộng</a></td><td><span class="tag xt1">CCDV-F D8</span> <span class="tag xt4">CCAR-P D3</span></td><td></td></tr>
+</tbody></table></div>
+</details>
+
+<h2 id="tool-interface">1. Thiết kế giao diện tool</h2>
+<p class="xtags"><span class="tag xt3">CCAR-F D2</span> <span class="tag xt1">CCDV-F D8</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Bạn mở danh bạ và thấy hai số cùng ghi “Dịch vụ khách hàng”. Bạn không biết gọi số nào cho việc của mình. Model cũng ở tình huống đó: nó <strong>không nhìn thấy code bên trong tool</strong>, chỉ đọc <strong>tên và mô tả</strong> để đoán tool nào hợp với câu hỏi. Mô tả càng rõ, nó càng chọn đúng.
+</div>
+<p>Một <strong>tool definition</strong> (khai báo tool) gồm ba phần bắt buộc: <code>name</code>, <code>description</code>, <code>input_schema</code>. Có thể thêm <code>input_examples</code>. Mục này nói từng phần dùng để làm gì; mục 2 đi qua một khai báo đầy đủ và cách gộp tool trùng; mục 3 nói code của bạn gửi tool, nhận lời gọi và trả kết quả ra sao.</p>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 224" role="img" aria-label="Giải phẫu một tool definition gồm name, description, input_schema, input_examples và vai trò của từng phần">
+    <defs><marker id="m41" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah"/></marker></defs>
+    <rect x="10" y="8" width="330" height="206" rx="8" class="lane"/>
+    <text x="24" y="24" class="lane-lb">tool definition</text>
+    <g><rect x="22" y="34" width="306" height="34" rx="4" class="b-step"/><text x="34" y="56" class="tm">"name": "lookup_order"</text>
+      <path d="M328,51 H364" class="ln" marker-end="url(#m41)"/>
+      <text x="372" y="48" class="ts">Tên ngắn, dễ phân biệt</text><text x="372" y="62" class="ts">vd lookup_order, get_customer</text></g>
+    <g><rect x="22" y="76" width="306" height="34" rx="4" class="b-hot"/><text x="34" y="98" class="tm">"description": "Tra đơn theo mã…"</text>
+      <path d="M328,93 H364" class="ln" marker-end="url(#m41)"/>
+      <text x="372" y="90" class="tw-warn">QUAN TRỌNG NHẤT</text><text x="372" y="104" class="ts">làm gì, đầu vào, khi nào dùng,</text><text x="372" y="117" class="ts">khi nào KHÔNG dùng</text></g>
+    <g><rect x="22" y="118" width="306" height="34" rx="4" class="b-step"/><text x="34" y="140" class="tm">"input_schema": {"type": "object", …}</text>
+      <path d="M328,135 H364" class="ln" marker-end="url(#m41)"/>
+      <text x="372" y="132" class="ts">JSON Schema: kiểu, trường bắt buộc,</text><text x="372" y="146" class="ts">pattern để chặn đầu vào sai</text></g>
+    <g><rect x="22" y="160" width="306" height="34" rx="4" class="b-opt"/><text x="34" y="182" class="tm">"input_examples": [{…}]</text>
+      <path d="M328,177 H364" class="ln" marker-end="url(#m41)"/>
+      <text x="372" y="174" class="ts">Ví dụ đầu vào mẫu (tuỳ chọn)</text><text x="372" y="188" class="ts">tốn thêm token</text></g>
+  </svg></div>
+  <ol class="anim-steps">
+    <li><code>name</code>: định danh của tool.</li>
+    <li><code>description</code>: phần model dùng chủ yếu để quyết định có gọi tool này không.</li>
+    <li><code>input_schema</code>: mô tả dạng dữ liệu đầu vào, để Claude điền đúng định dạng.</li>
+    <li><code>input_examples</code>: ví dụ đầu vào mẫu, không bắt buộc. Không dùng cho server tool.</li>
+  </ol>
+  <figcaption>Hình 1. Bốn phần của một tool definition.</figcaption>
+</figure>
+<div class="insight"><strong>Cốt lõi.</strong> Mô tả tool là cơ chế <strong>chính</strong> để model chọn tool. Mô tả tốt nêu: tool làm gì, định dạng đầu vào, ví dụ câu hỏi, trường hợp biên, và ranh giới “khi nào dùng tool này thay vì tool kia”.</div>
+<pre><code>{
+  "name": "lookup_order",
+  "description": "Tra một đơn hàng theo mã đơn (dạng ORD-123456). Dùng khi khách nhắc mã đơn
+    hoặc hỏi trạng thái giao hàng. KHÔNG dùng để tìm khách hàng; khi chỉ có tên hoặc email,
+    dùng get_customer trước. Trả về null nếu không có đơn.",
+  "input_schema": {"type": "object",
+    "properties": {"order_id": {"type": "string", "pattern": "^ORD-\\d{6}$"}},
+    "required": ["order_id"]}
+}</code></pre>
+<p>Đoạn mô tả trên trả lời đủ bốn câu: làm gì, dùng khi nào, <strong>không</strong> dùng khi nào (và dùng tool nào thay thế), kết quả khi không có dữ liệu.</p>
+
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 236" role="img" aria-label="So sánh mô tả mơ hồ khiến model chọn nhầm giữa hai tool giống nhau với mô tả rõ khiến model chọn đúng lookup_order">
+    <defs>
+      <marker id="m42w" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-warn"/></marker>
+      <marker id="m42g" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-good"/></marker>
+    </defs>
+    <rect x="4" y="4" width="312" height="228" rx="8" class="lane"/>
+    <rect x="324" y="4" width="312" height="228" rx="8" class="lane"/>
+    <text x="160" y="24" class="lane-lb" text-anchor="middle">MÔ TẢ MƠ HỒ</text>
+    <text x="480" y="24" class="lane-lb" text-anchor="middle">MÔ TẢ RÕ</text>
+    <g>
+      <rect x="60" y="40" width="200" height="30" rx="6" class="b-sys"/><text x="160" y="60" class="t" text-anchor="middle">Khách: “Đơn ORD-123456 đâu?”</text>
+      <rect x="380" y="40" width="200" height="30" rx="6" class="b-sys"/><text x="480" y="60" class="t" text-anchor="middle">Khách: “Đơn ORD-123456 đâu?”</text>
+    </g>
+    <rect x="18" y="124" width="136" height="46" rx="6" class="b-step"/><text x="86" y="144" class="t tb" text-anchor="middle">get_info</text><text x="86" y="160" class="ts" text-anchor="middle">“Lấy thông tin”</text>
+    <rect x="166" y="124" width="136" height="46" rx="6" class="b-step"/><text x="234" y="144" class="t tb" text-anchor="middle">fetch_data</text><text x="234" y="160" class="ts" text-anchor="middle">“Lấy dữ liệu”</text>
+    <rect x="338" y="124" width="136" height="46" rx="6" class="b-step"/><text x="406" y="144" class="t tb" text-anchor="middle">lookup_order</text><text x="406" y="160" class="ts" text-anchor="middle">tra đơn theo mã ORD-…</text>
+    <rect x="486" y="124" width="136" height="46" rx="6" class="b-step"/><text x="554" y="144" class="t tb" text-anchor="middle">get_customer</text><text x="554" y="160" class="ts" text-anchor="middle">tìm khách theo email</text>
+    <g>
+      <path class="ln-warn flow" d="M130,70 L90,122" marker-end="url(#m42w)"/>
+      <path class="ln-warn flow" d="M190,70 L230,122" marker-end="url(#m42w)"/>
+      <text x="160" y="102" class="tw-warn" text-anchor="middle">?</text>
+    </g>
+    <text x="160" y="196" class="tw-warn" text-anchor="middle">✕ Đoán mò, dễ chọn nhầm</text>
+    <text x="480" y="196" class="ts" text-anchor="middle">Mô tả nêu: làm gì · đầu vào · khi nào KHÔNG dùng</text>
+    <path class="ln-good flow" d="M470,70 L412,122" marker-end="url(#m42g)"/>
+    <text x="480" y="218" class="tw-good" text-anchor="middle">✓ Chọn đúng lookup_order</text>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Cùng một câu hỏi của khách được đưa cho hai bộ tool.</li>
+    <li>Hai tool có mô tả mơ hồ nghe giống nhau, model không phân biệt được.</li>
+    <li>Kết quả: đoán mò, lúc đúng lúc sai.</li>
+    <li>Với mô tả nêu rõ mục đích, định dạng đầu vào và ranh giới…</li>
+    <li>…model chọn đúng <code>lookup_order</code> vì thấy mã <code>ORD-…</code>.</li>
+  </ol>
+  <figcaption>Hình 2. Chất lượng mô tả quyết định tool nào được chọn.</figcaption>
+</figure>
+
+<h3>Khi hai tool trông giống nhau</h3>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Dễ nhầm</div><ul>
+    <li><code>analyze_content</code>: “Phân tích nội dung”</li>
+    <li><code>analyze_document</code>: “Phân tích tài liệu”</li>
+    <li>Hai mô tả gần như giống hệt, model chọn ngẫu nhiên</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Rõ ràng</div><ul>
+    <li>Đổi tên: <code>analyze_content</code> thành <code>extract_web_results</code>, mô tả riêng cho kết quả web</li>
+    <li>Hoặc tách tool chung thành các tool có hợp đồng vào/ra rõ: <code>extract_data_points</code>, <code>summarize_content</code>, <code>verify_claim_against_source</code></li>
+  </ul></div>
+</div>
+<ul>
+  <li>Rà <strong>system prompt</strong>: một câu như “luôn kiểm tra tài khoản trước” có thể vô tình kéo model về <code>get_customer</code> cả khi khách chỉ hỏi đơn hàng, lấn át mô tả tool tốt.</li>
+</ul>
+<div class="alert"><strong>Bẫy.</strong> Bước đầu tiên khi model chọn sai tool là <strong>sửa mô tả</strong> (và tên), không phải thêm few-shot, dựng router riêng hay gộp tool.</div>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Tài liệu hiện hành có thêm <code>input_examples</code>: danh sách ví dụ đầu vào hợp lệ theo <code>input_schema</code> (ví dụ sai schema trả lỗi 400). Mỗi ví dụ tốn thêm khoảng 20 đến 200 token, và không dùng được cho server tool như web search. Exam guide chỉ nhấn mạnh mô tả, ví dụ câu hỏi và ranh giới.</div>
+<h3>1.1 Ví dụ từng bước: sửa mô tả, không thêm router</h3>
+<p>Agent hỗ trợ khách có hai tool với mô tả ngắn: <code>get_customer</code> (“Retrieves customer information”) và <code>lookup_order</code> (“Retrieves order details”). Khách gõ: “Kiểm tra đơn #4521 của tôi”.</p>
+<ol class="principles">
+  <li><strong>Quan sát:</strong> nhật ký cho thấy Claude gọi <code>get_customer</code> trước, dù khách chỉ hỏi đơn hàng. Hai mô tả đều nói “retrieves … information”, và chữ “của tôi” kéo model về tool khách hàng.</li>
+  <li><strong>Sửa mô tả</strong> của <code>get_customer</code>: “Look up a customer by email or customer ID. Use when you need account status. Do NOT use for order status: use <code>lookup_order</code>.”</li>
+  <li><strong>Sửa mô tả</strong> của <code>lookup_order</code>: “Look up an order by order number such as #4521. Use for shipping and payment status. Returns an empty list if the order does not exist.”</li>
+  <li><strong>Chạy lại eval</strong> với các câu hỏi về đơn. Đúng tool thì dừng; vẫn sai thì rà system prompt xem có câu nào kéo về <code>get_customer</code>.</li>
+</ol>
+<p>Thứ tự ưu tiên sửa khi chọn sai tool: mô tả và tên trước, system prompt tiếp theo, rồi mới tới few-shot hay gộp tool. Dựng một router riêng là bước cuối.</p>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Tool definition</dt><dd>Phần khai báo một tool gửi kèm request: tên, mô tả, schema đầu vào.</dd>
+  <dt>JSON Schema</dt><dd>Cách mô tả hình dạng dữ liệu JSON: kiểu từng trường, trường nào bắt buộc, mẫu chuỗi hợp lệ.</dd>
+  <dt>Few-shot</dt><dd>Đưa vài ví dụ mẫu vào prompt để model bắt chước.</dd>
+  <dt>Router</dt><dd>Thành phần riêng quyết định gọi tool nào. Đắt và chậm hơn việc sửa mô tả.</dd>
+</dl></div>
+
+<h2 id="tool-definition">2. Một khai báo đầy đủ và gộp tool trùng</h2>
+<p class="xtags"><span class="tag xt1">CCDV-F D8</span> <span class="tag xt3">CCAR-F D2</span></p>
+<p>Mục 1 đã nêu bốn phần của tool definition. Ví dụ dưới là một khai báo đủ cả bốn phần, với description viết nhiều dòng theo khoá Tool Use with the Messages API của Academy. Tên tool nên là động từ + đối tượng, viết <code>snake_case</code>; <code>input_schema</code> là JSON Schema.</p>
+<pre><code class="language-python">tools = [{
+    "name": "search_products",
+    "description": """Search the product catalog by keyword and optional filters.
+
+    Use this tool when:
+    - Customer asks about available products
+    - You need to find products matching specific criteria
+    - Customer wants to compare products
+
+    Do NOT use this tool for:
+    - Checking inventory levels (use check_inventory instead)
+    - Processing orders (use create_order instead)
+
+    Returns a list of matching products with name, price, and availability.""",
+    "input_schema": {
+        "type": "object",
+        "properties": {
+            "query": {
+                "type": "string",
+                "description": "Search keywords, e.g. 'wireless headphones under $100'"
+            },
+            "category": {
+                "type": "string",
+                "enum": ["electronics", "clothing", "home", "sports"],
+                "description": "Optional category filter"
+            },
+            "max_price": {
+                "type": "number",
+                "description": "Maximum price in USD. Omit to search all prices."
+            }
+        },
+        "required": ["query"]
+    },
+    "input_examples": [
+        {"query": "bluetooth speaker", "max_price": 50},
+        {"query": "running shoes", "category": "sports"}
+    ]
+}]</code></pre>
+<p>Đọc code trên từng phần:</p>
+<div class="tw"><table>
+  <thead><tr><th>Đoạn code</th><th>Ý nghĩa</th></tr></thead>
+  <tbody>
+    <tr><td><code>tools = [{ ... }]</code></td><td>Danh sách tool gửi kèm request. Ở đây chỉ có một tool.</td></tr>
+    <tr><td><code>"name": "search_products"</code></td><td>Tên theo kiểu động từ + đối tượng, viết thường, nối bằng gạch dưới.</td></tr>
+    <tr><td><code>"description": """..."""</code></td><td>Chuỗi nhiều dòng. Có đủ: tool làm gì, <code>Use this tool when</code>, <code>Do NOT use this tool for</code> (kèm tool thay thế), và <code>Returns</code> (dạng đầu ra).</td></tr>
+    <tr><td><code>"type": "object"</code></td><td>Đầu vào của tool là một đối tượng JSON có các trường bên dưới.</td></tr>
+    <tr><td><code>"query": {"type": "string", ...}</code></td><td>Trường chuỗi, kèm mô tả và ví dụ để Claude biết điền gì.</td></tr>
+    <tr><td><code>"enum": [...]</code></td><td>Chỉ cho chọn trong danh sách đóng: Claude không được tự nghĩ ra danh mục khác.</td></tr>
+    <tr><td><code>"max_price": {"type": "number"}</code></td><td>Trường số. Mô tả nói rõ “Omit to search all prices” để Claude biết có thể bỏ trống.</td></tr>
+    <tr><td><code>"required": ["query"]</code></td><td>Chỉ <code>query</code> bắt buộc. <code>category</code> và <code>max_price</code> là tùy chọn.</td></tr>
+    <tr><td><code>"input_examples": [...]</code></td><td>Hai ví dụ đầu vào hợp lệ để Claude thấy cách dùng thực tế.</td></tr>
+  </tbody>
+</table></div>
+<div class="insight"><strong>Cốt lõi.</strong> Description tốt có ba đến bốn câu, mỗi câu trả lời một ý: tool làm gì; khi nào dùng; khi nào <strong>không</strong> dùng và dùng tool nào thay; kết quả trả về có dạng gì. Đây cũng là bốn câu mà ví dụ <code>lookup_order</code> ở mục 1 trả lời.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>snake_case</dt><dd>Kiểu đặt tên viết thường, các từ nối bằng gạch dưới, ví dụ <code>search_products</code>.</dd>
+  <dt>enum</dt><dd>Danh sách giá trị cho phép. Giá trị ngoài danh sách là không hợp lệ.</dd>
+  <dt>Optional parameter</dt><dd>Tham số tùy chọn: không nằm trong <code>required</code>, có thể bỏ trống.</dd>
+</dl></div>
+
+<h3>2.1 Gộp tool trùng chức năng</h3>
+<p>Khi nhiều tool cùng làm một việc và chỉ khác nhau ở bộ lọc, gộp chúng thành một tool có tham số tuỳ chọn:</p>
+<pre><code class="language-python"># BAD — Claude không biết khi nào dùng cái nào
+tools_bad = [
+    {"name": "search_by_name", ...},
+    {"name": "search_by_category", ...},
+    {"name": "search_by_price", ...}
+]
+
+# GOOD — một tool với optional parameters
+tools_good = [{
+    "name": "search_products",
+    "description": "Search products by any combination of name, category, or price range.",
+    "input_schema": {
+        "type": "object",
+        "properties": {
+            "name": {"type": "string"},
+            "category": {"type": "string"},
+            "min_price": {"type": "number"},
+            "max_price": {"type": "number"}
+        }
+        # required: [] — tất cả optional
+    }
+}]</code></pre>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 200" role="img" aria-label="Ba tool search_by_name, search_by_category, search_by_price được gộp thành một tool search_products có bốn tham số tùy chọn">
+    <defs><marker id="m1803" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-good"/></marker></defs>
+    <text x="10" y="20" class="lane-lb">TRƯỚC: BA TOOL GẦN GIỐNG NHAU</text>
+    <rect x="10" y="32" width="220" height="40" rx="6" class="b-warn"/><text x="120" y="57" class="t" text-anchor="middle">search_by_name</text>
+    <rect x="10" y="80" width="220" height="40" rx="6" class="b-warn"/><text x="120" y="105" class="t" text-anchor="middle">search_by_category</text>
+    <rect x="10" y="128" width="220" height="40" rx="6" class="b-warn"/><text x="120" y="153" class="t" text-anchor="middle">search_by_price</text>
+    <text x="120" y="190" class="tw-warn" text-anchor="middle">Claude khó chọn đúng cái nào</text>
+    <path d="M232,100 H318" class="ln-good" marker-end="url(#m1803)"/><text x="275" y="92" class="ts halo" text-anchor="middle">gộp</text>
+    <text x="330" y="20" class="lane-lb">SAU: MỘT TOOL, THAM SỐ TÙY CHỌN</text>
+    <rect x="330" y="32" width="300" height="136" rx="8" class="b-done"/>
+    <text x="344" y="54" class="t tb">search_products</text>
+    <text x="344" y="80" class="ts">name (tùy chọn)</text><text x="344" y="98" class="ts">category (tùy chọn)</text>
+    <text x="344" y="116" class="ts">min_price (tùy chọn)</text><text x="344" y="134" class="ts">max_price (tùy chọn)</text>
+    <text x="480" y="190" class="tw-good" text-anchor="middle">Không còn gì để nhầm</text>
+  </svg></div>
+  <figcaption>Hình 3. Gộp các tool trùng chức năng thành một tool có tham số tùy chọn.</figcaption>
+</figure>
+<ul>
+  <li><code>tools_bad</code>: ba tool với ba tên gần giống, <code>...</code> là phần còn lại bị lược. Câu hỏi “tìm tai nghe rẻ hơn 100 đô” cần cả tên lẫn giá, nhưng Claude chỉ được chọn một tool.</li>
+  <li><code>tools_good</code>: một tool với bốn trường, không có trường nào bắt buộc (<code>required</code> bỏ trống). Claude điền trường nào cần dùng và bỏ qua trường còn lại.</li>
+</ul>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div><ul>
+    <li>Ba tool <code>search_by_*</code> mô tả mơ hồ như nhau</li>
+    <li>Thêm few-shot để “dạy” Claude chọn giữa ba tool đó</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đúng</div><ul>
+    <li>Một tool <code>search_products</code> với tham số tùy chọn</li>
+    <li>Hoặc giữ tool riêng nhưng viết description khác biệt rõ</li>
+  </ul></div>
+</div>
+<div class="insight"><strong>Gộp hay tách.</strong> Mục 1 khuyên tách <code>analyze_content</code> thành các tool hẹp; mục này khuyên gộp ba tool <code>search_by_*</code>. Hai lời khuyên không mâu thuẫn, vì mục tiêu chung là mỗi tool có ranh giới dễ phân biệt: <strong>gộp</strong> khi các tool chỉ khác nhau ở bộ lọc, <strong>tách</strong> khi chúng khác nhau ở mục đích hay ở hợp đồng vào/ra. Trước khi gộp hay tách, thử sửa tên và mô tả trước.</div>
+
+<h2 id="module-4">3. Vòng lặp tool use từ đầu đến cuối</h2>
+<p class="xtags"><span class="tag xt1">CCDV-F D8</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Claude như một nhân viên giỏi nhưng ngồi trong phòng kín, không có mạng. Bạn đưa cho họ một danh sách điện thoại nội bộ (tool schema). Khi cần biết giờ hiện tại, họ viết giấy nhờ: “Hãy gọi số <code>get_current_datetime</code>” (tool_use). Bạn gọi giúp, ghi kết quả ra giấy (tool_result) và đưa lại. Họ đọc rồi trả lời. Claude không tự bấm máy, <strong>code của bạn</strong> mới chạy tool.
+</div>
+<p>Mục này đi theo khoá Building with the Claude API (module 4) của Academy: viết hàm, khai báo schema, rồi chạy vòng gửi và nhận cho tới khi Claude trả lời xong. Cách viết <code>description</code> đã nói ở mục 1 và 2; cách xử lý nhiều lời gọi cùng lúc ở mục 7.</p>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Tool schema</dt><dd>Tên khoá học dùng cho tool definition (mục 1).</dd>
+  <dt>tool_use block</dt><dd>Khối Claude trả về để xin gọi tool: có <code>id</code>, <code>name</code>, <code>input</code>.</dd>
+  <dt>tool_result block</dt><dd>Khối bạn gửi lại kết quả: có <code>tool_use_id</code> (khớp với <code>id</code> trên), <code>content</code>, <code>is_error</code>.</dd>
+  <dt>Server tool</dt><dd>Tool do Anthropic chạy hộ (web search, code execution). Bạn không viết phần thực thi.</dd>
+</dl></div>
+
+<h3>3.1 Bốn bước</h3>
+<p>Tool use cho Claude lấy dữ liệu thời gian thực và gọi hệ thống bên ngoài. Luồng có bốn bước: (1) gửi message kèm danh sách tool; (2) Claude trả <code>tool_use</code> block; (3) code của bạn chạy tool; (4) gửi <code>tool_result</code> và nhận câu trả lời cuối của Claude.</p>
+
+<h3>3.2 Hàm và schema</h3>
+<p>Hàm của tool là một hàm Python bình thường. Schema là khai báo mô tả hàm đó cho Claude:</p>
+<pre><code class="language-python">def get_current_datetime(format: str = "%Y-%m-%d %H:%M:%S") -> str:
+    """Get current date and time."""
+    if not format: raise ValueError("format required")
+    return datetime.now().strftime(format)
+
+get_current_datetime_schema = {
+    "name": "get_current_datetime",
+    "description": "Returns current date/time. Use when user asks about today's date, current time, or needs to calculate relative dates. Returns formatted datetime string.",
+    "input_schema": {
+        "type": "object",
+        "properties": {
+            "format": {"type": "string",
+                       "description": "strftime format string, e.g. '%Y-%m-%d' for date only, '%H:%M:%S' for time only"}
+        },
+        "required": ["format"]
+    }
+}</code></pre>
+<p>Description ở đây trả lời đủ các câu của mục 2: làm gì, khi nào dùng, trả về gì; tham số có mô tả và ví dụ.</p>
+
+<h3>3.3 Content block và tool result</h3>
+<p>Khi Claude dùng tool, response có <strong>nhiều content block</strong>: text block (giải thích) và tool_use block (hành động). Phải thêm toàn bộ assistant message vào lịch sử, không chỉ phần text:</p>
+<pre><code class="language-python">messages = [{"role": "user", "content": "What time is it?"}]
+response = client.messages.create(
+    model=model, max_tokens=1000, messages=messages,
+    tools=[get_current_datetime_schema]
+)
+
+# response.content có thể gồm text block + tool_use block
+messages.append({"role": "assistant", "content": response.content})
+
+# Execute tool
+tool_block = next(b for b in response.content if b.type == "tool_use")
+result = get_current_datetime(**tool_block.input)
+
+# Trả tool result
+messages.append({"role": "user", "content": [{
+    "type": "tool_result",
+    "tool_use_id": tool_block.id,     # phải khớp với id của tool_use block
+    "content": str(result),
+    "is_error": False
+}]})
+
+# Final call — vẫn phải gửi tools
+final = client.messages.create(
+    model=model, max_tokens=1000, messages=messages,
+    tools=[get_current_datetime_schema]
+)</code></pre>
+
+<h3>3.4 Vòng lặp nhiều lượt</h3>
+<p>Vòng lặp xử lý nhiều lời gọi tool liên tiếp, dừng khi <code>stop_reason</code> là <code>end_turn</code>:</p>
+<pre><code class="language-python">def run_conversation(messages, tools):
+    while True:
+        response = client.messages.create(
+            model=model, max_tokens=1000, messages=messages, tools=tools)
+        messages.append({"role": "assistant", "content": response.content})
+
+        if response.stop_reason == "end_turn":
+            return response  # Claude xong, không cần tool nữa
+
+        # Có tool_use blocks → execute và trả results
+        tool_results = []
+        for block in response.content:
+            if block.type == "tool_use":
+                result = run_tool(block.name, block.input)
+                tool_results.append({
+                    "type": "tool_result",
+                    "tool_use_id": block.id,
+                    "content": str(result)
+                })
+        messages.append({"role": "user", "content": tool_results})</code></pre>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 262" role="img" aria-label="Vòng tool use giữa code của bạn và Claude: gửi message và tools, nhận tool_use, chạy tool, gửi tool_result, nhận câu trả lời cuối">
+    <defs>
+      <marker id="m1708" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker>
+      <marker id="m1709" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-good"/></marker>
+    </defs>
+    <rect x="10" y="6" width="170" height="250" rx="8" class="lane"/><text x="95" y="26" class="lane-lb" text-anchor="middle">CODE CỦA BẠN</text>
+    <rect x="460" y="6" width="170" height="250" rx="8" class="lane"/><text x="545" y="26" class="lane-lb" text-anchor="middle">CLAUDE</text>
+    <g><path d="M180,56 H458" class="ln-acc flow" marker-end="url(#m1708)"/><text x="319" y="50" class="ts halo" text-anchor="middle">messages + tools</text></g>
+    <g><path d="M458,100 H182" class="ln-acc flow" marker-end="url(#m1708)"/><text x="319" y="94" class="ts halo" text-anchor="middle">tool_use (stop_reason: tool_use)</text></g>
+    <g><rect x="22" y="116" width="146" height="42" rx="6" class="b-hot"/><text x="95" y="134" class="ts" text-anchor="middle">run_tool(name, input)</text><text x="95" y="148" class="ts" text-anchor="middle">chạy ở máy bạn</text></g>
+    <g><path d="M180,190 H458" class="ln-acc flow" marker-end="url(#m1708)"/><text x="319" y="184" class="ts halo" text-anchor="middle">tool_result (tool_use_id khớp)</text></g>
+    <g><path d="M458,232 H182" class="ln-good flow" marker-end="url(#m1709)"/><text x="319" y="226" class="ts halo" text-anchor="middle">end_turn: câu trả lời cuối</text></g>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Gửi câu hỏi kèm danh sách tool schema.</li>
+    <li>Claude trả <code>tool_use</code> block, dừng với <code>stop_reason</code> là <code>tool_use</code>. Thêm cả assistant message vào lịch sử.</li>
+    <li>Code của bạn tự chạy tool. Claude không chạy được.</li>
+    <li>Gửi <code>tool_result</code> (role user) với <code>tool_use_id</code> khớp, vẫn gửi kèm <code>tools</code>.</li>
+    <li>Claude trả lời cuối với <code>end_turn</code>. Nếu vẫn còn <code>tool_use</code>, vòng lặp tiếp tục.</li>
+  </ol>
+  <figcaption>Hình 4. Vòng lặp tool use nhiều lượt.</figcaption>
+</figure>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div><ul>
+    <li>Chỉ thêm phần text của response vào lịch sử, bỏ mất <code>tool_use</code> block</li>
+    <li><code>tool_use_id</code> không khớp, hoặc quên gửi <code>tools</code> ở lần gọi cuối</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đúng</div><ul>
+    <li>Append nguyên <code>response.content</code> vào history</li>
+    <li>Mỗi <code>tool_use</code> có một <code>tool_result</code> cùng id, lỗi thì <code>is_error: true</code></li>
+  </ul></div>
+</div>
+
+<h3>3.5 Nhiều tool, fine-grained, text edit, web search</h3>
+<p><strong>Nhiều tool:</strong> thêm một tool gồm bốn việc: viết hàm, khai báo schema, thêm vào danh sách <code>tools</code>, thêm nhánh trong <code>run_tool</code>. Claude có thể gọi nhiều tool trong một response (mục 7).</p>
+<p><strong>Fine-grained tool calling</strong> (<code>eager_input_streaming: True</code>): nhận từng mảnh JSON ngay khi Claude sinh ra, dùng khi cần hiện tiến độ theo thời gian thực. Đánh đổi: không có kiểm tra phía server, code của bạn phải xử lý JSON hỏng.</p>
+<p><strong>Text edit tool:</strong> tool có sẵn của Claude để xem và sửa file. Claude biết schema, còn bạn viết phần thực thi.</p>
+<pre><code class="language-python">web_search_schema = {
+    "type": "web_search_20250305",
+    "name": "web_search",
+    "max_uses": 5,
+    "allowed_domains": ["docs.anthropic.com"]  # restrict tới trusted sources
+}
+# Claude tự quyết định khi nào search, không cần implement execution</code></pre>
+<div class="alert"><strong>Web search tool:</strong> phải bật trong cài đặt Console trước khi dùng. Response có ServerToolUseBlock, WebSearchToolResultBlock và các citation block.</div>
+
+<h3>3.6 Đọc <code>stop_reason</code> trong vòng lặp</h3>
+<p>Vòng lặp tool không chỉ kiểm tra <code>end_turn</code>. Mỗi giá trị <code>stop_reason</code> cần một hành động khác:</p>
+<div class="tw"><table>
+  <thead><tr><th><code>stop_reason</code></th><th>Nghĩa</th><th>Việc code làm</th></tr></thead>
+  <tbody>
+    <tr><td><code>tool_use</code></td><td>Claude đang gọi tool</td><td>Chạy tool, gửi <code>tool_result</code>, lặp</td></tr>
+    <tr><td><code>end_turn</code></td><td>Claude xong tự nhiên</td><td>Dùng câu trả lời, thoát vòng lặp</td></tr>
+    <tr><td><code>max_tokens</code></td><td>Chạm trần <code>max_tokens</code></td><td>Tăng <code>max_tokens</code> hoặc cho Claude viết tiếp; câu trả lời đã bị cắt</td></tr>
+    <tr><td><code>pause_turn</code></td><td>Vòng lặp server tool đạt giới hạn lượt</td><td>Gửi lại nội dung assistant để viết tiếp (mục 8)</td></tr>
+    <tr><td><code>refusal</code></td><td>Claude từ chối trả lời</td><td>Đọc <code>stop_details</code>, cân nhắc model dự phòng</td></tr>
+  </tbody>
+</table></div>
+<div class="alert"><strong>Bẫy.</strong> Thêm một khối text ngay sau <code>tool_result</code> trong user message. Docs hiện hành cảnh báo Claude có thể coi lượt là đã xong và trả response rỗng với <code>end_turn</code>. Chỉ gửi các <code>tool_result</code>. Nếu vẫn rỗng, thêm một user message mới kiểu “Please continue” thay vì gửi lại response rỗng.</div>
+<p>Nguồn: <a href="https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons" target="_blank" rel="noopener">Stop reasons and fallback</a>.</p>
+<h2 id="tool-errors">4. Lỗi có cấu trúc</h2>
+<p class="xtags"><span class="tag xt3">CCAR-F D2</span> <span class="tag xt1">CCDV-F D8</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Bạn gọi tổng đài và nghe “Máy bận, vui lòng gọi lại sau” (nên thử lại). Lần khác nghe “Số này không tồn tại” (thử lại cũng vô ích). Lần khác nữa: “Bạn không có quyền xem thông tin này”. Ba câu khác hẳn nhau nên bạn biết phải làm gì tiếp. Nếu tổng đài chỉ nói “Có lỗi xảy ra”, bạn sẽ đoán mò. Tool cũng cần báo lỗi đủ rõ để agent quyết định đúng.
+</div>
+<p>Khi tool lỗi, hãy trả về một kết quả đánh dấu lỗi kèm <strong>thông tin có cấu trúc</strong>. Với MCP, tool dùng cờ <code>isError</code>. Với client tool trên Messages API, <code>tool_result</code> có <code>is_error: true</code>.</p>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 238" role="img" aria-label="Cây quyết định theo loại lỗi tool: transient có thể thử lại; validation sửa đầu vào rồi gọi lại; business và permission không thử lại">
+    <rect x="200" y="8" width="240" height="34" rx="6" class="b-warn"/><text x="320" y="30" class="t tb" text-anchor="middle">Tool trả về lỗi (isError)</text>
+    <path d="M320,42 V62 M81,62 H559 M81,62 V84 M239,62 V84 M397,62 V84 M555,62 V84" class="ln"/>
+    <rect x="8" y="84" width="146" height="146" rx="6" class="b-done"/>
+    <text x="81" y="106" class="t tb" text-anchor="middle">transient</text>
+    <text x="81" y="126" class="ts" text-anchor="middle">Timeout, dịch vụ</text><text x="81" y="139" class="ts" text-anchor="middle">tạm hỏng</text>
+    <text x="81" y="162" class="ts" text-anchor="middle">Thử lại có giãn cách,</text><text x="81" y="175" class="ts" text-anchor="middle">hoặc tự xử tại chỗ</text>
+    <text x="81" y="212" class="tw-good" text-anchor="middle">isRetryable: true</text>
+    <rect x="166" y="84" width="146" height="146" rx="6" class="b-step"/>
+    <text x="239" y="106" class="t tb" text-anchor="middle">validation</text>
+    <text x="239" y="126" class="ts" text-anchor="middle">Đầu vào sai</text><text x="239" y="139" class="ts" text-anchor="middle">định dạng</text>
+    <text x="239" y="162" class="ts" text-anchor="middle">Sửa đầu vào</text><text x="239" y="175" class="ts" text-anchor="middle">rồi gọi lại</text>
+    <text x="239" y="212" class="tw-acc" text-anchor="middle">gọi lại sau khi sửa</text>
+    <rect x="324" y="84" width="146" height="146" rx="6" class="b-warn"/>
+    <text x="397" y="106" class="t tb" text-anchor="middle">business</text>
+    <text x="397" y="126" class="ts" text-anchor="middle">Vi phạm chính sách,</text><text x="397" y="139" class="ts" text-anchor="middle">vd ngoài hạn đổi trả</text>
+    <text x="397" y="162" class="ts" text-anchor="middle">Giải thích cho khách,</text><text x="397" y="175" class="ts" text-anchor="middle">không thử lại</text>
+    <text x="397" y="212" class="tw-warn" text-anchor="middle">isRetryable: false</text>
+    <rect x="482" y="84" width="146" height="146" rx="6" class="b-warn"/>
+    <text x="555" y="106" class="t tb" text-anchor="middle">permission</text>
+    <text x="555" y="126" class="ts" text-anchor="middle">Không đủ quyền</text>
+    <text x="555" y="162" class="ts" text-anchor="middle">Không thử lại,</text><text x="555" y="175" class="ts" text-anchor="middle">chuyển người có quyền</text>
+    <text x="555" y="212" class="tw-warn" text-anchor="middle">isRetryable: false</text>
+  </svg></div>
+  <figcaption>Hình 5. Bốn loại lỗi và cách agent nên phản ứng.</figcaption>
+</figure>
+<pre><code>{ "isError": true,
+  "errorCategory": "business",
+  "isRetryable": false,
+  "message": "Đơn quá 30 ngày nên không được đổi trả. Hãy giải thích chính sách cho khách." }</code></pre>
+<p class="src">Ví dụ minh hoạ cách đặt tên trường; điều quan trọng là có loại lỗi, cờ có thể thử lại, và lời giải thích dễ hiểu.</p>
+<ul>
+  <li>Lỗi <strong>business</strong> nên kèm lời giải thích thân thiện để agent nói lại với khách, và đánh dấu không thử lại. Nếu để agent thử lại, nó chỉ tốn lượt.</li>
+  <li>Không bao giờ bỏ qua một khối <code>tool_use</code>: mỗi lời gọi đều cần có <code>tool_result</code> tương ứng, kể cả khi lỗi.</li>
+  <li>Subagent tự xử lý lỗi <strong>transient</strong> tại chỗ. Chỉ đẩy lên coordinator lỗi không tự giải quyết được, kèm <strong>kết quả một phần</strong> và những gì đã thử.</li>
+</ul>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Truy cập thất bại</div><ul>
+    <li>Không lấy được dữ liệu (timeout, mất kết nối)</li>
+    <li>Chưa biết khách có đơn hay không</li>
+    <li><strong>Cần quyết định thử lại</strong></li>
+  </ul></div>
+  <div class="box right"><div class="hd">Truy vấn thành công nhưng rỗng</div><ul>
+    <li>Truy vấn chạy tốt, trả về danh sách rỗng</li>
+    <li>Câu trả lời hợp lệ: khách chưa có đơn nào</li>
+    <li><strong>Không phải lỗi</strong>, đừng thử lại</li>
+  </ul></div>
+</div>
+<div class="alert"><strong>Bẫy.</strong> Thông báo chung chung “Operation failed” (agent không biết có nên thử lại). Trả danh sách rỗng khi thực ra lỗi truy cập, làm agent kết luận “khách không có đơn”. Trộn lẫn hai tình huống ở bảng trên.</div>
+<div class="alert"><strong>Bẫy.</strong> Hiểu <code>isRetryable: false</code> là “bỏ việc”. Cờ này chỉ trả lời câu hỏi: gửi lại <em>y hệt</em> lời gọi này có thể thành công không. Lỗi validate là <code>false</code> vì đầu vào phải đổi trước; agent tự sửa đầu vào rồi gọi lại, và <code>errorCategory</code> cho nó biết điều đó. Lỗi nghiệp vụ và lỗi quyền cũng là <code>false</code> nhưng việc vẫn tiếp tục theo đường khác: giải thích cho khách, chuyển người, hoặc người có quyền. Exam guide chỉ nêu <code>false</code> cho lỗi nghiệp vụ; giá trị cho lỗi validate là quy ước chung của các hệ thống gọi dịch vụ.</div>
+
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Đặc tả MCP bản 2026-07-28 chia lỗi làm hai loại. <strong>Protocol error</strong> là lỗi JSON-RPC chuẩn cho sự cố ở cấp yêu cầu mà model khó tự sửa: tool không tồn tại, yêu cầu sai cấu trúc, lỗi server. <strong>Tool execution error</strong> nằm trong kết quả tool với <code>isError: true</code>, gồm lỗi gọi API, <strong>lỗi validate đầu vào</strong> (ví dụ ngày sai định dạng, giá trị ngoài khoảng) và lỗi nghiệp vụ. Client <em>nên</em> đưa loại thứ hai cho model để model tự sửa tham số rồi gọi lại. Vì vậy một lỗi validate nên được trả bằng <code>isError: true</code> kèm thông báo cụ thể, không phải lỗi giao thức. Bản 2025-06-18 còn xếp “invalid arguments” vào protocol error; bản 2026-07-28 mới ghi rõ lỗi validate đầu vào là tool execution error, còn request không khớp schema <code>CallToolRequest</code> mới là protocol error. Đề thi chia lỗi theo bốn nhóm transient, validation, business, permission; hai cách chia này bổ sung nhau. Nguồn: <a href="https://modelcontextprotocol.io/specification/2026-07-28/server/tools#error-handling" target="_blank" rel="noopener">MCP specification 2026-07-28, Tools: Error Handling</a>, <a href="https://modelcontextprotocol.io/specification/2025-06-18/server/tools#error-handling" target="_blank" rel="noopener">bản 2025-06-18</a>.</div>
+
+<h3>4.1 Ví dụ: ba lời gọi, ba kiểu kết quả</h3>
+<p>Một agent hoàn tiền gặp ba tình huống trong cùng một ngày. Cả ba đều trả <code>tool_result</code>, nhưng nội dung khác nhau để agent biết làm gì tiếp.</p>
+<div class="tw"><table>
+  <thead><tr><th>Lời gọi</th><th>Kết quả</th><th><code>errorCategory</code> và <code>isRetryable</code></th><th>Agent làm gì</th></tr></thead>
+  <tbody>
+    <tr><td><code>lookup_order</code> bị timeout</td><td>Lỗi, <code>is_error: true</code></td><td><code>transient</code>, <code>true</code></td><td>Thử lại, có độ trễ tăng dần; hết lần thì báo người</td></tr>
+    <tr><td><code>process_refund</code> số tiền vượt hạn mức</td><td>Lỗi, kèm lời giải thích cho khách</td><td><code>business</code>, <code>false</code></td><td>Giải thích cho khách, chuyển người duyệt; không gọi lại</td></tr>
+    <tr><td><code>lookup_order</code> trả danh sách rỗng</td><td>Thành công, <code>[]</code></td><td>Không phải lỗi</td><td>Báo khách chưa có đơn, không thử lại</td></tr>
+  </tbody>
+</table></div>
+<p>Hàng thứ nhất và thứ ba trông giống nhau từ ngoài (không có dữ liệu), nhưng khác hẳn về ý nghĩa: một bên là <strong>không lấy được</strong>, bên kia là <strong>lấy được và trả về rỗng</strong>. Trộn chúng khiến agent hoặc bỏ cuộc sớm hoặc kết luận sai.</p>
+<h2 id="tool-distribution" class="pb">5. Phân bổ tool</h2>
+<p class="xtags"><span class="tag xt3">CCAR-F D2</span> <span class="tag xt1">CCDV-F D8</span> <span class="tag xt4">CCAR-P D3</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Thợ điện đến nhà bạn mang theo một túi nhỏ vừa đúng đồ nghề. Nếu mang cả kho 18 loại tua vít, kìm, cưa, ông phải mất thời gian chọn và dễ lấy nhầm. Ông cũng không nên dùng cưa để vặn ốc chỉ vì nó nằm trong túi. Agent cũng vậy: ít tool, đúng vai thì chọn chắc hơn.
+</div>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 214" role="img" aria-label="So sánh agent có 18 tool lộn xộn với agent chỉ có bốn tool đúng vai">
+    <rect x="4" y="4" width="312" height="206" rx="8" class="lane"/>
+    <rect x="324" y="4" width="312" height="206" rx="8" class="lane"/>
+    <text x="160" y="24" class="lane-lb" text-anchor="middle">18 TOOL CHO MỘT AGENT</text>
+    <text x="480" y="24" class="lane-lb" text-anchor="middle">4 TOOL ĐÚNG VAI</text>
+    <g>
+      <rect x="12" y="40" width="44" height="26" rx="4" class="b-step"/><rect x="62" y="40" width="44" height="26" rx="4" class="b-step"/><rect x="112" y="40" width="44" height="26" rx="4" class="b-step"/><rect x="162" y="40" width="44" height="26" rx="4" class="b-step"/><rect x="212" y="40" width="44" height="26" rx="4" class="b-step"/><rect x="262" y="40" width="44" height="26" rx="4" class="b-step"/>
+      <rect x="12" y="72" width="44" height="26" rx="4" class="b-step"/><rect x="62" y="72" width="44" height="26" rx="4" class="b-step"/><rect x="112" y="72" width="44" height="26" rx="4" class="b-step"/><rect x="162" y="72" width="44" height="26" rx="4" class="b-step"/><rect x="212" y="72" width="44" height="26" rx="4" class="b-step"/><rect x="262" y="72" width="44" height="26" rx="4" class="b-step"/>
+      <rect x="12" y="104" width="44" height="26" rx="4" class="b-step"/><rect x="62" y="104" width="44" height="26" rx="4" class="b-step"/><rect x="112" y="104" width="44" height="26" rx="4" class="b-step"/><rect x="162" y="104" width="44" height="26" rx="4" class="b-step"/><rect x="212" y="104" width="44" height="26" rx="4" class="b-step"/><rect x="262" y="104" width="44" height="26" rx="4" class="b-step"/>
+    </g>
+    <g><text x="160" y="160" class="ts" text-anchor="middle">Nhiều lựa chọn gần giống nhau</text>
+      <text x="160" y="190" class="tw-warn" text-anchor="middle">✕ Chọn kém chính xác hơn</text></g>
+    <g>
+      <rect x="344" y="40" width="130" height="40" rx="6" class="b-done"/><text x="409" y="65" class="tm" text-anchor="middle">get_customer</text>
+      <rect x="486" y="40" width="130" height="40" rx="6" class="b-done"/><text x="551" y="65" class="tm" text-anchor="middle">lookup_order</text>
+      <rect x="344" y="90" width="130" height="40" rx="6" class="b-done"/><text x="409" y="115" class="tm" text-anchor="middle">process_refund</text>
+      <rect x="486" y="90" width="130" height="40" rx="6" class="b-done"/><text x="551" y="115" class="tm" text-anchor="middle">escalate</text>
+    </g>
+    <g><text x="480" y="160" class="ts" text-anchor="middle">Mỗi tool một việc, ranh giới rõ</text>
+      <text x="480" y="190" class="tw-good" text-anchor="middle">✓ Chọn chắc hơn</text></g>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Một agent được giao 18 tool, nhiều tool nghe giống nhau.</li>
+    <li>Model phải cân nhắc quá nhiều lựa chọn nên chọn kém chính xác và dễ dùng sai tool.</li>
+    <li>Giữ khoảng 4 đến 5 tool đúng với vai của agent.</li>
+    <li>Việc chọn tool trở nên rõ ràng và đáng tin hơn.</li>
+  </ol>
+  <figcaption>Hình 6. Ít tool và đúng vai thì chọn chính xác hơn.</figcaption>
+</figure>
+<ul>
+  <li>Quá nhiều tool (18 thay vì 4 đến 5) làm giảm độ chính xác khi chọn. Agent có tool ngoài chuyên môn sẽ dùng sai (agent tổng hợp đi search web).</li>
+  <li>Mỗi subagent chỉ có tool <strong>đúng vai</strong>. Với nhu cầu hay gặp, thêm một tool <strong>hẹp</strong>: ví dụ <code>verify_fact</code> cho agent tổng hợp để kiểm tra nhanh một dữ kiện. Việc phức tạp vẫn đi qua coordinator.</li>
+  <li>Thay tool chung bằng tool có ràng buộc: thay <code>fetch_url</code> (lấy bất kỳ URL nào) bằng <code>load_document</code> chỉ nhận URL tài liệu đã kiểm tra.</li>
+</ul>
+<div class="alert"><strong>Bẫy.</strong> Cho mọi agent dùng chung toàn bộ tool “cho tiện”. Kết quả là agent tổng hợp đi search web, agent tìm kiếm tự ghi kết luận, và độ chính xác chọn tool giảm.</div>
+
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Con số “18 tool so với 4 đến 5 tool” của exam guide là ví dụ minh họa. Tài liệu <strong>tool search tool</strong> của Anthropic nói khả năng chọn đúng tool giảm khi vượt khoảng <strong>30 đến 50 tool</strong>, và một bộ MCP nhiều server (GitHub, Slack, Sentry, Grafana, Splunk) có thể tốn khoảng 55 nghìn token chỉ cho định nghĩa. Tool search để Claude tìm và nạp tool theo nhu cầu thay vì nạp hết từ đầu, thường giảm hơn 85% token định nghĩa. Với MCP trong Claude Code, tool search là mặc định: lúc bắt đầu phiên chỉ nạp tên tool và hướng dẫn của server. Nguyên tắc của đề không đổi: mỗi agent chỉ nhận tool đúng vai. Nguồn: <a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool" target="_blank" rel="noopener">Tool search tool</a>, <a href="https://code.claude.com/docs/en/mcp.md" target="_blank" rel="noopener">Claude Code MCP</a>.</div>
+
+<h2 id="tool-choice">6. <code>tool_choice</code></h2>
+<p class="xtags"><span class="tag xt3">CCAR-F D2</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Bạn nhờ trợ lý xử lý một việc. Bạn có bốn cách dặn. “Tuỳ em có cần công cụ không” (<code>auto</code>). “Nhất định phải dùng một công cụ, em chọn cái nào cũng được” (<code>any</code>). “Dùng đúng cái máy này” (<code>tool</code>). “Đừng dùng công cụ nào, trả lời bằng lời” (<code>none</code>).
+</div>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 236" role="img" aria-label="Bốn giá trị tool_choice: auto cho model tự quyết, any bắt buộc gọi một tool, tool ép gọi đúng tool chỉ định, none cấm gọi tool">
+    <defs><marker id="m44" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah"/></marker></defs>
+    <g>
+      <rect x="14" y="14" width="130" height="38" rx="6" class="b-sys"/><text x="79" y="38" class="tm" text-anchor="middle">auto</text>
+      <path d="M144,33 H200" class="ln" marker-end="url(#m44)"/>
+      <rect x="206" y="19" width="86" height="28" rx="4" class="b-opt"/><text x="249" y="37" class="t" text-anchor="middle">Văn bản</text>
+      <text x="304" y="37" class="ts" text-anchor="middle">hoặc</text>
+      <rect x="316" y="19" width="86" height="28" rx="4" class="b-step"/><text x="359" y="37" class="t" text-anchor="middle">Gọi tool</text>
+      <text x="418" y="30" class="ts">Model tự quyết có gọi tool</text><text x="418" y="44" class="ts">hay không (mặc định)</text>
+    </g>
+    <g>
+      <rect x="14" y="66" width="130" height="38" rx="6" class="b-sys"/><text x="79" y="90" class="tm" text-anchor="middle">any</text>
+      <path d="M144,85 H200" class="ln" marker-end="url(#m44)"/>
+      <rect x="206" y="71" width="58" height="28" rx="4" class="b-step"/><text x="235" y="89" class="ts" text-anchor="middle">Tool A</text>
+      <rect x="270" y="71" width="58" height="28" rx="4" class="b-step"/><text x="299" y="89" class="ts" text-anchor="middle">Tool B</text>
+      <rect x="334" y="71" width="58" height="28" rx="4" class="b-step"/><text x="363" y="89" class="ts" text-anchor="middle">Tool C</text>
+      <text x="418" y="82" class="ts">Bắt buộc gọi một tool,</text><text x="418" y="96" class="ts">model tự chọn tool nào</text>
+    </g>
+    <g>
+      <rect x="14" y="118" width="130" height="38" rx="6" class="b-sys"/><text x="79" y="142" class="tm" text-anchor="middle">tool + name</text>
+      <path d="M144,137 H200" class="ln" marker-end="url(#m44)"/>
+      <rect x="206" y="123" width="186" height="28" rx="4" class="b-done"/><text x="299" y="141" class="t" text-anchor="middle">extract_metadata</text>
+      <text x="418" y="134" class="ts">Ép gọi đúng tool này, vd chạy</text><text x="418" y="148" class="ts">extract_metadata trước</text>
+    </g>
+    <g>
+      <rect x="14" y="170" width="130" height="38" rx="6" class="b-sys"/><text x="79" y="194" class="tm" text-anchor="middle">none</text>
+      <path d="M144,189 H200" class="ln" marker-end="url(#m44)"/>
+      <rect x="206" y="175" width="86" height="28" rx="4" class="b-opt"/><text x="249" y="193" class="t" text-anchor="middle">Văn bản</text>
+      <text x="418" y="186" class="ts">Cấm gọi tool, chỉ trả văn bản</text><text x="418" y="200" class="ts">(mặc định khi không có tools)</text>
+    </g>
+  </svg></div>
+  <ol class="anim-steps">
+    <li><code>auto</code>: model tự quyết có gọi tool hay trả văn bản. Đây là mặc định.</li>
+    <li><code>any</code>: bắt buộc gọi <em>một</em> tool, model chọn tool nào. Dùng khi cần chắc có output có cấu trúc nhưng chưa biết loại tài liệu.</li>
+    <li><code>{"type": "tool", "name": "…"}</code>: ép gọi đúng tool đó. Dùng để một bước chạy trước, rồi các bước sau xử lý ở lượt tiếp theo.</li>
+    <li><code>none</code>: không gọi tool, chỉ muốn câu trả lời văn bản.</li>
+  </ol>
+  <figcaption>Hình 7. Bốn giá trị của <code>tool_choice</code>.</figcaption>
+</figure>
+<div class="tw"><table>
+  <thead><tr><th>Giá trị</th><th>Ý nghĩa</th><th>Khi nào dùng</th></tr></thead>
+  <tbody>
+    <tr><td><code>auto</code></td><td>Model có thể trả text thay vì gọi tool</td><td>Mặc định</td></tr>
+    <tr><td><code>any</code></td><td>Bắt buộc gọi một tool, model tự chọn tool nào</td><td>Cần chắc có output có cấu trúc, chưa biết loại tài liệu</td></tr>
+    <tr><td><code>{"type": "tool", "name": "…"}</code></td><td>Bắt buộc gọi đúng tool đó</td><td>Ép một bước chạy trước: <code>extract_metadata</code> trước khi enrich</td></tr>
+    <tr><td><code>none</code></td><td>Không gọi tool</td><td>Chỉ muốn câu trả lời văn bản</td></tr>
+  </tbody>
+</table></div>
+<div class="alert"><strong>Bẫy.</strong> Để <code>auto</code> rồi hy vọng model luôn trả JSON có cấu trúc: đôi khi nó chỉ trả lời bằng lời. Muốn đảm bảo có lời gọi tool thì dùng <code>any</code> (hoặc ép tool cụ thể).</div>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Một số model (Opus 5.5, Sonnet 5.5, Fable 5.1/5.2…) trả lỗi 400 với <code>any</code> và <code>tool</code>; thay bằng <code>auto</code> + <code>strict: true</code> + chỉ dẫn rõ, hoặc structured outputs. Khi dùng <code>any</code>/<code>tool</code> trên model còn hỗ trợ, API điền sẵn phần mở đầu của câu trả lời nên model <strong>không viết lời giải thích trước</strong> khối <code>tool_use</code> và cũng bỏ qua bước thinking; đổi <code>tool_choice</code> giữa các lượt làm mất cache của các message. <strong>Đề thi vẫn theo exam guide</strong>: biết khi nào chọn <code>any</code>, khi nào ép tool cụ thể.</div>
+
+<h3>6.1 Chọn giá trị theo tình huống</h3>
+<div class="tw"><table>
+  <thead><tr><th>Tình huống</th><th>Giá trị</th><th>Vì sao</th></tr></thead>
+  <tbody>
+    <tr><td>Trợ lý hội thoại, có lúc cần tool có lúc không</td><td><code>auto</code></td><td>Để model tự quyết</td></tr>
+    <tr><td>Trích xuất từ tài liệu, chưa biết loại nào, luôn cần output có cấu trúc</td><td><code>any</code></td><td>Bắt buộc gọi một tool, model chọn tool hợp với tài liệu</td></tr>
+    <tr><td>Pipeline: bước 1 luôn phải trích metadata</td><td><code>{"type": "tool", "name": "extract_metadata"}</code></td><td>Ép đúng tool cho bước đầu</td></tr>
+    <tr><td>Bước tóm tắt cuối, không được gọi thêm tool</td><td><code>none</code></td><td>Chỉ lấy câu trả lời văn bản</td></tr>
+  </tbody>
+</table></div>
+<p>Ví dụ pipeline ba bước: bước 1 ép <code>extract_metadata</code>; bước 2 dùng <code>auto</code> để Claude làm giàu dữ liệu bằng các tool khác khi cần; bước 3 dùng <code>none</code> để viết tóm tắt. Mỗi bước là một request riêng với <code>tool_choice</code> riêng. Tham số <code>disable_parallel_tool_use: true</code> nằm trong <code>tool_choice</code> khi muốn chỉ một lời gọi mỗi lượt.</p>
+<div class="alert"><strong>Bẫy.</strong> Ép <code>tool</code> cho mọi request “cho chắc”: Claude không bao giờ trả lời bằng lời được nữa, kể cả khi người dùng chỉ chào. Ép chỉ nên dùng ở bước pipeline cố định.</div>
+<h2 id="parallel-tools">7. Gọi tool song song</h2>
+<p class="xtags"><span class="tag xt1">CCDV-F D8</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Bạn cần ba việc: hỏi thời tiết, xem giá cổ phiếu, đọc tin công nghệ. Làm lần lượt thì mất 3 lượt chờ. Nhờ ba người cùng làm thì chỉ chờ lâu bằng người chậm nhất. Parallel tool calling là Claude giao ba việc cùng lúc, code của bạn cho ba luồng chạy cùng lúc.
+</div>
+<p>Claude có thể gọi nhiều tools cùng lúc trong một turn — chạy song song để giảm latency:</p>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 232" role="img" aria-label="So sánh thời gian chạy ba tool tuần tự mất chín giây với chạy song song chỉ mất ba giây">
+    <text x="10" y="20" class="lane-lb">TUẦN TỰ</text>
+    <g>
+      <rect x="90" y="30" width="150" height="26" rx="4" class="b-step"/><text x="165" y="48" class="ts" text-anchor="middle">get_weather 3s</text>
+      <rect x="240" y="30" width="150" height="26" rx="4" class="b-step"/><text x="315" y="48" class="ts" text-anchor="middle">get_stock_price 3s</text>
+      <rect x="390" y="30" width="150" height="26" rx="4" class="b-step"/><text x="465" y="48" class="ts" text-anchor="middle">get_news 3s</text></g>
+    <g><text x="548" y="48" class="tw-warn">9 giây</text></g>
+    <text x="10" y="92" class="lane-lb">SONG SONG (ThreadPoolExecutor)</text>
+    <g>
+      <rect x="90" y="104" width="150" height="26" rx="4" class="b-done"/><text x="165" y="122" class="ts" text-anchor="middle">get_weather 3s</text>
+      <rect x="90" y="136" width="150" height="26" rx="4" class="b-done"/><text x="165" y="154" class="ts" text-anchor="middle">get_stock_price 3s</text>
+      <rect x="90" y="168" width="150" height="26" rx="4" class="b-done"/><text x="165" y="186" class="ts" text-anchor="middle">get_news 3s</text></g>
+    <g><text x="248" y="150" class="tw-good">3 giây</text>
+      <text x="320" y="218" class="ts" text-anchor="middle">Thời gian chờ bằng tool chậm nhất, không phải tổng ba tool</text></g>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Chạy tuần tự: mỗi tool đợi tool trước xong.</li>
+    <li>Ba tool 3 giây mỗi tool là 9 giây.</li>
+    <li>Chạy song song: cả ba tool bắt đầu cùng lúc.</li>
+    <li>Chỉ chờ 3 giây, bằng tool chậm nhất.</li>
+  </ol>
+  <figcaption>Hình 8. Chạy song song giảm latency (ví dụ minh họa, số giây giả định).</figcaption>
+</figure>
+<pre><code class="language-python">from concurrent.futures import ThreadPoolExecutor
+import anthropic
+
+client = anthropic.Anthropic()
+
+def run_tool(tool_name: str, tool_input: dict) -> str:
+    """Execute a tool and return result as string."""
+    if tool_name == "get_weather":
+        return get_weather(**tool_input)
+    elif tool_name == "get_stock_price":
+        return get_stock_price(**tool_input)
+    elif tool_name == "get_news":
+        return get_news(**tool_input)
+    else:
+        raise ValueError(f"Unknown tool: {tool_name}")
+
+messages = [{"role": "user", "content": "Get weather, AAPL stock price, and tech news."}]
+
+while True:
+    response = client.messages.create(
+        model="claude-sonnet-5", max_tokens=2048,
+        tools=tools, messages=messages
+    )
+
+    if response.stop_reason == "end_turn":
+        break
+
+    if response.stop_reason == "tool_use":
+        # Collect ALL tool_use blocks trước khi chạy
+        tool_use_blocks = [b for b in response.content if b.type == "tool_use"]
+
+        # Chạy song song với ThreadPoolExecutor
+        with ThreadPoolExecutor(max_workers=len(tool_use_blocks)) as executor:
+            futures = {
+                executor.submit(run_tool, block.name, block.input): block
+                for block in tool_use_blocks
+            }
+
+            tool_results = []
+            for future, block in futures.items():
+                try:
+                    result = future.result(timeout=30)
+                    tool_results.append({
+                        "type": "tool_result",
+                        "tool_use_id": block.id,
+                        "content": result
+                    })
+                except Exception as e:
+                    tool_results.append({
+                        "type": "tool_result",
+                        "tool_use_id": block.id,
+                        "is_error": True,  # Quan trọng: báo lỗi cho Claude
+                        "content": f"Error: {str(e)}"
+                    })
+
+        # Thêm cả response của Claude VÀ tất cả tool results vào messages
+        messages.append({"role": "assistant", "content": response.content})
+        messages.append({"role": "user", "content": tool_results})  # Một user message, nhiều results</code></pre>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 250" role="img" aria-label="Vòng lặp xử lý tool song song: gọi API, kiểm tra stop_reason, nếu tool_use thì gom mọi khối, chạy song song, ghi assistant và user vào messages rồi lặp lại">
+    <defs>
+      <marker id="m1805" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah"/></marker>
+      <marker id="m1806" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-good"/></marker>
+    </defs>
+    <g><rect x="10" y="30" width="150" height="40" rx="6" class="b-sys"/><text x="85" y="55" class="t" text-anchor="middle">1 Gọi messages.create</text></g>
+    <g><path d="M160,50 H198" class="ln" marker-end="url(#m1805)"/><rect x="200" y="30" width="170" height="40" rx="6" class="b-hot"/><text x="285" y="55" class="t" text-anchor="middle">2 Kiểm tra stop_reason</text></g>
+    <g><path d="M370,50 H418" class="ln-good" marker-end="url(#m1806)"/><text x="394" y="42" class="ts halo" text-anchor="middle">end_turn</text>
+      <rect x="420" y="30" width="210" height="40" rx="6" class="b-done"/><text x="525" y="55" class="t" text-anchor="middle">Xong: thoát vòng lặp</text></g>
+    <g><path d="M285,70 V112" class="ln" marker-end="url(#m1805)"/><text x="296" y="96" class="ts halo">tool_use</text>
+      <rect x="200" y="114" width="170" height="40" rx="6" class="b-step"/><text x="285" y="139" class="t" text-anchor="middle">3 Gom MỌI tool_use</text></g>
+    <g><path d="M370,134 H418" class="ln" marker-end="url(#m1805)"/><rect x="420" y="114" width="210" height="40" rx="6" class="b-step"/><text x="525" y="139" class="t" text-anchor="middle">4 Chạy song song</text></g>
+    <g><path d="M525,154 V188" class="ln" marker-end="url(#m1805)"/><rect x="420" y="190" width="210" height="40" rx="6" class="b-step"/><text x="525" y="215" class="t" text-anchor="middle">5 Ghi assistant + user</text></g>
+    <g><path d="M420,210 H85 V72" class="ln-acc flow" marker-end="url(#m1805)"/><text x="250" y="206" class="ts halo" text-anchor="middle">lặp lại với messages dài hơn</text></g>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Gọi API với <code>messages</code> hiện có.</li>
+    <li>Nếu <code>stop_reason</code> là <code>end_turn</code> thì xong. Nếu là <code>tool_use</code> thì đi xuống nhánh xử lý tool.</li>
+    <li>Gom <strong>tất cả</strong> khối <code>tool_use</code> trước khi chạy bất kỳ cái nào.</li>
+    <li>Chạy chúng song song.</li>
+    <li>Ghi lượt trả lời của Claude (assistant) và <strong>một</strong> tin nhắn user chứa mọi kết quả.</li>
+    <li>Quay lại bước 1. Claude đọc kết quả rồi tiếp tục.</li>
+  </ol>
+  <figcaption>Hình 9. Vòng lặp xử lý tool song song.</figcaption>
+</figure>
+<p>Chú giải từng đoạn:</p>
+<ul>
+  <li><code>ThreadPoolExecutor</code>: công cụ của Python để chạy nhiều hàm cùng lúc trên nhiều luồng (thread). Phù hợp khi tool chủ yếu chờ mạng.</li>
+  <li><code>run_tool(tool_name, tool_input)</code>: một hàm điều phối. Nhận tên tool, gọi đúng hàm; tên lạ thì <code>raise ValueError</code> để lỗi lộ ra thay vì im lặng.</li>
+  <li><code>while True</code>: vòng lặp chạy đến khi Claude trả <code>end_turn</code>.</li>
+  <li><code>tool_use_blocks = [b for b in response.content if b.type == "tool_use"]</code>: lọc ra mọi khối <code>tool_use</code> trong câu trả lời. Có thể là 1 hoặc nhiều khối.</li>
+  <li><code>ThreadPoolExecutor(max_workers=len(tool_use_blocks))</code>: số luồng bằng số tool cần chạy, nên tất cả chạy cùng lúc.</li>
+  <li><code>executor.submit(run_tool, block.name, block.input)</code>: giao một việc cho luồng. Trả về <code>future</code> (hứa hẹn kết quả sẽ có).</li>
+  <li><code>future.result(timeout=30)</code>: chờ kết quả tối đa 30 giây. Quá hạn thì ném lỗi, chuyển xuống <code>except</code>.</li>
+  <li><code>"tool_use_id": block.id</code>: ghép kết quả với đúng lời gọi.</li>
+  <li><code>"is_error": True</code>: báo cho Claude biết tool lỗi. Claude đọc nội dung lỗi và quyết định thử lại, hỏi người dùng hay đổi cách. Không ném ngoại lệ làm chết cả vòng lặp.</li>
+  <li>Hai dòng cuối: thêm <code>response.content</code> của Claude vào <code>messages</code> trước, rồi thêm <strong>một</strong> tin nhắn <code>user</code> chứa danh sách mọi kết quả.</li>
+</ul>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 236" role="img" aria-label="Định dạng đúng: một tin nhắn assistant chứa ba tool_use và một tin nhắn user chứa ba tool_result. Định dạng sai: mỗi tool_result một tin nhắn user riêng">
+    <rect x="4" y="4" width="312" height="228" rx="8" class="lane"/><rect x="324" y="4" width="312" height="228" rx="8" class="lane"/>
+    <text x="160" y="24" class="lane-lb" text-anchor="middle">ĐÚNG</text><text x="480" y="24" class="lane-lb" text-anchor="middle">SAI</text>
+    <g><rect x="24" y="40" width="272" height="40" rx="6" class="b-step"/><text x="160" y="58" class="t tb" text-anchor="middle">assistant</text><text x="160" y="73" class="ts" text-anchor="middle">tool_use A, tool_use B, tool_use C</text>
+      <rect x="344" y="40" width="272" height="40" rx="6" class="b-step"/><text x="480" y="58" class="t tb" text-anchor="middle">assistant</text><text x="480" y="73" class="ts" text-anchor="middle">tool_use A, tool_use B, tool_use C</text></g>
+    <g><rect x="24" y="96" width="272" height="56" rx="6" class="b-done"/><text x="160" y="116" class="t tb" text-anchor="middle">user (MỘT tin nhắn)</text><text x="160" y="134" class="ts" text-anchor="middle">tool_result A, tool_result B, tool_result C</text>
+      <text x="160" y="190" class="tw-good" text-anchor="middle">✓ Cả ba kết quả trong một tin nhắn</text></g>
+    <g><rect x="344" y="96" width="272" height="30" rx="6" class="b-warn"/><text x="480" y="116" class="ts" text-anchor="middle">user: tool_result A</text>
+      <rect x="344" y="130" width="272" height="30" rx="6" class="b-warn"/><text x="480" y="150" class="ts" text-anchor="middle">user: tool_result B</text>
+      <rect x="344" y="164" width="272" height="30" rx="6" class="b-warn"/><text x="480" y="184" class="ts" text-anchor="middle">user: tool_result C</text>
+      <text x="480" y="216" class="tw-warn" text-anchor="middle">✕ Mỗi kết quả một tin nhắn</text></g>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Claude trả một tin nhắn assistant chứa nhiều khối <code>tool_use</code>.</li>
+    <li>Đúng: gửi lại <strong>một</strong> tin nhắn user chứa mọi <code>tool_result</code>.</li>
+    <li>Sai: tách mỗi kết quả thành một tin nhắn user riêng.</li>
+  </ol>
+  <figcaption>Hình 10. Hình dạng đúng của messages sau khi chạy tool song song.</figcaption>
+</figure>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div><ul>
+    <li>Gửi mỗi tool_result một tin nhắn user riêng</li>
+    <li>Chạy tool_use đầu tiên ngay khi thấy, rồi mới đọc các khối còn lại</li>
+    <li>Ném ngoại lệ khi tool lỗi, làm sập vòng lặp</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đúng</div><ul>
+    <li>Một tin nhắn user chứa mảng mọi tool_result, đứng sau tin nhắn assistant tương ứng</li>
+    <li>Gom hết các tool_use rồi mới chạy song song</li>
+    <li>Trả <code>is_error: true</code> kèm nội dung lỗi cho Claude</li>
+  </ul></div>
+</div>
+<div class="insight"><strong>Quy tắc gọi tool song song:</strong> (1) gom TẤT CẢ tool_use block trước khi chạy bất kỳ cái nào; (2) chạy song song, ví dụ bằng ThreadPoolExecutor; (3) tool lỗi thì trả <code>is_error: true</code>, không ném exception; (4) gửi TẤT CẢ kết quả trong một user message duy nhất.</div>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Tài liệu hiện hành xác nhận cùng quy tắc: tách mỗi kết quả thành một tin nhắn user riêng là lỗi định dạng phổ biến nhất, và còn “dạy” Claude gọi song song ít hơn. Trong tin nhắn user đó, các khối <code>tool_result</code> phải đứng trước mọi nội dung văn bản. Claude 4 trở lên mặc định gọi song song khi hợp lý; <code>disable_parallel_tool_use: true</code> trong <code>tool_choice</code> tắt hành vi này. Nguồn: <a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/parallel-tool-use" target="_blank" rel="noopener">Parallel tool use</a>.</div>
+
+<h3>7.1 Ví dụ có số: vì sao song song nhanh hơn</h3>
+<p>Ba tool chạy 2 giây, 3 giây và 1 giây. Chạy tuần tự mất 2 + 3 + 1 = 6 giây. Chạy song song mất bằng tool chậm nhất, khoảng 3 giây. Nhưng song song chỉ hợp khi ba lời gọi <strong>độc lập</strong>: tool 2 cần kết quả của tool 1 thì phải chạy sau.</p>
+<p>Hình dạng messages sau lượt này, theo đúng thứ tự:</p>
+<ol class="principles">
+  <li>Một message <code>assistant</code> chứa ba khối <code>tool_use</code> (id <code>t1</code>, <code>t2</code>, <code>t3</code>).</li>
+  <li>Một message <code>user</code> chứa ba khối <code>tool_result</code> (<code>tool_use_id</code> lần lượt <code>t1</code>, <code>t2</code>, <code>t3</code>). Không thêm text trước chúng.</li>
+</ol>
+<p>Nếu <code>t2</code> lỗi, khối <code>tool_result</code> của <code>t2</code> mang <code>is_error: true</code>. Hai khối còn lại vẫn thành công. Đủ ba khối là điều kiện để API chấp nhận request tiếp theo.</p>
+<h2 id="client-server">8. Client tool và server tool</h2>
+<p class="xtags"><span class="tag xt1">CCDV-F D8</span> <span class="tag xt1">CCDV-F D2</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Gọi món ở quán. Có món <strong>bạn tự làm</strong> ở nhà theo yêu cầu của đầu bếp rồi mang lại (client tool). Có món <strong>quán làm sẵn trong bếp</strong> và bưng ra luôn (server tool). Khác biệt là ai đứng bếp.
+</div>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 214" role="img" aria-label="Client tool: Claude xin gọi, code của bạn chạy, bạn gửi tool_result. Server tool: Claude xin gọi, Anthropic chạy, kết quả nằm sẵn trong response">
+    <defs><marker id="m45" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker></defs>
+    <rect x="4" y="4" width="312" height="206" rx="8" class="lane"/>
+    <rect x="324" y="4" width="312" height="206" rx="8" class="lane"/>
+    <text x="160" y="24" class="lane-lb" text-anchor="middle">CLIENT TOOL · bạn chạy</text>
+    <text x="480" y="24" class="lane-lb" text-anchor="middle">SERVER TOOL · Anthropic chạy</text>
+    <g><rect x="14" y="60" width="88" height="54" rx="6" class="b-sys"/><text x="58" y="84" class="ts" text-anchor="middle">Claude xin</text><text x="58" y="98" class="ts" text-anchor="middle">gọi tool</text></g>
+    <g><path class="ln-acc flow" d="M102,87 H114" marker-end="url(#m45)"/><rect x="116" y="60" width="88" height="54" rx="6" class="b-hot"/><text x="160" y="84" class="ts" text-anchor="middle">Code BẠN</text><text x="160" y="98" class="ts" text-anchor="middle">chạy tool</text></g>
+    <g><path class="ln-acc flow" d="M204,87 H216" marker-end="url(#m45)"/><rect x="218" y="60" width="88" height="54" rx="6" class="b-step"/><text x="262" y="84" class="ts" text-anchor="middle">Gửi kết quả</text><text x="262" y="98" class="ts" text-anchor="middle">tool_result</text></g>
+    <text x="160" y="150" class="ts" text-anchor="middle">Mọi tool_result đi chung trong</text><text x="160" y="164" class="ts" text-anchor="middle">MỘT user message</text>
+    <g><rect x="334" y="60" width="88" height="54" rx="6" class="b-sys"/><text x="378" y="84" class="ts" text-anchor="middle">Claude xin</text><text x="378" y="98" class="ts" text-anchor="middle">gọi tool</text></g>
+    <g><path class="ln-acc flow" d="M422,87 H434" marker-end="url(#m45)"/><rect x="436" y="60" width="88" height="54" rx="6" class="b-hot"/><text x="480" y="84" class="ts" text-anchor="middle">Anthropic</text><text x="480" y="98" class="ts" text-anchor="middle">chạy tool</text></g>
+    <g><path class="ln-acc flow" d="M524,87 H536" marker-end="url(#m45)"/><rect x="538" y="60" width="88" height="54" rx="6" class="b-done"/><text x="582" y="84" class="ts" text-anchor="middle">Kết quả nằm</text><text x="582" y="98" class="ts" text-anchor="middle">sẵn trong reply</text></g>
+    <text x="480" y="150" class="ts" text-anchor="middle">web search, web fetch, code execution</text><text x="480" y="164" class="ts" text-anchor="middle">Chạy lâu có thể gặp pause_turn</text>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Client tool: Claude chỉ <em>xin</em> gọi tool, ghi vào khối <code>tool_use</code>.</li>
+    <li>Code của <strong>bạn</strong> chạy tool.</li>
+    <li>Bạn gửi <code>tool_result</code> (kèm <code>tool_use_id</code>) lại cho Claude.</li>
+    <li>Server tool: Claude xin gọi, ví dụ web search.</li>
+    <li><strong>Anthropic</strong> chạy tool, bạn không phải làm gì.</li>
+    <li>Kết quả có sẵn trong response. Nếu chạy lâu, response có thể dừng ở <code>pause_turn</code> và bạn gửi lại để nó làm tiếp.</li>
+  </ol>
+  <figcaption>Hình 11. Hai loại tool khác nhau ở chỗ ai chạy.</figcaption>
+</figure>
+<div class="split">
+  <div class="box"><div class="hd">Client tool</div><ul><li>Bạn định nghĩa, <strong>bạn chạy</strong></li><li>Gửi <code>tool_result</code> (kèm <code>tool_use_id</code>) về</li><li>Nhiều <code>tool_use</code> song song: trả mọi <code>tool_result</code> trong <strong>một</strong> user message</li></ul></div>
+  <div class="box"><div class="hd">Server tool</div><ul><li>Web search, web fetch, code execution</li><li><strong>Anthropic chạy</strong>, kết quả có sẵn trong response</li><li>Chạy lâu thì có thể gặp <code>pause_turn</code></li></ul></div>
+</div>
+<pre><code>// Claude xin gọi hai tool cùng lúc (assistant message)
+[ {"type": "tool_use", "id": "toolu_1", "name": "get_weather", "input": {"city": "Hà Nội"}},
+  {"type": "tool_use", "id": "toolu_2", "name": "get_time",    "input": {"city": "Hà Nội"}} ]
+
+// Bạn trả lời: CẢ HAI kết quả trong MỘT user message, mỗi cái trỏ về đúng id
+[ {"type": "tool_result", "tool_use_id": "toolu_1", "content": "24°C, trời nắng"},
+  {"type": "tool_result", "tool_use_id": "toolu_2", "content": "14:30"} ]</code></pre>
+<p><strong>Mẫu duyệt (approval).</strong> Với tool nhạy cảm (xoá dữ liệu, chuyển tiền), harness có thể dừng lại hỏi người xác nhận trước khi chạy: cho chạy, chặn, hoặc hỏi. Quyết định này nằm ở code điều phối, không phụ thuộc việc model “thấy có vẻ ổn”.</p>
+<div class="alert"><strong>Bẫy.</strong> Chia mỗi <code>tool_result</code> thành một user message riêng khi có nhiều lời gọi song song. Hoặc bỏ sót một <code>tool_use</code> mà không trả kết quả (kể cả lỗi).</div>
+
+<h3>8.1 Hai loại tool, bảng so sánh</h3>
+<div class="tw"><table>
+  <thead><tr><th>Tiêu chí</th><th>Client tool</th><th>Server tool</th></tr></thead>
+  <tbody>
+    <tr><td>Ai chạy</td><td>Code của bạn</td><td>Hạ tầng của Anthropic</td></tr>
+    <tr><td>Ví dụ</td><td>Tool bạn tự định nghĩa; <code>bash</code>, <code>text_editor</code></td><td><code>web_search</code>, <code>web_fetch</code>, <code>code_execution</code>, <code>tool_search</code></td></tr>
+    <tr><td>Khối trong response</td><td><code>tool_use</code>, <code>stop_reason: "tool_use"</code></td><td><code>server_tool_use</code> (id bắt đầu bằng <code>srvtoolu_</code>) rồi khối kết quả, ví dụ <code>web_search_tool_result</code></td></tr>
+    <tr><td>Bạn phải gửi <code>tool_result</code></td><td>Có</td><td>Không; kết quả đã nằm ngay trong response</td></tr>
+    <tr><td>Vòng lặp</td><td>Do code của bạn viết</td><td>Chạy trong vòng lặp phía server của API</td></tr>
+    <tr><td>Chi phí</td><td>Token như thường</td><td>Một số tool tính thêm phí theo mức dùng (web search, code execution)</td></tr>
+  </tbody>
+</table></div>
+<div class="alert"><strong>Bẫy.</strong> <code>bash</code> và <code>text_editor</code> có schema do Anthropic định nghĩa, nhưng vẫn là <strong>client tool</strong>: code của bạn chạy lệnh và gửi kết quả về. Chữ “Anthropic-defined” nói ai viết schema, không nói ai chạy.</div>
+<h3>8.2 Ví dụ: một lượt trộn cả hai loại</h3>
+<ol class="principles">
+  <li>Bạn gửi request có tool <code>web_search</code> (server) và <code>get_customer</code> (client). Khách hỏi một câu cần cả hai.</li>
+  <li>Response chứa khối <code>server_tool_use</code> cho <code>web_search</code> (chưa có kết quả) và khối <code>tool_use</code> cho <code>get_customer</code>, với <code>stop_reason: "tool_use"</code>.</li>
+  <li>Bạn chỉ chạy <code>get_customer</code> và gửi một <code>tool_result</code> cho nó. Không gửi gì cho <code>web_search</code>.</li>
+  <li>API chạy <code>web_search</code> khi nhận request kế tiếp, rồi Claude tiếp tục.</li>
+</ol>
+<h3>8.3 <code>pause_turn</code>: server tool chạy lâu</h3>
+<p>Server tool chạy trong vòng lặp phía server. Khi vòng lặp đạt giới hạn lượt, response có <code>stop_reason: "pause_turn"</code>. Bạn <strong>không</strong> viết thêm câu của người dùng. Bạn gửi lại request với nội dung assistant vừa nhận được nối vào <code>messages</code>, để Claude chạy tiếp từ chỗ dừng.</p>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div><ul>
+    <li>Gặp <code>pause_turn</code> thì coi là xong và hiển thị câu trả lời dở dang</li>
+    <li>Tự chạy lại <code>web_search</code> bằng code của mình</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đúng</div><ul>
+    <li>Nối <code>response.content</code> vào messages dưới role <code>assistant</code>, gửi request tiếp</li>
+    <li>Để API chạy server tool; bạn chỉ xử lý client tool</li>
+  </ul></div>
+</div>
+<div class="insight"><strong>Cốt lõi.</strong> Hỏi “ai chạy code?” để phân loại. Client tool cần bạn trả <code>tool_result</code>. Server tool thì không, và có thể kèm <code>pause_turn</code>. Nguồn: <a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/server-tools" target="_blank" rel="noopener">Server tools</a>.</div>
+<h2 id="built-in">9. Built-in tool của Claude Code</h2>
+<p class="xtags"><span class="tag xt3">CCAR-F D2</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Tìm một cuốn sách trong thư viện: tra danh mục theo <em>tên file</em> (Glob), hoặc đi tìm <em>nội dung</em> bên trong sách (Grep). Khi đã có sách thì đọc cả cuốn (Read), sửa một câu bằng bút chì (Edit), hay viết lại cả trang (Write).
+</div>
+<div class="tw"><table>
+  <thead><tr><th>Tool</th><th>Dùng khi</th><th>Ví dụ</th></tr></thead>
+  <tbody>
+    <tr><td>Grep</td><td>Tìm <strong>nội dung</strong> trong file: tên hàm, chuỗi lỗi, import</td><td>Mọi nơi gọi <code>calculateTax</code></td></tr>
+    <tr><td>Glob</td><td>Tìm <strong>đường dẫn</strong> theo mẫu tên</td><td><code>**/*.test.tsx</code></td></tr>
+    <tr><td>Read / Write</td><td>Đọc hoặc ghi toàn bộ file</td><td>Đọc file cấu hình, tạo file mới</td></tr>
+    <tr><td>Edit</td><td>Sửa có trọng tâm dựa trên đoạn text <strong>duy nhất</strong>; không có đoạn duy nhất thì Read + Write</td><td>Đổi một dòng trong hàm</td></tr>
+    <tr><td>Bash</td><td>Chạy lệnh: test, build, <code>git</code>, <code>gh</code></td><td><code>npm test</code></td></tr>
+  </tbody>
+</table></div>
+<h3>Tìm hiểu codebase theo từng bước</h3>
+<div class="chain">
+  <div class="lk"><b>1 · Grep</b><span>tìm điểm vào</span></div><span class="ar">→</span>
+  <div class="lk"><b>2 · Read</b><span>đọc file, theo import</span></div><span class="ar">→</span>
+  <div class="lk"><b>3 · Grep</b><span>tìm nơi dùng tiếp</span></div><span class="ar">→</span>
+  <div class="lk"><b>4 · Read</b><span>đọc chỗ mới tìm thấy</span></div>
+</div>
+<p>Không đọc hết mọi file ngay từ đầu. Bắt đầu từ chỗ nhỏ rồi lần theo dấu vết.</p>
+<p>Khi một hàm bị bọc qua module trung gian (file <code>index.ts</code> export lại tên khác), làm theo hai bước: (1) liệt kê <strong>mọi tên được export</strong> từ module đó; (2) Grep từng tên trong toàn bộ codebase.</p>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Dễ hỏng</div><ul>
+    <li>Edit một đoạn text xuất hiện nhiều lần: Edit không biết sửa chỗ nào và báo lỗi</li>
+    <li>Dùng Glob để tìm “file nào gọi hàm X” (Glob chỉ so tên file)</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đúng</div><ul>
+    <li>Edit lỗi vì không có đoạn text duy nhất: <strong>Read</strong> cả file rồi <strong>Write</strong> bản đã sửa</li>
+    <li>Tìm nội dung dùng <strong>Grep</strong>, tìm theo tên file dùng <strong>Glob</strong></li>
+  </ul></div>
+</div>
+<div class="alert"><strong>Bẫy.</strong> Nhầm Grep và Glob: Grep tìm trong <em>nội dung</em>, Glob tìm theo <em>đường dẫn</em>.</div>
+
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Theo <a href="https://code.claude.com/docs/en/tools-reference.md" target="_blank" rel="noopener">tài liệu tools của Claude Code</a>, Edit làm thay thế chuỗi <strong>chính xác</strong> (không regex, không so khớp mờ). <code>old_string</code> phải khớp từng ký tự, kể cả khoảng trắng, và phải xuất hiện <strong>đúng một lần</strong>. Khi nó xuất hiện nhiều lần, Claude có hai cách rẻ trước khi đổi sang Read + Write: <strong>cung cấp chuỗi dài hơn</strong> kèm đủ ngữ cảnh xung quanh để chỉ khớp một chỗ, hoặc đặt <code>replace_all: true</code> để thay mọi chỗ. Claude thường cần đã đọc file trong hội thoại trước khi sửa (model mới hơn có thể sửa file chưa đọc khi việc đọc không cần hỏi quyền), và có thể sửa ngay sau khi xem file bằng Bash như <code>cat</code> hoặc <code>grep</code> trên một file. Đáp án đề khi Edit không tìm thấy mốc duy nhất vẫn là Read + Write; hai cách trên là bước thực tế cần thử trước.</div>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Exam guide v1.0 liệt kê Grep và Glob trong nhóm built-in tool, và đó vẫn là đáp án đề thi. Tài liệu tools reference hiện ghi Glob và Grep <strong>không có sẵn mặc định</strong> trên macOS, Linux và WSL: Claude tìm file và nội dung bằng <code>find</code>, <code>grep</code> qua tool Bash. Subagent vẫn có thể nhận Glob và Grep khi hội thoại chính không có. Nguồn: <a href="https://code.claude.com/docs/en/tools-reference" target="_blank" rel="noopener">code.claude.com/docs/en/tools-reference</a>, <a href="https://code.claude.com/docs/en/sub-agents" target="_blank" rel="noopener">sub-agents</a>.</div>
+
+<h2 id="choose-extension">10. Chọn cách mở rộng</h2>
+<p class="xtags"><span class="tag xt1">CCDV-F D8</span> <span class="tag xt4">CCAR-P D3</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Cần sửa nhà: việc nhỏ dùng dụng cụ có sẵn trong nhà (built-in). Cần một dụng cụ riêng cho nhà bạn thì tự chế (custom tool). Có quy trình hay lặp lại thì viết thành sổ tay (skill). Cần dùng dịch vụ bên ngoài thì gọi qua ổ cắm chuẩn (MCP). Muốn tặng cả bộ cho nhiều nhà thì đóng thành hộp (plugin).
+</div>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 274" role="img" aria-label="Cây quyết định chọn cách mở rộng: built-in tool, custom tool, skill, MCP server, plugin">
+    <defs><marker id="m49" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah"/></marker></defs>
+    <g><rect x="10" y="10" width="340" height="38" rx="6" class="b-step"/><text x="24" y="34" class="t">Chỉ cần đọc, ghi, tìm file hoặc chạy lệnh?</text>
+      <path d="M350,29 H408" class="ln" marker-end="url(#m49)"/><text x="379" y="24" class="tw-good" text-anchor="middle">Có</text>
+      <rect x="410" y="10" width="220" height="38" rx="6" class="b-done"/><text x="420" y="26" class="t tb">Built-in tool</text><text x="420" y="40" class="ts">dùng trước tiên</text></g>
+    <g><path d="M180,48 V62" class="ln" marker-end="url(#m49)"/><text x="192" y="58" class="ts">Không</text>
+      <rect x="10" y="62" width="340" height="38" rx="6" class="b-step"/><text x="24" y="86" class="t">Hàm riêng chỉ có trong app của bạn?</text>
+      <path d="M350,81 H408" class="ln" marker-end="url(#m49)"/><text x="379" y="76" class="tw-good" text-anchor="middle">Có</text>
+      <rect x="410" y="62" width="220" height="38" rx="6" class="b-done"/><text x="420" y="78" class="t tb">Custom tool</text><text x="420" y="92" class="ts">tool tự định nghĩa trong code</text></g>
+    <g><path d="M180,100 V114" class="ln" marker-end="url(#m49)"/><text x="192" y="110" class="ts">Không</text>
+      <rect x="10" y="114" width="340" height="38" rx="6" class="b-step"/><text x="24" y="138" class="t">Quy trình hoặc kiến thức lặp lại, nạp khi cần?</text>
+      <path d="M350,133 H408" class="ln" marker-end="url(#m49)"/><text x="379" y="128" class="tw-good" text-anchor="middle">Có</text>
+      <rect x="410" y="114" width="220" height="38" rx="6" class="b-done"/><text x="420" y="130" class="t tb">Skill</text><text x="420" y="144" class="ts">đóng gói, chỉ nạp khi cần</text></g>
+    <g><path d="M180,152 V166" class="ln" marker-end="url(#m49)"/><text x="192" y="162" class="ts">Không</text>
+      <rect x="10" y="166" width="340" height="38" rx="6" class="b-step"/><text x="24" y="190" class="t">Nối hệ thống ngoài, dùng lại cho nhiều app?</text>
+      <path d="M350,185 H408" class="ln" marker-end="url(#m49)"/><text x="379" y="180" class="tw-good" text-anchor="middle">Có</text>
+      <rect x="410" y="166" width="220" height="38" rx="6" class="b-done"/><text x="420" y="182" class="t tb">MCP server</text><text x="420" y="196" class="ts">bảo trì độc lập, dùng lại</text></g>
+    <g><path d="M180,204 V218" class="ln" marker-end="url(#m49)"/><text x="192" y="214" class="ts">Không</text>
+      <rect x="10" y="218" width="340" height="38" rx="6" class="b-step"/><text x="24" y="242" class="t">Muốn gói các thứ trên để cài cho nhiều dự án?</text>
+      <path d="M350,237 H408" class="ln" marker-end="url(#m49)"/><text x="379" y="232" class="tw-good" text-anchor="middle">Có</text>
+      <rect x="410" y="218" width="220" height="38" rx="6" class="b-done"/><text x="420" y="234" class="t tb">Plugin</text><text x="420" y="248" class="ts">gói skill, hook, MCP</text></g>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Việc đọc, ghi, tìm file, chạy lệnh: dùng built-in tool trước tiên.</li>
+    <li>Hàm riêng của ứng dụng: custom tool.</li>
+    <li>Quy trình hay kiến thức lặp lại (deploy, checklist review): skill.</li>
+    <li>Nối hệ thống ngoài và muốn dùng lại cho nhiều ứng dụng: MCP server.</li>
+    <li>Muốn cài trọn bộ cho nhiều dự án: plugin.</li>
+  </ol>
+  <figcaption>Hình 12. Cây quyết định chọn cách mở rộng Claude.</figcaption>
+</figure>
+<div class="tw"><table>
+  <thead><tr><th>Cách</th><th>Khi nào</th></tr></thead>
+  <tbody>
+    <tr><td>Built-in tool</td><td>Đọc, ghi, tìm file, chạy lệnh: dùng trước tiên</td></tr>
+    <tr><td>Custom tool</td><td>Hàm riêng trong ứng dụng của bạn</td></tr>
+    <tr><td>Skill</td><td>Đóng gói <strong>quy trình hoặc kiến thức</strong> lặp lại (deploy, checklist review); chỉ nạp khi cần</td></tr>
+    <tr><td>MCP server</td><td>Nối <strong>hệ thống ngoài</strong>, <strong>dùng lại</strong> cho nhiều ứng dụng, bảo trì độc lập</td></tr>
+    <tr><td>Plugin</td><td>Gói nhiều skill, hook, MCP để cài cho nhiều dự án</td></tr>
+  </tbody>
+</table></div>
+<p class="src">Về cách nối: GitHub, Notion, Slack, Figma, Postgres, Playwright thường qua MCP; <code>git</code>, <code>docker</code>, <code>aws</code>, <code>psql</code> qua shell; Obsidian, Jupyter qua đọc ghi file (ghi chú 15 tổ hợp Claude Code).</p>
+<div class="note">Mỗi skill, plugin, MCP server chạy với quyền của bạn và chiếm chỗ trong context. Chỉ cài thứ giải quyết vấn đề thật; kiểm tra tác giả và mã nguồn, số sao không phải bảo chứng an toàn (ghi chú 30 thứ nên cài).</div>
+<div class="alert"><strong>Bẫy.</strong> Viết MCP server cho một hàm chỉ ứng dụng của bạn dùng (chỉ cần custom tool), hoặc nhồi quy trình dài vào CLAUDE.md thay vì skill nạp khi cần.</div>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Skill cung cấp <strong>kiến thức và quy trình</strong>, không tự cung cấp đường truy cập. Trên Claude API, skill chạy trong container của code execution tool, không có mạng và không cài thêm package được. Viết skill mô tả kỹ một hệ thống nội bộ không giúp Claude gọi được hệ thống đó; cần custom tool hoặc MCP server chạy ở nơi với tới được hệ thống. Trong Claude Code thì skill có quyền mạng như mọi chương trình trên máy. Skill cũng không tự đồng bộ giữa claude.ai, API và Claude Code. Nguồn: <a href="https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview" target="_blank" rel="noopener">platform.claude.com/docs/en/agents-and-tools/agent-skills/overview</a>.</div>
+
+<h3>10.1 Ví dụ chọn cách mở rộng</h3>
+<div class="tw"><table>
+  <thead><tr><th>Nhu cầu</th><th>Chọn</th><th>Vì sao</th></tr></thead>
+  <tbody>
+    <tr><td>Agent cần tìm file và chạy test trong repo</td><td>Built-in tool</td><td>Đã có sẵn, không viết thêm gì</td></tr>
+    <tr><td>Ứng dụng của bạn có hàm <code>calculate_shipping</code> chỉ dùng nội bộ</td><td>Custom tool</td><td>Một hàm trong một ứng dụng, MCP server là thừa</td></tr>
+    <tr><td>Quy trình deploy 12 bước, chỉ cần khi ai đó nói “deploy”</td><td>Skill</td><td>Nạp theo nhu cầu, không chiếm context lúc không dùng</td></tr>
+    <tr><td>Nhiều đội cùng cần truy vấn một hệ thống ticket bên ngoài</td><td>MCP server</td><td>Nối hệ ngoài, dùng lại, bảo trì độc lập</td></tr>
+    <tr><td>Đóng gói skill, hook và MCP cho 20 dự án</td><td>Plugin</td><td>Cài một lần cho nhiều dự án</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="exam-keywords" class="pb">11. Từ khoá đề thi</h2>
+<p>Các từ tiếng Anh dưới đây xuất hiện nguyên văn trong đề và tài liệu chính thức. Đọc cột giữa để nắm nghĩa, cột phải để biết đề hay gài ở đâu; bấm số mục để xem lại phần giải thích. Mọi từ khoá của các bài được gom ở trang <a href="/notes/lessons/glossary.html">Thuật ngữ</a>.</p>
+<div class="tw"><table class="kwt">
+  <thead><tr><th>Từ khoá</th><th>Nghĩa</th><th>Đề hay hỏi, dễ nhầm</th><th class="nw">Mục</th></tr></thead>
+  <tbody>
+    <tr data-kw="tool definition"><td>Tool definition: <code>name</code>, <code>description</code>, <code>input_schema</code></td><td>Khai báo tool gửi kèm request</td><td>Mô tả là cơ chế chính để model chọn tool; model không thấy code bên trong</td><td><a href="#tool-interface">§1</a></td></tr>
+    <tr data-kw="tool description"><td>Mô tả tool (use when / not when)</td><td>Nêu làm gì, khi nào dùng, khi nào không và dùng tool nào thay, kết quả trả về</td><td>Chọn sai tool thì sửa mô tả trước, không thêm few-shot hay router</td><td><a href="#tool-interface">§1</a></td></tr>
+    <tr data-kw="input_examples"><td><code>input_examples</code></td><td>Ví dụ đầu vào hợp lệ cho một tool</td><td>Sai schema thì trả 400; tốn thêm token; không dùng cho server tool</td><td><a href="#tool-interface">§1</a></td></tr>
+    <tr data-kw="system prompt tool bias"><td>System prompt lấn át mô tả tool</td><td>Một câu như “luôn kiểm tra tài khoản trước” kéo model về một tool</td><td>Rà system prompt khi model chọn sai tool dù mô tả tốt</td><td><a href="#tool-interface">§1</a></td></tr>
+    <tr data-kw="consolidate tools"><td>Gộp tool trùng chức năng</td><td>Một tool với tham số tuỳ chọn thay cho nhiều tool chỉ khác bộ lọc</td><td>Gộp khi chỉ khác bộ lọc, tách khi khác mục đích hay hợp đồng vào ra</td><td><a href="#tool-definition">§2</a></td></tr>
+    <tr data-kw="enum"><td><code>enum</code>, <code>required</code>, optional parameter</td><td>Danh sách giá trị cho phép; tham số bắt buộc; tham số bỏ trống được</td><td>Enum chặn Claude tự nghĩ ra giá trị lạ</td><td><a href="#tool-definition">§2</a></td></tr>
+    <tr data-kw="tool_use block"><td><code>tool_use</code> block (<code>id</code>, <code>name</code>, <code>input</code>)</td><td>Khối Claude trả về để xin gọi tool</td><td>Claude không tự chạy tool; code của bạn chạy</td><td><a href="#module-4">§3</a></td></tr>
+    <tr data-kw="tool_result block"><td><code>tool_result</code> block (<code>tool_use_id</code>, <code>content</code>, <code>is_error</code>)</td><td>Khối bạn gửi lại kết quả, ghép bằng <code>tool_use_id</code></td><td>Mỗi <code>tool_use</code> cần một <code>tool_result</code>, kể cả khi lỗi</td><td><a href="#module-4">§3</a></td></tr>
+    <tr data-kw="agentic loop"><td>Vòng lặp tool use</td><td>Gửi, nhận <code>tool_use</code>, chạy, gửi <code>tool_result</code>, lặp tới <code>end_turn</code></td><td>Phải append nguyên <code>response.content</code> vào history, không chỉ phần text</td><td><a href="#module-4">§3</a></td></tr>
+    <tr data-kw="stop_reason tool_use"><td><code>stop_reason</code>: <code>tool_use</code>, <code>end_turn</code>, <code>max_tokens</code>, <code>pause_turn</code></td><td>Mỗi giá trị cần hành động khác nhau trong vòng lặp</td><td>Không thêm text ngay sau <code>tool_result</code>; dễ gây response rỗng</td><td><a href="#module-4">§3</a></td></tr>
+    <tr data-kw="fine-grained tool calling"><td>Fine-grained tool calling (<code>eager_input_streaming</code>)</td><td>Nhận từng mảnh JSON của tool input khi đang sinh</td><td>Không có kiểm tra phía server; code phải xử lý JSON hỏng</td><td><a href="#module-4">§3</a></td></tr>
+    <tr data-kw="is_error"><td><code>is_error: true</code> (MCP: <code>isError</code>)</td><td>Cờ báo tool lỗi trong <code>tool_result</code></td><td>Trả lỗi có cấu trúc, không ném exception làm chết vòng lặp</td><td><a href="#tool-errors">§4</a></td></tr>
+    <tr data-kw="errorCategory isRetryable"><td><code>errorCategory</code>, <code>isRetryable</code></td><td>Loại lỗi (transient, validation, business, permission) và cờ có thử lại được</td><td><code>false</code> không có nghĩa bỏ việc; chỉ là gửi lại y hệt không giúp</td><td><a href="#tool-errors">§4</a></td></tr>
+    <tr data-kw="empty result vs error"><td>Kết quả rỗng và lỗi truy cập</td><td>Rỗng là truy vấn thành công không có dữ liệu; lỗi truy cập là không lấy được</td><td>Trộn hai loại làm agent kết luận sai</td><td><a href="#tool-errors">§4</a></td></tr>
+    <tr data-kw="transient business permission"><td>Lỗi transient, business, permission, validation</td><td>Bốn nhóm lỗi tool trong đề</td><td>Business: giải thích cho khách, đừng retry; transient: retry</td><td><a href="#tool-errors">§4</a></td></tr>
+    <tr data-kw="protocol error"><td>Protocol error và tool execution error (MCP)</td><td>Lỗi giao thức khác lỗi nằm trong kết quả tool</td><td>Lỗi validate đầu vào là tool execution error, trả bằng <code>isError: true</code></td><td><a href="#tool-errors">§4</a></td></tr>
+    <tr data-kw="tool scoping"><td>Tool đúng vai cho từng subagent</td><td>Mỗi agent chỉ có tool phục vụ vai của nó</td><td>Quá nhiều tool (18 thay vì 4 đến 5) giảm độ chính xác chọn</td><td><a href="#tool-distribution">§5</a></td></tr>
+    <tr data-kw="tool search tool"><td>Tool search tool</td><td>Claude tìm và nạp tool theo nhu cầu thay vì nạp hết</td><td>Giảm token định nghĩa; vẫn giữ nguyên tắc tool đúng vai</td><td><a href="#tool-distribution">§5</a></td></tr>
+    <tr data-kw="constrained tool"><td>Tool có ràng buộc thay tool chung</td><td>Ví dụ <code>load_document</code> thay <code>fetch_url</code></td><td>Tool chung dễ bị dùng sai mục đích</td><td><a href="#tool-distribution">§5</a></td></tr>
+    <tr data-kw="tool_choice auto any tool"><td><code>tool_choice</code>: <code>auto</code>, <code>any</code>, <code>tool</code>, <code>none</code></td><td>Bốn chế độ điều khiển việc gọi tool</td><td><code>auto</code> có thể trả lời bằng lời; muốn chắc có tool thì <code>any</code> hoặc ép tool</td><td><a href="#tool-choice">§6</a></td></tr>
+    <tr data-kw="forced tool"><td>Ép tool cụ thể (<code>{"type": "tool", "name": …}</code>)</td><td>Bắt buộc gọi đúng một tool</td><td>Dùng cho bước pipeline cố định; model mới có thể trả 400</td><td><a href="#tool-choice">§6</a></td></tr>
+    <tr data-kw="disable_parallel_tool_use"><td><code>disable_parallel_tool_use</code></td><td>Đặt trong <code>tool_choice</code> để chỉ một lời gọi mỗi lượt</td><td>Mặc định Claude 4 trở lên có thể gọi song song</td><td><a href="#tool-choice">§6</a></td></tr>
+    <tr data-kw="parallel tool calls"><td>Parallel tool calls</td><td>Nhiều <code>tool_use</code> trong một response, chạy cùng lúc</td><td>Gom hết rồi chạy; gửi mọi <code>tool_result</code> trong một user message</td><td><a href="#parallel-tools">§7</a></td></tr>
+    <tr data-kw="tool_result order"><td><code>tool_result</code> đứng trước text</td><td>Trong user message trả kết quả, khối result đứng đầu</td><td>Tách mỗi kết quả một message là lỗi phổ biến và giảm gọi song song</td><td><a href="#parallel-tools">§7</a></td></tr>
+    <tr data-kw="ThreadPoolExecutor"><td><code>ThreadPoolExecutor</code>, <code>future.result(timeout)</code></td><td>Chạy nhiều tool đồng thời trong Python, có hạn chờ</td><td>Phù hợp tool chờ mạng; quá hạn thì trả <code>is_error</code></td><td><a href="#parallel-tools">§7</a></td></tr>
+    <tr data-kw="client tool"><td>Client tool</td><td>Tool chạy trong ứng dụng của bạn</td><td>Gồm cả <code>bash</code> và <code>text_editor</code> dù schema do Anthropic định nghĩa</td><td><a href="#client-server">§8</a></td></tr>
+    <tr data-kw="server tool"><td>Server tool (<code>web_search</code>, <code>web_fetch</code>, <code>code_execution</code>)</td><td>Tool Anthropic chạy, kết quả nằm trong response</td><td>Không gửi <code>tool_result</code>; khối là <code>server_tool_use</code></td><td><a href="#client-server">§8</a></td></tr>
+    <tr data-kw="pause_turn"><td><code>pause_turn</code></td><td>Vòng lặp server tool dừng giữa chừng</td><td>Gửi lại nội dung assistant để chạy tiếp, không coi là xong</td><td><a href="#client-server">§8</a></td></tr>
+    <tr data-kw="approval pattern"><td>Mẫu duyệt (approval)</td><td>Dừng hỏi người trước khi chạy tool nhạy cảm</td><td>Quyết định nằm ở code điều phối, không ở model</td><td><a href="#client-server">§8</a></td></tr>
+    <tr data-kw="Grep vs Glob"><td>Grep, Glob</td><td>Grep tìm nội dung file; Glob tìm đường dẫn theo mẫu tên</td><td>Dùng Glob để tìm “file nào gọi hàm X” là sai</td><td><a href="#built-in">§9</a></td></tr>
+    <tr data-kw="Edit Read Write"><td>Edit, Read, Write</td><td>Edit sửa theo đoạn text duy nhất; không có thì Read rồi Write</td><td>Đoạn text xuất hiện nhiều lần thì Edit không biết sửa chỗ nào</td><td><a href="#built-in">§9</a></td></tr>
+    <tr data-kw="MCP skill plugin"><td>MCP server, skill, plugin</td><td>Ba cách mở rộng Claude Code ngoài built-in</td><td>MCP nối hệ ngoài; skill đóng gói quy trình; plugin gói nhiều thứ</td><td><a href="#choose-extension">§10</a></td></tr>
+  </tbody>
+</table></div>
+
+<p class="lesson-practice">Luyện câu hỏi của bài này trong <a href="/bank?lesson=05">🗂️ Ngân hàng</a>.</p>
+
+<div class="btns pager">
+  <a class="btn" href="/notes/lessons/04-prompt-output.html">← Bài 04 · Prompt và output có cấu trúc</a>
+  <a class="btn primary" href="/notes/lessons/06-mcp.html">Bài 06 · Model Context Protocol (MCP) →</a>
+</div>
+
+<footer>
+  Luyện thi chứng chỉ Claude · Bài 05 · Tool use · v0.39 · 2026-11-18. <a href="/notes/00-tong-quan.md">Tổng quan</a> · <a href="/new">Luyện đề</a>.
+</footer>

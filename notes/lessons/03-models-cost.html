@@ -1,0 +1,693 @@
+<p class="lesson-source">Nguồn: tài liệu ôn tập công khai <a href="https://claude.ai/artifact/3NhHr42CxTHGEs33N1ntFf" target="_blank" rel="noopener">artifact 3NhHr42…</a> (bài 03). Không thuộc và không được Anthropic xác nhận.</p>
+<header class="cover">
+  <div class="eyebrow">Luyện thi chứng chỉ Claude · Bài 03 · Chặng 2 · CCDV-F · bước 2/13</div>
+  <h1>Model, thinking và chi phí <span class="ja">Model Selection and Optimization</span></h1>
+  <p class="lead">Chọn Opus, Sonnet hay Haiku theo chất lượng, độ trễ và chi phí; extended thinking, cả trong vòng lặp tool; prompt caching; theo dõi và giảm chi phí; nâng cấp model.</p>
+  <dl class="meta">
+    <dt>Kỳ thi</dt><dd>CCDV-F D2, D5 · CCAO-F D3 · CCAR-P D2, D4, D6</dd>
+    <dt>Phục vụ</dt><dd><span class="tag xt1">CCDV-F</span> 7 mục · <span class="tag xt2">CCAO-F</span> 1 mục · <span class="tag xt4">CCAR-P</span> 4 mục · <a href="#xsum">bảng nhãn từng mục</a></dd>
+
+    <dt>Nguồn</dt><dd>Ghi chú «Đề cương CCDV-F và CCAO-F» Phần A D5; docs.claude.com (prompt caching, models); Ghi chú «Đề cương CCDV-F và CCAO-F» Phần A; platform.claude.com/docs (rate limits, token counting, extended thinking, context editing, compaction, citations, MCP connector, Admin API) tra 17/11/2026; academy.claude.com · Tool use with the Messages API · Crawl 2026-11-17</dd>
+    <dt>Cập nhật</dt><dd><span class="status">v0.39 · 2026-11-18</span> · theo exam guide v1.0</dd>
+  </dl>
+</header>
+
+<details class="toc">
+<summary>Mục lục</summary>
+
+    <ol>
+      <li><a href="#model-selection"><span class="n">1</span><span class="tx">Chọn model</span><span class="xds" aria-hidden="true"><i class="xd xt1" title="CCDV-F"></i><i class="xd xt2" title="CCAO-F"></i><i class="xd xt4" title="CCAR-P"></i></span></a></li>
+      <li><a href="#thinking"><span class="n">2</span><span class="tx">Thinking, effort, fast mode</span><span class="xds" aria-hidden="true"><i class="xd xt1" title="CCDV-F"></i></span></a></li>
+      <li><a href="#thinking-tool"><span class="n">3</span><span class="tx">Thinking trong vòng lặp tool</span><span class="xds" aria-hidden="true"><i class="xd xt1" title="CCDV-F"></i></span></a></li>
+      <li><a href="#caching"><span class="n">4</span><span class="tx">Prompt caching</span><span class="xds" aria-hidden="true"><i class="xd xt1" title="CCDV-F"></i><i class="xd xt4" title="CCAR-P"></i></span></a></li>
+      <li><a href="#cost"><span class="n">5</span><span class="tx">Theo dõi và giảm chi phí</span><span class="xds" aria-hidden="true"><i class="xd xt1" title="CCDV-F"></i><i class="xd xt4" title="CCAR-P"></i></span></a></li>
+      <li><a href="#cost-optimization"><span class="n">6</span><span class="tx">Giảm chi phí khi dùng nhiều tool</span><span class="xds" aria-hidden="true"><i class="xd xt1" title="CCDV-F"></i></span></a></li>
+      <li><a href="#model-upgrade"><span class="n">7</span><span class="tx">Nâng cấp model</span><span class="xds" aria-hidden="true"><i class="xd xt1" title="CCDV-F"></i><i class="xd xt4" title="CCAR-P"></i></span></a></li>
+      <li><a href="#exam-keywords"><span class="n">8</span><span class="tx">Từ khoá đề thi</span></a></li>
+    </ol>
+
+</details>
+
+<details class="xsum" id="xsum">
+<summary>Mục nào phục vụ bài thi nào</summary>
+<p class="xnote">Mã đầu là bài thi chính của mục. <b>Nền</b>: cần để hiểu các mục sau. <b>Nâng cao</b>: ngoài phạm vi các exam guide. Ôn cho một bài thi thì đọc các mục có mã của bài đó trước.</p>
+<div class="tw"><table>
+<thead><tr><th>Mục</th><th>Bài thi</th><th>Ghi chú</th></tr></thead>
+<tbody>
+<tr><td><a href="#model-selection">1. Chọn model</a></td><td><span class="tag xt1">CCDV-F D5</span> <span class="tag xt2">CCAO-F D3</span> <span class="tag xt4">CCAR-P D2</span></td><td></td></tr>
+<tr><td><a href="#thinking">2. Thinking, effort, fast mode</a></td><td><span class="tag xt1">CCDV-F D5</span> <span class="tag xt1">CCDV-F D2</span></td><td></td></tr>
+<tr><td><a href="#thinking-tool">3. Thinking trong vòng lặp tool</a></td><td><span class="tag xt1">CCDV-F D5</span> <span class="tag xt1">CCDV-F D2</span></td><td></td></tr>
+<tr><td><a href="#caching">4. Prompt caching</a></td><td><span class="tag xt1">CCDV-F D5</span> <span class="tag xt1">CCDV-F D2</span> <span class="tag xt4">CCAR-P D4</span></td><td>CCAR-F chỉ cần biết prompt caching tồn tại; chi tiết breakpoint là phần CCDV-F.</td></tr>
+<tr><td><a href="#cost">5. Theo dõi và giảm chi phí</a></td><td><span class="tag xt1">CCDV-F D5</span> <span class="tag xt4">CCAR-P D4</span></td><td></td></tr>
+<tr><td><a href="#cost-optimization">6. Giảm chi phí khi dùng nhiều tool</a></td><td><span class="tag xt1">CCDV-F D5</span></td><td></td></tr>
+<tr><td><a href="#model-upgrade">7. Nâng cấp model</a></td><td><span class="tag xt1">CCDV-F D5</span> <span class="tag xt4">CCAR-P D6</span></td><td></td></tr>
+</tbody></table></div>
+</details>
+
+<h2 id="model-selection">1. Chọn model</h2>
+<p class="xtags"><span class="tag xt1">CCDV-F D5</span> <span class="tag xt2">CCAO-F D3</span> <span class="tag xt4">CCAR-P D2</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Bạn cần chuyển một chiếc ghế. Bạn không thuê xe tải mười tấn cho việc đó, và cũng không chở cả tủ lạnh bằng xe đạp. Xe tải rất mạnh nhưng <strong>đắt và chậm quay đầu</strong>. Xe máy <strong>nhanh và rẻ</strong> nhưng chở được ít. Chọn model là chọn đúng cỡ xe cho đúng món hàng: <strong>rẻ và nhanh nhất mà vẫn chở tới nơi</strong>.
+</div>
+<p>Claude là một <strong>họ model</strong> với vài cỡ. Cỡ lớn giỏi hơn ở việc khó nhưng chậm và đắt. Cỡ nhỏ nhanh và rẻ nhưng yếu hơn ở việc phức tạp. Ba dòng chính:</p>
+<div class="tw"><table>
+  <thead><tr><th>Dòng</th><th>Dùng cho</th><th>Đánh đổi</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Opus</strong> (và Fable, dòng mạnh nhất)</td><td>Suy luận phức tạp, agent dài hơi, code khó</td><td>Đắt và chậm nhất</td></tr>
+    <tr><td><strong>Sonnet</strong></td><td>Cân bằng; mặc định cho phần lớn ứng dụng và code</td><td>Trung bình</td></tr>
+    <tr><td><strong>Haiku</strong></td><td>Phân loại, trích xuất đơn giản, subagent làm việc lặp lại, khối lượng lớn</td><td>Nhanh, rẻ nhất</td></tr>
+  </tbody>
+</table></div>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 214" role="img" aria-label="Ba dòng model xếp theo bậc: Haiku nhanh và rẻ nhất, Sonnet cân bằng, Opus và Fable mạnh nhưng đắt và chậm nhất">
+    <defs><marker id="m0201" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah"/></marker></defs>
+    <rect x="14" y="116" width="196" height="64" rx="6" class="b-done"/>
+    <text x="112" y="140" class="t tb" text-anchor="middle">Haiku</text>
+    <text x="112" y="158" class="ts" text-anchor="middle">phân loại, trích xuất, subagent</text>
+    <text x="112" y="171" class="ts" text-anchor="middle">nhanh và rẻ nhất</text>
+    <rect x="222" y="76" width="196" height="104" rx="6" class="b-step"/>
+    <text x="320" y="100" class="t tb" text-anchor="middle">Sonnet</text>
+    <text x="320" y="120" class="ts" text-anchor="middle">cân bằng tốc độ và chất lượng</text>
+    <text x="320" y="134" class="ts" text-anchor="middle">mặc định cho phần lớn</text>
+    <text x="320" y="148" class="ts" text-anchor="middle">ứng dụng và code</text>
+    <rect x="430" y="36" width="196" height="144" rx="6" class="b-sys"/>
+    <text x="528" y="60" class="t tb" text-anchor="middle">Opus · Fable</text>
+    <text x="528" y="82" class="ts" text-anchor="middle">suy luận phức tạp</text>
+    <text x="528" y="96" class="ts" text-anchor="middle">agent dài hơi, code khó</text>
+    <text x="528" y="118" class="ts" text-anchor="middle">đắt và chậm nhất</text>
+    <path d="M14,200 H620" class="ln" marker-end="url(#m0201)"/>
+    <text x="320" y="196" class="ts halo" text-anchor="middle">năng lực, giá và độ trễ cùng tăng</text>
+    <text x="320" y="18" class="ts" text-anchor="middle">Đừng chọn theo tên. Chọn bậc thấp nhất vẫn đạt tiêu chí của bạn.</text>
+  </svg></div>
+  <figcaption>Hình 1. Ba dòng model là ba bậc đánh đổi giữa năng lực, giá và tốc độ.</figcaption>
+</figure>
+<p>Cách chọn đi theo một quy trình, không đi theo cảm tính:</p>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 240" role="img" aria-label="Quy trình chọn model: đặt tiêu chí, dựng eval, thử model rẻ nhất, kiểm tra đạt chưa, nếu chưa thì lên bậc cao hơn, nếu đạt thì chốt">
+    <defs><marker id="m0202" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker></defs>
+    <rect x="10" y="40" width="106" height="62" rx="6" class="b-step"/><text x="63" y="62" class="t tb" text-anchor="middle">1 Tiêu chí</text><text x="63" y="78" class="ts" text-anchor="middle">chất lượng, độ trễ</text><text x="63" y="91" class="ts" text-anchor="middle">và ngân sách</text>
+    <rect x="138" y="40" width="106" height="62" rx="6" class="b-step"/><text x="191" y="62" class="t tb" text-anchor="middle">2 Eval</text><text x="191" y="78" class="ts" text-anchor="middle">ca thật của bài</text><text x="191" y="91" class="ts" text-anchor="middle">toán của bạn</text>
+    <rect x="266" y="40" width="106" height="62" rx="6" class="b-step"/><text x="319" y="62" class="t tb" text-anchor="middle">3 Thử model rẻ</text><text x="319" y="78" class="ts" text-anchor="middle">Haiku hoặc</text><text x="319" y="91" class="ts" text-anchor="middle">Sonnet trước</text>
+    <rect x="394" y="40" width="106" height="62" rx="6" class="b-hot"/><text x="447" y="62" class="t tb" text-anchor="middle">4 Đạt chưa?</text><text x="447" y="78" class="ts" text-anchor="middle">so với tiêu chí</text><text x="447" y="91" class="ts" text-anchor="middle">bằng eval</text>
+    <rect x="522" y="40" width="108" height="62" rx="6" class="b-done"/><text x="576" y="62" class="t tb" text-anchor="middle">5 Chốt</text><text x="576" y="78" class="ts" text-anchor="middle">rẻ và nhanh nhất</text><text x="576" y="91" class="ts" text-anchor="middle">vẫn đạt</text>
+    <path class="ln-acc flow" d="M116,71 H136" marker-end="url(#m0202)"/>
+    <path class="ln-acc flow" d="M244,71 H264" marker-end="url(#m0202)"/>
+    <path class="ln-acc flow" d="M372,71 H392" marker-end="url(#m0202)"/>
+    <path class="ln-acc flow" d="M500,71 H520" marker-end="url(#m0202)"/>
+    <path class="ln-warn-solid flow" d="M447,102 V140 H319 V104" marker-end="url(#m0202)"/>
+    <text x="383" y="134" class="ts halo" text-anchor="middle">chưa đạt: lên bậc cao hơn</text>
+    <circle class="tok" r="7" style="transform:translate(576px,28px)"/>
+    <rect x="10" y="170" width="620" height="58" rx="6" class="b-warn"/>
+    <text x="320" y="192" class="t tb" text-anchor="middle">Ba cách chọn sai thường gặp</text>
+    <text x="320" y="210" class="ts" text-anchor="middle">“Luôn dùng model mạnh nhất cho an toàn” · “Chọn theo bảng xếp hạng benchmark công khai”</text>
+    <text x="320" y="222" class="ts" text-anchor="middle">“Đổi model lớn hơn để chữa lỗi chú ý”</text>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Đặt tiêu chí chất lượng trước: thế nào là đạt.</li>
+    <li>Dựng eval: bộ ca thử lấy từ chính bài toán của bạn, có đáp án mong muốn.</li>
+    <li>Thử bằng model rẻ và nhanh trước.</li>
+    <li>Chấm kết quả bằng eval.</li>
+    <li>Chưa đạt thì lên bậc cao hơn (hoặc tăng effort) rồi chấm lại.</li>
+    <li>Đạt thì chốt model đó: rẻ và nhanh nhất vẫn đạt.</li>
+  </ol>
+  <figcaption>Hình 2. Chọn model bằng eval của chính bài toán, đi từ bậc rẻ lên.</figcaption>
+</figure>
+<p>Ví dụ: tính năng phân loại email thành “khiếu nại”, “hỏi giá”, “khác”. Bạn dựng 200 email thật đã gắn nhãn, thử Haiku và thấy đúng 96%, đạt mốc 95% bạn đặt. Bạn chốt Haiku. Nếu chỉ đúng 80%, bạn thử Sonnet. Bạn dừng ở bậc đầu tiên đạt, không nhảy thẳng lên bậc cao nhất.</p>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div><ul>
+    <li>“Luôn dùng model mạnh nhất cho an toàn”</li>
+    <li>Chọn theo bảng xếp hạng benchmark công khai</li>
+    <li>Đổi model lớn hơn để chữa lỗi chú ý</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đúng</div><ul>
+    <li>Đặt tiêu chí, đo trên eval của bài toán, chọn bậc thấp nhất vẫn đạt</li>
+    <li>Benchmark chung không đo bài toán của bạn; eval riêng mới đo</li>
+    <li>Lỗi chú ý thường sửa bằng cách cấu trúc lại prompt hoặc chia nhỏ việc</li>
+  </ul></div>
+</div>
+<div class="insight"><strong>Cốt lõi.</strong> Đặt tiêu chí chất lượng trước, đo trên bộ eval của chính bài toán, rồi chọn model <strong>rẻ và nhanh nhất vẫn đạt</strong>. Với CCAO-F: nhiều bản nháp ngắn, cần nhanh và rẻ thì model nhanh, rẻ là vừa đủ.</div>
+<div class="alert"><strong>Bẫy.</strong> “Luôn dùng model mạnh nhất cho an toàn”, “chọn theo bảng xếp hạng benchmark công khai”, “đổi model lớn hơn để chữa lỗi chú ý”.</div>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Trang models overview hiện hành gợi ý bắt đầu với Opus 5.5 cho phần lớn khối lượng việc, dùng Fable 5.2 khi việc đòi suy luận nặng hoặc agent dài hơi, Sonnet 5.5 khi cần cân bằng tốc độ và chất lượng, Haiku 5.5 cho việc khối lượng lớn, nhạy độ trễ như phân loại, trích xuất, định tuyến. Đề thi vẫn theo cách nói “Sonnet là mặc định cân bằng”, nhưng nguyên tắc không đổi: chọn theo eval. Nguồn: <a href="https://platform.claude.com/docs/en/about-claude/models/overview" target="_blank" rel="noopener">platform.claude.com/docs/en/about-claude/models/overview</a>.</div>
+<h3>1.1 Model ID, ghim phiên bản và giá theo bậc</h3>
+<p><strong>Model ID</strong> là chuỗi bạn truyền vào tham số <code>model</code>, ví dụ <code>claude-sonnet-5-5</code>. Theo docs hiện hành, mọi model ID của Claude đều là một <strong>snapshot đã ghim</strong>: cùng ID thì cùng model, không bị đổi ngầm phía sau. Với các model trước thế hệ 4.6, <strong>alias</strong> (tên không kèm ngày) chỉ là con trỏ tiện lợi, trỏ tới ID có ngày. Production nên dùng ID cụ thể và đổi bằng một thay đổi có chủ đích (xem mục 7).</p>
+<p>Giá tính theo <strong>MTok</strong> (một triệu token), tách riêng input và output. Bảng hiện hành cho thấy cùng một quy luật: output đắt gấp 5 lần input, và mỗi bậc đắt hơn bậc dưới nhiều lần.</p>
+<div class="tw"><table>
+  <thead><tr><th>Model</th><th class="nw">Input / MTok</th><th class="nw">Output / MTok</th><th>Độ trễ so sánh</th></tr></thead>
+  <tbody>
+    <tr><td>Fable 5.2</td><td class="nw">$8</td><td class="nw">$40</td><td>Trung bình</td></tr>
+    <tr><td>Opus 5.5</td><td class="nw">$4</td><td class="nw">$20</td><td>Trung bình</td></tr>
+    <tr><td>Sonnet 5.5</td><td class="nw">$2</td><td class="nw">$10</td><td>Nhanh</td></tr>
+    <tr><td>Haiku 5.5</td><td class="nw">từ $0,10</td><td class="nw">từ $0,50</td><td>Nhanh nhất</td></tr>
+  </tbody>
+</table></div>
+<p>Ví dụ có số: phân loại 100.000 email, mỗi email 500 token vào và 50 token ra. Tổng là 50 triệu token input và 5 triệu token output. Với Haiku 5.5: 50 × $0,10 + 5 × $0,50 = $7,50. Với Sonnet 5.5: 50 × $2 + 5 × $10 = $150. Cùng việc, chênh khoảng 20 lần. Nếu Haiku đã đạt mốc chất lượng trên eval thì Sonnet chỉ là trả thêm tiền.</p>
+<div class="alert"><strong>Bẫy.</strong> Giá và tên model đổi nhanh. Đề kiểm tra nguyên tắc (chọn bậc thấp nhất vẫn đạt eval, output đắt hơn input), không kiểm tra thuộc lòng bảng giá. Nguồn bảng trên: <a href="https://platform.claude.com/docs/en/about-claude/models/overview" target="_blank" rel="noopener">models overview</a>.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Model</dt><dd>Chương trình đã huấn luyện sẵn, nhận chữ vào và sinh chữ ra.</dd>
+  <dt>Eval</dt><dd>Bộ ca thử có đáp án mong muốn để chấm một prompt hoặc model.</dd>
+  <dt>Độ trễ (latency)</dt><dd>Thời gian chờ từ lúc gửi tới lúc có câu trả lời.</dd>
+  <dt>Benchmark</dt><dd>Bài kiểm tra chung để xếp hạng model. Đo việc của người khác, chưa chắc đo việc của bạn.</dd>
+  <dt>Model ID</dt><dd>Chuỗi trong tham số <code>model</code> chọn đúng một model. Là snapshot đã ghim.</dd>
+  <dt>MTok</dt><dd>Một triệu token, đơn vị ghi giá. Input và output có giá riêng.</dd>
+</dl></div>
+
+<h2 id="thinking" class="pb">2. Thinking, effort, fast mode</h2>
+<p class="xtags"><span class="tag xt1">CCDV-F D5</span> <span class="tag xt1">CCDV-F D2</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Một học sinh làm bài. Câu “2 + 2 = ?” thì viết luôn. Câu chứng minh hình học thì <strong>nháp ra giấy</strong> trước khi viết lời giải. Nháp tốn thời gian nhưng bài khó thì cần. <em>Thinking</em> là tờ nháp của model. <em>Effort</em> là dặn học sinh làm kỹ đến đâu. <em>Fast mode</em> là thuê học sinh giỏi cùng lớp, làm nhanh hơn nhưng trả công cao hơn.
+</div>
+<p><strong>Extended thinking</strong>: model suy luận từng bước trước khi trả lời. Phần suy luận tốn token và thời gian. <strong>Adaptive thinking</strong>: model tự quyết khi nào cần nghĩ và nghĩ bao nhiêu. <strong>Effort</strong>: một núm điều chỉnh mức kỹ lưỡng so với tốc độ và số token.</p>
+<div class="tw"><table>
+  <thead><tr><th>Tuỳ chọn</th><th>Là gì</th><th>Khi nào</th></tr></thead>
+  <tbody>
+    <tr><td>Extended thinking</td><td>Model suy luận trước khi trả lời; bản cũ đặt ngân sách bằng <code>budget_tokens</code></td><td>Bài suy luận nhiều bước</td></tr>
+    <tr><td>Adaptive thinking</td><td>Model tự quyết khi nào nghĩ và nghĩ bao nhiêu</td><td>Mặc định khuyên dùng cho việc phức tạp</td></tr>
+    <tr><td>Effort</td><td>Núm đánh đổi độ kỹ với tốc độ và token trong cùng model (<code>low</code> … <code>max</code>)</td><td>Thấp cho subagent, việc đơn giản; cao cho code, agent dài</td></tr>
+    <tr><td>Fast mode</td><td>Cùng model, sinh output nhanh hơn, giá cao hơn</td><td>Cần độ trễ thấp và chấp nhận trả thêm</td></tr>
+  </tbody>
+</table></div>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 256" role="img" aria-label="Adaptive thinking: cùng một request, việc dễ thì model nghĩ ít hoặc bỏ qua rồi trả lời nhanh, việc khó thì nghĩ lâu rồi trả lời kỹ; effort chỉnh mức kỹ">
+    <defs><marker id="m0203" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker></defs>
+    <rect x="10" y="68" width="130" height="62" rx="6" class="b-sys"/><text x="75" y="92" class="t tb" text-anchor="middle">Request</text><text x="75" y="110" class="ts" text-anchor="middle">thinking: adaptive</text>
+    <rect x="190" y="20" width="200" height="56" rx="6" class="b-step"/><text x="290" y="42" class="t tb" text-anchor="middle">Việc dễ: phân loại</text><text x="290" y="60" class="ts" text-anchor="middle">model nghĩ ít hoặc bỏ qua</text>
+    <rect x="440" y="20" width="190" height="56" rx="6" class="b-done"/><text x="535" y="42" class="t tb" text-anchor="middle">Trả lời nhanh</text><text x="535" y="60" class="ts" text-anchor="middle">ít token, rẻ</text>
+    <rect x="190" y="124" width="200" height="56" rx="6" class="b-hot"/><text x="290" y="146" class="t tb" text-anchor="middle">Việc khó: bug khó</text><text x="290" y="164" class="ts" text-anchor="middle">model nghĩ lâu, nhiều bước</text>
+    <rect x="440" y="124" width="190" height="56" rx="6" class="b-done"/><text x="535" y="146" class="t tb" text-anchor="middle">Trả lời kỹ</text><text x="535" y="164" class="ts" text-anchor="middle">tốn token và thời gian hơn</text>
+    <path class="ln-acc flow" d="M140,88 L188,56" marker-end="url(#m0203)"/>
+    <path class="ln-acc flow" d="M390,48 H438" marker-end="url(#m0203)"/>
+    <path class="ln-acc flow" d="M140,110 L188,152" marker-end="url(#m0203)"/>
+    <path class="ln-acc flow" d="M390,152 H438" marker-end="url(#m0203)"/>
+    <circle class="tok" r="7" style="transform:translate(290px,114px)"/>
+    <g><rect x="10" y="196" width="620" height="48" rx="6" class="b-hot"/>
+      <text x="320" y="216" class="t tb" text-anchor="middle">effort (output_config.effort): từ low đến max</text>
+      <text x="320" y="233" class="ts" text-anchor="middle">Thấp cho subagent và việc đơn giản. Cao cho code và agent chạy dài.</text></g>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Bật <code>thinking: {type: "adaptive"}</code> trong request.</li>
+    <li>Việc dễ: model nghĩ ít hoặc bỏ qua, trả lời nhanh.</li>
+    <li>Việc khó: model tự quyết nghĩ nhiều hơn rồi mới trả lời.</li>
+    <li>Muốn kỹ hơn hay nhanh hơn thì chỉnh <code>effort</code>, không cần đổi model.</li>
+  </ol>
+  <figcaption>Hình 3. Adaptive thinking tự co giãn theo độ khó. Effort chỉnh mức kỹ lưỡng.</figcaption>
+</figure>
+<p>Bật thinking cho kiến trúc, bug khó, toán; để thấp cho phân loại, trích xuất khối lượng lớn.</p>
+<div class="alert"><strong>Bẫy.</strong> Thinking và effort <strong>tốn token và thời gian</strong>. Bật mức cao cho mọi request, kể cả phân loại đơn giản, là lãng phí. Fast mode không phải model khác: cùng model, nhanh hơn, <strong>giá cao hơn</strong>.</div>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Các model mới (Opus 5.5, Sonnet 5.5, Fable 5.2) đã bỏ <code>budget_tokens</code>; dùng <code>thinking: {type: "adaptive"}</code> và điều chỉnh bằng <code>output_config.effort</code>. Docs hiện hành: không đặt <code>effort</code> thì mức mặc định của model được dùng, và với model có adaptive thinking thì effort là cách khuyên dùng để điều khiển độ sâu suy nghĩ. Nguồn: <a href="https://platform.claude.com/docs/en/build-with-claude/effort" target="_blank" rel="noopener">platform.claude.com/docs/en/build-with-claude/effort</a>.</div>
+<h3>2.1 Năm mức effort</h3>
+<p><code>effort</code> đặt trong <code>output_config</code>. Docs hiện hành liệt kê năm mức, từ rẻ và nhanh đến kỹ và tốn:</p>
+<div class="tw"><table>
+  <thead><tr><th>Mức</th><th>Ý nghĩa</th><th>Dùng cho</th></tr></thead>
+  <tbody>
+    <tr><td><code>low</code></td><td>Hiệu quả nhất, tiết kiệm token, giảm một phần năng lực</td><td>Subagent, việc đơn giản, khối lượng lớn</td></tr>
+    <tr><td><code>medium</code></td><td>Cân bằng tốc độ, chi phí, chất lượng</td><td>Agent cần cân bằng</td></tr>
+    <tr><td><code>high</code></td><td>Dùng bao nhiêu token tuỳ việc để đạt kết quả tốt</td><td>Suy luận phức tạp, code khó</td></tr>
+    <tr><td><code>xhigh</code></td><td>Mở rộng cho việc rất dài hơi</td><td>Agent và code chạy hơn 30 phút</td></tr>
+    <tr><td><code>max</code></td><td>Tối đa năng lực, không giới hạn token</td><td>Đo trần năng lực, việc cực hiếm</td></tr>
+  </tbody>
+</table></div>
+<ul>
+  <li><strong>Mặc định</strong> là <code>high</code>, trừ Opus 5.5 và Haiku 5.5 mặc định <code>medium</code>. Đặt đúng mức mặc định thì giống hệt không đặt gì. Không phải model nào cũng hỗ trợ <code>xhigh</code>.</li>
+  <li>Effort áp dụng cho <strong>mọi token</strong> trong response: lời văn, lời gọi tool và tham số tool, cả thinking. Nó chạy được cả khi không bật thinking. Effort thấp cũng nghĩa là ít lời gọi tool hơn và ngắn gọn hơn.</li>
+  <li>Effort là <strong>tín hiệu hành vi</strong>, không phải ngân sách cứng. Ở mức thấp, model vẫn nghĩ nếu bài đủ khó, chỉ nghĩ ít hơn.</li>
+  <li>Effort không ép độ dài câu trả lời. Muốn câu trả lời ngắn hơn thì nói trong prompt.</li>
+  <li>Thinking tính vào <code>max_tokens</code> dù nội dung thinking không được trả về. Ở <code>high</code> trở lên, đặt <code>max_tokens</code> đủ lớn.</li>
+</ul>
+<p>Ví dụ: bạn có subagent trích ngày tháng từ hợp đồng và một agent sửa bug nhiều file. Đặt subagent ở <code>low</code> thì nhanh và rẻ, chất lượng vẫn đạt trên eval. Đặt agent sửa bug ở <code>high</code>, và chỉ thử <code>xhigh</code> khi eval cho thấy có cải thiện đo được.</p>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div><ul>
+    <li>Đặt <code>max</code> cho mọi request cho chắc</li>
+    <li>Hạ effort để câu trả lời ngắn lại</li>
+    <li>Đặt <code>max_tokens</code> nhỏ khi effort cao</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đúng</div><ul>
+    <li>Bắt đầu ở mức mặc định, chạy eval, tăng hoặc giảm khi số liệu cho thấy đáng</li>
+    <li>Độ dài chỉnh bằng prompt; effort chỉnh độ kỹ</li>
+    <li>Chừa chỗ cho cả thinking lẫn câu trả lời trong <code>max_tokens</code></li>
+  </ul></div>
+</div>
+<div class="insight"><strong>Cốt lõi.</strong> Effort chọn độ kỹ trong cùng một model, không đổi model. Chọn mức bằng eval: hạ khi chất lượng vẫn giữ, nâng khi eval thấy lợi.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Thinking block</dt><dd>Khối nội dung chứa phần suy luận của model, nằm trong <code>content</code> của response.</dd>
+  <dt><code>budget_tokens</code></dt><dd>Cách cũ: đặt trần token cho phần suy luận. Model mới đã bỏ.</dd>
+  <dt><code>output_config</code></dt><dd>Tham số cấp request chứa <code>effort</code> (và <code>task_budget</code> ở bản beta).</dd>
+</dl></div>
+
+<h2 id="thinking-tool">3. Thinking trong vòng lặp tool</h2>
+<p class="xtags"><span class="tag xt1">CCDV-F D5</span> <span class="tag xt1">CCDV-F D2</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Một thám tử ghi sổ tay trước khi đi hỏi nhân chứng. Quay về, anh ta mở lại đúng trang đó để nối suy luận cũ với lời khai mới. Nếu ai xé hoặc sửa trang sổ, anh ta mất mạch suy luận.
+</div>
+<p>Khi bật thinking và có tool, response có thể gồm khối <code>thinking</code> rồi khối <code>tool_use</code>. Bạn chạy tool và gửi lại. Quy tắc quan trọng nhất: gửi lại <strong>nguyên vẹn toàn bộ content của assistant message</strong>, gồm cả khối thinking, rồi mới tới user message chứa <code>tool_result</code>. Khối thinking có chữ ký (<code>signature</code>) để API kiểm tra nó không bị sửa.</p>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 286" role="img" aria-label="Vòng lặp tool có thinking: ứng dụng gửi request, Claude trả thinking và tool_use, ứng dụng chạy tool, gửi lại assistant content nguyên vẹn cùng tool_result, Claude nghĩ tiếp giữa các lần gọi tool rồi trả lời">
+    <defs><marker id="m1903" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker></defs>
+    <rect x="20" y="10" width="150" height="30" rx="6" class="b-step"/><text x="95" y="30" class="t tb" text-anchor="middle">Ứng dụng của bạn</text>
+    <rect x="470" y="10" width="150" height="30" rx="6" class="b-sys"/><text x="545" y="30" class="t tb" text-anchor="middle">Claude API</text>
+    <path d="M95,40 V280" class="ln-dash"/><path d="M545,40 V280" class="ln-dash"/>
+    <path class="ln-acc flow" d="M95,66 H543" marker-end="url(#m1903)"/>
+    <text x="320" y="60" class="ts halo" text-anchor="middle">1 messages + tools + thinking adaptive</text>
+    <path class="ln-acc flow" d="M545,104 H97" marker-end="url(#m1903)"/>
+    <text x="320" y="98" class="ts halo" text-anchor="middle">2 content: [thinking (có signature), tool_use]</text>
+    <rect x="20" y="120" width="150" height="34" rx="6" class="b-hot"/>
+    <text x="95" y="141" class="t" text-anchor="middle">3 Chạy tool</text>
+    <path class="ln-acc flow" d="M95,180 H543" marker-end="url(#m1903)"/>
+    <text x="320" y="168" class="ts halo" text-anchor="middle">4 assistant: content nguyên vẹn, kể cả thinking</text>
+    <text x="320" y="194" class="ts halo" text-anchor="middle">user: mọi tool_result trong một message</text>
+    <path class="ln-acc flow" d="M545,232 H97" marker-end="url(#m1903)"/>
+    <text x="320" y="226" class="ts halo" text-anchor="middle">5 nghĩ tiếp giữa các lần gọi tool, rồi end_turn</text>
+    <rect x="470" y="244" width="150" height="34" rx="6" class="b-done"/>
+    <text x="545" y="265" class="t" text-anchor="middle">interleaved thinking</text>
+    <circle class="tok" r="7" style="transform:translate(320px,244px)"/>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Gửi request có tools và bật thinking.</li>
+    <li>Claude suy luận trong khối thinking rồi quyết định gọi tool.</li>
+    <li>Ứng dụng chạy tool như bình thường.</li>
+    <li>Gửi lại assistant message nguyên vẹn (không cắt khối thinking), rồi user message chứa mọi tool_result.</li>
+    <li>Claude đọc kết quả, nghĩ tiếp, có thể gọi thêm tool hoặc trả lời.</li>
+  </ol>
+  <figcaption>Hình 4. Giữ khối thinking trong lịch sử để Claude nối mạch suy luận giữa các lần gọi tool.</figcaption>
+</figure>
+<div class="tw"><table>
+  <thead><tr><th>Quy tắc</th><th>Vì sao</th></tr></thead>
+  <tbody>
+    <tr><td>Không sửa, không cắt khối <code>thinking</code> (và <code>redacted_thinking</code> ở model cũ) trong lượt tool đang chạy</td><td>Claude cần mạch suy luận cũ; API kiểm tra chữ ký, khối bị sửa có thể bị bỏ hoặc gây lỗi</td></tr>
+    <tr><td>Thinking chỉ đi với <code>tool_choice</code> <code>auto</code> hoặc <code>none</code></td><td>Ép gọi tool (<code>any</code>, <code>tool</code>) không cho model nghĩ trước khi gọi</td></tr>
+    <tr><td>Kiểu cũ <code>budget_tokens</code> phải nhỏ hơn <code>max_tokens</code></td><td>Phần nghĩ nằm trong output; không chừa chỗ thì không còn chỗ cho câu trả lời</td></tr>
+    <tr><td>Không bật hoặc tắt thinking giữa một lượt tool đang dở</td><td>Lượt assistant phải nhất quán từ đầu tới khi xong vòng tool</td></tr>
+    <tr><td>Token thinking tính như output</td><td>Kể cả khi chỉ nhận bản tóm tắt hoặc phần thinking để trống</td></tr>
+  </tbody>
+</table></div>
+<p><strong>Interleaved thinking</strong>: model nghĩ xen giữa các lần gọi tool, không chỉ nghĩ một lần ở đầu. Adaptive thinking tự bật chế độ này. Phần chọn khi nào bật thinking, effort, chi phí xem <a href="#thinking">bài 03 mục Thinking</a>.</p>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div>Để tiết kiệm token, ứng dụng chỉ giữ khối <code>text</code> và <code>tool_use</code> của assistant, bỏ khối <code>thinking</code> trước khi gửi <code>tool_result</code>.</div>
+  <div class="box right"><div class="hd">Đúng</div>Nối nguyên <code>response.content</code> vào lịch sử. Muốn giảm token thì dùng context editing để xoá thinking cũ của các lượt <strong>đã xong</strong>.</div>
+</div>
+<div class="insight"><strong>Cốt lõi.</strong> Thinking cộng tool: giữ nguyên content của assistant, <code>tool_choice</code> chỉ <code>auto</code> hoặc <code>none</code>, thinking tính như output.</div>
+<div class="alert"><strong>Bẫy.</strong> "Ép <code>tool_choice</code> về một tool cụ thể trong khi vẫn bật extended thinking" để vừa chắc chắn gọi tool vừa suy luận kỹ: hai thứ này không đi cùng nhau.</div>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Model mới (Opus 5.5, Sonnet 5.5, Fable 5.2) dùng <code>thinking: {type: "adaptive"}</code>, bỏ <code>budget_tokens</code>, và trả 400 với <code>tool_choice</code> <code>any</code>/<code>tool</code> dù có bật thinking hay không. Mặc định phần thinking trả về để trống (<code>display: "omitted"</code>); đặt <code>"summarized"</code> để xem bản tóm tắt. Khối thinking gắn với model và hội thoại đã sinh ra nó: sửa lịch sử phía trước làm khối đó mất hiệu lực. Nguồn: platform.claude.com/docs/en/build-with-claude/extended-thinking.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Signature</dt><dd>Chuỗi mã hoá đi kèm khối thinking để API xác minh khối không bị sửa.</dd>
+  <dt>redacted_thinking</dt><dd>Khối thinking đã mã hoá (ở model cũ), không đọc được nhưng vẫn phải gửi lại nguyên vẹn.</dd>
+  <dt>Interleaved thinking</dt><dd>Model nghĩ xen giữa các lần gọi tool trong cùng một lượt.</dd>
+</dl></div>
+
+<h2 id="caching">4. Prompt caching</h2>
+<p class="xtags"><span class="tag xt1">CCDV-F D5</span> <span class="tag xt1">CCDV-F D2</span> <span class="tag xt4">CCAR-P D4</span> <span class="xnote">CCAR-F chỉ cần biết prompt caching tồn tại; chi tiết breakpoint là phần CCDV-F.</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Mỗi sáng bạn nhờ thư ký tóm tắt cùng một cuốn sổ tay quy định dài 50 trang rồi mới trả lời câu hỏi của bạn. Cứ đọc lại 50 trang mỗi lần thì mất công. Cách hay hơn: thư ký <strong>đọc một lần rồi dán sẵn tờ ghi nhớ</strong>, hôm sau chỉ cần liếc tờ ghi nhớ. Nhưng nếu ai đó sửa <strong>một chữ ở trang 3</strong>, mọi thứ từ trang 3 trở đi phải đọc lại. Đó là cache theo tiền tố.
+</div>
+<p><strong>Prompt caching</strong> cho phép API nhớ phần đầu (<strong>tiền tố</strong>) của prompt đã xử lý trước đó, để lần sau khỏi tính lại. Bạn đánh dấu chỗ kết thúc phần cố định bằng một <strong>breakpoint</strong> (<code>cache_control</code>):</p>
+<pre><code>"system": [
+  {"type": "text", "text": "…hướng dẫn dài, cố định…",
+   "cache_control": {"type": "ephemeral"}}      // breakpoint sau phần cố định
+],
+"messages": [ … câu hỏi thay đổi đặt sau breakpoint … ]</code></pre>
+<div class="chain" role="list" aria-label="Thứ tự tiền tố cache">
+  <div class="lk" role="listitem"><b>tools</b><span>đứng đầu</span></div><span class="ar" aria-hidden="true">→</span>
+  <div class="lk" role="listitem"><b>system</b><span>giữa</span></div><span class="ar" aria-hidden="true">→</span>
+  <div class="lk" role="listitem"><b>messages</b><span>cuối</span></div>
+</div>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 290" role="img" aria-label="Ba request liên tiếp: request một ghi cache cho tools và system, request hai đọc cache, request ba đổi system nên mất cache từ system trở về sau">
+    <text x="340" y="26" class="ts" text-anchor="middle">breakpoint</text>
+    <path d="M340,32 V222" class="ln-dash"/>
+    <g>
+      <text x="10" y="76" class="t tb">Request 1</text>
+      <rect x="120" y="52" width="90" height="40" rx="4" class="b-hot"/><text x="165" y="76" class="ts" text-anchor="middle">tools</text>
+      <rect x="210" y="52" width="130" height="40" rx="4" class="b-hot"/><text x="275" y="76" class="ts" text-anchor="middle">system</text>
+      <rect x="340" y="52" width="120" height="40" rx="4" class="b-step"/><text x="400" y="76" class="ts" text-anchor="middle">messages (câu A)</text>
+      <text x="470" y="68" class="ts">Ghi cache: đắt hơn</text><text x="470" y="82" class="ts">input thường một chút</text></g>
+    <g>
+      <text x="10" y="140" class="t tb">Request 2</text>
+      <rect x="120" y="116" width="90" height="40" rx="4" class="b-done"/><text x="165" y="140" class="ts" text-anchor="middle">tools</text>
+      <rect x="210" y="116" width="130" height="40" rx="4" class="b-done"/><text x="275" y="140" class="ts" text-anchor="middle">system</text>
+      <rect x="340" y="116" width="120" height="40" rx="4" class="b-step"/><text x="400" y="140" class="ts" text-anchor="middle">messages (câu B)</text>
+      <text x="470" y="132" class="ts">Trúng cache: đọc rẻ</text><text x="470" y="146" class="ts">hơn rất nhiều</text></g>
+    <g>
+      <text x="10" y="204" class="t tb">Request 3</text>
+      <rect x="120" y="180" width="90" height="40" rx="4" class="b-done"/><text x="165" y="204" class="ts" text-anchor="middle">tools</text>
+      <rect x="210" y="180" width="130" height="40" rx="4" class="b-warn"/><text x="275" y="198" class="ts" text-anchor="middle">system</text><text x="275" y="211" class="ts" text-anchor="middle">(đổi 1 byte)</text>
+      <rect x="340" y="180" width="120" height="40" rx="4" class="b-warn"/><text x="400" y="204" class="ts" text-anchor="middle">messages</text>
+      <text x="470" y="196" class="ts">Mất cache từ chỗ</text><text x="470" y="210" class="ts">đổi trở về sau</text></g>
+    <g><rect x="10" y="238" width="620" height="44" rx="6" class="b-hot"/>
+      <text x="320" y="257" class="t tb" text-anchor="middle">Kiểm tra bằng usage.cache_read_input_tokens</text>
+      <text x="320" y="273" class="ts" text-anchor="middle">Luôn bằng 0 nghĩa là có thứ đang phá tiền tố.</text></g>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Request 1: lần đầu, API ghi tiền tố (tools và system) vào cache. Phần messages sau breakpoint không vào cache.</li>
+    <li>Request 2: tiền tố giống hệt nên trúng cache. Chỉ phần câu hỏi mới tính giá thường.</li>
+    <li>Request 3: ai đó đổi một byte trong system. Tools vẫn trúng, nhưng system và mọi thứ sau nó phải tính lại.</li>
+    <li>Muốn biết cache có hoạt động không, đọc trường <code>usage</code> của response.</li>
+  </ol>
+  <figcaption>Hình 5. Cache theo tiền tố: đổi một byte ở phần trước thì mất cache của mọi phần sau.</figcaption>
+</figure>
+<p>Ví dụ có số: system prompt dài 5.000 token. Request đầu ghi cache: chi phí tương đương khoảng 6.250 token tính giá thường (đắt hơn 25%). Request thứ hai trúng cache: chi phí khoảng 500 token tính giá thường (rẻ bằng 10%). Từ request thứ ba trở đi vẫn như request hai, miễn là tiền tố không đổi và còn trong thời gian sống của cache.</p>
+<ul>
+  <li>Cache theo <strong>tiền tố</strong>: đổi một byte ở phần trước là mất cache của mọi phần sau. Đổi tool làm mất cache cả system và messages.</li>
+  <li>Thủ phạm hay gặp: thời gian hiện tại trong system prompt, JSON không sắp thứ tự khoá, danh sách tool thay đổi.</li>
+  <li>TTL mặc định <strong>5 phút</strong> (làm mới khi trúng), có tuỳ chọn <strong>1 giờ</strong>. Tối đa 4 breakpoint; tiền tố quá ngắn sẽ không được cache (ngưỡng tuỳ model).</li>
+  <li>Ghi cache đắt hơn input thường một chút; đọc cache rẻ hơn rất nhiều.</li>
+  <li>Kiểm tra bằng <code>usage.cache_read_input_tokens</code>: luôn bằng 0 nghĩa là có thứ đang phá tiền tố.</li>
+</ul>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div><ul>
+    <li>Nhét giờ hiện tại hoặc ID ngẫu nhiên vào đầu system prompt</li>
+    <li>Đặt phần thay đổi (câu hỏi) <strong>trước</strong> phần cố định (tài liệu dài)</li>
+    <li>Cho rằng cache giúp API “nhớ” hội thoại</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đúng</div><ul>
+    <li>Đặt phần cố định ở đầu, phần thay đổi ở cuối, sau breakpoint</li>
+    <li>Giữ nguyên thứ tự khoá JSON và danh sách tool giữa các request</li>
+    <li>Cache chỉ giảm chi phí tiền tố lặp lại, không tạo trí nhớ</li>
+  </ul></div>
+</div>
+<div class="alert"><strong>Bẫy.</strong> <code>cache_read_input_tokens</code> luôn bằng 0 thường do có thứ thay đổi nằm <strong>trước</strong> breakpoint (giờ hiện tại, thứ tự khoá, tool). Đổi model lớn hơn hay tăng <code>max_tokens</code> không chữa được.</div>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Docs hiện hành: ghi cache TTL 5 phút đắt hơn input thường 25%, đọc cache bằng 10% giá input (có ngoại lệ theo model). Ngưỡng tối thiểu để được cache là 512 token với các model mới (Opus 5.5, Sonnet 5.5, Haiku 5.5, Fable 5.2), nhưng các model cũ có ngưỡng 1.024 đến 4.096 token. Phần cache nhỏ hơn ngưỡng bị bỏ qua và <strong>không có lỗi</strong> nào báo. Hệ thống chỉ nhìn ngược tối đa 20 khối để tìm bản ghi trước đó, nên hội thoại dài cần thêm breakpoint ở giữa. Request song song chỉ trúng cache sau khi request đầu bắt đầu có phản hồi. Nguồn: <a href="https://platform.claude.com/docs/en/build-with-claude/prompt-caching" target="_blank" rel="noopener">platform.claude.com/docs/en/build-with-claude/prompt-caching</a>.</div>
+<h3>4.1 Hai cách đặt breakpoint</h3>
+<p>Docs hiện hành có hai cách. <strong>Automatic caching</strong>: thêm một trường <code>cache_control</code> ở cấp trên cùng của request, hệ thống tự đặt breakpoint ở khối cache được cuối cùng và dời nó tới khi hội thoại dài ra. Hợp với hội thoại nhiều lượt, vì phần lịch sử cũ được đọc từ cache còn lượt mới tính thêm. <strong>Explicit breakpoint</strong>: bạn tự gắn <code>cache_control</code> vào từng khối, như ví dụ ở trên. Hợp khi phần cố định (tool, system, tài liệu) rõ ràng và bạn muốn kiểm soát. Hai cách dùng chung được; breakpoint tự động chiếm một trong 4 chỗ.</p>
+<div class="tw"><table>
+  <thead><tr><th>Tiêu chí</th><th>Automatic</th><th>Explicit</th></tr></thead>
+  <tbody>
+    <tr><td>Cách bật</td><td>Một <code>cache_control</code> ở cấp request</td><td><code>cache_control</code> trên từng khối</td></tr>
+    <tr><td>Breakpoint</td><td>Tự dời tới khối cuối</td><td>Cố định ở chỗ bạn đặt</td></tr>
+    <tr><td>Hợp với</td><td>Hội thoại nhiều lượt dài dần</td><td>Tiền tố cố định lớn: tool, system, tài liệu</td></tr>
+  </tbody>
+</table></div>
+<h3>4.2 Đọc usage khi có cache</h3>
+<p>Khi dùng cache, <code>input_tokens</code> chỉ là phần <strong>sau breakpoint cuối</strong>, không phải toàn bộ input. Tổng input bằng ba trường cộng lại:</p>
+<pre><code>total_input = cache_read_input_tokens + cache_creation_input_tokens + input_tokens</code></pre>
+<p>Ví dụ: request có <code>cache_read_input_tokens: 100000</code>, <code>cache_creation_input_tokens: 0</code>, <code>input_tokens: 50</code>. Tổng input là 100.050 token, nhưng chỉ 50 token tính giá thường; 100.000 token còn lại tính giá đọc cache. Nếu cả <code>cache_creation_input_tokens</code> và <code>cache_read_input_tokens</code> đều bằng 0 thì prompt không được cache, thường vì ngắn hơn ngưỡng tối thiểu hoặc tiền tố bị đổi.</p>
+<div class="tw"><table>
+  <thead><tr><th>Loại token</th><th>Hệ số so với giá input thường</th></tr></thead>
+  <tbody>
+    <tr><td>Ghi cache, TTL 5 phút</td><td>1,25 lần</td></tr>
+    <tr><td>Ghi cache, TTL 1 giờ</td><td>2 lần</td></tr>
+    <tr><td>Đọc cache</td><td>0,1 lần (Opus 5.5 và Sonnet 5.5: 0,05 lần)</td></tr>
+  </tbody>
+</table></div>
+<p>Chọn TTL 1 giờ bằng <code>"cache_control": {"type": "ephemeral", "ttl": "1h"}</code>. Đáng giá khi các request cách nhau hơn 5 phút, vì cache 5 phút đã hết hạn trước lần gọi sau.</p>
+<div class="alert"><strong>Bẫy.</strong> Thấy <code>input_tokens</code> chỉ vài chục mà tưởng prompt ngắn, hoặc dùng nó để tính chi phí. Phải cộng đủ ba trường. Hệ số trong bảng lấy từ <a href="https://platform.claude.com/docs/en/build-with-claude/prompt-caching" target="_blank" rel="noopener">docs prompt caching</a>.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Tiền tố (prefix)</dt><dd>Phần đầu của prompt, tính từ chữ đầu tiên tới một điểm nào đó.</dd>
+  <dt>Breakpoint</dt><dd>Chỗ bạn đánh dấu <code>cache_control</code>: “cache mọi thứ tới đây”.</dd>
+  <dt>TTL</dt><dd>Thời gian sống của một mục cache. Mặc định 5 phút, được làm mới mỗi lần trúng.</dd>
+  <dt>Automatic caching</dt><dd>Một <code>cache_control</code> ở cấp request; breakpoint tự dời theo hội thoại.</dd>
+  <dt>cache_creation_input_tokens</dt><dd>Số token được ghi vào cache ở request này.</dd>
+</dl></div>
+
+<h2 id="cost" class="pb">5. Theo dõi và giảm chi phí</h2>
+<p class="xtags"><span class="tag xt1">CCDV-F D5</span> <span class="tag xt4">CCAR-P D4</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Hoá đơn tiền điện chỉ giúp bạn khi <strong>có công tơ đo từng phòng</strong>. Không đo thì chỉ biết tổng tiền cao, không biết do máy lạnh hay bình nóng lạnh. Với Claude, công tơ là trường <code>usage</code> trong mỗi response. Sau đó bạn mới biết nên tắt máy nào: <em>cache</em>, <em>batch</em>, <em>model nhỏ hơn</em>.
+</div>
+<p>Mỗi response có <code>usage</code>: <code>input_tokens</code>, <code>output_tokens</code>, <code>cache_creation_input_tokens</code>, <code>cache_read_input_tokens</code>. Ghi log để tính chi phí từng request và từng tính năng.</p>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 220" role="img" aria-label="So sánh giá tương đối so với input thường: ghi cache 5 phút 125 phần trăm, input thường 100, batch 50, đọc cache 10">
+    <text x="320" y="16" class="lane-lb" text-anchor="middle">GIÁ INPUT SO VỚI INPUT THƯỜNG (= 100%)</text>
+    <text x="196" y="50" class="ts" text-anchor="end">Ghi cache (TTL 5 phút)</text><rect x="204" y="32" width="375" height="26" rx="4" class="b-warn"/><text x="590" y="50" class="t tb">125%</text>
+    <text x="196" y="88" class="ts" text-anchor="end">Input thường</text><rect x="204" y="70" width="300" height="26" rx="4" class="b-step"/><text x="515" y="88" class="t tb">100%</text>
+    <text x="196" y="126" class="ts" text-anchor="end">Batch (mọi loại token)</text><rect x="204" y="108" width="150" height="26" rx="4" class="b-done"/><text x="365" y="126" class="t tb">50%</text>
+    <text x="196" y="164" class="ts" text-anchor="end">Đọc cache</text><rect x="204" y="146" width="30" height="26" rx="4" class="b-done"/><text x="245" y="164" class="t tb">10%</text>
+    <text x="320" y="200" class="ts" text-anchor="middle">Số theo docs hiện hành (xem khối Thực tế bên dưới). Đọc cache có ngoại lệ theo model.</text>
+  </svg></div>
+  <figcaption>Hình 6. Cache đọc và batch là hai đòn bẩy giảm chi phí lớn nhất. Ghi cache tốn thêm một chút.</figcaption>
+</figure>
+<ol class="principles">
+  <li>Cache phần cố định dài (tool, system, tài liệu).</li>
+  <li>Batch cho việc không gấp (rẻ hơn khoảng 50%).</li>
+  <li>Model nhỏ hoặc effort thấp cho việc đơn giản.</li>
+  <li>Cắt bớt kết quả tool trước khi tích tụ vào context.</li>
+  <li>Đặt <code>max_tokens</code> hợp lý; nói rõ độ dài mong muốn trong prompt.</li>
+</ol>
+<p>Tính chi phí theo <strong>việc hoàn thành</strong>, không theo request: request rẻ nhưng phải chạy lại nhiều lần thì không rẻ.</p>
+<p>Ví dụ: model nhỏ rẻ hơn 3 lần mỗi request, nhưng sai nên phải chạy lại trung bình 4 lần mới đúng. Tổng chi phí cho một việc xong là 4 phần. Model lớn hơn đắt gấp 3 mà đúng ngay lần đầu thì tổng là 3 phần. Lúc đó model lớn hơn rẻ hơn.</p>
+<div class="alert"><strong>Bẫy.</strong> Nhìn giá một request thì dễ chọn sai. Chỉ khi tính <strong>chi phí cho một việc đã hoàn thành đúng</strong> (gồm cả lần chạy lại) mới so sánh công bằng.</div>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Theo docs hiện hành, Batch tính 50% giá chuẩn cho mọi loại usage. Với batch có chung tiền tố dài, nên dùng cache 1 giờ vì batch có thể chạy lâu hơn 5 phút. Nguồn: <a href="https://platform.claude.com/docs/en/build-with-claude/batch-processing" target="_blank" rel="noopener">platform.claude.com/docs/en/build-with-claude/batch-processing</a>.</div>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> <strong>Task budget</strong> (beta, header <code>task-budgets-2026-03-13</code>) cho Claude biết số token được dùng cho cả một vòng agent, gồm thinking, lời gọi tool, kết quả tool và output: đặt <code>output_config.task_budget: {"type": "tokens", "total": 64000}</code>. Model thấy bộ đếm ngược và tự phân bổ để kết thúc gọn (tóm tắt, báo tiến độ) thay vì bị cắt giữa chừng. Đây là gợi ý mềm. Trần cứng vẫn là <code>max_tokens</code> của từng request: chạm trần thì câu trả lời bị cắt với <code>stop_reason: "max_tokens"</code> và phần đã sinh vẫn tính tiền. Budget quá nhỏ so với việc có thể làm model thu hẹp việc hoặc dừng sớm. Nguồn: <a href="https://platform.claude.com/docs/en/build-with-claude/task-budgets" target="_blank" rel="noopener">platform.claude.com/docs/en/build-with-claude/task-budgets</a>.</div>
+<h3>5.1 Đếm token trước khi gửi</h3>
+<p>Endpoint <code>count_tokens</code> (<code>POST /v1/messages/count_tokens</code>) nhận cùng kiểu đầu vào như khi tạo message: system prompt, tools, ảnh, PDF. Nó trả về tổng số input token <strong>trước</strong> khi bạn trả tiền cho request thật. Dùng để dự đoán chi phí, tránh vượt hạn mức, chọn model theo độ dài prompt, hay cắt prompt về độ dài mong muốn. Docs hiện hành: đếm token miễn phí, có giới hạn request mỗi phút riêng, tách biệt với giới hạn tạo message.</p>
+<p>Ví dụ: ứng dụng nhận tài liệu của khách. Đếm token trước; tài liệu quá dài thì cắt hoặc chia nhỏ thay vì gửi rồi nhận lỗi. Khác với <code>usage</code>: <code>count_tokens</code> cho số <strong>ước trước khi gửi</strong>, còn <code>usage</code> là số <strong>thực tế sau khi gửi</strong>.</p>
+<div class="alert"><strong>Bẫy.</strong> Đếm token không sinh câu trả lời và không thay được <code>usage</code> để tính chi phí từng request. Cache thì chỉ thấy rõ ở <code>usage</code> của response.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt><code>usage</code></dt><dd>Phần của response báo số token đã dùng, chia theo loại.</dd>
+  <dt><code>count_tokens</code></dt><dd>Endpoint đếm input token trước khi gửi request thật. Miễn phí.</dd>
+  <dt>Eval</dt><dd>Bộ ca thử để đo; cũng dùng để so chi phí cho mỗi việc đạt.</dd>
+</dl></div>
+
+<h2 id="cost-optimization">6. Giảm chi phí khi dùng nhiều tool</h2>
+<p class="xtags"><span class="tag xt1">CCDV-F D5</span></p>
+<p>Mục 4 và 5 đã nói cache theo tiền tố và cách đo chi phí chung. Mục này thêm hai kỹ thuật riêng cho ứng dụng có bộ tool lớn, theo khoá Tool Use with the Messages API của Academy: để code tự gọi tool nhiều lần (6.1) và cache bộ tool definition (6.2).</p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Có hai cách tiết kiệm tiền ở quán. Cách một: nhờ bếp tự làm gộp cả quy trình (lọc, cộng, so sánh) rồi chỉ báo kết quả cuối, thay vì gọi bồi bàn chạy ra chạy vào từng bước. Cách hai: thực đơn dài 20 trang đã được quán lưu sẵn, lần sau bạn chỉ cần nói “dùng thực đơn hôm qua” thay vì đọc lại từ đầu.
+</div>
+<h3>6.1 Programmatic tool calling (<code>allowed_callers</code>)</h3>
+<p><strong>Programmatic tool calling</strong> cho phép tool chỉ được gọi từ code của bạn, không phải qua user request — dùng cho tools không cần user approve từng lần:</p>
+<pre><code class="language-python">tools = [{
+    "name": "execute_query",
+    "description": "Execute a pre-approved database query",
+    "input_schema": {
+        "type": "object",
+        "properties": {
+            "query_id": {"type": "string", "description": "ID of the pre-approved query"}
+        },
+        "required": ["query_id"]
+    },
+    # Chỉ allow gọi từ container ID cụ thể
+    "allowed_callers": ["container:your-container-id"]
+}]
+
+response = client.beta.messages.create(
+    model="claude-sonnet-5",
+    tools=tools,
+    betas=["programmatic-tool-use-2025-01-01"],
+    messages=[{"role": "user", "content": "Run the monthly report"}]
+)</code></pre>
+<ul>
+  <li><code>"allowed_callers": [...]</code>: danh sách “ai được phép gọi tool này”. Đây là trường riêng của programmatic tool calling.</li>
+  <li><code>client.beta.messages.create</code>: dùng endpoint beta, vì tính năng đang thử nghiệm ở thời điểm tài liệu thi viết.</li>
+  <li><code>betas=[...]</code>: bật tính năng beta bằng tên đã định.</li>
+  <li><code>query_id</code> thay cho câu SQL tự do: tool chỉ chạy truy vấn đã duyệt sẵn, nên rủi ro thấp hơn.</li>
+</ul>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 240" role="img" aria-label="Programmatic tool calling: Claude viết code chạy trong container, code gọi tool của bạn nhiều lần, dữ liệu trung gian ở lại trong container, chỉ kết quả cuối về Claude">
+    <defs>
+      <marker id="m1807" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah"/></marker>
+      <marker id="m1808" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-good"/></marker>
+    </defs>
+    <rect x="8" y="76" width="110" height="60" rx="6" class="b-step"/><text x="63" y="102" class="t tb" text-anchor="middle">Claude</text><text x="63" y="120" class="ts" text-anchor="middle">viết code</text>
+    <rect x="196" y="14" width="250" height="212" rx="8" class="lane"/><text x="208" y="32" class="lane-lb">container (code execution)</text>
+    <rect x="522" y="76" width="110" height="60" rx="6" class="b-sys"/><text x="577" y="102" class="t tb" text-anchor="middle">Tool của bạn</text><text x="577" y="120" class="ts" text-anchor="middle">execute_query</text>
+    <g><path d="M118,96 H194" class="ln" marker-end="url(#m1807)"/><text x="156" y="90" class="ts" text-anchor="middle">gửi code</text>
+      <rect x="210" y="44" width="222" height="76" rx="5" class="b-code"/><text x="220" y="64" class="ts">for report in reports:</text><text x="220" y="80" class="ts">    rows = await tool(...)</text><text x="220" y="96" class="ts">    lọc, cộng, so sánh</text><text x="220" y="112" class="ts">print(kết quả cuối)</text></g>
+    <g><path d="M446,92 H520" class="ln-acc flow" marker-end="url(#m1807)"/><text x="483" y="86" class="ts" text-anchor="middle">gọi tool</text></g>
+    <g><path d="M522,122 H448" class="ln-good" marker-end="url(#m1808)"/><text x="485" y="116" class="ts" text-anchor="middle">kết quả</text>
+      <rect x="210" y="134" width="222" height="40" rx="5" class="b-opt"/><text x="321" y="152" class="ts" text-anchor="middle">Dữ liệu trung gian ở lại đây,</text><text x="321" y="166" class="ts" text-anchor="middle">không vào context của Claude</text></g>
+    <g><text x="321" y="194" class="ts" text-anchor="middle">lặp nhiều lần mà Claude không bị gọi lại</text></g>
+    <g><path d="M194,214 H64 V138" class="ln-good flow" marker-end="url(#m1808)"/><text x="128" y="208" class="ts halo" text-anchor="middle">chỉ kết quả cuối</text></g>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Claude viết một đoạn code và chạy trong container.</li>
+    <li>Code gọi tool của bạn.</li>
+    <li>Kết quả trả về code, nằm lại trong container, không vào context của Claude.</li>
+    <li>Code lặp nhiều lần (nhiều báo cáo, nhiều nhân viên) mà không cần quay lại Claude giữa chừng.</li>
+    <li>Chỉ kết quả cuối đã lọc được gửi về Claude.</li>
+  </ol>
+  <figcaption>Hình 7. Programmatic tool calling giảm số vòng và lượng token vào context.</figcaption>
+</figure>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Tài liệu hiện hành mô tả khác ví dụ thi ở hai điểm. (1) Giá trị <code>allowed_callers</code> là phiên bản của code execution tool, ví dụ <code>["code_execution_20260120"]</code>, hoặc <code>["direct"]</code> (mặc định, Claude gọi trực tiếp); ví dụ dạng <code>"container:..."</code> ở trên không có trong tài liệu hiện hành. (2) Tính năng yêu cầu thêm code execution tool vào <code>tools</code> và ví dụ chính thức không dùng tham số <code>betas</code>. Ngoài ra <code>allowed_callers</code> chỉ hướng dẫn Claude, không phải hàng rào bảo mật cứng; code của bạn vẫn phải xử lý trường hợp bị gọi trực tiếp. Mỗi khối <code>tool_use</code> có trường <code>caller</code> cho biết gọi trực tiếp hay từ code. Đề thi theo tài liệu khóa học; khi làm thật, tra tài liệu mới nhất. Nguồn: <a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling" target="_blank" rel="noopener">Programmatic tool calling</a>.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Container</dt><dd>Môi trường chạy code cô lập (sandbox) do Anthropic cung cấp qua code execution tool.</dd>
+  <dt>Beta</dt><dd>Tính năng đang thử nghiệm, có thể đổi trước khi chính thức.</dd>
+  <dt>Context window</dt><dd>Lượng văn bản Claude xem được trong một lần xử lý. Kết quả tool dài làm đầy cửa sổ này và tốn token.</dd>
+</dl></div>
+
+<h3>6.2 Cache bộ tool definition</h3>
+<p>Theo thứ tự tiền tố ở mục 4, <code>tools</code> đứng đầu. Bộ tool definition thường dài và ít đổi, nên đặt breakpoint ở tool <strong>cuối</strong> là cache được cả danh sách:</p>
+<pre><code class="language-python"># Cache tool definitions (thường 2K-5K tokens, không đổi)
+tools_with_cache = [
+    {**tool_def, "cache_control": {"type": "ephemeral"}}  # Cache mỗi tool
+    if i == len(tool_definitions) - 1  # Chỉ cache tool CUỐI CÙNG
+    else tool_def
+    for i, tool_def in enumerate(tool_definitions)
+]
+# Lý do cache tool cuối: Claude cache theo checkpoint — cache point cuối nhất
+# sẽ cover tất cả content trước nó, bao gồm cả các tool trước đó</code></pre>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 236" role="img" aria-label="Prompt caching tool definitions: lần đầu ghi cache với cache_control ở tool cuối, các lần sau đọc phần tools từ cache với giá rẻ hơn">
+    <text x="10" y="40" class="lane-lb">LẦN 1</text><text x="10" y="150" class="lane-lb">LẦN 2 TRỞ ĐI</text>
+    <g>
+      <rect x="110" y="26" width="86" height="40" rx="5" class="b-step"/><text x="153" y="51" class="ts" text-anchor="middle">tool 1</text>
+      <rect x="204" y="26" width="86" height="40" rx="5" class="b-step"/><text x="247" y="51" class="ts" text-anchor="middle">tool 2</text>
+      <rect x="298" y="26" width="86" height="40" rx="5" class="b-hot"/><text x="341" y="44" class="ts" text-anchor="middle">tool 3 (cuối)</text><text x="341" y="58" class="ts" text-anchor="middle">cache_control</text>
+      <rect x="400" y="26" width="230" height="40" rx="5" class="b-sys"/><text x="515" y="51" class="ts" text-anchor="middle">system, messages (phần mới)</text></g>
+    <g><path d="M384,70 V98" class="ln-acc flow"/><text x="392" y="90" class="ts">checkpoint ở cuối tool 3,</text><text x="392" y="104" class="ts">bao cả tool 1 và tool 2</text>
+      <text x="110" y="92" class="tw-acc">ghi cache (write)</text></g>
+    <g>
+      <rect x="110" y="136" width="86" height="40" rx="5" class="b-done"/><text x="153" y="161" class="ts" text-anchor="middle">tool 1</text>
+      <rect x="204" y="136" width="86" height="40" rx="5" class="b-done"/><text x="247" y="161" class="ts" text-anchor="middle">tool 2</text>
+      <rect x="298" y="136" width="86" height="40" rx="5" class="b-done"/><text x="341" y="161" class="ts" text-anchor="middle">tool 3</text>
+      <rect x="400" y="136" width="230" height="40" rx="5" class="b-sys"/><text x="515" y="161" class="ts" text-anchor="middle">system, messages (phần mới)</text>
+      <text x="110" y="196" class="tw-good">đọc từ cache (read): rẻ hơn khoảng 10 lần</text></g>
+    <g><text x="320" y="224" class="ts" text-anchor="middle">Nhiều request cùng tool definitions: 1 lần ghi, nhiều lần đọc</text></g>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Request đầu: danh sách tool cộng phần nội dung mới. Đánh dấu <code>cache_control</code> ở tool <strong>cuối</strong>.</li>
+    <li>Điểm đánh dấu bao toàn bộ nội dung trước nó, gồm mọi tool đứng trước. Lần này tính tiền ghi cache.</li>
+    <li>Request sau: phần tool definitions khớp nên được đọc từ cache (rẻ hơn khoảng 10 lần). Chỉ phần mới tính giá thường.</li>
+    <li>Càng nhiều request dùng cùng bộ tool, càng tiết kiệm.</li>
+  </ol>
+  <figcaption>Hình 8. Đặt cache_control ở tool cuối để cache cả danh sách tool.</figcaption>
+</figure>
+<p>Chú giải:</p>
+<ul>
+  <li><code>{**tool_def, "cache_control": {"type": "ephemeral"}}</code>: sao chép tool và thêm trường <code>cache_control</code>. <code>**</code> trải các trường cũ ra. <code>ephemeral</code> là kiểu cache tạm có thời hạn.</li>
+  <li><code>if i == len(tool_definitions) - 1</code>: chỉ tool có chỉ số cuối mới được thêm. Các tool trước giữ nguyên (<code>else tool_def</code>).</li>
+  <li>Một điểm đánh dấu ở cuối là đủ, vì nó phủ mọi nội dung đứng trước.</li>
+</ul>
+<p>Ví dụ tiết kiệm (giá đọc cache bằng khoảng 10% giá input, xem mục 4):</p>
+<div class="tw"><table>
+  <thead><tr><th>Tình huống</th><th>Không cache</th><th>Có cache</th></tr></thead>
+  <tbody>
+    <tr><td>100 request, bộ tool definition 5K token</td><td>500K input tokens</td><td>5K write + ~495K read (rẻ hơn 10x)</td></tr>
+    <tr><td>Nightly eval (1000 requests)</td><td>Tính theo 1000x full prompt</td><td>1 write + 999 reads</td></tr>
+  </tbody>
+</table></div>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div><ul>
+    <li>Đặt <code>cache_control</code> ở tool đầu tiên và hy vọng cache cả danh sách</li>
+    <li>Cache tool definitions hay đổi liên tục</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đúng</div><ul>
+    <li>Đặt ở tool cuối, vì checkpoint phủ mọi nội dung đứng trước nó</li>
+    <li>Cache phần ổn định (tool definitions thường 2K-5K token, ít đổi)</li>
+  </ul></div>
+</div>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Ngoài quy tắc tiền tố ở mục 4 (đổi tool là mất cache của mọi phần sau), tài liệu hiện hành còn nêu: đổi <code>tool_choice</code> giữa các lượt làm mất cache của các message (bài 05, mục 6). Con số “rẻ hơn 10x” là cách nói gọn của khoá học; giá cụ thể xem trang giá chính thức.</div>
+<div class="alert"><strong>Bẫy.</strong> Nhầm giữa hai kỹ thuật tiết kiệm: caching giảm giá của token <em>lặp lại</em> (tool definitions giống nhau mỗi lần), còn programmatic tool calling giảm <em>số vòng và lượng dữ liệu</em> vào context. Hai kỹ thuật dùng được cùng nhau.</div>
+
+<h3>6.3 Bảng tổng hợp: vấn đề với tool và cách sửa</h3>
+<div class="tw"><table>
+  <thead><tr><th>Vấn đề</th><th>Cách sửa</th></tr></thead>
+  <tbody>
+    <tr><td>Claude chọn sai tool</td><td>Sửa description: thêm "Use when X, NOT when Y" (bài 05, mục 1)</td></tr>
+    <tr><td>Claude dùng tool quá nhiều</td><td>Thêm "Only call this tool once per conversation unless explicitly asked"</td></tr>
+    <tr><td>Claude bịa tham số</td><td>Dùng strict mode và schema Pydantic/Zod (bài 04, mục 5)</td></tr>
+    <tr><td>Các tool chồng nhau, Claude chọn lẫn</td><td>Gộp tool hoặc viết description khác biệt rõ (bài 05, mục 2)</td></tr>
+    <tr><td>Chi phí input cao</td><td>Cache bộ tool definition ổn định (6.2)</td></tr>
+    <tr><td>Độ trễ cao vì gọi tool tuần tự</td><td>Gọi tool song song, ví dụ bằng ThreadPoolExecutor (bài 05, mục 7)</td></tr>
+    <tr><td>Không biết tool có tốt không</td><td>Đo bằng eval: golden dataset và LLM grader (bài 10)</td></tr>
+  </tbody>
+</table></div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Eval</dt><dd>Bài đo chất lượng: chạy một bộ câu hỏi chuẩn và chấm kết quả.</dd>
+  <dt>Golden dataset</dt><dd>Bộ ví dụ có đáp án đúng đã được người kiểm tra, dùng làm thước đo.</dd>
+  <dt>LLM grader</dt><dd>Dùng một model để chấm điểm câu trả lời của model khác.</dd>
+  <dt>Zod</dt><dd>Thư viện kiểm tra schema trong TypeScript, tương tự Pydantic trong Python.</dd>
+</dl></div>
+
+<h2 id="model-upgrade">7. Nâng cấp model</h2>
+<p class="xtags"><span class="tag xt1">CCDV-F D5</span> <span class="tag xt4">CCAR-P D6</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Cửa hàng bạn dùng một chiếc máy pha cà phê quen tay. Hãng ra đời mới, hứa nhanh hơn. Bạn không vứt máy cũ ngay hôm sau. Bạn <strong>đọc hướng dẫn đổi máy</strong>, pha thử cùng vài công thức quen, so vị và giá, rồi mới đổi một quầy trước, <strong>giữ máy cũ</strong> phòng khi hỏng. Nâng cấp model cũng nên cẩn thận như vậy.
+</div>
+<p>Bản model mới có thể đổi hành vi hoặc tham số (<strong>breaking change</strong>: thay đổi làm code cũ chạy sai hoặc báo lỗi). Trình tự: đọc migration guide → chạy eval trên model mới → so sánh chất lượng, độ trễ, chi phí → đổi có chủ đích, giữ khả năng quay lại.</p>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 196" role="img" aria-label="Quy trình nâng cấp model: đọc migration guide, chạy eval, so sánh chất lượng độ trễ chi phí, đổi có chủ đích, giữ khả năng quay lại">
+    <defs><marker id="m0204" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker></defs>
+    <rect x="10" y="36" width="106" height="66" rx="6" class="b-step"/><text x="63" y="58" class="t tb" text-anchor="middle">1 Đọc guide</text><text x="63" y="75" class="ts" text-anchor="middle">migration guide:</text><text x="63" y="88" class="ts" text-anchor="middle">tham số bị đổi</text>
+    <rect x="138" y="36" width="106" height="66" rx="6" class="b-step"/><text x="191" y="58" class="t tb" text-anchor="middle">2 Chạy eval</text><text x="191" y="75" class="ts" text-anchor="middle">trên model mới,</text><text x="191" y="88" class="ts" text-anchor="middle">cùng bộ ca thử</text>
+    <rect x="266" y="36" width="106" height="66" rx="6" class="b-step"/><text x="319" y="58" class="t tb" text-anchor="middle">3 So sánh</text><text x="319" y="75" class="ts" text-anchor="middle">chất lượng,</text><text x="319" y="88" class="ts" text-anchor="middle">độ trễ, chi phí</text>
+    <rect x="394" y="36" width="106" height="66" rx="6" class="b-hot"/><text x="447" y="58" class="t tb" text-anchor="middle">4 Đổi</text><text x="447" y="75" class="ts" text-anchor="middle">có chủ đích,</text><text x="447" y="88" class="ts" text-anchor="middle">đổi ID cụ thể</text>
+    <rect x="522" y="36" width="108" height="66" rx="6" class="b-done"/><text x="576" y="58" class="t tb" text-anchor="middle">5 Đường lui</text><text x="576" y="75" class="ts" text-anchor="middle">giữ model cũ</text><text x="576" y="88" class="ts" text-anchor="middle">để quay lại</text>
+    <path class="ln-acc flow" d="M116,69 H136" marker-end="url(#m0204)"/>
+    <path class="ln-acc flow" d="M244,69 H264" marker-end="url(#m0204)"/>
+    <path class="ln-acc flow" d="M372,69 H392" marker-end="url(#m0204)"/>
+    <path class="ln-acc flow" d="M500,69 H520" marker-end="url(#m0204)"/>
+    <circle class="tok" r="7" style="transform:translate(576px,24px)"/>
+    <rect x="10" y="126" width="620" height="58" rx="6" class="b-warn"/>
+    <text x="320" y="148" class="t tb" text-anchor="middle">Đừng đổi âm thầm</text>
+    <text x="320" y="166" class="ts" text-anchor="middle">Alias trỏ tới “bản mới nhất” có thể đổi hành vi hoặc tham số ngay trong production.</text>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Đọc migration guide để biết tham số nào bị bỏ hoặc đổi nghĩa.</li>
+    <li>Chạy chính bộ eval của bạn trên model mới.</li>
+    <li>So chất lượng, độ trễ và chi phí với model đang dùng.</li>
+    <li>Đổi có chủ đích, ghim model ID cụ thể.</li>
+    <li>Giữ đường quay lại model cũ phòng khi có vấn đề.</li>
+  </ol>
+  <figcaption>Hình 9. Nâng cấp model theo trình tự, không đổi âm thầm.</figcaption>
+</figure>
+<div class="insight"><strong>Cốt lõi.</strong> Nâng cấp là một thay đổi cần kiểm chứng, giống nâng cấp thư viện. Eval là cái giúp bạn biết nó tốt hơn hay tệ hơn cho đúng việc của bạn.</div>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Dòng hiện hành: Fable 5.2, Opus 5.5, Sonnet 5.5, Haiku 5.5. Tên, giá và giới hạn đổi nhanh; tra docs.claude.com.</div>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Trang model deprecations dùng bốn trạng thái: <strong>Active</strong> (được hỗ trợ, nên dùng), <strong>Legacy</strong> (không còn được cập nhật, có thể bị deprecate sau), <strong>Deprecated</strong> (vẫn chạy nhưng không nên dùng, đã có model thay thế và ngày retire), <strong>Retired</strong> (không dùng được, request lỗi). Model công khai được báo trước <strong>ít nhất 60 ngày</strong> trước khi retire, nên còn thời gian chạy eval trước khi đổi. Ngày trên trang này chỉ áp dụng cho nền tảng Anthropic vận hành (Claude API, Claude Platform on AWS, Google Cloud Anthropic managed, Microsoft Foundry). Amazon Bedrock và Google Cloud (Google managed) tự đặt lịch retire, nên cùng một model có thể có hai hạn chuyển đổi. Nguồn: <a href="https://platform.claude.com/docs/en/about-claude/model-deprecations" target="_blank" rel="noopener">platform.claude.com/docs/en/about-claude/model-deprecations</a>.</div>
+<h3>7.1 Danh sách kiểm khi nâng cấp</h3>
+<p>Ví dụ có số: ứng dụng trích xuất đang dùng Sonnet 5, eval 300 ca đúng 94%. Bạn chạy lại đúng 300 ca trên Sonnet 5.5 và thấy 95%, nhưng request bị lỗi 400 vì mã cũ còn gửi <code>budget_tokens</code>. Hai việc phải làm tách biệt: sửa tham số theo migration guide, rồi mới so chất lượng, độ trễ và chi phí.</p>
+<div class="tw"><table>
+  <thead><tr><th>Kiểm</th><th>Câu hỏi</th></tr></thead>
+  <tbody>
+    <tr><td>Tham số</td><td>Tham số nào bị bỏ hoặc đổi nghĩa? (<code>budget_tokens</code>, <code>tool_choice</code> với thinking)</td></tr>
+    <tr><td>Mặc định</td><td>Mức effort mặc định có đổi không? Opus 5.5 mặc định <code>medium</code>, các model khác <code>high</code>, nên bỏ trống <code>effort</code> có thể chạy khác trước</td></tr>
+    <tr><td>Chất lượng</td><td>Eval của bạn đạt mốc chưa, từng nhóm ca có tụt không?</td></tr>
+    <tr><td>Chi phí và độ trễ</td><td>Token output, số lần gọi tool, thời gian mỗi việc có đổi không?</td></tr>
+    <tr><td>Cache</td><td>Đổi cấu hình thinking hoặc <code>effort</code> có thể làm mất cache của message (theo model, cả tool và system); đặt effort đúng mức mặc định thì không</td></tr>
+    <tr><td>Quay lại</td><td>Model ID cũ còn trong cấu hình để đổi lại ngay?</td></tr>
+  </tbody>
+</table></div>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div>Trỏ tới một alias và để nền tảng tự đổi model, rồi chỉ phát hiện khi người dùng phàn nàn.</div>
+  <div class="box right"><div class="hd">Đúng</div>Ghim model ID, chạy eval trên model mới, đổi bằng một thay đổi có kiểm soát, giữ cấu hình để quay lại.</div>
+</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Migration guide</dt><dd>Tài liệu hướng dẫn chuyển từ phiên bản cũ sang mới, liệt kê thay đổi.</dd>
+  <dt>Production</dt><dd>Môi trường thật mà người dùng đang dùng.</dd>
+</dl></div>
+
+<h2 id="exam-keywords" class="pb">8. Từ khoá đề thi</h2>
+<p>Các từ tiếng Anh dưới đây xuất hiện nguyên văn trong đề và tài liệu chính thức. Đọc cột giữa để nắm nghĩa, cột phải để biết đề hay gài ở đâu; bấm số mục để xem lại phần giải thích. Mọi từ khoá của các bài được gom ở trang <a href="/notes/lessons/glossary.html">Thuật ngữ</a>.</p>
+<div class="tw"><table class="kwt">
+  <thead><tr><th>Từ khoá</th><th>Nghĩa</th><th>Đề hay hỏi, dễ nhầm</th><th class="nw">Mục</th></tr></thead>
+  <tbody>
+    <tr data-kw="Model ID"><td><code>model</code> (model ID)</td><td>Chuỗi chọn đúng một model, ví dụ <code>claude-sonnet-5-5</code></td><td>Là snapshot đã ghim; production dùng ID cụ thể, đổi có chủ đích</td><td><a href="#model-selection">§1</a></td></tr>
+    <tr data-kw="Opus Sonnet Haiku"><td>Opus, Sonnet, Haiku (và Fable)</td><td>Các dòng model từ mạnh và đắt đến nhanh và rẻ</td><td>Chọn bậc thấp nhất vẫn đạt eval, không chọn theo tên hay benchmark chung</td><td><a href="#model-selection">§1</a></td></tr>
+    <tr data-kw="eval"><td>Eval</td><td>Bộ ca thử có đáp án để chấm prompt hoặc model</td><td>Cách đúng để chọn và nâng cấp model; benchmark công khai không thay được</td><td><a href="#model-selection">§1</a></td></tr>
+    <tr data-kw="latency"><td>Latency (độ trễ)</td><td>Thời gian chờ từ lúc gửi tới lúc có câu trả lời</td><td>Phân loại khối lượng lớn cần độ trễ thấp nên hợp model nhỏ</td><td><a href="#model-selection">§1</a></td></tr>
+    <tr data-kw="MTok"><td>MTok, input và output price</td><td>Giá tính trên một triệu token, input và output có giá riêng</td><td>Output đắt hơn input; chi phí tính theo việc hoàn thành chứ không theo request</td><td><a href="#model-selection">§1</a></td></tr>
+    <tr data-kw="extended thinking"><td>Extended thinking</td><td>Model suy luận từng bước trước khi trả lời</td><td>Tốn token và thời gian; bản cũ đặt ngân sách bằng <code>budget_tokens</code></td><td><a href="#thinking">§2</a></td></tr>
+    <tr data-kw="adaptive thinking"><td>Adaptive thinking (<code>thinking: {type: "adaptive"}</code>)</td><td>Model tự quyết khi nào nghĩ và nghĩ bao nhiêu</td><td>Cách dùng với model mới; không còn <code>budget_tokens</code></td><td><a href="#thinking">§2</a></td></tr>
+    <tr data-kw="budget_tokens"><td><code>budget_tokens</code></td><td>Trần token cho phần suy luận (kiểu cũ)</td><td>Phải nhỏ hơn <code>max_tokens</code>; model mới đã bỏ</td><td><a href="#thinking">§2</a></td></tr>
+    <tr data-kw="effort"><td><code>effort</code> (<code>output_config.effort</code>)</td><td>Núm chỉnh độ kỹ so với tốc độ và token: low, medium, high, xhigh, max</td><td>Là tín hiệu, không phải ngân sách cứng; không ép độ dài câu trả lời</td><td><a href="#thinking">§2</a></td></tr>
+    <tr data-kw="fast mode"><td>Fast mode</td><td>Cùng model, sinh output nhanh hơn, giá cao hơn</td><td>Không phải model khác; đánh đổi tiền lấy độ trễ</td><td><a href="#thinking">§2</a></td></tr>
+    <tr data-kw="thinking block"><td>Thinking block, <code>signature</code></td><td>Khối chứa phần suy luận, kèm chữ ký để API xác minh</td><td>Gửi lại nguyên vẹn trong lượt tool; sửa hay cắt thì lỗi hoặc mất mạch</td><td><a href="#thinking-tool">§3</a></td></tr>
+    <tr data-kw="redacted_thinking"><td><code>redacted_thinking</code></td><td>Khối thinking đã mã hoá (model cũ)</td><td>Không đọc được nhưng vẫn phải gửi lại nguyên vẹn</td><td><a href="#thinking-tool">§3</a></td></tr>
+    <tr data-kw="interleaved thinking"><td>Interleaved thinking</td><td>Nghĩ xen giữa các lần gọi tool</td><td>Adaptive thinking tự bật; khác nghĩ một lần ở đầu</td><td><a href="#thinking-tool">§3</a></td></tr>
+    <tr data-kw="tool_choice thinking"><td><code>tool_choice</code> với thinking</td><td>Thinking chỉ đi với <code>auto</code> hoặc <code>none</code></td><td>Ép <code>any</code> hoặc <code>tool</code> cùng thinking thì sai</td><td><a href="#thinking-tool">§3</a></td></tr>
+    <tr data-kw="prompt caching"><td>Prompt caching</td><td>API nhớ tiền tố prompt đã xử lý để khỏi tính lại</td><td>Giảm chi phí tiền tố lặp lại, không tạo trí nhớ cho hội thoại</td><td><a href="#caching">§4</a></td></tr>
+    <tr data-kw="cache_control"><td><code>cache_control</code> (<code>ephemeral</code>)</td><td>Đánh dấu breakpoint: cache mọi thứ tới đây</td><td>Tối đa 4 breakpoint; đặt sau phần cố định, trước phần thay đổi</td><td><a href="#caching">§4</a></td></tr>
+    <tr data-kw="prefix order"><td>Thứ tự tiền tố: tools, system, messages</td><td>Cache khớp từ đầu prompt</td><td>Đổi một byte ở phần trước thì mất cache của mọi phần sau</td><td><a href="#caching">§4</a></td></tr>
+    <tr data-kw="TTL"><td>TTL 5 phút và 1 giờ</td><td>Thời gian sống của mục cache</td><td>Mặc định 5 phút, làm mới khi trúng; 1 giờ ghi đắt hơn</td><td><a href="#caching">§4</a></td></tr>
+    <tr data-kw="cache_read_input_tokens"><td><code>cache_read_input_tokens</code></td><td>Số token đọc từ cache</td><td>Luôn bằng 0 nghĩa là có thứ đổi trước breakpoint; chữa bằng sửa prompt, không phải đổi model</td><td><a href="#caching">§4</a></td></tr>
+    <tr data-kw="automatic caching"><td>Automatic caching</td><td>Một <code>cache_control</code> ở cấp request, breakpoint tự dời</td><td>Dùng chung được với explicit breakpoint, chiếm một trong 4 chỗ</td><td><a href="#caching">§4</a></td></tr>
+    <tr data-kw="input_tokens cache"><td><code>input_tokens</code> khi có cache</td><td>Chỉ phần sau breakpoint cuối</td><td>Tổng input = read + creation + <code>input_tokens</code></td><td><a href="#caching">§4</a></td></tr>
+    <tr data-kw="usage"><td><code>usage</code></td><td>Số token đã dùng theo loại, trong mỗi response</td><td>Nguồn tính chi phí từng request và từng tính năng</td><td><a href="#cost">§5</a></td></tr>
+    <tr data-kw="count_tokens"><td><code>count_tokens</code></td><td>Endpoint đếm input token trước khi gửi</td><td>Miễn phí; cho số ước trước, còn <code>usage</code> là số thực sau</td><td><a href="#cost">§5</a></td></tr>
+    <tr data-kw="batch discount"><td>Batch (giảm 50%)</td><td>Xử lý bất đồng bộ, giá bằng 50% giá chuẩn</td><td>Hợp việc không gấp; cache 1 giờ hợp với batch vì chạy lâu hơn 5 phút</td><td><a href="#cost">§5</a></td></tr>
+    <tr data-kw="task budget"><td>Task budget (<code>output_config.task_budget</code>)</td><td>Gợi ý mềm về số token cho cả vòng agent</td><td>Không thay <code>max_tokens</code> là trần cứng; bản beta</td><td><a href="#cost">§5</a></td></tr>
+    <tr data-kw="programmatic tool calling"><td>Programmatic tool calling, <code>allowed_callers</code></td><td>Code gọi tool nhiều lần trong container, chỉ kết quả cuối vào context</td><td>Giảm vòng và token context; khác caching giảm giá token lặp lại</td><td><a href="#cost-optimization">§6</a></td></tr>
+    <tr data-kw="tool definition cache"><td>Cache bộ tool definition</td><td>Đặt <code>cache_control</code> ở tool cuối của danh sách</td><td>Đặt ở tool đầu không cache cả danh sách</td><td><a href="#cost-optimization">§6</a></td></tr>
+    <tr data-kw="breaking change"><td>Breaking change, migration guide</td><td>Thay đổi làm code cũ chạy sai hoặc lỗi; tài liệu hướng dẫn chuyển</td><td>Đọc guide, chạy eval, đổi có chủ đích, giữ đường quay lại</td><td><a href="#model-upgrade">§7</a></td></tr>
+    <tr data-kw="deprecation states"><td>Active, Legacy, Deprecated, Retired</td><td>Bốn trạng thái vòng đời của model</td><td>Báo trước ít nhất 60 ngày trước khi retire; Retired thì request lỗi</td><td><a href="#model-upgrade">§7</a></td></tr>
+  </tbody>
+</table></div>
+
+<p class="lesson-practice">Luyện câu hỏi của bài này trong <a href="/bank?lesson=03">🗂️ Ngân hàng</a>.</p>
+
+<div class="btns pager">
+  <a class="btn" href="/notes/lessons/02-messages-api.html">← Bài 02 · Messages API và tích hợp</a>
+  <a class="btn primary" href="/notes/lessons/04-prompt-output.html">Bài 04 · Prompt và output có cấu trúc →</a>
+</div>
+
+<footer>
+  Luyện thi chứng chỉ Claude · Bài 03 · Model, thinking và chi phí · v0.39 · 2026-11-18. <a href="/notes/00-tong-quan.md">Tổng quan</a> · <a href="/new">Luyện đề</a>.
+</footer>

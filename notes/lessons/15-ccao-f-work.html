@@ -1,0 +1,982 @@
+<p class="lesson-source">Nguồn: tài liệu ôn tập công khai <a href="https://claude.ai/artifact/3NhHr42CxTHGEs33N1ntFf" target="_blank" rel="noopener">artifact 3NhHr42…</a> (bài 15). Không thuộc và không được Anthropic xác nhận.</p>
+<header class="cover">
+  <div class="eyebrow">Luyện thi chứng chỉ Claude · Bài 15 · Chặng 3 · CCAO-F · bước 1/3</div>
+  <h1>CCAO-F: Claude cho công việc <span class="ja">CCAO-F · Associate – Foundations</span></h1>
+  <p class="lead">Bài cho người dùng nghiệp vụ: prompt cho việc văn phòng, khung AI Fluency 4D, đánh giá output, chọn tính năng, đưa Claude vào quy trình, cấu hình, quản trị rủi ro, xử lý sự cố.</p>
+  <dl class="meta">
+    <dt>Kỳ thi</dt><dd>CCAO-F D1, D2, D3, D4, D5, D6, D7</dd>
+    <dt>Phục vụ</dt><dd><span class="tag xt2">CCAO-F</span> 8 mục · <a href="#xsum">bảng nhãn từng mục</a></dd>
+
+    <dt>Nguồn</dt><dd>Ghi chú «Đề cương CCDV-F và CCAO-F» Phần B; «Không gian Small Business»; Claude 101, AI Fluency (Claude Academy); academy.claude.com · Claude 101, AI Fluency Framework · Crawl 2026-11-17</dd>
+    <dt>Cập nhật</dt><dd><span class="status">v0.39 · 2026-11-18</span> · theo exam guide v1.0</dd>
+  </dl>
+</header>
+
+<details class="toc">
+<summary>Mục lục</summary>
+
+    <ol>
+      <li><a href="#overview"><span class="n">1</span><span class="tx">Bài thi dành cho ai</span></a></li>
+      <li><a href="#prompting"><span class="n">2</span><span class="tx">Prompt cho việc nghiệp vụ (D1, 14%)</span><span class="xds" aria-hidden="true"><i class="xd xt2" title="CCAO-F"></i></span></a></li>
+      <li><a href="#ai-fluency"><span class="n">3</span><span class="tx">AI Fluency Framework — 14 bài</span><span class="xds" aria-hidden="true"><i class="xd xt2" title="CCAO-F"></i></span></a></li>
+      <li><a href="#output-evaluation"><span class="n">4</span><span class="tx">Đánh giá và kiểm chứng output (D2, 21%)</span><span class="xds" aria-hidden="true"><i class="xd xt2" title="CCAO-F"></i></span></a></li>
+      <li><a href="#products"><span class="n">5</span><span class="tx">Chọn tính năng và model (D3, 12%)</span><span class="xds" aria-hidden="true"><i class="xd xt2" title="CCAO-F"></i></span></a></li>
+      <li><a href="#workflow-integration"><span class="n">6</span><span class="tx">Đưa Claude vào quy trình (D4, 16%)</span><span class="xds" aria-hidden="true"><i class="xd xt2" title="CCAO-F"></i></span></a></li>
+      <li><a href="#configuration"><span class="n">7</span><span class="tx">Cấu hình và quản lý tri thức (D5, 12%)</span><span class="xds" aria-hidden="true"><i class="xd xt2" title="CCAO-F"></i></span></a></li>
+      <li><a href="#governance"><span class="n">8</span><span class="tx">Quản trị, rủi ro, sử dụng có trách nhiệm (D6, 15%)</span><span class="xds" aria-hidden="true"><i class="xd xt2" title="CCAO-F"></i></span></a></li>
+      <li><a href="#troubleshooting"><span class="n">9</span><span class="tx">Xử lý sự cố và tối ưu (D7, 10%)</span><span class="xds" aria-hidden="true"><i class="xd xt2" title="CCAO-F"></i></span></a></li>
+      <li><a href="#exam-keywords"><span class="n">10</span><span class="tx">Từ khoá đề thi</span></a></li>
+    </ol>
+
+</details>
+
+<details class="xsum" id="xsum">
+<summary>Mục nào phục vụ bài thi nào</summary>
+<p class="xnote">Mã đầu là bài thi chính của mục. <b>Nền</b>: cần để hiểu các mục sau. <b>Nâng cao</b>: ngoài phạm vi các exam guide. Ôn cho một bài thi thì đọc các mục có mã của bài đó trước.</p>
+<div class="tw"><table>
+<thead><tr><th>Mục</th><th>Bài thi</th><th>Ghi chú</th></tr></thead>
+<tbody>
+<tr><td><a href="#prompting">2. Prompt cho việc nghiệp vụ (D1, 14%)</a></td><td><span class="tag xt2">CCAO-F D1</span></td><td></td></tr>
+<tr><td><a href="#ai-fluency">3. AI Fluency Framework — 14 bài</a></td><td><span class="tag xt2">CCAO-F D1</span> <span class="tag xt2">CCAO-F D6</span> <span class="tag xt2">CCAO-F D2</span> <span class="tag xt2">CCAO-F D4</span> <span class="tag xt2">CCAO-F D7</span></td><td></td></tr>
+<tr><td><a href="#output-evaluation">4. Đánh giá và kiểm chứng output (D2, 21%)</a></td><td><span class="tag xt2">CCAO-F D2</span></td><td></td></tr>
+<tr><td><a href="#products">5. Chọn tính năng và model (D3, 12%)</a></td><td><span class="tag xt2">CCAO-F D3</span></td><td></td></tr>
+<tr><td><a href="#workflow-integration">6. Đưa Claude vào quy trình (D4, 16%)</a></td><td><span class="tag xt2">CCAO-F D4</span></td><td></td></tr>
+<tr><td><a href="#configuration">7. Cấu hình và quản lý tri thức (D5, 12%)</a></td><td><span class="tag xt2">CCAO-F D5</span></td><td></td></tr>
+<tr><td><a href="#governance">8. Quản trị, rủi ro, sử dụng có trách nhiệm (D6, 15%)</a></td><td><span class="tag xt2">CCAO-F D6</span></td><td></td></tr>
+<tr><td><a href="#troubleshooting">9. Xử lý sự cố và tối ưu (D7, 10%)</a></td><td><span class="tag xt2">CCAO-F D7</span></td><td></td></tr>
+</tbody></table></div>
+</details>
+
+<h2 id="overview">1. Bài thi dành cho ai</h2>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Hãy nghĩ tới một trợ lý rất nhanh, đọc nhiều, viết khá, nhưng đôi khi nói chắc nịch một điều sai và không biết mình sai. Người làm việc giỏi với trợ lý đó không phải người gõ lệnh hay nhất. Đó là người biết giao việc rõ, kiểm tra kết quả trước khi gửi, và biết việc nào không nên giao. Bài thi CCAO-F đo đúng những điều ấy.
+</div>
+<p>CCAO-F (<strong>Claude Certified Associate – Foundations</strong>; 60 câu, 120 phút, đỗ từ 720/1000) dành cho người dùng Claude trong vận hành, marketing, quản lý dự án, giáo dục, truyền thông. <strong>Không cần code.</strong> Với người làm kỹ thuật, khó nhất là chọn đáp án <strong>“đúng quy trình”</strong> thay vì đáp án “tiện tay”.</p>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 232" role="img" aria-label="Tỷ trọng bảy domain của CCAO-F: D1 14%, D2 21%, D3 12%, D4 16%, D5 12%, D6 15%, D7 10%">
+    <text x="10" y="12" class="ts">Tỷ trọng câu hỏi theo domain</text>
+    <text x="10" y="38" class="t">D1 Prompt và thực thi việc</text><rect x="230" y="26" width="196" height="16" rx="3" class="b-step"/><text x="434" y="38" class="t">14%</text>
+    <text x="10" y="64" class="t tb">D2 Đánh giá và kiểm chứng</text><rect x="230" y="52" width="294" height="16" rx="3" class="b-hot"/><text x="532" y="64" class="t tb">21%</text>
+    <text x="10" y="90" class="t">D3 Chọn tính năng và model</text><rect x="230" y="78" width="168" height="16" rx="3" class="b-step"/><text x="406" y="90" class="t">12%</text>
+    <text x="10" y="116" class="t">D4 Đưa Claude vào quy trình</text><rect x="230" y="104" width="224" height="16" rx="3" class="b-step"/><text x="462" y="116" class="t">16%</text>
+    <text x="10" y="142" class="t">D5 Cấu hình, quản lý tri thức</text><rect x="230" y="130" width="168" height="16" rx="3" class="b-step"/><text x="406" y="142" class="t">12%</text>
+    <text x="10" y="168" class="t">D6 Quản trị, rủi ro</text><rect x="230" y="156" width="210" height="16" rx="3" class="b-step"/><text x="448" y="168" class="t">15%</text>
+    <text x="10" y="194" class="t">D7 Xử lý sự cố, tối ưu</text><rect x="230" y="182" width="140" height="16" rx="3" class="b-step"/><text x="378" y="194" class="t">10%</text>
+    <text x="320" y="222" class="ts" text-anchor="middle">D2 nặng nhất. Tổng 100% · 60 câu · 120 phút · đỗ từ 720/1000</text>
+  </svg></div>
+  <figcaption>Hình 1. Tỷ trọng bảy domain của CCAO-F.</figcaption>
+</figure>
+<div class="insight"><strong>Mẫu chung của đáp án đúng.</strong> Vừa <strong>hoàn thành việc</strong> vừa <strong>tuân thủ quy trình</strong>. Loại các phương án làm ẩu (gửi luôn), cực đoan (bỏ việc, đổi nền tảng) hoặc dựa vào lời dặn (“bảo Claude đừng lưu”).</div>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Đáp án nhiễu hay gặp</div><ul>
+    <li>Gửi luôn vì Claude nói rất tự tin (làm ẩu)</li>
+    <li>Bỏ hẳn việc hoặc đổi nền tảng khác (cực đoan)</li>
+    <li>“Bảo Claude đừng lưu dữ liệu” (dựa vào lời dặn)</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đáp án đúng thường có</div><ul>
+    <li>Việc vẫn được làm</li>
+    <li>Có bước kiểm chứng hoặc người duyệt</li>
+    <li>Theo chính sách của tổ chức</li>
+  </ul></div>
+</div>
+<h3>1.1 Người “đạt chuẩn tối thiểu” (MQC) làm được gì</h3>
+<p>Exam guide viết đề theo hình dung về một <strong>minimally qualified candidate</strong> (MQC, người vừa đủ chuẩn): dùng Claude hằng ngày trong công việc, không chỉ hỏi đáp mà còn biết dựng prompt có cấu trúc, chia việc, cấu hình Project và đánh giá kết quả. MQC cũng biết giới hạn của mình: việc cần tích hợp kỹ thuật, API hay hệ thống agent thì <strong>chuyển (escalate)</strong> cho Claude Developer hoặc Architect. Vì vậy trong đề, đáp án “tự viết code tích hợp” hiếm khi đúng; đáp án “nhờ người có chuyên môn kỹ thuật” có thể đúng.</p>
+<h3>1.2 Bảy domain, mỗi domain hỏi gì</h3>
+<div class="tw"><table>
+  <thead><tr><th>Domain</th><th>Câu hỏi đề đặt ra</th><th>Phản xạ đúng</th><th class="nw">Mục</th></tr></thead>
+  <tbody>
+    <tr><td><strong>D1</strong> Prompting and Task Execution</td><td>Giao việc thế nào cho rõ?</td><td>Thêm bối cảnh cụ thể, chia nhỏ, lặp bằng phản hồi cụ thể</td><td><a href="#prompting">§2</a></td></tr>
+    <tr><td><strong>D2</strong> Output Evaluation and Validation</td><td>Output này tin được chưa?</td><td>Đối chiếu nguồn gốc; người có thẩm quyền duyệt khi rủi ro cao</td><td><a href="#output-evaluation">§4</a></td></tr>
+    <tr><td><strong>D3</strong> Product and Model Selection</td><td>Dùng tính năng nào, model nào?</td><td>Khớp việc với tính năng; model vừa đủ cho chi phí, tốc độ, chất lượng</td><td><a href="#products">§5</a></td></tr>
+    <tr><td><strong>D4</strong> Workflow Integration and Solution Design</td><td>Đưa Claude vào quy trình ra sao?</td><td>Thí điểm, có bước duyệt, đo rồi mở rộng; nói rõ giới hạn với các bên</td><td><a href="#workflow-integration">§6</a></td></tr>
+    <tr><td><strong>D5</strong> Configuration and Knowledge Management</td><td>Cấu hình Project, tri thức, connector thế nào?</td><td>Instructions rõ, tài liệu hiện hành, connector tối thiểu cần dùng</td><td><a href="#configuration">§7</a></td></tr>
+    <tr><td><strong>D6</strong> Governance, Risk, and Responsible Use</td><td>Việc này có được làm, với dữ liệu nào?</td><td>Ẩn danh dữ liệu nhạy cảm, theo chính sách tổ chức, người quyết định cuối</td><td><a href="#governance">§8</a></td></tr>
+    <tr><td><strong>D7</strong> Troubleshooting and Optimization</td><td>Kết quả kém thì sửa chỗ nào?</td><td>Tìm nguyên nhân, sửa bằng thay đổi cụ thể, đo lại</td><td><a href="#troubleshooting">§9</a></td></tr>
+  </tbody>
+</table></div>
+<h3>1.3 Thể thức cần nhớ</h3>
+<ul>
+  <li>Câu hỏi là trắc nghiệm một đáp án hoặc nhiều đáp án; mỗi câu <strong>nói rõ phải chọn bao nhiêu</strong>. Đọc kỹ dòng đó trước khi chọn.</li>
+  <li>Chứng chỉ có hiệu lực 12 tháng. Điểm báo cáo kèm tỷ lệ đúng theo từng domain, nhưng đỗ hay trượt chỉ dựa trên tổng điểm quy đổi (720 trên thang 100 đến 1.000).</li>
+  <li>Exam guide liệt kê mục tiêu của từng domain; mọi câu hỏi viết theo các mục tiêu đó. Học theo mục tiêu, không học thuộc câu mẫu.</li>
+</ul>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Các mục thể thức (số câu, thời gian, điểm đỗ, thời hạn) lấy từ exam guide v1.0. Phí thi, quy định thi lại và quy định hiệu lực có thể đổi; xem trang chứng chỉ trên Anthropic Partner Academy trước khi đăng ký.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Domain</dt><dd>Một nhóm kiến thức trong đề thi, có tỷ trọng riêng (D1 đến D7).</dd>
+  <dt>Scaled score</dt><dd>Điểm quy đổi về thang 100 đến 1.000; cần 720 để đỗ.</dd>
+  <dt>MQC (minimally qualified candidate)</dt><dd>Thí sinh vừa đủ chuẩn mà đề được viết cho.</dd>
+  <dt>Escalate</dt><dd>Chuyển việc vượt phạm vi cho người có chuyên môn phù hợp.</dd>
+</dl></div>
+
+<h2 id="prompting">2. Prompt cho việc nghiệp vụ (D1, 14%)</h2>
+<p class="xtags"><span class="tag xt2">CCAO-F D1</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Bạn giao việc cho một nhân viên mới bằng câu “làm giúp chị cái báo cáo”. Họ sẽ hỏi: báo cáo cho ai, về cái gì, dài bao nhiêu? Claude không tự hỏi lại mỗi lần, nên bạn nên nói trước những điều đó. Với việc lớn, bạn cũng không giao “làm xong cả bộ slide” trong một câu, mà giao từng phần rồi xem lại.
+</div>
+<p><strong>Prompt</strong> là lời bạn gửi cho Claude để giao việc. <strong>Task decomposition</strong> (chia nhỏ nhiệm vụ) là tách một việc lớn thành các bước nhỏ, mỗi bước có đầu ra kiểm tra được. <strong>Iterate</strong> (lặp) là chỉnh kết quả bằng phản hồi, trong cùng cuộc chat.</p>
+<ul>
+  <li>Nêu bối cảnh: <strong>đối tượng đọc, mục đích, dữ kiện chính, độ dài, định dạng</strong>, và ví dụ giọng văn nếu có.</li>
+  <li>Việc lớn thì <strong>chia nhỏ</strong>: phân tích dữ liệu → thống nhất ý chính → khuyến nghị → slide; kiểm tra từng bước.</li>
+  <li><strong>Lặp có phản hồi cụ thể</strong> trong cùng cuộc chat (“ấm hơn, khoảng 120 từ, giữ chi tiết hoàn tiền”) thay vì làm lại từ đầu.</li>
+  <li>Đổi cách prompt theo loại việc: brainstorm thì xin nhiều phương án đa dạng; phân tích thì xin lập luận có căn cứ; nghiên cứu thì xin nguồn; soạn thảo thì nêu giọng văn và khuôn.</li>
+</ul>
+<h3>2.1 Ví dụ chạy từng bước: email xin lỗi khách chờ hoàn tiền</h3>
+<p>Prompt yếu: “Viết email trả lời khách về hoàn tiền.” Prompt đủ ý:</p>
+<pre><code>Viết email trả lời khách đã chờ hoàn tiền 10 ngày.
+Đối tượng: khách đang bực, chưa từng mua lần hai.
+Mục đích: xin lỗi và nêu mốc hoàn tiền rõ ràng.
+Dữ kiện: đơn #4521, 1.200.000 đ, hoàn trong 3 ngày làm việc.
+Độ dài và định dạng: khoảng 150 từ, văn xuôi, không gạch đầu dòng.
+Giọng văn: như email mẫu dưới đây. [dán một email mẫu]</code></pre>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 240" role="img" aria-label="Vòng viết prompt: prompt đủ ý đi vào Claude, ra bản nháp một, người dùng phản hồi cụ thể, Claude cho bản nháp hai trong cùng cuộc chat">
+    <defs>
+      <marker id="m0901" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah"/></marker>
+      <marker id="m0902" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker>
+      <marker id="m0903" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-good"/></marker>
+    </defs>
+    <g><rect x="10" y="30" width="200" height="130" rx="6" class="b-sys"/><text x="110" y="52" class="t tb" text-anchor="middle">Prompt đủ ý nêu</text>
+      <text x="24" y="76" class="ts">• đối tượng đọc</text><text x="24" y="92" class="ts">• mục đích</text><text x="24" y="108" class="ts">• dữ kiện chính</text><text x="24" y="124" class="ts">• độ dài, định dạng</text><text x="24" y="140" class="ts">• ví dụ giọng văn</text></g>
+    <g><path d="M210,100 H256" class="ln" marker-end="url(#m0901)"/><rect x="260" y="70" width="110" height="60" rx="6" class="b-step"/><text x="315" y="96" class="t tb" text-anchor="middle">Claude</text><text x="315" y="112" class="ts" text-anchor="middle">cùng một chat</text></g>
+    <g><path d="M370,82 H426" class="ln" marker-end="url(#m0901)"/><rect x="430" y="60" width="200" height="44" rx="6" class="b-opt"/><text x="530" y="80" class="t tb" text-anchor="middle">Bản nháp 1</text><text x="530" y="95" class="ts" text-anchor="middle">hơi cứng, dài 200 từ</text></g>
+    <g><path d="M530,104 V120" class="ln" marker-end="url(#m0901)"/><rect x="430" y="124" width="200" height="44" rx="6" class="b-hot"/><text x="530" y="144" class="t tb" text-anchor="middle">Phản hồi cụ thể</text><text x="530" y="159" class="ts" text-anchor="middle">ấm hơn, ~120 từ, giữ hoàn tiền</text></g>
+    <g><path d="M430,146 H320 V134" class="ln-acc flow" marker-end="url(#m0902)"/><text x="375" y="140" class="ts halo" text-anchor="middle">gửi lại</text></g>
+    <g><path d="M530,168 V180" class="ln-good" marker-end="url(#m0903)"/><rect x="430" y="184" width="200" height="44" rx="6" class="b-done"/><text x="530" y="204" class="t tb" text-anchor="middle">Bản nháp 2</text><text x="530" y="219" class="ts" text-anchor="middle">ấm hơn, 120 từ, có hoàn tiền</text></g>
+    <text x="200" y="210" class="tw-good" text-anchor="middle">Lặp trong cùng một chat, không làm lại từ đầu</text>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Chuẩn bị prompt đủ năm ý: đối tượng, mục đích, dữ kiện, độ dài và định dạng, ví dụ giọng văn.</li>
+    <li>Gửi cho Claude trong một cuộc chat.</li>
+    <li>Claude cho bản nháp đầu. Bản này thường đúng hướng nhưng chưa đúng ý.</li>
+    <li>Bạn phản hồi cụ thể: “ấm hơn, khoảng 120 từ, giữ chi tiết hoàn tiền”.</li>
+    <li>Gửi phản hồi vào chính cuộc chat đó, để Claude còn nhớ bản nháp 1.</li>
+    <li>Claude sửa theo đúng các điểm bạn nêu.</li>
+    <li>Kết quả đạt nhanh hơn so với viết lại prompt từ đầu.</li>
+  </ol>
+  <figcaption>Hình 2. Vòng viết prompt và lặp bằng phản hồi cụ thể.</figcaption>
+</figure>
+<h3>2.2 Chia nhỏ việc lớn</h3>
+<p>Ví dụ: chuẩn bị bản trình bày kết quả bán hàng quý cho ban lãnh đạo. Giao cả việc trong một câu thì lỗi ở bước đầu sẽ lan xuống slide cuối mà bạn khó nhìn ra. Chia nhỏ để kiểm tra từng đoạn.</p>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 200" role="img" aria-label="Chia nhỏ việc làm bản trình bày thành bốn bước: phân tích dữ liệu, chốt ý chính, khuyến nghị, làm slide, mỗi bước đều có bước kiểm tra">
+    <defs><marker id="m0904" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah"/></marker></defs>
+    <g><rect x="10" y="30" width="130" height="70" rx="6" class="b-step"/><text x="75" y="54" class="t tb" text-anchor="middle">1. Phân tích</text><text x="75" y="74" class="ts" text-anchor="middle">doanh số theo vùng</text><text x="75" y="120" class="tw-good" text-anchor="middle">✓ kiểm tra số</text></g>
+    <g><path d="M140,65 H166" class="ln" marker-end="url(#m0904)"/><rect x="170" y="30" width="130" height="70" rx="6" class="b-step"/><text x="235" y="54" class="t tb" text-anchor="middle">2. Ý chính</text><text x="235" y="74" class="ts" text-anchor="middle">chốt 3 ý, bạn duyệt</text><text x="235" y="120" class="tw-good" text-anchor="middle">✓ đồng ý ý chính</text></g>
+    <g><path d="M300,65 H326" class="ln" marker-end="url(#m0904)"/><rect x="330" y="30" width="130" height="70" rx="6" class="b-step"/><text x="395" y="54" class="t tb" text-anchor="middle">3. Khuyến nghị</text><text x="395" y="74" class="ts" text-anchor="middle">dựa trên ý đã chốt</text><text x="395" y="120" class="tw-good" text-anchor="middle">✓ có căn cứ</text></g>
+    <g><path d="M460,65 H486" class="ln" marker-end="url(#m0904)"/><rect x="490" y="30" width="130" height="70" rx="6" class="b-done"/><text x="555" y="54" class="t tb" text-anchor="middle">4. Slide</text><text x="555" y="74" class="ts" text-anchor="middle">10 slide cho sếp</text><text x="555" y="120" class="tw-good" text-anchor="middle">✓ soát lần cuối</text></g>
+    <g><text x="320" y="164" class="tw-warn" text-anchor="middle">Sai ở bước 1 mà không kiểm thì lỗi lan tới tận slide</text><text x="320" y="182" class="ts" text-anchor="middle">Mỗi bước là một cơ hội sửa trước khi làm bước sau.</text></g>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Phân tích dữ liệu bán hàng. Bạn đối chiếu số quan trọng với bảng gốc.</li>
+    <li>Thống nhất ba ý chính trước khi viết tiếp.</li>
+    <li>Soạn khuyến nghị dựa trên ba ý đã chốt.</li>
+    <li>Chỉ khi ba bước trên ổn mới dựng slide.</li>
+    <li>Lỗi bắt được sớm thì sửa rẻ, bắt muộn thì phải làm lại nhiều bước.</li>
+  </ol>
+  <figcaption>Hình 3. Chia nhỏ việc lớn, kiểm tra từng bước.</figcaption>
+</figure>
+<div class="tw"><table>
+  <thead><tr><th>Loại việc</th><th>Cách prompt</th></tr></thead>
+  <tbody>
+    <tr><td>Brainstorm</td><td>Xin nhiều phương án đa dạng, chưa cần chọn</td></tr>
+    <tr><td>Phân tích</td><td>Xin lập luận có căn cứ từ dữ liệu bạn đưa</td></tr>
+    <tr><td>Nghiên cứu</td><td>Xin nguồn để mình kiểm tra</td></tr>
+    <tr><td>Soạn thảo</td><td>Nêu giọng văn, khuôn mẫu, độ dài</td></tr>
+  </tbody>
+</table></div>
+<h3>2.3 Phản hồi cụ thể và phản hồi mơ hồ</h3>
+<p>Lặp có hiệu quả khi phản hồi chỉ rõ <strong>sửa gì và sửa đến mức nào</strong>. Ví dụ có số: bản nháp 1 dài 200 từ, giọng cứng.</p>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Phản hồi mơ hồ</div><ul>
+    <li>“Chưa hay, viết lại đi”</li>
+    <li>“Làm tốt hơn nữa”</li>
+    <li>Mở chat mới và dán lại prompt cũ</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Phản hồi cụ thể</div><ul>
+    <li>“Giữ đoạn hoàn tiền, bỏ đoạn mở đầu, còn khoảng 120 từ”</li>
+    <li>“Giọng ấm hơn, xưng ‘chúng tôi’, bỏ câu xin lỗi sáo rỗng”</li>
+    <li>Tiếp tục trong cùng chat để Claude còn thấy bản nháp 1</li>
+  </ul></div>
+</div>
+<h3>2.4 Prompt theo loại việc: ví dụ cho từng loại</h3>
+<div class="tw"><table>
+  <thead><tr><th>Loại việc</th><th>Prompt yếu</th><th>Prompt đủ ý</th></tr></thead>
+  <tbody>
+    <tr><td>Brainstorm</td><td>“Cho vài ý tưởng sự kiện”</td><td>“Đưa 10 ý tưởng sự kiện cho khách hàng B2B, ngân sách 50 triệu, khác nhau về hình thức; chưa cần chọn”</td></tr>
+    <tr><td>Phân tích</td><td>“Phân tích bảng này”</td><td>“Chỉ dùng số trong bảng đính kèm. Nêu 3 xu hướng, mỗi xu hướng kèm số liệu làm căn cứ”</td></tr>
+    <tr><td>Nghiên cứu</td><td>“Tìm hiểu thị trường X”</td><td>“Tóm tắt thị trường X, mỗi nhận định kèm nguồn tôi mở ra kiểm tra được”</td></tr>
+    <tr><td>Soạn thảo</td><td>“Viết thông báo”</td><td>“Viết thông báo gửi toàn công ty, 100 từ, giọng thân thiện, theo mẫu thông báo trước (dán mẫu)”</td></tr>
+  </tbody>
+</table></div>
+<div class="insight"><strong>Cốt lõi.</strong> Khi bí, hỏi mình: Claude còn thiếu <em>bối cảnh</em> nào (ai đọc, để làm gì, dữ kiện nào, dài bao nhiêu)? Thêm đúng thứ thiếu, đừng thêm chữ cho dài.</div>
+<div class="alert"><strong>Bẫy.</strong> Câu trả lời đúng thường là “thêm bối cảnh cụ thể” hoặc “chia nhỏ và lặp có phản hồi cụ thể”. Phương án “làm lại từ đầu” hoặc “gõ prompt dài hơn một cách chung chung” thường là nhiễu.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Prompt</dt><dd>Lời giao việc bạn gửi cho Claude.</dd>
+  <dt>Task decomposition</dt><dd>Chia việc lớn thành bước nhỏ, mỗi bước kiểm tra được.</dd>
+  <dt>Iterate</dt><dd>Chỉnh kết quả bằng phản hồi cụ thể, trong cùng cuộc chat.</dd>
+  <dt>Brainstorm</dt><dd>Nghĩ ra nhiều ý tưởng, chưa cần chọn.</dd>
+  <dt>Bối cảnh (context)</dt><dd>Thông tin Claude cần để làm đúng: ai đọc, để làm gì, dữ kiện nào, dài bao nhiêu.</dd>
+</dl></div>
+
+<h2 id="ai-fluency">3. AI Fluency Framework — 14 bài</h2>
+<p class="xtags"><span class="tag xt2">CCAO-F D1</span> <span class="tag xt2">CCAO-F D6</span> <span class="tag xt2">CCAO-F D2</span> <span class="tag xt2">CCAO-F D4</span> <span class="tag xt2">CCAO-F D7</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Một trưởng nhóm giỏi làm bốn việc với nhân viên mới. Quyết định giao việc nào cho ai (<em>delegation</em>). Giải thích yêu cầu rõ ràng (<em>description</em>). Kiểm tra kết quả nhận về (<em>discernment</em>). Chịu trách nhiệm về những gì nhóm gửi ra ngoài (<em>diligence</em>). Nhân viên mới ở đây là AI. Bốn việc đó là bốn chữ D.
+</div>
+
+<h3>3.1 4D Framework: Tổng quan</h3>
+<p>AI Fluency Framework gồm bốn chiều (4D) giúp người dùng làm việc hiệu quả với AI:</p>
+<ul>
+  <li><strong>Delegation</strong>: quyết định giao gì cho AI</li>
+  <li><strong>Description</strong>: mô tả yêu cầu rõ ràng</li>
+  <li><strong>Discernment</strong>: đánh giá và cải thiện output</li>
+  <li><strong>Diligence</strong>: sử dụng AI có trách nhiệm</li>
+</ul>
+<p>Bốn chữ D không phải bốn bước làm một lần rồi xong. Chúng chạy như một vòng lặp. Bạn quyết định giao việc, mô tả, xem kết quả, rồi chịu trách nhiệm về nó. Kết quả thường kéo bạn quay lại mô tả hoặc quyết định giao việc lần sau.</p>
+
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 250" role="img" aria-label="Vòng lặp 4D: Delegation, Description, Discernment, Diligence nối vòng; vòng trong gồm Description và Discernment, vòng ngoài gồm Delegation và Diligence">
+    <defs><marker id="m1506" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker></defs>
+    <g><rect x="60" y="30" width="170" height="62" rx="6" class="b-sys"/><text x="145" y="55" class="t tb" text-anchor="middle">Delegation</text><text x="145" y="73" class="ts" text-anchor="middle">giao gì cho AI</text></g>
+
+    <g><path d="M230,61 H408" class="ln-acc flow" marker-end="url(#m1506)"/>
+      <rect x="410" y="30" width="170" height="62" rx="6" class="b-step"/><text x="495" y="55" class="t tb" text-anchor="middle">Description</text><text x="495" y="73" class="ts" text-anchor="middle">mô tả yêu cầu rõ</text></g>
+
+    <g><path d="M495,92 V168" class="ln-acc flow" marker-end="url(#m1506)"/>
+      <rect x="410" y="170" width="170" height="62" rx="6" class="b-hot"/><text x="495" y="195" class="t tb" text-anchor="middle">Discernment</text><text x="495" y="213" class="ts" text-anchor="middle">đánh giá output</text></g>
+
+    <g><path d="M410,201 H232" class="ln-acc flow" marker-end="url(#m1506)"/>
+      <rect x="60" y="170" width="170" height="62" rx="6" class="b-done"/><text x="145" y="195" class="t tb" text-anchor="middle">Diligence</text><text x="145" y="213" class="ts" text-anchor="middle">dùng AI có trách nhiệm</text></g>
+
+    <path d="M145,170 V94" class="ln-acc flow" marker-end="url(#m1506)"/>
+    <text x="320" y="120" class="ts" text-anchor="middle">Vòng trong, hằng ngày: Description và Discernment</text>
+    <text x="320" y="154" class="ts" text-anchor="middle">Vòng ngoài, quyết định: Delegation và Diligence</text>
+  </svg></div>
+  <ol class="anim-steps">
+    <li><strong>Delegation:</strong> việc này có nên giao cho AI không, và giao phần nào?</li>
+    <li><strong>Description:</strong> mô tả rõ thứ bạn cần, cách làm và chất lượng mong muốn.</li>
+    <li><strong>Discernment:</strong> đọc kết quả với đầu óc phản biện, xem có đúng, đủ, hợp không.</li>
+    <li><strong>Diligence:</strong> chịu trách nhiệm: duyệt trước khi gửi, minh bạch việc dùng AI.</li>
+    <li>Kết quả làm bạn xem lại cách giao việc, và vòng bắt đầu lại.</li>
+    <li>Mỗi ngày bạn đi nhiều vòng nhỏ Description và Discernment. Delegation và Diligence là các quyết định lớn hơn, đặt ra ngoài vòng nhỏ đó.</li>
+  </ol>
+  <figcaption>Hình 4. Bốn chiều của khung 4D chạy như một vòng lặp.</figcaption>
+</figure>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Delegation</dt><dd>Giao việc. Phát âm: “đe-lê-gây-sần”. Trả lời câu hỏi: ai làm gì, người hay AI.</dd>
+  <dt>Description</dt><dd>Mô tả việc cần làm cho AI.</dd>
+  <dt>Discernment</dt><dd>Sự sáng suốt khi đánh giá: nhận ra cái gì đúng, cái gì chưa ổn.</dd>
+  <dt>Diligence</dt><dd>Sự cẩn trọng và trách nhiệm.</dd>
+</dl></div>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Trên <a href="https://academy.claude.com/courses/ai-fluency-for-small-businesses/the-4d-framework" target="_blank" rel="noopener">Claude Academy</a>, khung 4D được mô tả có hai vòng: vòng trong (Description và Discernment) cho tương tác hằng ngày, vòng ngoài (Delegation và Diligence) cho các quyết định rộng hơn về khi nào và cách dùng AI. Tài liệu gốc của Anthropic về khung này nằm ở <a href="https://www-cdn.anthropic.com/4396730ed190e691a3712cf2fd6bfe35509deca2.pdf" target="_blank" rel="noopener">bản mô tả AI Fluency</a>. Hình 4 vẽ theo cách nhìn đó, còn bốn tên D vẫn như đề thi.</div>
+
+<h3>3.2 Delegation</h3>
+<p>Delegation gồm ba loại awareness (hiểu biết):</p>
+<div class="tw"><table>
+  <thead><tr><th>Awareness</th><th>Câu hỏi cốt lõi</th><th>Ví dụ</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Problem Awareness</strong></td><td>Vấn đề này có phù hợp cho AI không?</td><td>AI tốt cho brainstorm, không tốt cho quyết định đạo đức</td></tr>
+    <tr><td><strong>Platform Awareness</strong></td><td>Dùng AI nào, model nào, feature nào?</td><td>Research, chat thường hay Code</td></tr>
+    <tr><td><strong>Task Awareness</strong></td><td>Chia việc hợp lý chưa?</td><td>Cho AI làm draft, bạn review; không để AI quyết định cuối cùng</td></tr>
+  </tbody>
+</table></div>
+
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 224" role="img" aria-label="Delegation có ba loại awareness: problem, platform, task; kết quả là AI làm bản nháp, người review và quyết định cuối cùng">
+    <defs><marker id="m1507" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker></defs>
+    <rect x="8" y="8" width="196" height="100" rx="6" class="b-step"/>
+    <text x="106" y="30" class="t tb" text-anchor="middle">Problem Awareness</text>
+    <text x="106" y="52" class="ts" text-anchor="middle">Việc này hợp với AI không?</text>
+    <text x="106" y="72" class="ts" text-anchor="middle">Tốt: brainstorm, bản nháp</text><text x="106" y="86" class="ts" text-anchor="middle">Không: quyết định đạo đức</text>
+    <rect x="222" y="8" width="196" height="100" rx="6" class="b-sys"/>
+    <text x="320" y="30" class="t tb" text-anchor="middle">Platform Awareness</text>
+    <text x="320" y="52" class="ts" text-anchor="middle">Dùng AI, model, tính năng nào?</text>
+    <text x="320" y="72" class="ts" text-anchor="middle">Ví dụ: Research mode,</text><text x="320" y="86" class="ts" text-anchor="middle">chat hay Claude Code</text>
+    <rect x="436" y="8" width="196" height="100" rx="6" class="b-done"/>
+    <text x="534" y="30" class="t tb" text-anchor="middle">Task Awareness</text>
+    <text x="534" y="52" class="ts" text-anchor="middle">Chia việc hợp lý thế nào?</text>
+    <text x="534" y="72" class="ts" text-anchor="middle">AI làm bản nháp,</text><text x="534" y="86" class="ts" text-anchor="middle">bạn review</text>
+    <text x="320" y="138" class="lane-lb" text-anchor="middle">KẾT QUẢ: PHÂN CHIA VIỆC</text>
+    <rect x="96" y="150" width="200" height="56" rx="6" class="b-step"/><text x="196" y="173" class="t tb" text-anchor="middle">AI làm</text><text x="196" y="191" class="ts" text-anchor="middle">bản nháp, tóm tắt, ý tưởng</text>
+    <path d="M296,178 H342" class="ln-acc" marker-end="url(#m1507)"/>
+    <rect x="344" y="150" width="200" height="56" rx="6" class="b-done"/><text x="444" y="173" class="t tb" text-anchor="middle">Bạn làm</text><text x="444" y="191" class="ts" text-anchor="middle">review, chỉnh, quyết định cuối</text>
+  </svg></div>
+  <figcaption>Hình 5. Ba loại awareness của Delegation và cách chia việc giữa AI và người.</figcaption>
+</figure>
+<p>Ví dụ từng bước, với việc “chọn nhà cung cấp mới cho công ty”: (1) <em>Problem</em>: thu thập và so sánh thông tin nhà cung cấp hợp với AI, còn quyết định ký hợp đồng thì không. (2) <em>Platform</em>: cần nhiều nguồn có trích dẫn nên chọn Research mode. (3) <em>Task</em>: AI làm bảng so sánh nháp, bạn kiểm tra số liệu và là người quyết định cuối cùng.</p>
+<div class="insight"><strong>Quy tắc delegation:</strong> Đừng automate mọi thứ. AI tốt nhất như "brilliant junior": cần review, cần guidance, có thể sai. Giữ human judgment cho các quyết định có hệ quả lớn.</div>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div><ul>
+    <li>Giao hết mọi việc cho AI, kể cả quyết định cuối</li>
+    <li>Dùng đúng một tính năng cho mọi việc</li>
+    <li>Gửi bản AI viết thẳng cho khách, không ai đọc</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đúng</div><ul>
+    <li>AI làm bản nháp, người review và quyết định</li>
+    <li>Chọn model, tính năng hợp việc (Research, Thinking, chat, Code)</li>
+    <li>Giữ phán đoán của con người cho việc có hệ quả lớn</li>
+  </ul></div>
+</div>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Trong <a href="https://www-cdn.anthropic.com/4396730ed190e691a3712cf2fd6bfe35509deca2.pdf" target="_blank" rel="noopener">bản mô tả khung của Anthropic</a>, ba thành phần của Delegation là Problem Awareness, Platform Awareness và <strong>Task Delegation</strong> (phân chia việc giữa người và AI). Bài giảng thi gọi thành phần thứ ba là Task Awareness. Ý nghĩa giống nhau, và đề thi theo cách gọi trong bảng trên.</div>
+
+<h3>3.3 Description</h3>
+<p>Description gồm ba dimension:</p>
+<div class="tw"><table>
+  <thead><tr><th>Dimension</th><th>Mô tả</th><th>Ví dụ prompt element</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Product</strong></td><td>Mô tả output cuối muốn nhận: nội dung, định dạng, người đọc, văn phong</td><td>"Write a 500-word email" / "Create a table with columns X, Y, Z" / "For the C-suite, no jargon"</td></tr>
+    <tr><td><strong>Process</strong></td><td>Mô tả cách bạn muốn AI đi đến kết quả</td><td>"Think step by step" / "Consider pros and cons before recommending"</td></tr>
+    <tr><td><strong>Performance</strong></td><td>Mô tả cách AI cư xử trong lúc cộng tác với bạn</td><td>"Be concise" / "Challenge my assumptions if they look weak" / "Ask before guessing"</td></tr>
+  </tbody>
+</table></div>
+<p>Ví dụ cho cùng một việc “báo cáo doanh thu quý”: <strong>Product</strong> là “một bảng ba cột: khu vực, doanh thu, tăng trưởng, viết cho ban giám đốc, không biệt ngữ” (người đọc và văn phong thuộc Product). <strong>Process</strong> là “so sánh với quý trước rồi mới kết luận”. <strong>Performance</strong> là “trả lời ngắn, chỉ ra giả định nào trong số liệu có vẻ yếu”. Nguồn: <a href="https://academy.claude.com/courses/ai-fluency-framework-foundations/a-closer-look-at-description">AI Fluency: A closer look at Description</a>.</p>
+<p><strong>5 cách phổ biến cải thiện kết quả:</strong></p>
+<ol>
+  <li>Thêm vai ("You are a...")</li>
+  <li>Chỉ định format output rõ ràng</li>
+  <li>Cho ví dụ (few-shot)</li>
+  <li>Chia việc lớn thành bước nhỏ</li>
+  <li>Thêm ràng buộc (độ dài, người đọc, giọng văn)</li>
+</ol>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div><ul>
+    <li>“Làm báo cáo doanh thu.” (chỉ nói việc, không nói sản phẩm, cách làm, chất lượng)</li>
+    <li>Giao cả việc lớn trong một câu</li>
+    <li>Không nói người đọc là ai</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đúng</div><ul>
+    <li>Product: bảng ba cột khu vực, doanh thu, tăng trưởng, viết cho ban giám đốc</li>
+    <li>Process: so sánh quý trước rồi kết luận</li>
+    <li>Performance: trả lời ngắn, chỉ ra giả định yếu</li>
+  </ul></div>
+</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Dimension</dt><dd>Một “chiều” hay khía cạnh của khái niệm.</dd>
+  <dt>Few-shot</dt><dd>Đưa vài ví dụ mẫu trong prompt để Claude bắt chước kiểu trả lời.</dd>
+  <dt>Audience</dt><dd>Người sẽ đọc kết quả. C-suite là các giám đốc cấp cao như CEO, CFO.</dd>
+  <dt>Step by step</dt><dd>Làm lần lượt từng bước thay vì nhảy thẳng tới kết luận.</dd>
+</dl></div>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Trong <a href="https://www-cdn.anthropic.com/4396730ed190e691a3712cf2fd6bfe35509deca2.pdf" target="_blank" rel="noopener">bản mô tả khung của Anthropic</a>, Performance Description là mô tả <em>hành vi của AI trong lúc cộng tác</em>: nên ngắn hay chi tiết, nên thách thức hay hỗ trợ bạn. Bảng trên ghi theo bài giảng thi (tiêu chuẩn chất lượng). Hai cách ghi đều xoay quanh việc nói rõ AI cần cư xử và đạt mức nào, nên các ví dụ trong bảng vẫn dùng được.</div>
+
+<h3>3.4 Discernment</h3>
+<p>Discernment là khả năng đánh giá output AI và cải thiện nếu cần.</p>
+<p><strong>Ba dimension:</strong></p>
+<ul>
+  <li><strong>Product discernment:</strong> Output có đúng không? Có đủ không? Có phù hợp không?</li>
+  <li><strong>Đánh giá cách làm (process discernment):</strong> AI có đi đúng hướng không? (nhận ra khi AI suy luận sai)</li>
+  <li><strong>Performance discernment:</strong> Chất lượng có đạt mức kỳ vọng không?</li>
+</ul>
+<p><strong>The Discernment Loop:</strong></p>
+<ol>
+  <li>Đọc lại output một cách có phê phán (đừng nhận ngay)</li>
+  <li>Tìm chỗ hụt: thiếu thông tin? sai giọng? sai dữ kiện?</li>
+  <li>Góp ý đúng chỗ: "The second paragraph is too technical. Simplify for non-engineers."</li>
+  <li>Iterate cho đến khi đạt yêu cầu</li>
+</ol>
+
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 176" role="img" aria-label="Discernment loop: review output, tìm khoảng trống, góp ý cụ thể, lặp lại; chưa đạt thì quay về bước một">
+    <defs><marker id="m1508" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker></defs>
+    <g><rect x="8" y="30" width="132" height="56" rx="6" class="b-step"/><text x="74" y="53" class="t tb" text-anchor="middle">1 · Review</text><text x="74" y="71" class="ts" text-anchor="middle">đọc có phản biện</text></g>
+    <g><path d="M140,58 H166" class="ln-acc flow" marker-end="url(#m1508)"/><rect x="168" y="30" width="132" height="56" rx="6" class="b-warn"/><text x="234" y="53" class="t tb" text-anchor="middle">2 · Tìm gap</text><text x="234" y="71" class="ts" text-anchor="middle">thiếu ý? sai giọng?</text></g>
+    <g><path d="M300,58 H326" class="ln-acc flow" marker-end="url(#m1508)"/><rect x="328" y="30" width="132" height="56" rx="6" class="b-hot"/><text x="394" y="53" class="t tb" text-anchor="middle">3 · Góp ý</text><text x="394" y="71" class="ts" text-anchor="middle">chỉ rõ chỗ cần sửa</text></g>
+    <g><path d="M460,58 H486" class="ln-acc flow" marker-end="url(#m1508)"/><rect x="488" y="30" width="132" height="56" rx="6" class="b-done"/><text x="554" y="53" class="t tb" text-anchor="middle">4 · Lặp lại</text><text x="554" y="71" class="ts" text-anchor="middle">đến khi đạt yêu cầu</text></g>
+    <g><path d="M554,86 V124 H74 V88" class="ln-warn-solid flow" marker-end="url(#m1508)"/><text x="314" y="118" class="ts halo" text-anchor="middle">chưa đạt thì quay lại bước 1</text></g>
+    <text x="320" y="162" class="tw-good" text-anchor="middle">Không chấp nhận output một cách mù quáng</text>
+  </svg></div>
+  <ol class="anim-steps">
+    <li><strong>Review:</strong> bản tóm tắt hợp đồng Claude trả về. Đọc kỹ, đối chiếu với hợp đồng.</li>
+    <li><strong>Tìm gap:</strong> thiếu điều khoản phạt? Giọng quá kỹ thuật? Có con số sai?</li>
+    <li><strong>Góp ý cụ thể:</strong> “Đoạn hai quá kỹ thuật, hãy viết lại cho người không chuyên luật.”</li>
+    <li><strong>Lặp lại</strong> cho đến khi bản nhận được đạt yêu cầu.</li>
+    <li>Mỗi lần chưa đạt, vòng quay lại bước đọc kết quả mới.</li>
+    <li>Đừng bao giờ nhận kết quả đầu tiên mà không đọc.</li>
+  </ol>
+  <figcaption>Hình 6. The Discernment Loop: review, tìm gap, góp ý, lặp lại.</figcaption>
+</figure>
+<div class="alert"><strong>Rủi ro bịa thông tin:</strong> AI có thể tự tin trả lời sai. Với dữ kiện quan trọng (số liệu, trích dẫn, tên người), luôn kiểm chứng ở nguồn gốc. Dùng Research nếu cần trích dẫn.</div>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div><ul>
+    <li>“Viết lại đi, chưa hay.” (không nói chỗ nào)</li>
+    <li>Tin ngay con số và tên người Claude đưa ra</li>
+    <li>Chấp nhận bản đầu tiên vì “nghe có vẻ chuyên nghiệp”</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đúng</div><ul>
+    <li>“Đoạn hai quá kỹ thuật, hãy đơn giản hoá cho người không chuyên.”</li>
+    <li>Kiểm tra số liệu, trích dẫn, tên người qua nguồn gốc</li>
+    <li>Lặp lại cho tới khi đạt, đọc kỹ từng vòng</li>
+  </ul></div>
+</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Hallucination</dt><dd>AI đưa ra thông tin nghe rất chắc chắn nhưng không có thật hoặc sai.</dd>
+  <dt>Critical mindset</dt><dd>Thái độ đọc có phản biện, luôn hỏi “thật không?”.</dd>
+  <dt>Verify</dt><dd>Kiểm chứng lại bằng nguồn gốc đáng tin.</dd>
+  <dt>Iterate</dt><dd>Làm lại nhiều vòng, mỗi vòng tốt hơn.</dd>
+</dl></div>
+
+<h3>3.5 Diligence</h3>
+<p>Diligence = sử dụng AI có trách nhiệm, trong cả ba dimension:</p>
+<div class="tw"><table>
+  <thead><tr><th>Dimension</th><th>Nghĩa là</th><th>Ví dụ thực hành</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Creation diligence</strong></td><td>Không nộp output của AI khi chưa đọc lại</td><td>Luôn đọc và chỉnh sửa trước khi gửi/publish</td></tr>
+    <tr><td><strong>Transparency diligence</strong></td><td>Minh bạch về việc dùng AI khi relevant</td><td>Nói rõ có dùng AI khi chính sách công ty hoặc người đọc yêu cầu</td></tr>
+    <tr><td><strong>Deployment diligence</strong></td><td>Cân nhắc hậu quả trước khi deploy AI rộng rãi</td><td>Thử với trường hợp biên, có phương án dự phòng khi AI sai</td></tr>
+  </tbody>
+</table></div>
+<p>Ví dụ từng bước: nhân viên dùng Claude soạn báo cáo cho khách hàng. <strong>Creation</strong>: nhân viên đọc, sửa, kiểm tra số liệu trước khi gửi. <strong>Transparency</strong>: công ty có quy định phải ghi chú việc dùng AI, nên báo cáo có dòng ghi chú. <strong>Deployment</strong>: phòng muốn cho cả đội dùng quy trình này, nên thử trước với vài báo cáo khó (ví dụ dữ liệu thiếu) và chuẩn bị cách làm tay khi AI sai.</p>
+<p><strong>Ghi chú minh bạch (diligence statement):</strong> khi output quan trọng và sẽ được chia sẻ rộng, thêm một câu nói rõ có dùng AI. Ví dụ: "This report was drafted with AI assistance and reviewed by [human name]."</p>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div><ul>
+    <li>Gửi thẳng bản Claude viết cho khách</li>
+    <li>Giấu việc dùng AI dù chính sách yêu cầu nêu rõ</li>
+    <li>Đưa quy trình AI cho cả công ty mà chưa thử trường hợp khó</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đúng</div><ul>
+    <li>Đọc, sửa, kiểm tra rồi mới gửi (creation)</li>
+    <li>Ghi rõ việc dùng AI khi cần (transparency)</li>
+    <li>Thử với edge cases, có phương án dự phòng (deployment)</li>
+  </ul></div>
+</div>
+<div class="insight"><strong>Cốt lõi.</strong> Người ký tên chịu trách nhiệm cho kết quả, dù AI soạn. Diligence là bước biến “AI viết” thành “tôi duyệt và chịu trách nhiệm”.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Edge case</dt><dd>Tình huống hiếm hoặc khác thường mà quy trình có thể làm sai.</dd>
+  <dt>Fallback</dt><dd>Phương án dự phòng khi AI sai hoặc không dùng được.</dd>
+  <dt>Deploy</dt><dd>Đưa vào dùng thật, với nhiều người.</dd>
+  <dt>Disclose</dt><dd>Nói rõ, công khai việc đã dùng AI.</dd>
+</dl></div>
+
+<h2 id="output-evaluation" class="pb">4. Đánh giá và kiểm chứng output (D2, 21%)</h2>
+<p class="xtags"><span class="tag xt2">CCAO-F D2</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Thực tập sinh nộp bản tóm tắt luật, trích đúng “Điều 12 khoản 3” với giọng rất chắc. Bạn là người ký gửi đi, nên bạn mở luật ra đối chiếu. Hỏi thực tập sinh “em chắc chưa?” không thay được việc đó, vì ai cũng dễ trả lời “chắc ạ”. Claude cũng vậy.
+</div>
+<p>Domain nặng nhất. Câu hỏi thường cho một output trông rất thuyết phục và hỏi bước tiếp theo.</p>
+<p><strong>Hallucination</strong> (ảo giác) là khi model viết ra chi tiết nghe rất hợp lý nhưng không có thật: số điều khoản, con số, trích dẫn, nguồn. <strong>Bias</strong> (thiên lệch) là khi mô tả hoặc đánh giá nghiêng về một nhóm người một cách không công bằng. <strong>Kiểm chứng</strong> (validation) là đối chiếu với nguồn đáng tin bên ngoài Claude.</p>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 240" role="img" aria-label="Claude tóm tắt quy định và trích khoản 4.2. Hỏi Claude có chắc không không phải kiểm chứng. Cách đúng là đối chiếu văn bản gốc, người duyệt xác nhận, rồi mới gửi đội tuân thủ">
+    <defs>
+      <marker id="m0905" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-warn"/></marker>
+      <marker id="m0906" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-good"/></marker>
+    </defs>
+    <g><rect x="10" y="84" width="150" height="64" rx="6" class="b-step"/><text x="85" y="108" class="t tb" text-anchor="middle">Bản tóm tắt</text><text x="85" y="124" class="ts" text-anchor="middle">nói rất chắc, trích</text><text x="85" y="137" class="ts" text-anchor="middle">“khoản 4.2”</text></g>
+    <g><path d="M160,100 L216,52" class="ln-warn" marker-end="url(#m0905)"/><rect x="220" y="20" width="190" height="50" rx="6" class="b-warn"/><text x="315" y="42" class="t tb" text-anchor="middle">Hỏi: “Bạn chắc không?”</text><text x="315" y="58" class="ts" text-anchor="middle">độ tự tin không bằng độ đúng</text></g>
+    <text x="420" y="50" class="tw-warn">✕ không phải kiểm chứng</text>
+    <g><path d="M160,132 L216,135" class="ln-good" marker-end="url(#m0906)"/><rect x="220" y="110" width="190" height="50" rx="6" class="b-done"/><text x="315" y="132" class="t tb" text-anchor="middle">Đối chiếu văn bản gốc</text><text x="315" y="148" class="ts" text-anchor="middle">tìm khoản 4.2 trong bản chính thức</text></g>
+    <g><path d="M410,135 H446" class="ln-good" marker-end="url(#m0906)"/><rect x="450" y="110" width="180" height="50" rx="6" class="b-step"/><text x="540" y="132" class="t tb" text-anchor="middle">Người duyệt xác nhận</text><text x="540" y="148" class="ts" text-anchor="middle">nội dung gửi bộ phận tuân thủ</text></g>
+    <g><path d="M540,160 V188" class="ln-good" marker-end="url(#m0906)"/><rect x="450" y="190" width="180" height="36" rx="6" class="b-done"/><text x="540" y="213" class="t tb" text-anchor="middle">Gửi đội tuân thủ</text>
+      <text x="10" y="214" class="tw-good">Kiểm chứng xong rồi mới gửi</text></g>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Claude trả bản tóm tắt quy định, trích cụ thể “khoản 4.2” và nói rất tự tin.</li>
+    <li>Cách làm sai: hỏi lại Claude xem nó có chắc không.</li>
+    <li>Câu trả lời “chắc” không chứng minh được gì. Độ tự tin của model không phải bằng chứng.</li>
+    <li>Cách làm đúng: mở văn bản gốc và tìm đúng khoản được trích.</li>
+    <li>Nội dung sẽ gửi cho bộ phận tuân thủ, nên có người có thẩm quyền xác nhận.</li>
+    <li>Sau khi kiểm chứng và duyệt mới gửi đi.</li>
+  </ol>
+  <figcaption>Hình 7. Kiểm chứng output trước khi gửi.</figcaption>
+</figure>
+<div class="tw"><table>
+  <thead><tr><th>Dấu hiệu</th><th>Việc cần làm</th></tr></thead>
+  <tbody>
+    <tr><td>Trích dẫn điều khoản, số liệu rất cụ thể, nói rất chắc</td><td>Đối chiếu văn bản gốc trước khi gửi đi; hỏi Claude tự chấm độ tin cậy <strong>không</strong> phải kiểm chứng</td></tr>
+    <tr><td>Số liệu không có nguồn</td><td>Tìm nguồn đáng tin hoặc bỏ đi; có thể là bịa</td></tr>
+    <tr><td>Số tổng không khớp số thành phần, mâu thuẫn nội tại</td><td>Đối chiếu dữ liệu gốc, chỉ ra chỗ sai để Claude sửa</td></tr>
+    <tr><td>Mô tả thiên lệch về một nhóm người</td><td>Coi là thiên lệch tiềm ẩn; giữ người ra quyết định</td></tr>
+  </tbody>
+</table></div>
+<p>Ví dụ dấu hiệu thứ ba: bảng doanh số có bốn vùng cộng lại 480 triệu, nhưng dòng tổng ghi 520 triệu. Đừng sửa số tổng cho khớp. Hãy mở bảng tính gốc, tìm số đúng, rồi nói với Claude chỗ lệch để nó sửa.</p>
+<h3>4.1 Khi nào cần người duyệt</h3>
+<p>Nội dung pháp lý, tài chính, tuân thủ, gửi ra ngoài (khách hàng, cơ quan), hoặc ảnh hưởng tới quyết định về con người. Bản nháp nội bộ rủi ro thấp (ý tưởng, ghi chú cho mình) thì nhẹ hơn.</p>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 240" role="img" aria-label="Cây quyết định mức duyệt: nội dung pháp lý, tài chính, tuân thủ, gửi ra ngoài hoặc ảnh hưởng quyết định về con người cần người duyệt kỹ; bản nháp nội bộ rủi ro thấp duyệt nhẹ">
+    <rect x="200" y="8" width="240" height="34" rx="6" class="b-sys"/><text x="320" y="30" class="t tb" text-anchor="middle">Output của Claude sắp dùng</text>
+    <path d="M320,42 V58 M160,58 H480 M160,58 V74 M480,58 V74" class="ln"/>
+    <rect x="10" y="74" width="300" height="156" rx="8" class="b-warn"/>
+    <text x="160" y="98" class="t tb" text-anchor="middle">Cần người duyệt kỹ</text>
+    <text x="26" y="126" class="ts">• nội dung pháp lý, tài chính, tuân thủ</text>
+    <text x="26" y="146" class="ts">• gửi ra ngoài: khách hàng, cơ quan</text>
+    <text x="26" y="166" class="ts">• ảnh hưởng quyết định về con người</text>
+    <text x="160" y="206" class="tw-warn" text-anchor="middle">Kiểm chứng rồi mới đi tiếp</text>
+    <rect x="330" y="74" width="300" height="156" rx="8" class="b-done"/>
+    <text x="480" y="98" class="t tb" text-anchor="middle">Duyệt nhẹ</text>
+    <text x="346" y="126" class="ts">• bản nháp nội bộ rủi ro thấp</text>
+    <text x="346" y="146" class="ts">• ý tưởng, ghi chú cho riêng mình</text>
+    <text x="480" y="206" class="tw-good" text-anchor="middle">Đọc lướt, sửa nếu cần</text>
+  </svg></div>
+  <figcaption>Hình 8. Mức duyệt tuỳ theo rủi ro.</figcaption>
+</figure>
+<h3>4.2 Chọn định dạng đầu ra</h3>
+<div class="tw"><table>
+  <thead><tr><th>Nhu cầu</th><th>Định dạng</th></tr></thead>
+  <tbody>
+    <tr><td>Tài liệu sẽ sửa nhiều lần, chia sẻ</td><td>Artifact</td></tr>
+    <tr><td>Câu hỏi nhanh</td><td>Trả lời trực tiếp</td></tr>
+    <tr><td>Dữ liệu để đưa vào bảng tính, so sánh</td><td>Bảng hoặc CSV có cột xác định</td></tr>
+  </tbody>
+</table></div>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div><ul>
+    <li>Hỏi “bạn chắc chưa?” rồi gửi nếu Claude nói chắc</li>
+    <li>Chỉ chỉnh giọng văn cho trang trọng, không kiểm sự thật</li>
+    <li>Sửa số tổng cho khớp mà không xem dữ liệu gốc</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đúng</div><ul>
+    <li>Đối chiếu điều khoản và số liệu với nguồn gốc</li>
+    <li>Tìm nguồn cho số liệu không có nguồn, hoặc bỏ</li>
+    <li>Giữ người ra quyết định với nội dung rủi ro cao</li>
+  </ul></div>
+</div>
+<h3>4.3 Cách kiểm chứng, từ nhanh đến kỹ</h3>
+<ol>
+  <li><strong>Kiểm nội bộ:</strong> số có cộng đúng không, đoạn đầu có mâu thuẫn đoạn sau không, tên và ngày có nhất quán không. Làm được ngay, không cần nguồn ngoài.</li>
+  <li><strong>Đối chiếu nguồn gốc:</strong> mở văn bản luật, hợp đồng, bảng tính gốc và so từng dữ kiện quan trọng. Đây là bước không thể thay bằng việc hỏi lại Claude.</li>
+  <li><strong>Mở nguồn Claude đưa ra:</strong> xin nguồn rồi mở thật. Tên bài và đường dẫn có thể bịa, nên nguồn chưa mở được thì coi như chưa có.</li>
+  <li><strong>Hỏi người có chuyên môn:</strong> nội dung pháp lý, tài chính, y tế, tuân thủ cần người có thẩm quyền xác nhận.</li>
+</ol>
+<p>Ví dụ có số: Claude tóm tắt báo cáo thị trường và viết “thị phần tăng từ 18% lên 24%, tức tăng 33%”. Kiểm nội bộ: (24 − 18) / 18 = 33,3%, phép tính đúng. Nhưng hai con số 18% và 24% có đúng không thì phải mở báo cáo gốc. Phép tính khớp không chứng minh dữ kiện đầu vào đúng.</p>
+<h3>4.4 Chỉnh output cho đúng người đọc</h3>
+<p>Output đúng sự thật vẫn có thể không dùng được nếu sai người đọc. Cùng một kết quả phân tích, ban lãnh đạo cần ba dòng kết luận và khuyến nghị; nhóm kỹ thuật cần phương pháp và số liệu chi tiết; khách hàng cần ngôn ngữ đơn giản, không thuật ngữ nội bộ. Cách làm: nêu rõ người đọc, mục đích, độ dài khi nhờ Claude chỉnh; rồi <strong>so sánh hai bản</strong> (ví dụ bản cho sếp và bản cho khách) để chắc dữ kiện không đổi khi đổi giọng.</p>
+<h3>4.5 Thiên lệch (bias) trông như thế nào</h3>
+<ul>
+  <li>Mô tả ứng viên nam bằng từ “quyết đoán”, ứng viên nữ bằng từ “thân thiện” cho cùng một hồ sơ.</li>
+  <li>Ví dụ minh hoạ luôn lấy một nhóm người làm nhân vật chính.</li>
+  <li>Gợi ý nghiêng về một phía khi hồ sơ có đặc điểm nhóm (tuổi, giới, quê quán).</li>
+</ul>
+<p>Cách xử lý: đọc có chủ đích để tìm kiểu lệch này, yêu cầu viết lại theo cùng tiêu chí cho mọi người, và để con người quyết định cuối với việc ảnh hưởng tới người khác.</p>
+<div class="insight"><strong>Cốt lõi.</strong> Kiểm chứng là đối chiếu với thứ nằm ngoài Claude. Hỏi Claude “bạn có chắc không” hay “chấm độ tin cậy” đều chỉ cho thêm ý kiến của chính nó.</div>
+<div class="alert"><strong>Bẫy.</strong> Output càng cụ thể và càng tự tin càng dễ khiến bạn tin. Câu hỏi hay cho một bản tóm tắt “hoàn hảo” rồi hỏi bước tiếp theo; đáp án đúng là kiểm chứng với nguồn, không phải gửi luôn, chỉnh văn phong hay nhờ Claude tự chấm.</div>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Claude đôi khi ảo giác cả <strong>khả năng của chính nó</strong>: nói “đã gửi email”, “đã tạo file trên Drive” hoặc đưa đường link không mở được. Trang hỗ trợ ghi rõ Claude không có quyền dùng công cụ hay phần mềm nào chưa được tích hợp (email, trình soạn thảo, chuyển file), dù nó nói gì. Có connector Gmail thì Claude gửi được email, và mặc định phải hỏi bạn trước mỗi lần gửi (trừ khi bạn bật Auto mode). Không có tích hợp thì lời báo “đã gửi” là bịa: tự gửi nội dung đó, đừng đi kiểm tra hộp thư đi. Nguồn: <a href="https://support.claude.com/en/articles/8241188-claude-is-producing-links-that-don-t-work-and-falsely-claiming-that-it-has-sent-emails-or-produced-external-documents-what-s-going-on" target="_blank" rel="noopener">support.claude.com, bài 8241188</a>, <a href="https://support.claude.com/en/articles/10166901-use-google-workspace-connectors" target="_blank" rel="noopener">Use Google Workspace connectors</a>.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Hallucination</dt><dd>Chi tiết nghe hợp lý nhưng do model bịa ra.</dd>
+  <dt>Bias</dt><dd>Thiên lệch: mô tả nghiêng về một nhóm người.</dd>
+  <dt>Artifact</dt><dd>Khung riêng bên cạnh chat chứa tài liệu, code hay trang, sửa và chia sẻ được.</dd>
+  <dt>CSV</dt><dd>File văn bản dạng bảng, mỗi dòng một hàng, các cột cách nhau bằng dấu phẩy; mở được bằng bảng tính.</dd>
+</dl></div>
+
+<h2 id="products">5. Chọn tính năng và model (D3, 12%)</h2>
+<p class="xtags"><span class="tag xt2">CCAO-F D3</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Trong văn phòng có máy in, máy scan, phòng họp, kho hồ sơ chung. Bạn không đặt phòng họp để in một tờ giấy. Claude cũng có nhiều tính năng, mỗi cái hợp một kiểu việc. Model giống chọn người làm: thực tập sinh nhanh cho việc lặt vặt, nhân viên giỏi cho việc thường ngày, chuyên gia cho bài toán khó.
+</div>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 346" role="img" aria-label="Chọn tính năng theo nhu cầu: Projects, Artifacts, Research, Connectors, Code execution, Memory, Skills; và chọn model Haiku, Sonnet, Opus theo tốc độ và độ khó">
+    <defs><marker id="m0907" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah"/></marker></defs>
+    <rect x="10" y="12" width="300" height="30" rx="5" class="b-sys"/><text x="160" y="32" class="t" text-anchor="middle">Việc lặp lại, cần tài liệu chung</text><path d="M310,27 H350" class="ln" marker-end="url(#m0907)"/><rect x="354" y="12" width="150" height="30" rx="5" class="b-step"/><text x="429" y="32" class="t tb" text-anchor="middle">Projects</text>
+    <rect x="10" y="48" width="300" height="30" rx="5" class="b-sys"/><text x="160" y="68" class="t" text-anchor="middle">Nội dung độc lập, sửa và chia sẻ</text><path d="M310,63 H350" class="ln" marker-end="url(#m0907)"/><rect x="354" y="48" width="150" height="30" rx="5" class="b-step"/><text x="429" y="68" class="t tb" text-anchor="middle">Artifacts</text>
+    <rect x="10" y="84" width="300" height="30" rx="5" class="b-sys"/><text x="160" y="104" class="t" text-anchor="middle">Tìm nhiều bước, có trích dẫn</text><path d="M310,99 H350" class="ln" marker-end="url(#m0907)"/><rect x="354" y="84" width="150" height="30" rx="5" class="b-step"/><text x="429" y="104" class="t tb" text-anchor="middle">Research</text>
+    <rect x="10" y="120" width="300" height="30" rx="5" class="b-sys"/><text x="160" y="140" class="t" text-anchor="middle">Đọc Drive, Gmail, Calendar thật</text><path d="M310,135 H350" class="ln" marker-end="url(#m0907)"/><rect x="354" y="120" width="150" height="30" rx="5" class="b-step"/><text x="429" y="140" class="t tb" text-anchor="middle">Connectors</text>
+    <rect x="10" y="156" width="300" height="30" rx="5" class="b-sys"/><text x="160" y="176" class="t" text-anchor="middle">Tính toán, tạo file, vẽ biểu đồ</text><path d="M310,171 H350" class="ln" marker-end="url(#m0907)"/><rect x="354" y="156" width="150" height="30" rx="5" class="b-step"/><text x="429" y="176" class="t tb" text-anchor="middle">Code execution</text>
+    <rect x="10" y="192" width="300" height="30" rx="5" class="b-sys"/><text x="160" y="212" class="t" text-anchor="middle">Nhớ thông tin giữa các cuộc chat</text><path d="M310,207 H350" class="ln" marker-end="url(#m0907)"/><rect x="354" y="192" width="150" height="30" rx="5" class="b-step"/><text x="429" y="212" class="t tb" text-anchor="middle">Memory</text>
+    <rect x="10" y="228" width="300" height="30" rx="5" class="b-sys"/><text x="160" y="248" class="t" text-anchor="middle">Đóng gói quy trình dùng lại</text><path d="M310,243 H350" class="ln" marker-end="url(#m0907)"/><rect x="354" y="228" width="150" height="30" rx="5" class="b-step"/><text x="429" y="248" class="t tb" text-anchor="middle">Skills</text>
+    <text x="10" y="284" class="ts">Chọn model theo chi phí, tốc độ, chất lượng:</text>
+    <rect x="10" y="294" width="200" height="44" rx="6" class="b-opt"/><text x="110" y="313" class="t tb" text-anchor="middle">Haiku</text><text x="110" y="328" class="ts" text-anchor="middle">nhanh, rẻ, việc ngắn</text>
+    <rect x="220" y="294" width="200" height="44" rx="6" class="b-step"/><text x="320" y="313" class="t tb" text-anchor="middle">Sonnet</text><text x="320" y="328" class="ts" text-anchor="middle">cân bằng, việc thường ngày</text>
+    <rect x="430" y="294" width="200" height="44" rx="6" class="b-hot"/><text x="530" y="313" class="t tb" text-anchor="middle">Opus</text><text x="530" y="328" class="ts" text-anchor="middle">suy luận phức tạp</text>
+  </svg></div>
+  <figcaption>Hình 9. Chọn tính năng theo nhu cầu và chọn model theo độ khó.</figcaption>
+</figure>
+<div class="tw"><table>
+  <thead><tr><th>Tính năng</th><th>Dùng khi</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Projects</strong></td><td>Việc lặp lại cần instructions riêng và kho tài liệu dùng chung cho mọi cuộc chat</td></tr>
+    <tr><td><strong>Artifacts</strong></td><td>Nội dung độc lập (tài liệu, code, sơ đồ, trang nhỏ) ở khung riêng, sửa và chia sẻ được</td></tr>
+    <tr><td><strong>Research</strong></td><td>Tìm kiếm nhiều bước trên web và nguồn đã kết nối, kèm trích dẫn</td></tr>
+    <tr><td><strong>Memory</strong></td><td>Ghi nhớ thông tin giữa các cuộc chat (bật, tắt, xem, sửa được)</td></tr>
+    <tr><td><strong>Connectors</strong></td><td>Đọc dữ liệu thật từ Google Drive, Gmail, Calendar…</td></tr>
+    <tr><td><strong>Skills</strong>, <strong>Code execution</strong></td><td>Đóng gói quy trình; chạy code để phân tích dữ liệu, tạo file, vẽ biểu đồ</td></tr>
+  </tbody>
+</table></div>
+<ul>
+  <li>Model: Haiku nhanh, rẻ cho nhiều việc ngắn; Sonnet cân bằng; Opus cho suy luận phức tạp. Chọn theo chi phí, tốc độ, chất lượng (<a href="/notes/lessons/03-models-cost.html#model-selection">bài 03 §1</a>).</li>
+  <li>Chat quá dài thì chất lượng giảm: mở chat mới kèm tóm tắt, hoặc lưu thông tin quan trọng vào Project.</li>
+</ul>
+<h3>5.1 Ví dụ: ba tình huống, ba lựa chọn</h3>
+<ul>
+  <li>Soạn 300 bản nháp trả lời khách ngắn mỗi ngày: model nhanh, rẻ (Haiku). Dùng model mạnh nhất cho từng bản là lãng phí chi phí và thời gian.</li>
+  <li>So sánh ba nhà cung cấp, cần nguồn và trích dẫn: Research.</li>
+  <li>Phân tích bảng doanh thu theo vùng và vẽ biểu đồ: Code execution. Nếu cần thêm bản báo cáo chia sẻ cho cả nhóm sửa, đặt kết quả vào Artifact.</li>
+</ul>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Danh sách model trên tài liệu Anthropic hiện có nhiều đời và tên (ví dụ Opus 5.5, Sonnet 5.5, Haiku 5.5, kèm một số dòng tên khác). Đề CCAO-F chỉ hỏi ba bậc Haiku, Sonnet, Opus và cách chọn theo chi phí, tốc độ, chất lượng. Nguồn: danh sách model ở trang <a href="https://platform.claude.com/docs/en/managed-agents/secure-deployment-risks" target="_blank" rel="noopener">Managed Agents</a>; tên và khả dụng thay đổi theo gói và thời điểm, nên xem trang chọn model hiện hành trước khi dùng.</div>
+<h3>5.2 Khi nào mở chat mới, tóm tắt hay lưu lại</h3>
+<p>Exam guide gọi đây là quản lý <strong>giới hạn context và bộ nhớ</strong> (restart, summarize, persist). Chat càng dài thì Claude càng dễ bỏ sót chi tiết cũ.</p>
+<div class="tw"><table>
+  <thead><tr><th>Tình huống</th><th>Việc nên làm</th><th>Ví dụ</th></tr></thead>
+  <tbody>
+    <tr><td>Sang chủ đề hoàn toàn mới, hoặc Claude cứ lặp lại một lỗi</td><td><strong>Restart</strong>: mở chat mới</td><td>Vừa xong báo cáo quý, giờ viết thông cáo báo chí</td></tr>
+    <tr><td>Chat dài nhưng còn cần kết quả đã đạt</td><td><strong>Summarize</strong>: nhờ Claude tóm tắt quyết định, dữ kiện, việc còn lại, rồi dán vào chat mới</td><td>40 lượt bàn kế hoạch, chốt 5 quyết định</td></tr>
+    <tr><td>Thông tin dùng lại ở nhiều chat</td><td><strong>Persist</strong>: đưa vào Project (instructions, kho tài liệu), hoặc Memory cho sở thích cá nhân</td><td>Bảng giá, giọng thương hiệu, mẫu báo cáo</td></tr>
+  </tbody>
+</table></div>
+<p>Chi tiết về Memory và Project xem <a href="/notes/lessons/17-ccao-f-products-policy.html#memory-project">bài 17, mục 3</a>.</p>
+<div class="insight"><strong>Cốt lõi.</strong> Đừng nhét thêm vào chat đã quá dài. Tóm tắt rồi mở chat mới, hoặc lưu thứ cần dùng lâu vào Project.</div>
+<div class="alert"><strong>Bẫy.</strong> “Luôn dùng model mạnh nhất cho chắc” hoặc “tắt hết tính năng cho đỡ tốn” đều sai. Đáp án đúng khớp tính năng và model với yêu cầu của việc.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Project</dt><dd>Không gian làm việc có instructions và tài liệu riêng, dùng chung cho các cuộc chat bên trong.</dd>
+  <dt>Connector</dt><dd>Kết nối cho Claude đọc dữ liệu thật ở ứng dụng khác (Drive, Gmail…).</dd>
+  <dt>Memory</dt><dd>Claude nhớ thông tin giữa các cuộc chat; bạn bật, tắt, xem, sửa được.</dd>
+  <dt>Skill</dt><dd>Gói hướng dẫn và tài nguyên đóng gói một quy trình để dùng lại.</dd>
+  <dt>Restart, summarize, persist</dt><dd>Mở chat mới, tóm tắt rồi mang sang chat mới, hay lưu vào Project hoặc Memory để dùng lâu dài.</dd>
+</dl></div>
+
+<h2 id="workflow-integration" class="pb">6. Đưa Claude vào quy trình (D4, 16%)</h2>
+<p class="xtags"><span class="tag xt2">CCAO-F D4</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Công ty mua máy pha cà phê mới cho cả toà nhà. Cách làm khôn là đặt thử ở một tầng, xem mọi người dùng ra sao, đếm số ly và số lần hỏng, rồi mới lắp ở các tầng khác. Đưa Claude vào quy trình cũng đi từng bước như vậy, thay vì bật cho cả công ty trong một tuần.
+</div>
+<p><strong>Workflow</strong> (quy trình) là chuỗi bước công việc lặp lại. <strong>Thí điểm</strong> (pilot) là chạy thử ở phạm vi nhỏ trước khi mở rộng. <strong>Stakeholder</strong> (các bên liên quan) là những người bị ảnh hưởng hoặc có quyền quyết định: sếp, đồng nghiệp, khách hàng, bộ phận pháp chế.</p>
+<ul>
+  <li>Dùng Claude để phân tích yêu cầu, nghiên cứu, lập kế hoạch; con người xác nhận với các bên liên quan.</li>
+  <li>Triển khai: <strong>thí điểm</strong> một loại việc rõ ràng, có <strong>bước duyệt</strong>, tiêu chí chất lượng, đo kết quả rồi mở rộng.</li>
+  <li>Giải thích giá trị và giới hạn cho các bên: tăng tốc, nhưng có thể sai, chỉ thấy dữ liệu được cung cấp hoặc kết nối, quyết định quan trọng vẫn do người có thẩm quyền.</li>
+</ul>
+<h3>6.1 Ví dụ chạy từng bước: nhóm chăm sóc khách hàng soạn email trả lời</h3>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 244" role="img" aria-label="Bốn bước đưa Claude vào quy trình: chọn việc rõ ràng, thí điểm có bước duyệt, đo kết quả, mở rộng; nếu chưa đạt thì chỉnh và thử lại">
+    <defs>
+      <marker id="m0908" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah"/></marker>
+      <marker id="m0909" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-warn"/></marker>
+    </defs>
+    <g><rect x="10" y="40" width="135" height="76" rx="6" class="b-sys"/><text x="77" y="64" class="t tb" text-anchor="middle">1. Chọn việc</text><text x="77" y="84" class="ts" text-anchor="middle">rõ ràng, lặp lại:</text><text x="77" y="98" class="ts" text-anchor="middle">email trả lời khách</text></g>
+    <g><path d="M145,78 H166" class="ln" marker-end="url(#m0908)"/><rect x="170" y="40" width="135" height="76" rx="6" class="b-step"/><text x="237" y="64" class="t tb" text-anchor="middle">2. Thí điểm</text><text x="237" y="84" class="ts" text-anchor="middle">nhóm nhỏ, bước duyệt,</text><text x="237" y="98" class="ts" text-anchor="middle">tiêu chí chất lượng</text></g>
+    <g><path d="M305,78 H326" class="ln" marker-end="url(#m0908)"/><rect x="330" y="40" width="135" height="76" rx="6" class="b-step"/><text x="397" y="64" class="t tb" text-anchor="middle">3. Đo kết quả</text><text x="397" y="84" class="ts" text-anchor="middle">thời gian soạn,</text><text x="397" y="98" class="ts" text-anchor="middle">số lần phải sửa</text></g>
+    <g><path d="M397,116 V160 H237 V120" class="ln-warn" marker-end="url(#m0909)"/><text x="317" y="154" class="ts halo" text-anchor="middle">chưa đạt: chỉnh rồi thử lại</text></g>
+    <g><path d="M465,78 H486" class="ln" marker-end="url(#m0908)"/><rect x="490" y="40" width="135" height="76" rx="6" class="b-done"/><text x="557" y="64" class="t tb" text-anchor="middle">4. Mở rộng</text><text x="557" y="84" class="ts" text-anchor="middle">chỉ khi đạt tiêu chí,</text><text x="557" y="98" class="ts" text-anchor="middle">sang nhóm khác</text></g>
+    <g><text x="320" y="200" class="tw-acc" text-anchor="middle">Nói rõ với các bên: nhanh hơn, nhưng có thể sai</text><text x="320" y="218" class="ts" text-anchor="middle">Claude chỉ thấy dữ liệu được cung cấp; quyết định quan trọng do người có thẩm quyền.</text></g>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Chọn một loại việc rõ ràng và lặp lại, ví dụ soạn email trả lời khách hỏi về đơn hàng.</li>
+    <li>Thí điểm với một nhóm nhỏ. Mỗi email có người đọc lại trước khi gửi, và có tiêu chí chất lượng (đúng chính sách, đúng giọng).</li>
+    <li>Đo kết quả: mất bao lâu để soạn một email, bao nhiêu email phải sửa nhiều.</li>
+    <li>Chưa đạt thì chỉnh prompt, instructions hay tài liệu rồi thử lại, chứ chưa mở rộng.</li>
+    <li>Đạt tiêu chí thì mở rộng sang nhóm khác.</li>
+    <li>Giải thích với các bên liên quan cả giá trị lẫn giới hạn của Claude.</li>
+  </ol>
+  <figcaption>Hình 10. Thí điểm, đo, rồi mở rộng.</figcaption>
+</figure>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div><ul>
+    <li>Bật cho cả công ty ngay, không bước duyệt</li>
+    <li>Hứa với sếp “Claude không bao giờ sai”</li>
+    <li>Để Claude tự quyết việc quan trọng thay người có thẩm quyền</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đúng</div><ul>
+    <li>Thí điểm một việc rõ ràng, có bước duyệt, đo rồi mở rộng</li>
+    <li>Nói rõ giá trị và giới hạn cho các bên liên quan</li>
+    <li>Người có thẩm quyền vẫn quyết việc quan trọng</li>
+  </ul></div>
+</div>
+<div class="insight"><strong>Cốt lõi.</strong> Claude làm tăng tốc việc phân tích, nghiên cứu, lập kế hoạch. Con người vẫn xác nhận với các bên liên quan và giữ quyết định quan trọng.</div>
+<h3>6.2 Tăng cường hay thiết kế lại quy trình</h3>
+<p>Exam guide tách hai cách đưa Claude vào việc: <strong>tăng cường</strong> (augment) là giữ nguyên các bước, để Claude làm nhanh một bước (soạn nháp, tóm tắt, phân loại); <strong>thiết kế lại</strong> (redesign) là đổi chính chuỗi bước vì Claude làm được việc trước đây không đáng làm (đọc hết mọi phản hồi khách thay vì lấy mẫu 5%).</p>
+<div class="tw"><table>
+  <thead><tr><th></th><th>Tăng cường</th><th>Thiết kế lại</th></tr></thead>
+  <tbody>
+    <tr><td>Ví dụ</td><td>Nhân viên vẫn trả lời ticket, Claude soạn nháp</td><td>Claude phân loại mọi ticket, người chỉ xử lý nhóm khó và kiểm mẫu</td></tr>
+    <tr><td>Hợp khi</td><td>Mới bắt đầu, rủi ro cao, cần người giữ quyết định ở từng ca</td><td>Thí điểm đã có số liệu tốt; bước cũ tồn tại chỉ vì thiếu người</td></tr>
+    <tr><td>Rủi ro</td><td>Lợi ích nhỏ nếu bước được tăng tốc không phải nút thắt</td><td>Đổi vai trò, cần đào tạo lại, cần điểm kiểm soát mới</td></tr>
+  </tbody>
+</table></div>
+<p>Ở khâu <strong>thiết kế và lặp giải pháp</strong>, Claude giúp: viết lại yêu cầu thành tiêu chí kiểm được, liệt kê phương án kèm ưu nhược, dựng nguyên mẫu nhanh bằng artifact (một trang, một bảng tính, một luồng biểu mẫu) để người dùng thật bấm thử, rồi sửa theo phản hồi. Nguyên mẫu là để học nhanh, không phải bản triển khai: dữ liệu thật, phân quyền và bảo trì vẫn qua quy trình của tổ chức.</p>
+<h3>6.3 Phân tích yêu cầu với Claude</h3>
+<p>Trước khi dựng giải pháp, dùng Claude làm rõ bài toán. Ví dụ: phòng nhân sự muốn “tự động hoá việc trả lời câu hỏi của nhân viên mới”.</p>
+<ol>
+  <li>Nhờ Claude liệt kê <strong>câu hỏi cần làm rõ</strong>: nhân viên hỏi những gì nhiều nhất, tài liệu nào là nguồn đúng, ai duyệt câu trả lời, điều gì không được tự trả lời (lương, kỷ luật).</li>
+  <li>Bạn trả lời với dữ kiện thật, rồi nhờ Claude viết <strong>yêu cầu thành tiêu chí kiểm được</strong>, ví dụ “trả lời đúng theo sổ tay hiện hành, dẫn tên mục, chuyển cho nhân sự khi không có trong sổ tay”.</li>
+  <li>Người có thẩm quyền xác nhận tiêu chí. Claude đề xuất, không tự chốt.</li>
+</ol>
+<h3>6.4 Nói về Claude với các bên liên quan</h3>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div><ul>
+    <li>“Claude sẽ thay thế cả nhóm này”</li>
+    <li>“Claude luôn đúng nên không cần soát”</li>
+    <li>Chỉ nói lợi ích, giấu giới hạn</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đúng</div><ul>
+    <li>“Thí điểm 4 tuần: soạn nháp nhanh hơn, người vẫn duyệt trước khi gửi”</li>
+    <li>“Số liệu và nguồn Claude đưa phải được kiểm; có thể sai”</li>
+    <li>Nêu cả đo đạc: thời gian tiết kiệm, tỷ lệ bản nháp phải sửa nhiều</li>
+  </ul></div>
+</div>
+<div class="alert"><strong>Bẫy.</strong> Nhảy thẳng sang thiết kế lại cả phòng ban khi chưa có số liệu thí điểm, hoặc đem nguyên mẫu artifact ra dùng chính thức mà không qua kiểm tra bảo mật và chủ sở hữu dữ liệu.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Augment</dt><dd>Tăng cường: Claude giúp một bước trong quy trình cũ, quy trình giữ nguyên.</dd>
+  <dt>Redesign</dt><dd>Thiết kế lại: đổi chuỗi bước vì có Claude, thường sau khi thí điểm chứng minh hiệu quả.</dd>
+  <dt>Pilot</dt><dd>Chạy thử phạm vi nhỏ có đo đạc trước khi triển khai rộng.</dd>
+  <dt>Stakeholder</dt><dd>Người bị ảnh hưởng hoặc có quyền quyết định về việc triển khai.</dd>
+  <dt>Tiêu chí chất lượng</dt><dd>Điều kiện để coi một kết quả là đạt, viết ra trước khi đo.</dd>
+</dl></div>
+
+<h2 id="configuration">7. Cấu hình và quản lý tri thức (D5, 12%)</h2>
+<p class="xtags"><span class="tag xt2">CCAO-F D5</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Một Project giống tủ hồ sơ của một dự án kèm cuốn sổ quy tắc dán ở cửa. Ai trong nhóm mở tủ cũng thấy cùng tài liệu và cùng quy tắc. Nếu bảng giá đổi mà bạn cất bản mới vào bên cạnh bản cũ, người sau sẽ rút nhầm bản cũ. Bản cũ phải được thay ra.
+</div>
+<p><strong>Project instructions</strong> là chỉ dẫn cố định áp dụng cho mọi cuộc chat trong Project. <strong>Knowledge</strong> (kho tài liệu) là các file bạn tải lên để Claude tham khảo. <strong>Connector</strong> cho Claude đọc dữ liệu từ ứng dụng khác. Khác với prompt dùng một lần, ba thứ này được cấu hình một lần và dùng lại.</p>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 230" role="img" aria-label="Một Project gồm instructions, kho tài liệu và connector, dùng chung cho mọi cuộc chat trong Project">
+    <defs><marker id="m0910" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah"/></marker></defs>
+    <rect x="10" y="8" width="620" height="132" rx="8" class="lane"/><text x="24" y="26" class="lane-lb">Project</text>
+    <rect x="26" y="40" width="190" height="84" rx="6" class="b-step"/><text x="121" y="62" class="t tb" text-anchor="middle">Instructions</text><text x="121" y="82" class="ts" text-anchor="middle">giọng văn, định dạng,</text><text x="121" y="96" class="ts" text-anchor="middle">quy tắc nhất quán</text>
+    <rect x="225" y="40" width="190" height="84" rx="6" class="b-step"/><text x="320" y="62" class="t tb" text-anchor="middle">Kho tài liệu</text><text x="320" y="82" class="ts" text-anchor="middle">chính sách, bảng giá, mẫu</text><text x="320" y="96" class="ts" text-anchor="middle">thay bản cũ, không để hai bản</text>
+    <rect x="424" y="40" width="190" height="84" rx="6" class="b-step"/><text x="519" y="62" class="t tb" text-anchor="middle">Connector</text><text x="519" y="82" class="ts" text-anchor="middle">Drive, Gmail, Calendar</text><text x="519" y="96" class="ts" text-anchor="middle">đọc theo quyền của bạn</text>
+    <path d="M121,142 V176 M320,142 V176 M519,142 V176" class="ln" marker-end="url(#m0910)"/>
+    <rect x="10" y="180" width="620" height="40" rx="6" class="b-done"/><text x="320" y="205" class="t tb" text-anchor="middle">Mọi cuộc chat trong Project dùng chung các thiết lập này</text>
+  </svg></div>
+  <figcaption>Hình 11. Ba thành phần cấu hình của một Project.</figcaption>
+</figure>
+<ul>
+  <li>Project instructions giữ giọng văn, định dạng, quy tắc nhất quán cho cả nhóm.</li>
+  <li>Kho tài liệu của Project phải cập nhật: chính sách đổi thì <strong>thay</strong> bản cũ, không để hai phiên bản song song.</li>
+  <li>Connector cho Claude đọc dữ liệu theo <strong>quyền của tài khoản bạn</strong>; chỉ kết nối thứ phù hợp, theo quy định tổ chức.</li>
+  <li>Thông tin dùng lại nhiều lần thì đưa vào Project thay vì dán lại mỗi lần.</li>
+</ul>
+<h3>7.1 Ví dụ chạy từng bước: chính sách đổi trả đổi từ 14 ngày sang 30 ngày</h3>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div><ul>
+    <li>Tải thêm file “chính sách 2026” vào Project, giữ nguyên file cũ</li>
+    <li>Claude thấy hai bản mâu thuẫn và có thể trả lời theo bản cũ</li>
+    <li>Dặn từng người “nhớ dùng bản mới” mỗi lần chat</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đúng</div><ul>
+    <li>Xoá hoặc thay file cũ bằng bản mới</li>
+    <li>Cập nhật cả instructions nếu có nhắc đến con số cũ</li>
+    <li>Cả nhóm tự động dùng cùng một nguồn đúng</li>
+  </ul></div>
+</div>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Tài liệu hỗ trợ của Claude cho biết khi kiến thức trong Project gần chạm giới hạn context window, Claude tự bật chế độ RAG (retrieval augmented generation), nâng dung lượng Project lên tới khoảng 10 lần. Khi đó Claude dùng một công cụ tìm kiếm trong kho tài liệu và chỉ lấy đoạn liên quan thay vì nạp hết. Tên file rõ ràng giúp tìm đúng hơn. Exam guide không đi vào RAG, nhưng nguyên tắc “giữ kho tài liệu mới và gọn” vẫn đúng. Nguồn: <a href="https://support.claude.com/en/articles/11473015-retrieval-augmented-generation-rag-for-projects" target="_blank" rel="noopener">RAG for projects</a>.</div>
+<h3>7.2 Viết Project instructions tốt</h3>
+<p>Instructions là chỉ dẫn cấp hệ thống (system-level) ở mức Project: Claude đọc chúng đầu mỗi cuộc chat trong Project. Một bản tốt trả lời bốn câu hỏi: vai trò (ai đang giúp ai), quy tắc phải theo, định dạng đầu ra, và việc phải làm khi không chắc.</p>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Instructions yếu</div><pre><code>Bạn là trợ lý chăm sóc khách hàng.
+Hãy trả lời tốt.</code></pre></div>
+  <div class="box right"><div class="hd">Instructions đủ ý</div><pre><code>Bạn giúp nhân viên CSKH soạn email trả lời khách.
+Chỉ dùng chính sách trong kho tài liệu.
+Email dưới 150 từ, giọng lịch sự, có mã đơn.
+Nếu chính sách không nêu, ghi “cần xác nhận”, đừng đoán.</code></pre></div>
+</div>
+<h3>7.3 Giữ cấu hình luôn hiện hành</h3>
+<ul>
+  <li><strong>Có chủ sở hữu:</strong> mỗi Project có một người chịu trách nhiệm cập nhật instructions và tài liệu.</li>
+  <li><strong>Đặt tên file rõ:</strong> “chinh-sach-doi-tra-2026-03.pdf” dễ được tìm đúng hơn “final-v2.pdf”, nhất là khi Project dùng tìm kiếm trong kho.</li>
+  <li><strong>Rà soát định kỳ:</strong> khi chính sách, giá, quy trình đổi thì cập nhật instructions và tài liệu cùng lúc, rồi thử vài câu hỏi để xác nhận Claude trả lời theo bản mới.</li>
+  <li><strong>Connector:</strong> chỉ kết nối nguồn việc cần (ví dụ thư mục Drive của dự án), vì Claude đọc theo quyền của tài khoản bạn; ngắt kết nối khi không cần nữa.</li>
+</ul>
+<div class="alert"><strong>Bẫy.</strong> Giữ cả bản cũ lẫn bản mới “cho an toàn”, hoặc kết nối mọi connector có thể “cho tiện”. Kho tài liệu phải đúng và hiện hành, connector chỉ kết nối thứ cần và phù hợp quy định.</div>
+<div class="note"><span class="tag t-new">Thực tế 11/2026</span> Ngoài Project instructions còn hai mức chỉ dẫn. <strong>Organization instructions</strong> (gói Team, Enterprise) do Owner và Primary Owner đặt, áp cho mọi cuộc chat của mọi người trong tổ chức, và chỉ Owner trở lên xem hoặc sửa được. <strong>Chỉ dẫn cá nhân</strong> do từng người đặt, chỉ áp cho chat của người đó. Khi hai mức mâu thuẫn, Claude theo chỉ dẫn của tổ chức; chỉ dẫn cá nhân vẫn áp cho phần tổ chức không nói tới. Thành viên thường muốn có quy tắc chung cho cả tổ chức thì nhờ Owner, không tự đặt được. Chỉ dẫn của tổ chức đi kèm mọi tin nhắn nên cần ngắn, cụ thể, không mâu thuẫn nhau, và không tắt được quy tắc an toàn của Claude. Nguồn: <a href="https://support.claude.com/en/articles/14546867-set-organization-instructions" target="_blank" rel="noopener">support.claude.com/en/articles/14546867-set-organization-instructions</a>.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Project instructions</dt><dd>Chỉ dẫn áp dụng cho mọi chat trong Project (giọng văn, định dạng, quy tắc).</dd>
+  <dt>Knowledge</dt><dd>Các file tải lên Project làm tài liệu tham khảo.</dd>
+  <dt>RAG</dt><dd>Chỉ tìm và nạp đoạn tài liệu liên quan thay vì nạp tất cả vào cuộc chat.</dd>
+</dl></div>
+
+<h2 id="governance" class="pb">8. Quản trị, rủi ro, sử dụng có trách nhiệm (D6, 15%)</h2>
+<p class="xtags"><span class="tag xt2">CCAO-F D6</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Công ty có quy định ai được ký hợp đồng, tài liệu mật để ở đâu, thông tin khách hàng được gửi cho ai. Khi có công cụ mới, quy định đó không biến mất. Dùng Claude cũng là một cách xử lý thông tin của công ty, nên các quy định cũ vẫn áp dụng.
+</div>
+<p><strong>Governance</strong> (quản trị) là các quy tắc về ai được dùng AI cho việc gì, với dữ liệu nào. <strong>Responsible use</strong> (sử dụng có trách nhiệm) là dùng AI sao cho tôn trọng quyền riêng tư, công bằng, minh bạch và pháp luật.</p>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 240" role="img" aria-label="Việc phù hợp và việc cần kiểm soát khi dùng Claude, cùng ba quy tắc cho dữ liệu nhạy cảm: ẩn danh trước, dùng workspace được duyệt, theo chính sách và quy định">
+    <rect x="4" y="4" width="312" height="132" rx="8" class="lane"/><rect x="324" y="4" width="312" height="132" rx="8" class="lane"/>
+    <text x="160" y="22" class="lane-lb" text-anchor="middle">PHÙ HỢP</text><text x="480" y="22" class="lane-lb" text-anchor="middle">KHÔNG PHÙ HỢP NẾU THIẾU KIỂM SOÁT</text>
+    <rect x="16" y="34" width="288" height="26" rx="5" class="b-done"/><text x="160" y="52" class="t" text-anchor="middle">Soạn nháp có người duyệt</text>
+    <rect x="16" y="66" width="288" height="26" rx="5" class="b-done"/><text x="160" y="84" class="t" text-anchor="middle">Tóm tắt, phân tích nội bộ</text>
+    <rect x="16" y="98" width="288" height="26" rx="5" class="b-done"/><text x="160" y="116" class="t" text-anchor="middle">Brainstorm, lập kế hoạch</text>
+    <rect x="336" y="34" width="288" height="26" rx="5" class="b-warn"/><text x="480" y="52" class="t" text-anchor="middle">Quyết định cuối: vay vốn, tuyển dụng, y tế</text>
+    <rect x="336" y="66" width="288" height="26" rx="5" class="b-warn"/><text x="480" y="84" class="t" text-anchor="middle">Tự động hoàn toàn, không người duyệt</text>
+    <rect x="336" y="98" width="288" height="26" rx="5" class="b-warn"/><text x="480" y="116" class="t" text-anchor="middle">Gửi thông tin chưa kiểm chứng ra ngoài</text>
+    <text x="10" y="154" class="ts">Với dữ liệu nhạy cảm:</text>
+    <rect x="10" y="164" width="200" height="66" rx="6" class="b-step"/><text x="110" y="184" class="t tb" text-anchor="middle">Ẩn danh trước</text><text x="110" y="202" class="ts" text-anchor="middle">xoá định danh rồi</text><text x="110" y="215" class="ts" text-anchor="middle">mới tải lên</text>
+    <rect x="220" y="164" width="200" height="66" rx="6" class="b-step"/><text x="320" y="184" class="t tb" text-anchor="middle">Đúng workspace</text><text x="320" y="202" class="ts" text-anchor="middle">tổ chức đã phê duyệt,</text><text x="320" y="215" class="ts" text-anchor="middle">không dùng tài khoản cá nhân</text>
+    <rect x="430" y="164" width="200" height="66" rx="6" class="b-step"/><text x="530" y="184" class="t tb" text-anchor="middle">Theo quy định</text><text x="530" y="202" class="ts" text-anchor="middle">chính sách AI của tổ chức,</text><text x="530" y="215" class="ts" text-anchor="middle">GDPR, HIPAA, đạo đức</text>
+  </svg></div>
+  <figcaption>Hình 12. Việc phù hợp, việc cần kiểm soát, và ba quy tắc cho dữ liệu nhạy cảm.</figcaption>
+</figure>
+<div class="split">
+  <div class="box"><div class="hd">Phù hợp</div><ul><li>Soạn nháp có người duyệt</li><li>Tóm tắt, phân tích nội bộ</li><li>Brainstorm, lập kế hoạch</li></ul></div>
+  <div class="box"><div class="hd">Không phù hợp nếu thiếu kiểm soát</div><ul><li>Quyết định cuối về vay vốn, tuyển dụng, y tế tự động hoàn toàn</li><li>Gửi thông tin chưa kiểm chứng ra ngoài</li></ul></div>
+</div>
+<ul>
+  <li>Dữ liệu nhạy cảm: <strong>ẩn danh, xoá định danh trước khi tải lên</strong> theo chính sách.</li>
+  <li>Dùng đúng workspace được tổ chức phê duyệt; không chuyển tài liệu mật sang tài khoản cá nhân cho nhanh.</li>
+  <li>Quyền riêng tư, quy định (GDPR, HIPAA…), đạo đức, minh bạch khi dùng AI.</li>
+</ul>
+<h3>8.1 Ví dụ: bảng khách hàng có tên và số tài khoản</h3>
+<p>Bạn là quản lý dự án, muốn Claude tìm xu hướng trong bảng khách hàng. Chính sách tổ chức hạn chế chia sẻ dữ liệu cá nhân. Cách đúng là thay tên bằng mã khách hàng và bỏ cột số tài khoản trước khi tải lên, rồi vẫn phân tích như bình thường. Tải nguyên bản “vì phân tích nội bộ” là vi phạm chính sách. Tải nguyên bản rồi dặn “đừng giữ lại” không thay được kiểm soát thật. Bỏ hẳn việc là không cần thiết.</p>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div><ul>
+    <li>Tải bảng nguyên bản vì “chỉ phân tích nội bộ”</li>
+    <li>Tải rồi dặn “đừng lưu”</li>
+    <li>Chuyển tài liệu mật sang tài khoản cá nhân cho nhanh</li>
+    <li>Để Claude tự duyệt hồ sơ vay hoặc tuyển dụng, không ai kiểm</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đúng</div><ul>
+    <li>Ẩn danh hoặc xoá định danh trước khi tải</li>
+    <li>Dùng workspace tổ chức đã phê duyệt</li>
+    <li>Theo chính sách AI và quy định (GDPR, HIPAA)</li>
+    <li>Giữ người ra quyết định cuối trong việc nhạy cảm</li>
+  </ul></div>
+</div>
+<h3>8.2 Phân loại dữ liệu trước khi đưa vào Claude</h3>
+<div class="tw"><table>
+  <thead><tr><th>Loại dữ liệu</th><th>Ví dụ</th><th>Cách xử lý thường đúng</th></tr></thead>
+  <tbody>
+    <tr><td>Công khai</td><td>Bài đăng blog, thông cáo đã phát hành</td><td>Dùng bình thường</td></tr>
+    <tr><td>Nội bộ</td><td>Kế hoạch dự án, biên bản họp</td><td>Dùng trong workspace tổ chức phê duyệt</td></tr>
+    <tr><td>Định danh cá nhân, dữ liệu theo luật</td><td>Tên, số tài khoản, hồ sơ sức khoẻ</td><td>Ẩn danh hoặc bỏ định danh trước khi tải; theo chính sách và luật (GDPR, HIPAA…)</td></tr>
+    <tr><td>Mật cao</td><td>Tài liệu pháp lý đang xử lý, bí mật kinh doanh</td><td>Chỉ khi chính sách cho phép rõ; hỏi bộ phận bảo mật hoặc pháp chế</td></tr>
+  </tbody>
+</table></div>
+<p>Tên các nhóm trên là cách chia để học, mỗi tổ chức có thang riêng. Khi không chắc dữ liệu thuộc nhóm nào, hỏi người phụ trách chính sách thay vì tự đoán.</p>
+<h3>8.3 Khía cạnh đạo đức khi dùng AI</h3>
+<ul>
+  <li><strong>Công bằng:</strong> kiểm tra output có đối xử khác nhau với các nhóm người không (xem mục 4.5).</li>
+  <li><strong>Minh bạch:</strong> khi nội dung do AI soạn được gửi cho người ngoài hoặc ảnh hưởng quyết định, theo chính sách của tổ chức về việc ghi nhận hoặc công bố.</li>
+  <li><strong>Trách nhiệm:</strong> người ký, người gửi chịu trách nhiệm cho nội dung, dù Claude soạn. Việc quyết định về con người (tuyển dụng, vay vốn, y tế) giữ người quyết định cuối.</li>
+</ul>
+<div class="alert"><strong>Bẫy.</strong> Hai kiểu đáp án nhiễu: quá dễ dãi (“nội bộ nên cứ tải”, “dặn Claude đừng lưu”) và quá cực đoan (“không dùng AI cho việc này nữa”). Đáp án đúng cho việc làm tiếp được trong khuôn khổ chính sách.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Governance</dt><dd>Quy tắc của tổ chức về việc dùng AI.</dd>
+  <dt>GDPR</dt><dd>Luật bảo vệ dữ liệu cá nhân của EU.</dd>
+  <dt>HIPAA</dt><dd>Luật Mỹ về bảo vệ thông tin sức khoẻ.</dd>
+  <dt>Ẩn danh (anonymize)</dt><dd>Bỏ hoặc thay định danh (tên, số tài khoản) bằng mã để không truy ra từng người.</dd>
+  <dt>Workspace</dt><dd>Không gian tài khoản do tổ chức quản lý; tài khoản cá nhân nằm ngoài sự kiểm soát đó.</dd>
+</dl></div>
+
+<h2 id="troubleshooting">9. Xử lý sự cố và tối ưu (D7, 10%)</h2>
+<p class="xtags"><span class="tag xt2">CCAO-F D7</span></p>
+<div class="analogy"><div class="hd">Hình dung đời thường</div>
+  Bạn dặn nhân viên “làm ngắn thôi” và nhận bản ba trang. Lỗi không nằm ở nhân viên mà ở lời dặn: “ngắn” với bạn là nửa trang, với họ là ba trang. Cách sửa là nói số cụ thể và đưa một mẫu. Với Claude cũng thế: khi kết quả kém, đổi cách giao việc trước khi đổi người.
+</div>
+<p><strong>Troubleshooting</strong> (xử lý sự cố) ở đây là tìm xem vì sao prompt hoặc quy trình cho kết quả kém, rồi đổi đúng chỗ gây ra. <strong>Optimize</strong> (tối ưu) là làm quy trình nhanh và đều hơn.</p>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 640 244" role="img" aria-label="So sánh yêu cầu mơ hồ viết ngắn thôi cho ra bản dài với yêu cầu ba gạch đầu dòng dưới sáu mươi từ cho ra đúng kết quả">
+    <defs>
+      <marker id="m0911" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-warn"/></marker>
+      <marker id="m0912" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-good"/></marker>
+    </defs>
+    <rect x="4" y="4" width="312" height="196" rx="8" class="lane"/><rect x="324" y="4" width="312" height="196" rx="8" class="lane"/>
+    <text x="160" y="22" class="lane-lb" text-anchor="middle">YÊU CẦU MƠ HỒ</text><text x="480" y="22" class="lane-lb" text-anchor="middle">YÊU CẦU CỤ THỂ</text>
+    <g><rect x="20" y="36" width="280" height="44" rx="6" class="b-sys"/><text x="160" y="54" class="tm" text-anchor="middle">“Viết ngắn thôi”</text><text x="160" y="70" class="ts" text-anchor="middle">ngắn là bao nhiêu?</text></g>
+    <g><path d="M160,80 V102" class="ln-warn" marker-end="url(#m0911)"/><rect x="20" y="106" width="280" height="44" rx="6" class="b-warn"/><text x="160" y="124" class="t tb" text-anchor="middle">Bản dài 300 từ</text><text x="160" y="140" class="ts" text-anchor="middle">Claude hiểu “ngắn” theo cách khác</text></g>
+    <text x="160" y="180" class="tw-warn" text-anchor="middle">✕ Mơ hồ nên kết quả lệch</text>
+    <g><rect x="340" y="36" width="280" height="44" rx="6" class="b-sys"/><text x="480" y="54" class="tm" text-anchor="middle">“3 gạch đầu dòng, dưới 60 từ”</text><text x="480" y="70" class="ts" text-anchor="middle">ràng buộc đo được, kèm ví dụ mẫu</text></g>
+    <g><path d="M480,80 V102" class="ln-good" marker-end="url(#m0912)"/><rect x="340" y="106" width="280" height="44" rx="6" class="b-done"/><text x="480" y="124" class="t tb" text-anchor="middle">3 gạch đầu dòng, 52 từ</text><text x="480" y="140" class="ts" text-anchor="middle">đúng ràng buộc</text></g>
+    <text x="480" y="180" class="tw-good" text-anchor="middle">✓ Đo được, kiểm tra được</text>
+    <text x="320" y="228" class="tw-acc" text-anchor="middle">Triệu chứng → đổi bằng ràng buộc cụ thể → thử lại</text>
+  </svg></div>
+  <ol class="anim-steps">
+    <li>Yêu cầu mơ hồ: “Viết ngắn thôi”. Không có số liệu để đo.</li>
+    <li>Claude trả bản 300 từ, vì nó hiểu “ngắn” khác bạn.</li>
+    <li>Lỗi nằm ở yêu cầu, không phải ở Claude.</li>
+    <li>Thay bằng ràng buộc cụ thể: “3 gạch đầu dòng, dưới 60 từ”, kèm một ví dụ.</li>
+    <li>Kết quả khớp: ba gạch đầu dòng, 52 từ.</li>
+    <li>Có số để đối chiếu, nên kiểm tra được ngay.</li>
+    <li>Cách xử lý chung: xác định triệu chứng, thay đúng chỗ gây lỗi, thử lại.</li>
+  </ol>
+  <figcaption>Hình 13. Thay yêu cầu mơ hồ bằng ràng buộc cụ thể.</figcaption>
+</figure>
+<div class="tw"><table>
+  <thead><tr><th>Triệu chứng</th><th>Cách xử lý</th></tr></thead>
+  <tbody>
+    <tr><td>Claude bỏ qua yêu cầu mơ hồ (“ngắn thôi”)</td><td>Thay bằng ràng buộc cụ thể (“3 gạch đầu dòng, dưới 60 từ”), kèm ví dụ</td></tr>
+    <tr><td>Kết quả khác nhau giữa các thành viên</td><td>Lời dặn và mẫu dùng chung trong Project</td></tr>
+    <tr><td>Quy trình mất thời gian vì lặp lại bối cảnh</td><td>Project, Skill</td></tr>
+    <tr><td>Chất lượng giảm trong chat dài</td><td>Chat mới kèm tóm tắt</td></tr>
+  </tbody>
+</table></div>
+<ul>
+  <li>Claude bỏ qua yêu cầu mơ hồ (“ngắn thôi”) → thay bằng ràng buộc cụ thể (“3 gạch đầu dòng, dưới 60 từ”), kèm ví dụ.</li>
+  <li>Kết quả khác nhau giữa các thành viên → instructions và mẫu dùng chung trong Project.</li>
+  <li>Quy trình mất thời gian vì lặp lại bối cảnh → Project, Skill.</li>
+  <li>Chất lượng giảm trong chat dài → chat mới kèm tóm tắt.</li>
+</ul>
+<div class="split wrongright">
+  <div class="box wrong"><div class="hd">Sai</div><ul>
+    <li>Gõ lại cùng yêu cầu mơ hồ nhiều lần, hy vọng khác đi</li>
+    <li>Mỗi người tự viết prompt riêng rồi than kết quả không đều</li>
+    <li>Tiếp tục chat rất dài dù chất lượng giảm</li>
+  </ul></div>
+  <div class="box right"><div class="hd">Đúng</div><ul>
+    <li>Đổi sang ràng buộc cụ thể có ví dụ</li>
+    <li>Đưa lời dặn và mẫu chung vào Project</li>
+    <li>Mở chat mới kèm tóm tắt, hoặc lưu thông tin vào Project</li>
+  </ul></div>
+</div>
+<h3>9.1 Tìm nguyên nhân trước khi sửa</h3>
+<div class="tw"><table>
+  <thead><tr><th>Kết quả kém ở đâu</th><th>Nguyên nhân hay gặp</th><th>Sửa</th></tr></thead>
+  <tbody>
+    <tr><td>Lạc đề, thiếu ý quan trọng</td><td>Thiếu bối cảnh hoặc việc quá lớn trong một yêu cầu</td><td>Thêm đối tượng, mục đích, dữ kiện; chia nhỏ</td></tr>
+    <tr><td>Sai định dạng, sai giọng</td><td>Yêu cầu mơ hồ, không có mẫu</td><td>Ràng buộc cụ thể kèm một ví dụ</td></tr>
+    <tr><td>Dữ kiện sai hoặc cũ</td><td>Claude không có tài liệu đúng, hoặc kiến thức đã lỗi thời</td><td>Cung cấp tài liệu hiện hành, dùng connector hoặc Research; kiểm chứng</td></tr>
+    <tr><td>Quên chi tiết đã nói</td><td>Chat quá dài</td><td>Tóm tắt rồi mở chat mới, hoặc lưu vào Project</td></tr>
+    <tr><td>Chậm hoặc tốn không cần thiết</td><td>Model quá mạnh cho việc đơn giản</td><td>Chọn model nhanh, rẻ hơn cho việc lặp lại</td></tr>
+  </tbody>
+</table></div>
+<h3>9.2 Tối ưu quy trình bằng số đo</h3>
+<p>Ví dụ có số: nhóm marketing soạn bản tin hằng tuần mất 4 giờ. Họ thí điểm với Project có mẫu bản tin và bảng giọng văn. Sau 4 tuần ghi nhận: mỗi bản còn 1,5 giờ, nhưng 2 trong 4 bản phải sửa dữ kiện khách hàng. Kết luận: tiết kiệm thời gian là thật (giảm 2,5 giờ mỗi tuần), chỗ cần tối ưu tiếp là bước kiểm dữ kiện, ví dụ thêm danh sách kiểm trước khi gửi. Họ không bỏ Claude, cũng không bỏ bước duyệt.</p>
+<div class="alert"><strong>Bẫy.</strong> Đề hay cho một kết quả kém rồi đưa các phương án “đổi sang nền tảng khác”, “bỏ AI”, “làm lại hoàn toàn”, “lặp lại đúng prompt cũ”. Đáp án đúng là chẩn đoán nguyên nhân rồi đổi một thứ cụ thể, đo lại.</div>
+<div class="insight"><strong>Cốt lõi.</strong> Khi kết quả kém, xác định triệu chứng rồi sửa đúng nguyên nhân bằng thay đổi cụ thể, đo được. Không sửa bằng cách làm lại từ đầu, cũng không bỏ cuộc.</div>
+<div class="gloss"><div class="hd">Thuật ngữ</div><dl>
+  <dt>Ràng buộc cụ thể</dt><dd>Yêu cầu có con số hoặc dạng rõ ràng (độ dài, số ý, định dạng) thay vì tính từ mơ hồ.</dd>
+  <dt>Skill</dt><dd>Gói quy trình đóng gói để dùng lại, đỡ phải lặp bối cảnh.</dd>
+  <dt>Chat dài</dt><dd>Cuộc chat tích nhiều tin nhắn; thông tin cũ dễ bị xao nhãng nên chất lượng giảm.</dd>
+</dl></div>
+
+<h2 id="exam-keywords" class="pb">10. Từ khoá đề thi</h2>
+<p>Các từ tiếng Anh dưới đây xuất hiện nguyên văn trong đề và tài liệu chính thức. Đọc cột giữa để nắm nghĩa, cột phải để biết đề hay gài ở đâu; bấm số mục để xem lại phần giải thích. Mọi từ khoá của các bài được gom ở trang <a href="/notes/lessons/glossary.html">Thuật ngữ</a>.</p>
+<div class="tw"><table class="kwt">
+  <thead><tr><th>Từ khoá</th><th>Nghĩa</th><th>Đề hay hỏi, dễ nhầm</th><th class="nw">Mục</th></tr></thead>
+  <tbody>
+    <tr data-kw="4D framework"><td><strong>4D Framework (Delegation, Description, Discernment, Diligence)</strong></td><td>Bốn năng lực dùng AI: giao việc, mô tả, đánh giá, có trách nhiệm</td><td>Đề hay hỏi một tình huống thuộc chữ D nào</td><td><a href="#ai-fluency">§3</a></td></tr>
+    <tr data-kw="anonymize"><td><strong>Anonymize</strong></td><td>Ẩn danh: bỏ hoặc thay định danh bằng mã</td><td>Đáp án đúng khi phải xử lý dữ liệu cá nhân mà vẫn làm việc</td><td><a href="#governance">§8</a></td></tr>
+    <tr data-kw="artifact"><td><strong>Artifact</strong></td><td>Khung riêng chứa tài liệu, code, trang, sửa và chia sẻ được</td><td>Hợp tài liệu sửa nhiều lần; không phải cho câu hỏi nhanh</td><td><a href="#output-evaluation">§4</a></td></tr>
+    <tr data-kw="augment redesign"><td><strong>Augment, redesign</strong></td><td>Tăng tốc một bước; hay đổi cả chuỗi bước</td><td>Redesign chỉ sau khi thí điểm có số liệu</td><td><a href="#workflow-integration">§6</a></td></tr>
+    <tr data-kw="bias"><td><strong>Bias</strong></td><td>Thiên lệch về một nhóm người</td><td>Giữ người quyết định cuối với việc ảnh hưởng tới người khác</td><td><a href="#output-evaluation">§4</a></td></tr>
+    <tr data-kw="brainstorm"><td><strong>Brainstorm</strong></td><td>Nghĩ nhiều ý tưởng, chưa cần chọn</td><td>Xin nhiều phương án đa dạng, khác với phân tích cần căn cứ</td><td><a href="#prompting">§2</a></td></tr>
+    <tr data-kw="CCAO-F"><td><strong>CCAO-F</strong></td><td>Chứng chỉ cho người dùng Claude trong công việc, không cần code</td><td>Việc kỹ thuật, API, agent thì escalate cho Developer hoặc Architect</td><td><a href="#overview">§1</a></td></tr>
+    <tr data-kw="connector"><td><strong>Connector</strong></td><td>Kết nối cho Claude đọc dữ liệu từ Drive, Gmail…</td><td>Đọc theo quyền của tài khoản bạn; chỉ kết nối thứ cần</td><td><a href="#products">§5</a></td></tr>
+    <tr data-kw="delegation"><td><strong>Delegation</strong></td><td>Quyết định việc nào giao cho AI, việc nào giữ lại</td><td>Không tự động hoá mọi thứ</td><td><a href="#ai-fluency">§3</a></td></tr>
+    <tr data-kw="description"><td><strong>Description</strong></td><td>Mô tả việc rõ: sản phẩm, quy trình, cách ứng xử của AI</td><td>Gồm product, process, performance description</td><td><a href="#ai-fluency">§3</a></td></tr>
+    <tr data-kw="diligence"><td><strong>Diligence</strong></td><td>Trách nhiệm khi tạo, công bố, dùng kết quả AI</td><td>Người ký tên chịu trách nhiệm dù AI soạn</td><td><a href="#ai-fluency">§3</a></td></tr>
+    <tr data-kw="discernment"><td><strong>Discernment</strong></td><td>Đánh giá có phê phán output của AI</td><td>Gồm đánh giá sản phẩm, cách làm, hiệu suất</td><td><a href="#ai-fluency">§3</a></td></tr>
+    <tr data-kw="escalate"><td><strong>Escalate</strong></td><td>Chuyển việc vượt phạm vi cho người có chuyên môn</td><td>Đáp án đúng khi việc cần tích hợp kỹ thuật hoặc quyết định thuộc người khác</td><td><a href="#overview">§1</a></td></tr>
+    <tr data-kw="GDPR HIPAA"><td><strong>GDPR, HIPAA</strong></td><td>Luật bảo vệ dữ liệu cá nhân (EU), luật thông tin sức khoẻ (Mỹ)</td><td>Dữ liệu theo luật cần theo chính sách, không tự quyết</td><td><a href="#governance">§8</a></td></tr>
+    <tr data-kw="governance"><td><strong>Governance</strong></td><td>Quy tắc tổ chức về việc dùng AI</td><td>Quy định cũ vẫn áp dụng khi dùng Claude</td><td><a href="#governance">§8</a></td></tr>
+    <tr data-kw="haiku sonnet opus"><td><strong>Haiku, Sonnet, Opus</strong></td><td>Ba bậc model: nhanh và rẻ, cân bằng, mạnh nhất</td><td>Chọn theo chi phí, tốc độ, chất lượng; không luôn chọn mạnh nhất</td><td><a href="#products">§5</a></td></tr>
+    <tr data-kw="hallucination"><td><strong>Hallucination</strong></td><td>Chi tiết nghe hợp lý nhưng bịa</td><td>Càng cụ thể, càng tự tin càng phải kiểm chứng</td><td><a href="#output-evaluation">§4</a></td></tr>
+    <tr data-kw="human review"><td><strong>Human review</strong></td><td>Người có thẩm quyền duyệt trước khi dùng</td><td>Bắt buộc cho pháp lý, tài chính, tuân thủ, gửi ra ngoài</td><td><a href="#output-evaluation">§4</a></td></tr>
+    <tr data-kw="iterate"><td><strong>Iterate</strong></td><td>Chỉnh kết quả bằng phản hồi cụ thể trong cùng chat</td><td>Phản hồi cụ thể, không “làm lại từ đầu”</td><td><a href="#prompting">§2</a></td></tr>
+    <tr data-kw="knowledge"><td><strong>Knowledge</strong></td><td>File tải lên Project làm tài liệu tham khảo</td><td>Thay bản cũ bằng bản mới, không để hai bản song song</td><td><a href="#configuration">§7</a></td></tr>
+    <tr data-kw="memory"><td><strong>Memory</strong></td><td>Nhớ thông tin giữa các chat, bật tắt được</td><td>Khác kho tài liệu của Project</td><td><a href="#products">§5</a></td></tr>
+    <tr data-kw="MQC"><td><strong>MQC (minimally qualified candidate)</strong></td><td>Thí sinh vừa đủ chuẩn mà đề được viết cho</td><td>Đề đo phản xạ đúng quy trình, không đo kỹ năng chuyên sâu</td><td><a href="#overview">§1</a></td></tr>
+    <tr data-kw="organization instructions"><td><strong>Organization instructions</strong></td><td>Chỉ dẫn toàn tổ chức do Owner đặt (Team, Enterprise)</td><td>Khác Project instructions và chỉ dẫn cá nhân</td><td><a href="#configuration">§7</a></td></tr>
+    <tr data-kw="pilot"><td><strong>Pilot</strong></td><td>Chạy thử phạm vi nhỏ có đo đạc</td><td>Thí điểm trước khi mở rộng</td><td><a href="#workflow-integration">§6</a></td></tr>
+    <tr data-kw="project instructions"><td><strong>Project instructions</strong></td><td>Chỉ dẫn cố định cho mọi chat trong Project</td><td>Cụ thể (vai trò, quy tắc, định dạng) tốt hơn chung chung</td><td><a href="#configuration">§7</a></td></tr>
+    <tr data-kw="projects"><td><strong>Projects</strong></td><td>Không gian có instructions và tài liệu riêng dùng chung cho các chat</td><td>Hợp việc lặp lại; tài liệu phải hiện hành</td><td><a href="#products">§5</a></td></tr>
+    <tr data-kw="prompt"><td><strong>Prompt</strong></td><td>Lời giao việc gửi cho Claude</td><td>Thêm bối cảnh cụ thể tốt hơn viết dài chung chung</td><td><a href="#prompting">§2</a></td></tr>
+    <tr data-kw="RAG"><td><strong>RAG</strong></td><td>Chỉ tìm và nạp đoạn liên quan khi kho tài liệu lớn</td><td>Tên file rõ giúp tìm đúng</td><td><a href="#configuration">§7</a></td></tr>
+    <tr data-kw="research"><td><strong>Research</strong></td><td>Tìm kiếm nhiều bước kèm trích dẫn</td><td>Dùng khi cần nguồn, không dùng cho câu hỏi nhanh</td><td><a href="#products">§5</a></td></tr>
+    <tr data-kw="restart summarize persist"><td><strong>Restart, summarize, persist</strong></td><td>Mở chat mới, tóm tắt sang chat mới, lưu lâu dài vào Project</td><td>Chat quá dài thì tóm tắt hoặc mở mới</td><td><a href="#products">§5</a></td></tr>
+    <tr data-kw="scaled score"><td><strong>Scaled score</strong></td><td>Điểm quy đổi thang 100 đến 1.000, đỗ từ 720</td><td>Đỗ trượt theo tổng điểm, không theo từng domain</td><td><a href="#overview">§1</a></td></tr>
+    <tr data-kw="specific constraint"><td><strong>Ràng buộc cụ thể</strong></td><td>Yêu cầu có số hoặc dạng rõ (độ dài, số ý, định dạng)</td><td>Thay cho lời mơ hồ như “ngắn thôi”</td><td><a href="#troubleshooting">§9</a></td></tr>
+    <tr data-kw="stakeholder"><td><strong>Stakeholder</strong></td><td>Người bị ảnh hưởng hoặc có quyền quyết định</td><td>Nói rõ cả giá trị lẫn giới hạn</td><td><a href="#workflow-integration">§6</a></td></tr>
+    <tr data-kw="task decomposition"><td><strong>Task decomposition</strong></td><td>Chia việc lớn thành bước nhỏ, mỗi bước kiểm tra được</td><td>Giao cả việc trong một câu thì lỗi đầu lan xuống cuối</td><td><a href="#prompting">§2</a></td></tr>
+    <tr data-kw="troubleshooting"><td><strong>Troubleshooting</strong></td><td>Tìm nguyên nhân kết quả kém rồi sửa đúng chỗ</td><td>Không làm lại từ đầu, không bỏ cuộc</td><td><a href="#troubleshooting">§9</a></td></tr>
+    <tr data-kw="validation"><td><strong>Validation (kiểm chứng)</strong></td><td>Đối chiếu với nguồn đáng tin bên ngoài Claude</td><td>Hỏi Claude tự chấm độ tin cậy không phải kiểm chứng</td><td><a href="#output-evaluation">§4</a></td></tr>
+  </tbody>
+</table></div>
+
+<p class="lesson-practice">Luyện câu hỏi của bài này trong <a href="/bank?lesson=15">🗂️ Ngân hàng</a>.</p>
+
+<div class="btns pager">
+  <a class="btn" href="/notes/lessons/14-app-lifecycle.html">← Bài 14 · Vòng đời ứng dụng và tổng kiểm CCDV-F</a>
+  <a class="btn primary" href="/notes/lessons/16-ccao-f-teams-enterprise.html">Bài 16 · CCAO-F: đội người–agent và Enterprise →</a>
+</div>
+
+<footer>
+  Luyện thi chứng chỉ Claude · Bài 15 · CCAO-F: Claude cho công việc · v0.39 · 2026-11-18. <a href="/notes/00-tong-quan.md">Tổng quan</a> · <a href="/new">Luyện đề</a>.
+</footer>
