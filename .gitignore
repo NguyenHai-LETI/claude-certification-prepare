@@ -5,4 +5,4 @@ dist/
 coach/runs/
 .DS_Store
 test-results/
-local_docs/
+private-notes/
