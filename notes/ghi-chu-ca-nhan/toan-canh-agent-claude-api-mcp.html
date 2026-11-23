@@ -1,0 +1,187 @@
+<!-- Chỉ dùng khi mở file trực tiếp trong trình duyệt. Trong app, DOMPurify bỏ meta/link/style và app tự cấp CSS bài học. -->
+<meta charset="utf-8">
+<link rel="stylesheet" href="../../web/styles-lesson.css">
+<style>
+  :root { --bg: #f4f4f1; --fg: #0b0b0b; --muted: #6f6d67; --border: rgba(11,11,11,.11); --card: #fcfcfb; --accent: #2a78d6; --accent-fg: #fff; --ok: #17803a; --bad: #c0352b; --warn: #8a5300; --code-bg: #efeee9; --mark: #fff0b3; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #0f0f0e; --fg: #f0efec; --muted: #9a988f; --border: rgba(255,255,255,.1); --card: #1a1a19; --accent: #3987e5; --accent-fg: #fff; --ok: #4cc764; --bad: #ef7d7d; --warn: #f3b33d; --code-bg: #262624; --mark: #5c4708; }
+  }
+  body { margin: 0; padding: 24px 16px; background: var(--bg); font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  body > .lesson { margin: 0 auto; }
+</style>
+<div class="lesson">
+<h1>Toàn cảnh một agent tự xây bằng Claude API và MCP</h1>
+<p class="lead">Ghi chú cá nhân, soạn ngày 23/11/2026. Sơ đồ cho thấy ai chạy cái gì khi server của bạn dùng Claude API để làm agent: server của bạn, agent harness, Claude API, model, server tool và các MCP server như Google Drive hay Salesforce.</p>
+
+<h2 id="so-do">1. Sơ đồ</h2>
+<figure class="fig">
+  <div class="sc"><svg viewBox="0 0 760 556" role="img" aria-label="Người dùng gọi backend của bạn. Agent harness trong server của bạn gửi request tới Claude API, Claude API chuyển cho model, model trả text hoặc tool_use. Harness tự chạy custom tool trên DB nội bộ, gọi MCP server Google Drive và Salesforce qua MCP client, và có sandbox chạy code do Claude viết. Phía Anthropic có server tools và MCP connector gọi thẳng MCP server remote như Jira. Mỗi MCP server bọc API thật của dịch vụ.">
+    <defs>
+      <marker id="mgc1" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah"/></marker>
+      <marker id="mgc1a" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="ah-acc"/></marker>
+    </defs>
+
+    <!-- lanes -->
+    <rect x="10" y="40" width="110" height="345" rx="8" class="lane"/>
+    <rect x="135" y="40" width="330" height="345" rx="8" class="lane"/>
+    <rect x="480" y="40" width="270" height="345" rx="8" class="lane"/>
+    <rect x="10" y="400" width="740" height="148" rx="8" class="lane"/>
+    <text x="65" y="58" class="lane-lb" text-anchor="middle">Người dùng</text>
+    <text x="300" y="58" class="lane-lb" text-anchor="middle">Server của bạn (bạn host)</text>
+    <text x="615" y="58" class="lane-lb" text-anchor="middle">Anthropic</text>
+    <text x="20" y="432" class="lane-lb">Bên ngoài</text>
+    <text x="20" y="448" class="ts">MCP server bọc</text>
+    <text x="20" y="461" class="ts">API thật thành</text>
+    <text x="20" y="474" class="ts">tool chuẩn MCP</text>
+
+    <!-- user -->
+    <rect x="20" y="150" width="90" height="50" rx="6" class="b-step"/>
+    <text x="65" y="170" class="t tb" text-anchor="middle">Người dùng</text>
+    <text x="65" y="186" class="ts" text-anchor="middle">web, app, Slack…</text>
+
+    <!-- your server -->
+    <rect x="150" y="70" width="300" height="40" rx="6" class="b-step"/>
+    <text x="300" y="87" class="t tb" text-anchor="middle">Backend ứng dụng của bạn</text>
+    <text x="300" y="101" class="ts" text-anchor="middle">endpoint, đăng nhập user, lưu lịch sử hội thoại</text>
+
+    <rect x="150" y="122" width="300" height="192" rx="8" class="b-sys"/>
+    <text x="300" y="140" class="t tb" text-anchor="middle">Agent harness (vòng lặp agent)</text>
+    <text x="300" y="155" class="ts" text-anchor="middle">request → tool_use → chạy tool → tool_result</text>
+
+    <rect x="162" y="166" width="134" height="56" rx="6" class="b-step"/>
+    <text x="229" y="186" class="t tb" text-anchor="middle">Custom tools</text>
+    <text x="229" y="200" class="ts" text-anchor="middle">hàm do bạn viết</text>
+    <text x="229" y="213" class="ts" text-anchor="middle">vd: read_ticket</text>
+
+    <rect x="304" y="166" width="134" height="56" rx="6" class="b-step"/>
+    <text x="371" y="186" class="t tb" text-anchor="middle">MCP client</text>
+    <text x="371" y="200" class="ts" text-anchor="middle">nối tới MCP server,</text>
+    <text x="371" y="213" class="ts" text-anchor="middle">lấy danh sách tool</text>
+
+    <rect x="162" y="238" width="134" height="60" rx="6" class="b-opt"/>
+    <text x="229" y="259" class="t tb" text-anchor="middle">Guardrail · log</text>
+    <text x="229" y="273" class="ts" text-anchor="middle">quyền, xác nhận, hook</text>
+    <text x="229" y="286" class="ts" text-anchor="middle">giữ secret, kiểm toán</text>
+
+    <rect x="304" y="238" width="134" height="60" rx="6" class="b-code"/>
+    <text x="371" y="259" class="t tb" text-anchor="middle">Sandbox chạy code</text>
+    <text x="371" y="273" class="ts" text-anchor="middle">chạy code Claude viết;</text>
+    <text x="371" y="286" class="ts" text-anchor="middle">dữ liệu không vào context</text>
+
+    <rect x="150" y="328" width="300" height="40" rx="6" class="b-step"/>
+    <text x="300" y="345" class="t tb" text-anchor="middle">DB / API nội bộ của bạn</text>
+    <text x="300" y="359" class="ts" text-anchor="middle">ticket, đơn hàng, khách hàng</text>
+
+    <!-- Anthropic -->
+    <rect x="495" y="70" width="240" height="64" rx="6" class="b-sys"/>
+    <text x="615" y="89" class="t tb" text-anchor="middle">Claude API · POST /v1/messages</text>
+    <text x="615" y="105" class="ts" text-anchor="middle">xác thực API key, rate limit</text>
+    <text x="615" y="119" class="ts" text-anchor="middle">prompt cache · không lưu trạng thái</text>
+
+    <rect x="495" y="152" width="240" height="56" rx="6" class="b-done"/>
+    <text x="615" y="171" class="t tb" text-anchor="middle">Model Claude</text>
+    <text x="615" y="186" class="ts" text-anchor="middle">đọc system + tools + messages</text>
+    <text x="615" y="199" class="ts" text-anchor="middle">sinh text hoặc khối tool_use</text>
+
+    <rect x="495" y="226" width="240" height="52" rx="6" class="b-step"/>
+    <text x="615" y="246" class="t tb" text-anchor="middle">Server tools (Anthropic chạy)</text>
+    <text x="615" y="262" class="ts" text-anchor="middle">web_search, web_fetch, code_execution</text>
+
+    <rect x="495" y="296" width="240" height="56" rx="6" class="b-opt"/>
+    <text x="615" y="315" class="t tb" text-anchor="middle">MCP connector (beta)</text>
+    <text x="615" y="330" class="ts" text-anchor="middle">API tự gọi MCP server remote,</text>
+    <text x="615" y="343" class="ts" text-anchor="middle">bạn không cần MCP client</text>
+
+    <!-- external -->
+    <rect x="150" y="436" width="140" height="46" rx="6" class="b-step"/>
+    <text x="220" y="455" class="t tb" text-anchor="middle">Google Drive MCP</text>
+    <text x="220" y="470" class="ts" text-anchor="middle">server remote, OAuth</text>
+    <rect x="305" y="436" width="140" height="46" rx="6" class="b-step"/>
+    <text x="375" y="455" class="t tb" text-anchor="middle">Salesforce MCP</text>
+    <text x="375" y="470" class="ts" text-anchor="middle">server remote, OAuth</text>
+    <rect x="600" y="436" width="140" height="46" rx="6" class="b-step"/>
+    <text x="670" y="455" class="t tb" text-anchor="middle">Jira MCP</text>
+    <text x="670" y="470" class="ts" text-anchor="middle">gọi qua MCP connector</text>
+
+    <rect x="150" y="500" width="140" height="36" rx="6" class="b-code"/>
+    <text x="220" y="522" class="t" text-anchor="middle">Google Drive API</text>
+    <rect x="305" y="500" width="140" height="36" rx="6" class="b-code"/>
+    <text x="375" y="522" class="t" text-anchor="middle">Salesforce API</text>
+    <rect x="600" y="500" width="140" height="36" rx="6" class="b-code"/>
+    <text x="670" y="522" class="t" text-anchor="middle">Jira API</text>
+
+    <!-- arrows -->
+    <path d="M110,175 H128 V90 H147" class="ln-acc" marker-end="url(#mgc1a)"/>
+    <path d="M300,110 V120" class="ln" marker-end="url(#mgc1)"/>
+    <path d="M450,150 H472 V96 H492" class="ln-acc" marker-end="url(#mgc1a)"/>
+    <path d="M495,128 H478 V176 H453" class="ln-acc" marker-end="url(#mgc1a)"/>
+    <path d="M600,134 V149" class="ln" marker-end="url(#mgc1)"/>
+    <path d="M630,152 V137" class="ln" marker-end="url(#mgc1)"/>
+    <path d="M615,208 V223" class="ln-dash" marker-end="url(#mgc1)"/>
+    <path d="M162,194 H154 V325" class="ln" marker-end="url(#mgc1)"/>
+    <path d="M371,238 V225" class="ln" marker-end="url(#mgc1)"/>
+    <path d="M438,194 H458 V422 H220 V433" class="ln" marker-end="url(#mgc1)"/>
+    <path d="M375,422 V433" class="ln" marker-end="url(#mgc1)"/>
+    <path d="M670,352 V433" class="ln-dash" marker-end="url(#mgc1)"/>
+    <path d="M220,482 V497" class="ln" marker-end="url(#mgc1)"/>
+    <path d="M375,482 V497" class="ln" marker-end="url(#mgc1)"/>
+    <path d="M670,482 V497" class="ln" marker-end="url(#mgc1)"/>
+
+    <!-- step numbers -->
+    <circle cx="128" cy="132" r="8" class="tok"/><text x="128" y="135.5" class="ts tb" text-anchor="middle" style="fill:var(--l-card)">1</text>
+    <circle cx="461" cy="150" r="8" class="tok"/><text x="461" y="153.5" class="ts tb" text-anchor="middle" style="fill:var(--l-card)">2</text>
+    <circle cx="615" cy="143" r="8" class="tok"/><text x="615" y="146.5" class="ts tb" text-anchor="middle" style="fill:var(--l-card)">3</text>
+    <circle cx="465" cy="176" r="8" class="tok"/><text x="465" y="179.5" class="ts tb" text-anchor="middle" style="fill:var(--l-card)">4</text>
+    <circle cx="154" cy="262" r="8" class="tok"/><text x="154" y="265.5" class="ts tb" text-anchor="middle" style="fill:var(--l-card)">5</text>
+    <circle cx="458" cy="320" r="8" class="tok"/><text x="458" y="323.5" class="ts tb" text-anchor="middle" style="fill:var(--l-card)">6</text>
+    <circle cx="395" cy="231" r="7" class="tok"/><text x="395" y="234.5" class="ts tb" text-anchor="middle" style="fill:var(--l-card)">7</text>
+    <circle cx="640" cy="216" r="8" class="tok"/><text x="640" y="219.5" class="ts tb" text-anchor="middle" style="fill:var(--l-card)">8</text>
+    <circle cx="670" cy="392" r="8" class="tok"/><text x="670" y="395.5" class="ts tb" text-anchor="middle" style="fill:var(--l-card)">9</text>
+  </svg></div>
+  <figcaption>Hình 1. Số tròn khớp với bảng ở mục 2. Mũi tên nét đứt: Anthropic tự gọi thay bạn (server tool, MCP connector).</figcaption>
+</figure>
+
+<h2 id="tung-buoc">2. Đọc sơ đồ theo từng bước</h2>
+<div class="tw"><table>
+  <thead><tr><th>#</th><th>Chuyện gì xảy ra</th><th>Ai làm</th></tr></thead>
+  <tbody>
+    <tr><td>1</td><td>Người dùng gửi yêu cầu, ví dụ "ticket T-123 khách hỏi gì?", tới backend của bạn. Backend xác thực user rồi giao cho harness.</td><td>Server của bạn</td></tr>
+    <tr><td>2</td><td>Harness gửi <code>POST /v1/messages</code> gồm <code>system</code>, <code>tools</code> và toàn bộ <code>messages</code>. Request nào cũng gửi lại đủ, vì API không nhớ gì giữa các request.</td><td>Harness</td></tr>
+    <tr><td>3</td><td>Claude API chuyển cho model. Model chỉ <em>đọc</em> mô tả tool, không thấy code, rồi quyết định trả lời luôn hay xin gọi tool.</td><td>Anthropic</td></tr>
+    <tr><td>4</td><td>Response quay về với <code>stop_reason: "tool_use"</code> và khối <code>tool_use</code>, ví dụ <code>read_ticket({"ticket_id":"T-123"})</code>. Model <strong>không tự chạy</strong> tool.</td><td>Anthropic → harness</td></tr>
+    <tr><td>5</td><td>Tool là custom tool: harness gọi hàm của bạn, hàm đọc DB hoặc API nội bộ. Kết quả được gửi lại ở bước 2 dưới dạng <code>tool_result</code>. Lặp lại đến khi model trả <code>end_turn</code>.</td><td>Harness</td></tr>
+    <tr><td>6</td><td>Tool là tool MCP: harness chuyển lời gọi cho MCP client. MCP client gọi MCP server Google Drive hoặc Salesforce, và MCP server mới gọi API thật của dịch vụ.</td><td>Harness + MCP server</td></tr>
+    <tr><td>7</td><td>Code execution với MCP: thay vì gọi từng tool, model viết một đoạn code. Sandbox chạy code đó, và code gọi các hàm bọc MCP. Dữ liệu lớn đi từ Drive sang Salesforce <strong>trong sandbox</strong>, chỉ dòng log quay về model.</td><td>Harness (sandbox)</td></tr>
+    <tr><td>8</td><td>Server tool như <code>web_search</code>: Anthropic tự chạy ngay trong lượt đó. Harness không phải làm gì, kết quả nằm sẵn trong response.</td><td>Anthropic</td></tr>
+    <tr><td>9</td><td>MCP connector: khai báo <code>mcp_servers</code> trong request, Claude API tự gọi MCP server remote như Jira. Không cần MCP client trong harness. Chỉ dùng được với server remote công khai, không dùng được với server local qua stdio.</td><td>Anthropic + MCP server</td></tr>
+  </tbody>
+</table></div>
+<div class="insight"><strong>Cốt lõi.</strong> Model chỉ đọc và quyết định. Việc chạy tool là của harness (custom tool, MCP qua client, sandbox), hoặc của Anthropic (server tool, MCP connector). Mọi thứ model "thấy" đều phải đi qua context, nên bớt tool thừa và giữ dữ liệu trung gian ngoài context là hai cách tiết kiệm token chính.</div>
+
+<h2 id="ai-chay-tool">3. Ai chạy tool?</h2>
+<div class="tw"><table>
+  <thead><tr><th>Loại tool</th><th>Khai báo trong request</th><th>Ai chạy</th></tr></thead>
+  <tbody>
+    <tr><td>Custom tool</td><td><code>name</code>, <code>description</code>, <code>input_schema</code></td><td>Harness của bạn</td></tr>
+    <tr><td>Tool Anthropic định nghĩa, client chạy (bash, text editor, memory)</td><td><code>type</code> + <code>name</code>, không cần schema</td><td>Harness của bạn</td></tr>
+    <tr><td>Tool MCP qua MCP client của bạn</td><td>Harness chuyển định nghĩa từ MCP server thành custom tool</td><td>MCP server, gọi qua harness</td></tr>
+    <tr><td>Server tool (web search, web fetch, code execution)</td><td><code>type</code> + <code>name</code></td><td>Anthropic</td></tr>
+    <tr><td>MCP connector</td><td><code>mcp_servers</code> + <code>mcp_toolset</code> (beta)</td><td>MCP server remote, Anthropic gọi</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="harness-o-dau">4. Harness nằm ở đâu, tùy cách xây agent</h2>
+<div class="tw"><table>
+  <thead><tr><th>Cách xây</th><th>Ai viết vòng lặp</th><th>Ai host harness và chỗ chạy tool</th></tr></thead>
+  <tbody>
+    <tr><td>Messages API, tự viết vòng lặp</td><td>Bạn</td><td>Bạn (đúng như sơ đồ)</td></tr>
+    <tr><td>Tool Runner trong SDK Anthropic</td><td>SDK, bạn chỉ viết hàm tool</td><td>Bạn</td></tr>
+    <tr><td>Claude Agent SDK (Claude Code đóng gói thành thư viện)</td><td>SDK, kèm sẵn Read, Edit, Bash, MCP, subagent</td><td>Bạn</td></tr>
+    <tr><td>Managed Agents (beta)</td><td>Anthropic</td><td>Anthropic host cả vòng lặp lẫn container cho từng session</td></tr>
+  </tbody>
+</table></div>
+<p>Claude Code cũng là một harness: nó chạy trên máy bạn, gửi request tới Claude API, tự chạy Read, Edit, Bash và gọi MCP server bạn cấu hình.</p>
+
+<p>Xem thêm: <a href="/notes/ghi-chu-ca-nhan/messages-api-request.md">Cấu trúc request Messages API</a>; <a href="/notes/lessons/05-tool-use.html">Bài 05 Tool use</a>; <a href="/notes/lessons/06-mcp.html">Bài 06 MCP</a>; <a href="/notes/lessons/20-integration.html#tool-bloat">Bài 20 §1</a>.</p>
+<p>Nguồn: <a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview" target="_blank" rel="noopener">Tool use</a>; <a href="https://platform.claude.com/docs/en/agents-and-tools/mcp-connector" target="_blank" rel="noopener">MCP connector</a>; <a href="https://www.anthropic.com/engineering/code-execution-with-mcp" target="_blank" rel="noopener">Code execution with MCP</a>; <a href="https://modelcontextprotocol.io/docs/learn/architecture" target="_blank" rel="noopener">MCP architecture</a>.</p>
+</div>
