@@ -1,6 +1,6 @@
 # 🎓 Claude Cert Trainer: luyện thi chứng chỉ Claude
 
-App chạy trên máy để luyện 4 kỳ thi chứng chỉ Claude của Anthropic, chọn kỳ thi ngay trong app:
+App chạy trên máy để luyện 5 kỳ thi chứng chỉ Claude của Anthropic, chọn kỳ thi ngay trong app:
 
 | Mã | Tên | Số câu / thời gian |
 |---|---|---|
@@ -8,6 +8,7 @@ App chạy trên máy để luyện 4 kỳ thi chứng chỉ Claude của Anthro
 | CCDV-F | Claude Certified Developer – Foundations | 53 câu / 120 phút |
 | CCAO-F | Claude Certified Associate – Foundations | 60 câu / 120 phút |
 | CCAR-P | Claude Certified Architect – Professional | 63 câu / 120 phút |
+| CCDV-P | Claude Certified Developer – Professional *(chưa có Exam Guide; số câu và weight tạm theo bộ ccdv-p-1)* | 70 câu / 120 phút |
 
 Nội dung bám **Exam Guide v1.0**, bản áp dụng tới khi đề đổi ngày 07/12/2026. Điểm đạt là 720/1000. Chi tiết từng kỳ thi xem ở 📖 Tài liệu → `notes/00-tong-quan.md`.
 
@@ -76,6 +77,7 @@ Dùng `Dockerfile` + `render.yaml`. Ổ đĩa trên Render free bị xoá mỗi 
 | `ccx.yaml` | Câu tự soạn từ tài liệu ôn tập công khai [artifact 3NhHr42…](https://claude.ai/artifact/3NhHr42CxTHGEs33N1ntFf). Tác giả không nêu tên, không ghi giấy phép, không thuộc Anthropic. Bản nhập gần nhất: v0.39 (18/11/2026). Nhập bằng `npm run import-ccx -- <thư mục assets>` | 1.063 |
 | `official.yaml` | Câu mẫu trong 4 Exam Guide chính thức, chép nguyên văn; giải thích tự viết | 21 |
 | `ai-20261118-*.yaml` | AI sinh từ tài liệu chính thức của Anthropic, có kiểm định độc lập (báo cáo trong `bank/reviews/`) | 100 |
+| `ccdv-p-1.yaml` | Bộ luyện CCDV-P do người học cung cấp (bản gốc `bank/sources/ccdv-p-1.txt`), không thuộc Anthropic. Nhập bằng `npm run import-txt -- <file.txt>` | 70 |
 
 - Định dạng pack và quy ước id: [SPEC.md](SPEC.md) §2.1.
 - Mỗi câu gắn với một hoặc nhiều kỳ thi: `exams: {CCAR-F: D3, CCDV-F: D3}`.

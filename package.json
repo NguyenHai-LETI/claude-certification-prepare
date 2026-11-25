@@ -13,6 +13,7 @@
     "public": "node scripts/public.ts",
     "validate": "node scripts/validate.ts",
     "import-ccx": "node scripts/import-ccx.ts",
+    "import-txt": "node scripts/import-txt.ts",
     "sync": "node scripts/sync.ts",
     "typecheck": "tsc --noEmit -p .",
     "test": "node --test \"tests/*.test.ts\"",

@@ -29,7 +29,7 @@ const EXAM_KEY = 'cert.exam';
 function storedExam(): ExamCode {
   try {
     const v = localStorage.getItem(EXAM_KEY);
-    if (v === 'CCAR-F' || v === 'CCDV-F' || v === 'CCAO-F' || v === 'CCAR-P') return v;
+    if (v === 'CCAR-F' || v === 'CCDV-F' || v === 'CCAO-F' || v === 'CCAR-P' || v === 'CCDV-P') return v;
   } catch {
     // storage unavailable
   }

@@ -352,7 +352,7 @@ export function buildAskPrompt(q: Question, messages: AskRequest['messages'], ch
     .map(([e, d]) => `${e} ${d}${examDef(e)?.domains.find((x) => x.id === d) ? ` (${examDef(e)!.domains.find((x) => x.id === d)!.name})` : ''}`)
     .join(', ');
   const head = [
-    'Bạn là gia sư luyện thi các chứng chỉ Claude của Anthropic (CCAR-F, CCDV-F, CCAO-F, CCAR-P) cho một người học Việt Nam.',
+    'Bạn là gia sư luyện thi các chứng chỉ Claude của Anthropic (CCAR-F, CCDV-F, CCAO-F, CCAR-P, CCDV-P) cho một người học Việt Nam.',
     'Người học đang xem MỘT câu trắc nghiệm trong app luyện thi và hỏi bạn về nó. Trả lời đúng câu hỏi cuối cùng của người học.',
     '',
     'Yêu cầu:',

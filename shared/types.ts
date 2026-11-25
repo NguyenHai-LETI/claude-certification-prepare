@@ -1,8 +1,8 @@
 // Types shared by the server (Node 22, native TS) and the web UI (Vite). This file is the API contract (see SPEC.md §4).
 // No runtime imports here.
 
-export type ExamCode = 'CCAR-F' | 'CCDV-F' | 'CCAO-F' | 'CCAR-P';
-export const EXAM_CODES: readonly ExamCode[] = ['CCAR-F', 'CCDV-F', 'CCAO-F', 'CCAR-P'];
+export type ExamCode = 'CCAR-F' | 'CCDV-F' | 'CCAO-F' | 'CCAR-P' | 'CCDV-P';
+export const EXAM_CODES: readonly ExamCode[] = ['CCAR-F', 'CCDV-F', 'CCAO-F', 'CCAR-P', 'CCDV-P'];
 export type DomainId = string; // "D1".."D8", per exam (exams.yaml)
 
 // ── exams.yaml ──────────────────────────────────────────────────────────────

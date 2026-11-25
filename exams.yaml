@@ -68,3 +68,21 @@ exams:
       D5: { name: "Governance, Safety & Risk Management", weight: 14 }
       D6: { name: "Stakeholder Communication & Lifecycle Management", weight: 14 }
       D7: { name: "Developer Productivity & Operational Enablement", weight: 7 }
+  # CCDV-P chưa có Exam Guide chính thức trong repo. Tên domain lấy từ bộ luyện bank/sources/ccdv-p-1.txt, thứ tự D1–D8 theo
+  # số bài học của khoá gốc (1-x … 8-x). Số câu, thời gian và weight là TẠM: weight = phân bố 70 câu của ccdv-p-1.
+  # Có guide chính thức thì sửa lại ở đây và trong notes/exams/CCDV-P.md.
+  CCDV-P:
+    name: "Claude Certified Developer – Professional"
+    short: "Developer – Professional"
+    questions: 70
+    minutes: 120
+    pass: 720
+    domains:
+      D1: { name: "Advanced Agent Architecture and Orchestration", weight: 15.7 }
+      D2: { name: "Production Integration, Reliability, and Knowledge Grounding", weight: 21.4 }
+      D3: { name: "Observability and Production Monitoring", weight: 8.6 }
+      D4: { name: "Advanced Debugging and Incident Response", weight: 10 }
+      D5: { name: "Evaluation Engineering and Quality Assurance", weight: 12.9 }
+      D6: { name: "Cost and Latency Optimization at Scale", weight: 10 }
+      D7: { name: "Runtime Guardrails and Production Security", weight: 12.9 }
+      D8: { name: "Agent Fleet Operations for Software Delivery", weight: 8.6 }
