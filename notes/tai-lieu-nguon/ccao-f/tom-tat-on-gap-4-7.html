@@ -1,0 +1,762 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ôn gấp CCAO-F 4–7</title>
+<style>
+:root{
+  --bg:#fbfaf7;--fg:#1d1d1b;--muted:#6b6a65;--card:#ffffff;--line:#e6e3dc;
+  --accent:#b4532a;--accent-soft:#f6e7df;--pick:#1f7a4d;--pick-soft:#e2f3ea;
+  --drop:#b42a3a;--drop-soft:#f8e3e6;--order:#2a5bb4;--order-soft:#e3ebf8;--code:#f2efe8;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#17171a;--fg:#e9e7e2;--muted:#a09d96;--card:#202024;--line:#34343a;
+  --accent:#e58a5f;--accent-soft:#3a271e;--pick:#5fcf95;--pick-soft:#1b3226;
+  --drop:#f07a88;--drop-soft:#3a1f24;--order:#7fa6f0;--order-soft:#1f2a40;--code:#2a2a2f;}}
+:root[data-theme="dark"]{
+  --bg:#17171a;--fg:#e9e7e2;--muted:#a09d96;--card:#202024;--line:#34343a;
+  --accent:#e58a5f;--accent-soft:#3a271e;--pick:#5fcf95;--pick-soft:#1b3226;
+  --drop:#f07a88;--drop-soft:#3a1f24;--order:#7fa6f0;--order-soft:#1f2a40;--code:#2a2a2f;}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:16px}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;}
+.wrap{display:grid;grid-template-columns:260px minmax(0,1fr);gap:40px;max-width:1180px;margin:0 auto;padding:32px 24px 80px}
+nav.toc{position:sticky;top:16px;align-self:start;max-height:calc(100vh - 32px);overflow:auto;
+  font-size:13.5px;border-right:1px solid var(--line);padding-right:16px}
+nav.toc .ttl{font-weight:700;text-transform:uppercase;letter-spacing:.06em;font-size:11.5px;color:var(--muted);margin:0 0 8px}
+nav.toc ol{list-style:none;margin:0;padding:0}
+nav.toc li{margin:2px 0}
+nav.toc li.d2{margin-top:10px;font-weight:600}
+nav.toc li.d3{padding-left:12px}
+nav.toc a{color:var(--fg);text-decoration:none;display:block;padding:2px 6px;border-radius:6px}
+nav.toc a:hover,nav.toc a.on{background:var(--accent-soft);color:var(--accent)}
+main{min-width:0;max-width:820px}
+h1{font-size:30px;line-height:1.25;margin:0 0 8px}
+h2{font-size:23px;margin:48px 0 12px;padding-bottom:6px;border-bottom:2px solid var(--accent);color:var(--accent)}
+h3{font-size:18.5px;margin:32px 0 10px;padding:10px 14px;background:var(--card);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:8px}
+p{margin:10px 0}
+ul,ol{padding-left:22px;margin:8px 0}
+li{margin:5px 0}
+li>ul{margin:4px 0}
+strong{font-weight:650}
+hr{border:0;border-top:1px solid var(--line);margin:32px 0}
+code{background:var(--code);padding:1px 5px;border-radius:4px;font-size:.92em}
+a{color:var(--accent)}
+.tbl{overflow-x:auto;margin:12px 0;border:1px solid var(--line);border-radius:8px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:14.5px}
+th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:var(--code);font-weight:650}
+tr:last-child td{border-bottom:0}
+.lbl{display:inline-block;font-weight:700;font-size:.82em;padding:1px 8px;border-radius:999px;margin-right:4px;letter-spacing:.02em}
+.l-order{color:var(--order);background:var(--order-soft)}
+.l-pick{color:var(--pick);background:var(--pick-soft)}
+.l-drop{color:var(--drop);background:var(--drop-soft)}
+.bar{display:flex;gap:8px;align-items:center;justify-content:space-between;margin-bottom:20px;color:var(--muted);font-size:13px}
+.bar button{font:inherit;background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:8px;padding:5px 10px;cursor:pointer}
+.top{position:fixed;right:16px;bottom:16px;background:var(--accent);color:#fff;border:0;border-radius:999px;
+  width:44px;height:44px;font-size:20px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+@media (max-width:860px){
+  .wrap{grid-template-columns:1fr;padding:16px 16px 80px;gap:0}
+  nav.toc{position:static;max-height:none;border-right:0;border-bottom:1px solid var(--line);padding:0 0 12px;margin-bottom:8px}
+  nav.toc details summary{cursor:pointer;font-weight:700}
+  h1{font-size:24px} h2{font-size:20px} h3{font-size:17px}
+  table{font-size:13.5px}
+}
+@media print{nav.toc,.bar button,.top{display:none}.wrap{display:block}h3{break-after:avoid}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav class="toc"><details open><summary class="ttl">Mục lục</summary><ol>
+<li class="d2"><a href="#0-bay-quy-luat-chung-doc-ky-phan-nay-truoc">0. Bảy quy luật chung (đọc kỹ phần này trước)</a></li>
+<li class="d2"><a href="#domain-4-workflow-integration-amp-solution-design">DOMAIN 4: Workflow Integration &amp; Solution Design</a></li>
+<li class="d3"><a href="#4-1-phan-tich-yeu-cau-va-use-case">4.1 Phân tích yêu cầu và use case</a></li>
+<li class="d3"><a href="#4-2-nghien-cuu-lap-ke-hoach-toi-uu-quy-trinh">4.2 Nghiên cứu, lập kế hoạch, tối ưu quy trình</a></li>
+<li class="d3"><a href="#4-3-thiet-ke-giai-phap-ban-mau-lam-lap">4.3 Thiết kế giải pháp, bản mẫu, làm lặp</a></li>
+<li class="d3"><a href="#4-4-dua-claude-vao-quy-trinh-dang-co">4.4 Đưa Claude vào quy trình đang có</a></li>
+<li class="d3"><a href="#4-5-noi-voi-cac-ben-ve-gia-tri-va-gioi-han">4.5 Nói với các bên về giá trị và giới hạn</a></li>
+<li class="d2"><a href="#domain-5-configuration-amp-knowledge-management">DOMAIN 5: Configuration &amp; Knowledge Management</a></li>
+<li class="d3"><a href="#5-1-cau-hinh-project">5.1 Cấu hình Project</a></li>
+<li class="d3"><a href="#5-2-tai-lieu-tai-len-va-connector">5.2 Tài liệu tải lên và connector</a></li>
+<li class="d3"><a href="#5-3-chi-dan-cap-he-thong">5.3 Chỉ dẫn cấp hệ thống</a></li>
+<li class="d3"><a href="#5-4-bao-tri-cau-hinh-tai-lieu-memory">5.4 Bảo trì cấu hình, tài liệu, Memory</a></li>
+<li class="d2"><a href="#domain-6-governance-risk-amp-responsible-use">DOMAIN 6: Governance, Risk &amp; Responsible Use</a></li>
+<li class="d3"><a href="#6-1-viec-nen-va-khong-nen-dung-claude">6.1 Việc nên và không nên dùng Claude</a></li>
+<li class="d3"><a href="#6-2-du-lieu-nhay-cam-va-quyen-rieng-tu">6.2 Dữ liệu nhạy cảm và quyền riêng tư</a></li>
+<li class="d3"><a href="#6-3-chinh-sach-ai-va-quan-tri-cua-to-chuc">6.3 Chính sách AI và quản trị của tổ chức</a></li>
+<li class="d3"><a href="#6-4-dao-duc-khi-dung-ai">6.4 Đạo đức khi dùng AI</a></li>
+<li class="d2"><a href="#domain-7-troubleshooting-amp-optimization">DOMAIN 7: Troubleshooting &amp; Optimization</a></li>
+<li class="d3"><a href="#7-1-chan-doan-ket-qua-kem">7.1 Chẩn đoán kết quả kém</a></li>
+<li class="d3"><a href="#7-2-dieu-chinh-theo-phan-hoi">7.2 Điều chỉnh theo phản hồi</a></li>
+<li class="d3"><a href="#7-3-toi-uu-quy-trinh">7.3 Tối ưu quy trình</a></li>
+<li class="d2"><a href="#bang-tra-nhanh-truoc-gio-thi">Bảng tra nhanh trước giờ thi</a></li>
+<li class="d3"><a href="#con-so-can-thuoc">Con số cần thuộc</a></li>
+</ol></details></nav>
+<main>
+<div class="bar"><span>Nguồn: 15 bài crawl từ cloudexam.pro (bên thứ ba, không phải tài liệu chính thức của Anthropic)</span><button id="theme" type="button">Đổi nền sáng/tối</button></div>
+<h1 id="on-gap-ccao-f-domain-4-7-bai-4-1-7-3">Ôn gấp CCAO-F: Domain 4 → 7 (bài 4.1 – 7.3)</h1>
+<p>Tóm tắt từ 15 bài trong thư mục này, đọc khoảng 45–60 phút. Mỗi bài có 3 phần: <span class="lbl l-order">Thứ tự</span> (đề hay bắt xếp bước), <strong>Chọn</strong> (đáp án đúng), <strong>Loại</strong> (đáp án bẫy).</p>
+<hr>
+<h2 id="0-bay-quy-luat-chung-doc-ky-phan-nay-truoc">0. Bảy quy luật chung (đọc kỹ phần này trước)</h2>
+<ol>
+<li><strong>Câu hỏi &quot;bước ĐẦU TIÊN&quot; thì đáp án gần như luôn là xác định / đo / phân loại / ghi hiện trạng</strong>: mục đích, vấn đề, ràng buộc, câu hỏi nghiên cứu, người nghe. Đáp án &quot;làm luôn&quot; (xin ý tưởng, sửa, triển khai, thử, viết tài liệu, đào tạo) là bước sau.</li>
+<li><strong>Claude soạn nháp, gom, tổng hợp; con người duyệt và quyết.</strong> Quyết định cuối về người, tiền, pháp lý, tuyển dụng, tín dụng, tuyển sinh thì người giữ.</li>
+<li><strong>Sửa đúng gốc, không che triệu chứng.</strong> Gốc thường nằm ở prompt hoặc chỉ dẫn thiếu, hoặc tài liệu cũ. Đáp án &quot;đổi model / hạ temperature / thêm người sửa sau / mở chat mới&quot; là sai.</li>
+<li><strong>Mỗi lần chỉ sửa một chỗ (một hai điều chỉnh), đo rồi ghi lại.</strong></li>
+<li><strong>Thử nhỏ trước, triển khai sau.</strong> Thử với nhóm nhỏ trên việc thật rồi mới cho cả đội.</li>
+<li><strong>Không lách chính sách.</strong> Incognito, diễn đạt lại, &quot;chỉ dùng nội bộ&quot;, dặn Claude &quot;đừng lưu&quot; đều không thay được việc làm đúng chính sách. Chưa rõ thì hỏi đúng người. Có sự cố thì báo đúng kênh.</li>
+<li><strong>Không tự quyết thay người có quyền.</strong> Gặp mâu thuẫn thì đánh dấu và trả về người nêu. Lãnh đạo kỳ vọng quá mức thì ghi nhận lợi ích, giải thích vì sao vẫn cần người duyệt.</li>
+</ol>
+<hr>
+<h2 id="domain-4-workflow-integration-amp-solution-design">DOMAIN 4: Workflow Integration &amp; Solution Design</h2>
+<h3 id="4-1-phan-tich-yeu-cau-va-use-case">4.1 Phân tích yêu cầu và use case</h3>
+<ul>
+<li><span class="lbl l-order">Thứ tự 5 bước:</span> gom và <strong>gắn nhãn nguồn</strong> → đưa Claude prompt <strong>trích có cấu trúc</strong> (must-have / nice-to-have / câu hỏi mở / mâu thuẫn, mỗi mục ghi nguồn, không thêm gì ngoài tài liệu) → nhóm, đánh dấu mâu thuẫn và chỗ mơ hồ → <strong>kiểm với nguồn gốc</strong> → ghi bộ yêu cầu cuối kèm nguồn và trạng thái.<ul>
+<li>Gắn nhãn nguồn <strong>TRƯỚC</strong> khi đưa Claude, để giữ được <strong>traceability</strong> (truy vết).</li>
+</ul>
+</li>
+<li><strong>Yêu cầu mâu thuẫn:</strong> chọn <strong>đánh dấu, ghi nguồn từng bên, trả về người nêu để họ thống nhất</strong>.<ul>
+<li><span class="lbl l-drop">Loại:</span> chọn yêu cầu có lý do kinh doanh mạnh nhất; đưa cả ba vào làm &quot;phương án&quot; để quyết sau; nhờ Claude viết câu thoả hiệp.</li>
+</ul>
+</li>
+<li><strong>Yêu cầu viết thành giải pháp</strong> (&quot;cần dashboard&quot;): chọn nhờ Claude <strong>viết lại thành kết quả mong muốn</strong>, mục nào chưa rõ thì đánh dấu <strong>[CẦN HỎI LẠI]</strong>. Không nhờ Claude thiết kế luôn dashboard.</li>
+<li><strong>Claude hợp nhất ở đâu:</strong> tổng hợp đầu vào từ nhiều nguồn thành danh sách có cấu trúc, truy vết được.<ul>
+<li>Sai: để Claude tự bịa yêu cầu từ tên dự án; để Claude phỏng vấn thay người; chỉ dùng Claude để xếp ưu tiên mà bỏ phần gom.</li>
+</ul>
+</li>
+<li><strong>Hợp giao cho Claude:</strong> soạn nháp, tóm tắt, tổng hợp có người duyệt sau.</li>
+<li><strong>Không giao cho Claude:</strong> duyệt bản cuối gửi ra ngoài, đàm phán hợp đồng, quyết định tuyển dụng hay sa thải, cam kết pháp lý.</li>
+</ul>
+<h3 id="4-2-nghien-cuu-lap-ke-hoach-toi-uu-quy-trinh">4.2 Nghiên cứu, lập kế hoạch, tối ưu quy trình</h3>
+<ul>
+<li><strong>Nghiên cứu, bước đầu:</strong> <strong>xác định các câu hỏi nghiên cứu cụ thể</strong>.<ul>
+<li>Sau đó: để Claude <strong>nháp kế hoạch và câu hỏi mở, nhóm chỉnh lại</strong>, rồi dùng <strong>Research và kiểm trích dẫn với nguồn gốc</strong>.</li>
+<li><span class="lbl l-drop">Loại:</span> giấu quyết định mà nghiên cứu phục vụ &quot;để Claude khỏi bị dẫn dắt&quot; (sai, phải nói rõ quyết định); nhận số liệu Claude đưa là kết quả cuối; xin kết luận trong một prompt rồi công bố luôn.</li>
+</ul>
+</li>
+<li><strong>So sánh nhiều đối tượng theo nhiều tiêu chí:</strong> việc đầu là <strong>chốt đối tượng và tiêu chí (khung) trước</strong>, rồi mới nhờ Claude điền, chọn khuôn trình bày sau cùng.<ul>
+<li><span class="lbl l-drop">Loại:</span> xếp hạng ngay; chọn khuôn bảng trước; gộp các câu trả lời rời rạc thành một tài liệu dài.</li>
+</ul>
+</li>
+<li><strong>Lập kế hoạch:</strong> đưa <strong>ràng buộc thật</strong> (ngân sách, hạn chót, nhân lực), để Claude nháp và đánh dấu [GIẢ ĐỊNH], người duyệt từng mốc.</li>
+<li><strong>Tối ưu quy trình có số liệu:</strong> chọn <strong>vẽ quy trình hiện tại → tìm điểm nghẽn từ số liệu → đề xuất phương án cho người duyệt</strong>.<ul>
+<li><strong>Điểm nghẽn (bottleneck) = bước có thời gian xử lý trung bình mỗi đơn cao nhất.</strong> Không phải bước mới thêm, không phải bước người làm kêu nhiều nhất.</li>
+<li><span class="lbl l-drop">Loại:</span> viết quy trình &quot;tối ưu theo chuẩn ngành&quot; rồi so; để Claude dự đoán tác động và xếp hạng để làm theo; để Claude phỏng vấn rồi thiết kế lại.</li>
+</ul>
+</li>
+<li><strong>Ghi nhớ:</strong> nghiên cứu bắt đầu bằng <strong>câu hỏi</strong>, so sánh bắt đầu bằng <strong>khung</strong>, tối ưu bắt đầu bằng <strong>số liệu</strong>.</li>
+</ul>
+<h3 id="4-3-thiet-ke-giai-phap-ban-mau-lam-lap">4.3 Thiết kế giải pháp, bản mẫu, làm lặp</h3>
+<ul>
+<li><strong>Bước đầu tiên:</strong> <strong>nêu vấn đề giải pháp phải giải quyết và các ràng buộc</strong>.</li>
+<li><span class="lbl l-order">Thứ tự:</span> vấn đề + ràng buộc → nhờ Claude đưa <strong>nhiều</strong> ý tưởng khác nhau → so với ràng buộc, chọn một → làm <strong>bản mẫu</strong> cho các bên góp ý → sửa theo góp ý (lặp lại).</li>
+<li><strong>Việc sáng tạo (chiến dịch, chương trình): 2 việc phải xong trước khi xin ý tưởng:</strong><ul>
+<li><strong>mục tiêu và thước đo thành công</strong></li>
+<li><strong>giọng thương hiệu và người dùng/người nghe</strong></li>
+<li>Đây là <strong>Problem Awareness</strong>, một phần của Delegation.</li>
+</ul>
+</li>
+<li><strong>Việc lớn nhiều giai đoạn:</strong> định <strong>mục tiêu chung và các giai đoạn lớn</strong> trước, rồi mới làm chi tiết từng giai đoạn.</li>
+<li><strong>Bản mẫu:</strong> làm bằng <strong>artifact</strong> (mở cạnh chat, sửa được, chia sẻ được). Muốn thử hướng khác mà không mất bản đang có: <strong>sửa một tin nhắn cũ để tạo nhánh mới</strong>.</li>
+<li><strong>Góp ý cụ thể (2 điểm):</strong> <strong>sửa đúng 2 điểm, giữ nguyên phần đã duyệt, ghi lại đã đổi gì</strong>.<ul>
+<li><span class="lbl l-drop">Loại:</span> viết lại cả bản; tiện tay thêm cải tiến.</li>
+</ul>
+</li>
+</ul>
+<h3 id="4-4-dua-claude-vao-quy-trinh-dang-co">4.4 Đưa Claude vào quy trình đang có</h3>
+<ul>
+<li><strong>Delegation</strong> (AI Fluency) gồm 3 phần:<ul>
+<li><strong>Problem Awareness</strong>: muốn đạt gì</li>
+<li><strong>Platform Awareness</strong>: AI làm được gì, không làm được gì</li>
+<li><strong>Task Delegation</strong>: chia việc giữa người và AI</li>
+</ul>
+</li>
+<li><strong>2 tiêu chí trực tiếp nhất để quyết giao bước nào:</strong><ul>
+<li>bước đó <strong>có cần sáng tạo, thấu cảm, phán đoán của con người không</strong></li>
+<li><strong>có đảo ngược được không, sai thì hậu quả ra sao</strong></li>
+<li><span class="lbl l-drop">Loại:</span> chức vụ người đang làm; độ phức tạp của sơ đồ; quy trình tồn tại bao lâu.</li>
+</ul>
+</li>
+<li><strong>3 cách làm việc với AI:</strong><ul>
+<li><strong>Automation</strong>: AI làm việc cụ thể theo chỉ dẫn</li>
+<li><strong>Augmentation</strong>: người và AI cùng làm, qua lại như cộng sự</li>
+<li><strong>Agency</strong>: người thiết lập để AI tự làm thay. Càng gần Agency thì khâu duyệt của người càng quan trọng.</li>
+</ul>
+</li>
+<li><span class="lbl l-order">Thứ tự tích hợp:</span> <strong>ghi quy trình hiện tại</strong> (bước, người phụ trách, điểm ra quyết định) → chọn bước Claude bổ trợ và bước người giữ → định <strong>đầu vào, đầu ra, điểm bàn giao</strong> → thử nhóm nhỏ trên việc thật → cập nhật và triển khai cả đội.<ul>
+<li>Đề hỏi &quot;bước đầu khi tích hợp vào quy trình nhiều người&quot;: chọn <strong>xác định chỗ Claude tạo giá trị và từng điểm bàn giao cho người</strong>.</li>
+</ul>
+</li>
+<li><strong>Dùng chung cho cả đội:</strong> đưa vào <strong>Project</strong> (chỉ dẫn chung). Quy trình lặp lại cố định thì đóng gói thành <strong>skill</strong>.</li>
+<li><strong>Bổ trợ (augment)</strong> là giữ nguyên các bước, Claude làm nhanh một bước. <strong>Thiết kế lại (redesign)</strong> là sắp xếp lại cả quy trình. Cả hai đều phải giữ có chủ đích các khâu người duyệt.</li>
+</ul>
+<h3 id="4-5-noi-voi-cac-ben-ve-gia-tri-va-gioi-han">4.5 Nói với các bên về giá trị và giới hạn</h3>
+<ul>
+<li><strong>2 việc làm trước khi soạn thông điệp:</strong><ul>
+<li><strong>xác định nhóm người nghe và mỗi nhóm cần hiểu gì</strong></li>
+<li><strong>chốt sự thật về vai trò của Claude và ranh giới</strong></li>
+</ul>
+</li>
+<li><strong>Thông điệp đúng:</strong><ul>
+<li><strong>nói rõ giới hạn và các kiểu lỗi đã biết</strong></li>
+<li><strong>mô tả trung thực chỗ Claude hỗ trợ, chỗ người giữ quyết định</strong></li>
+<li><span class="lbl l-drop">Loại:</span> &quot;không bao giờ sai&quot;; &quot;Claude tự làm hết&quot;; &quot;AI lo hết rồi&quot;.</li>
+</ul>
+</li>
+<li><strong>Giới hạn quan trọng nhất khi kết quả gửi ra ngoài:</strong> <strong>Claude có thể nói rất chắc chắn mà không có căn cứ, nên việc tác động lớn bắt buộc có người duyệt</strong>. Mốc dữ liệu huấn luyện, độ dài, kết quả mỗi lần khác nhau đều đúng nhưng không phải điều quan trọng nhất.</li>
+<li><strong>Thông báo cho đội:</strong> nói <strong>cái gì thay đổi, cái gì vẫn là việc của họ, chỗ nào họ vẫn duyệt</strong>.</li>
+<li><strong>Thuyết phục lãnh đạo hoài nghi:</strong><ul>
+<li><strong>ví dụ cụ thể, đo được</strong> (ví dụ 2 ngày thay vì 5 ngày)</li>
+<li><strong>chỗ người vẫn duyệt và vì sao</strong></li>
+<li>Không dùng: so benchmark; hứa &quot;không cần kiểm&quot;.</li>
+</ul>
+</li>
+<li><strong>Lãnh đạo kỳ vọng quá mức</strong> (&quot;bỏ khâu duyệt đi&quot;): <strong>ghi nhận lợi ích, giải thích vì sao vẫn cần người duyệt, kèm ví dụ rủi ro cụ thể</strong>.<ul>
+<li><span class="lbl l-drop">Loại:</span> im lặng làm theo; thử nhỏ để &quot;chứng minh&quot; sau; báo lên cấp cao trước khi trả lời.</li>
+</ul>
+</li>
+<li><strong>Diligence</strong> (AI Fluency) là minh bạch về vai trò của AI. <strong>AI diligence statement</strong> ghi: AI giúp gì, dùng công cụ nào, người đã kiểm và sửa gì, ai chịu trách nhiệm.</li>
+</ul>
+<hr>
+<h2 id="domain-5-configuration-amp-knowledge-management">DOMAIN 5: Configuration &amp; Knowledge Management</h2>
+<h3 id="5-1-cau-hinh-project">5.1 Cấu hình Project</h3>
+<ul>
+<li><strong>Project knowledge</strong> là tài liệu tải lên, làm ngữ cảnh cho mọi chat trong Project. <strong>Project instructions</strong> là cách Claude cư xử, áp dụng cho mọi chat trong Project.</li>
+<li><strong>3 điểm hay bị hiểu nhầm:</strong><ul>
+<li><strong>Tên và mô tả Project Claude KHÔNG đọc được.</strong></li>
+<li><strong>Các chat trong cùng Project KHÔNG thấy nhau.</strong> Muốn dùng chung thì phải để trong knowledge.</li>
+<li>Gói Team/Enterprise: chia sẻ Project là chia sẻ knowledge và chỉ dẫn; <strong>chat của từng người vẫn riêng</strong>.</li>
+</ul>
+</li>
+<li><span class="lbl l-order">Thứ tự:</span> <strong>định mục đích và các việc lặp lại Project phục vụ</strong> → viết chỉ dẫn (vai trò, chuẩn mực, khuôn đầu ra) và tải tài liệu tham chiếu vào knowledge → <strong>thử trên một yêu cầu thật</strong> → rồi mới mời người, đặt quyền.</li>
+<li><strong>Quy tắc áp dụng cho mọi câu trả lời → chỉ dẫn. Tài liệu tham chiếu dài → knowledge.</strong><ul>
+<li>Danh sách viết tắt 2 trang là tài liệu, đặt trong knowledge. Quy tắc &quot;không dùng viết tắt ngoài danh sách&quot; là quy tắc, đặt trong chỉ dẫn.</li>
+<li>Chỉ dẫn của Project viết lách: <strong>khuôn, độ dài chuẩn, giọng thương hiệu</strong>. <strong>Bài viết mẫu thuộc knowledge</strong>, không thuộc chỉ dẫn.</li>
+<li>Chỉ dẫn đủ phải có 3 thứ: <strong>vai trò + chuẩn của tổ chức + khuôn đầu ra</strong>.</li>
+</ul>
+</li>
+<li><strong>Knowledge gồm tài liệu hiện hành, liên quan, dùng lại qua nhiều chat.</strong><ul>
+<li>Không đưa: phiên bản cũ; mọi email &quot;cho đủ bối cảnh&quot;; tài liệu của nhóm khác.</li>
+<li>Khi gần chạm giới hạn context (gói trả phí), Project tự chuyển sang <strong>RAG</strong>, chứa nhiều gấp <strong>10 lần</strong>. Đặt tên file rõ ràng để Claude tìm đúng.</li>
+</ul>
+</li>
+<li><strong>Ghép với skill:</strong> bật skill liên quan + tài liệu vào knowledge + chỉ dẫn nhắc tới cả skill lẫn tài liệu. Skill bật ở Customize &gt; Skills và <strong>cần bật code execution</strong>.</li>
+<li><strong>Hai khách hàng:</strong> mỗi khách <strong>một Project riêng, có memory, knowledge, chỉ dẫn riêng, và kiểm tra không lẫn sang nhau</strong>. Muốn tách hẳn thì tắt <strong>&quot;Use account memory&quot;</strong> trong Project.<ul>
+<li><span class="lbl l-drop">Loại:</span> chat chung một chỗ; dùng chung memory; một Project chung rồi tin Claude tự tách.</li>
+</ul>
+</li>
+</ul>
+<h3 id="5-2-tai-lieu-tai-len-va-connector">5.2 Tài liệu tải lên và connector</h3>
+<ul>
+<li><strong>Câu hỏi quyết định: tài liệu có hay thay đổi không?</strong><ul>
+<li>Hay đổi (sổ tay cập nhật hằng tuần trên Drive): <strong>nối connector Google Drive</strong>, luôn lấy được bản mới.</li>
+<li>Cố định (báo cáo năm đã chốt): <strong>tải vào Project knowledge</strong>.</li>
+<li>Chỉ cần cho một chat: tải thẳng vào chat.</li>
+<li>Thêm file Drive vào Project <strong>chỉ làm được với Project riêng tư</strong>.</li>
+</ul>
+</li>
+<li><strong>Giới hạn tải file:</strong><ul>
+<li>Tải vào chat: <strong>500MB/file, tối đa 20 file</strong>.</li>
+<li>Tải vào Project: <strong>30MB/file</strong>, số file không giới hạn nhưng nội dung phải vừa context (RAG mở rộng tới 10 lần).</li>
+<li><strong>PDF ≤100 trang:</strong> đọc cả chữ lẫn hình. <strong>101–1.000 trang:</strong> chỉ đọc chữ. DOCX và file khác: chỉ đọc chữ. <strong>XLSX cần bật code execution.</strong></li>
+</ul>
+</li>
+<li><strong>Connector:</strong> Claude <strong>thừa hưởng quyền của chính bạn</strong>. Gói Team/Ent: Owner phải bật connector ở cấp tổ chức trước. Gmail/Drive <strong>mặc định hỏi bạn duyệt</strong> trước khi gửi, xoá, chia sẻ.</li>
+<li><strong>2 việc kiểm trước khi nối connector mới:</strong><ul>
+<li><strong>connector có trong danh sách được phép của tổ chức</strong></li>
+<li><strong>mức phân loại dữ liệu của nguồn, nhóm có được dùng không</strong></li>
+<li>Đào tạo, gỡ connector cũ là việc sau.</li>
+</ul>
+</li>
+<li><strong>Nối an toàn:</strong> không gian quản lý dự án của nhóm trong phạm vi được duyệt; <strong>chỉ đọc</strong> vào kho kiến thức công khai.<ul>
+<li><strong>Nối không an toàn:</strong> tài khoản lưu trữ cá nhân; hệ thống tính lương; hồ sơ nhân sự &quot;cho tiện&quot;.</li>
+</ul>
+</li>
+<li><strong>Chế độ nạp connector:</strong><ul>
+<li><strong>Auto</strong> (mặc định): Claude tự chọn.</li>
+<li><strong>Always available</strong>: dưới 10 connector, dùng thường xuyên.</li>
+<li><strong>On demand</strong>: từ 10 connector trở lên, hoặc chat hay chạm giới hạn.</li>
+</ul>
+</li>
+<li><strong>Việc đơn giản mà đang bật nhiều connector:</strong> <strong>tắt cho việc này, cần thì bật lại</strong>. Dặn Claude &quot;đừng dùng&quot; không giải phóng chỗ; xoá hẳn connector thì quá tay.</li>
+</ul>
+<h3 id="5-3-chi-dan-cap-he-thong">5.3 Chỉ dẫn cấp hệ thống</h3>
+<ul>
+<li><p><strong>4 tầng:</strong></p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Tầng</th>
+<th>Ai đặt</th>
+<th>Phạm vi</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Chỉ dẫn tài khoản (Settings &gt; Your Claude)</td>
+<td>từng người</td>
+<td>mọi chat của người đó</td>
+</tr>
+<tr>
+<td>Chỉ dẫn Project</td>
+<td>người có quyền sửa Project</td>
+<td>mọi chat trong Project</td>
+</tr>
+<tr>
+<td>Chỉ dẫn tổ chức</td>
+<td><strong>Owner / Primary Owner</strong> (Team, Ent)</td>
+<td>mọi chat của cả tổ chức</td>
+</tr>
+<tr>
+<td>Skill</td>
+<td>người hoặc tổ chức</td>
+<td>nạp khi việc cần, làm theo cùng một cách</td>
+</tr>
+</tbody></table>
+</div></li>
+<li><p><strong>Chỉ dẫn tổ chức:</strong></p>
+<ul>
+<li>Mâu thuẫn trực tiếp với chỉ dẫn cá nhân thì <strong>chỉ dẫn tổ chức thắng</strong>. Chỉ dẫn cá nhân vẫn áp dụng cho những gì tổ chức không nói tới.</li>
+<li>Tối đa <strong>3.000 ký tự</strong>, mất <strong>tới 1 giờ</strong> mới có hiệu lực, <strong>không tắt được nguyên tắc an toàn</strong> của Claude.</li>
+</ul>
+</li>
+<li><p><span class="lbl l-order">Thứ tự viết:</span> <strong>định mục đích và ranh giới</strong> → viết nháp → thử trên các yêu cầu tiêu biểu → sửa chỗ thiếu → chia sẻ.</p>
+</li>
+<li><p><strong>Cụ thể thắng mơ hồ:</strong> &quot;trang trọng, không viết tắt, không tiếng lóng, không emoji&quot; thay cho &quot;hãy chuyên nghiệp&quot;. Viết <strong>ngắn</strong>, <strong>không tự mâu thuẫn</strong>, <strong>nói lý do</strong>, <strong>thử lại sau khi lưu</strong>.</p>
+</li>
+<li><p><strong>Bẫy thư xin lỗi</strong> (chỉ dẫn cũ: &quot;thân mật, ngắn, tặng bồi thường&quot;):</p>
+<ul>
+<li><span class="lbl l-pick">Chọn:</span> <strong>nêu cụ thể giọng (đồng cảm, trang trọng, không viết tắt), độ dài tối thiểu, chỉ đề xuất bồi thường khi chính sách cho phép</strong>.</li>
+<li><span class="lbl l-drop">Loại:</span> giữ chỉ dẫn cũ rồi thêm câu &quot;tham khảo knowledge&quot;; để tài liệu tự quyết; để độ dài tuỳ sự cố.</li>
+</ul>
+</li>
+</ul>
+<h3 id="5-4-bao-tri-cau-hinh-tai-lieu-memory">5.4 Bảo trì cấu hình, tài liệu, Memory</h3>
+<ul>
+<li><strong>Xem lại định kỳ, kể cả khi chất lượng chưa giảm</strong>, vì chính sách, thuật ngữ, tài liệu thay đổi. Hai thời điểm: tới kỳ rà soát, và <strong>ngay khi tài liệu nguồn đổi</strong>.<ul>
+<li><span class="lbl l-drop">Loại:</span> chỉ sửa khi kết quả hỏng; để yên rồi sửa trong từng chat; sửa theo lịch cứng bất kể có gì đổi.</li>
+</ul>
+</li>
+<li><strong>Kết quả Project trôi khỏi kỳ vọng:</strong> thử đầu tiên là <strong>xem lại chỉ dẫn và tài liệu tham chiếu so với chuẩn hiện hành</strong>.<ul>
+<li><span class="lbl l-drop">Loại:</span> chấp nhận độ lệch; đổi model; dựng lại từ đầu.</li>
+<li>Thay tài liệu thì <strong>xoá bản cũ khỏi knowledge</strong>.</li>
+</ul>
+</li>
+<li><strong>Thay tài liệu trong Project dùng chung:</strong> <strong>báo cho người dùng đã đổi gì</strong> (để họ biết câu trả lời cũ không còn đúng).<ul>
+<li><span class="lbl l-drop">Loại:</span> ghi chú vào tên Project (Claude không đọc tên); mỗi người tự sao một bản; xoá lịch sử chat.</li>
+</ul>
+</li>
+<li><strong>Bảo trì Memory</strong> (Settings &gt; Your Claude &gt; Manage):<ul>
+<li><strong>xuất memory làm bản sao lưu trước khi sửa</strong></li>
+<li><strong>sửa hoặc xoá mục cũ, sai; thêm phần còn thiếu</strong></li>
+<li><span class="lbl l-drop">Loại:</span> để nguyên; tắt hẳn Memory; xoá sạch để học lại.</li>
+</ul>
+</li>
+<li><strong>Nhập Memory từ dịch vụ AI khác:</strong> bật Memory và dùng import. <strong>Đây là tính năng thử nghiệm, có thể không nhập được hết, phần thiếu thì thêm bằng tay.</strong><ul>
+<li><span class="lbl l-drop">Loại:</span> &quot;memory nhập lưu riêng&quot;; &quot;Claude cố ý bỏ&quot;; &quot;ghi đè toàn bộ&quot;.</li>
+<li>Đề có thể ghi đường dẫn cũ Settings &gt; Capabilities.</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="domain-6-governance-risk-amp-responsible-use">DOMAIN 6: Governance, Risk &amp; Responsible Use</h2>
+<h3 id="6-1-viec-nen-va-khong-nen-dung-claude">6.1 Việc nên và không nên dùng Claude</h3>
+<ul>
+<li><strong>Không phù hợp:</strong><ul>
+<li>làm <strong>người quyết định duy nhất</strong> về khoản vay, tuyển dụng, tuyển sinh</li>
+<li><strong>tự thực hiện hành động khó đảo ngược mà không ai duyệt</strong> (tự gửi email, tự sửa dữ liệu thật)</li>
+<li>cam kết pháp lý</li>
+<li>theo dõi dữ liệu thời gian thực cần phản ứng tức thì</li>
+</ul>
+</li>
+<li><strong>Claude tự duyệt hạn mức tín dụng:</strong> chọn <strong>từ chối thiết kế để Claude quyết một mình; Claude hỗ trợ, chuyên viên giữ quyền quyết</strong>.<ul>
+<li><span class="lbl l-drop">Loại:</span> mở rộng cho Claude gửi thông báo luôn; đồng ý vì nhanh; chạy thử rồi chỉ báo tuân thủ khi có chuyện.</li>
+</ul>
+</li>
+<li><strong>Usage Policy, việc rủi ro cao (high-risk):</strong> pháp lý, y tế, tài chính, <strong>tín dụng</strong>, bảo hiểm, nhà ở, <strong>tuyển dụng / nhân sự</strong>, <strong>tuyển sinh / chấm thi</strong>, phúc lợi công, tình trạng pháp lý. Có <strong>2 yêu cầu bắt buộc</strong>:<ul>
+<li><strong>Qualified human-in-the-loop</strong>: người đủ chuyên môn, có quyền sửa, xem xét thực chất, chịu trách nhiệm.</li>
+<li><strong>Disclosure</strong>: người bị ảnh hưởng được biết có dùng AI.</li>
+<li><strong>Thực thi pháp luật và tư pháp hình sự: cấm hẳn.</strong></li>
+</ul>
+</li>
+<li><strong>Tách quyết định khỏi việc viết thư:</strong> việc đầu là <strong>tách quyết định ai được nhận khỏi việc viết thư, người giữ quyết định</strong>.</li>
+<li><strong>Rủi ro của agent tự hành động:</strong> <strong>mất giám sát của con người với hành động khó đảo ngược</strong>. Rủi ro này không đổi dù dùng API hay app.</li>
+<li><span class="lbl l-order">Thứ tự đánh giá một cách dùng mới:</span> người đọc, <strong>tác động, khả năng đảo ngược</strong> → <strong>loại dữ liệu</strong> (có nhạy cảm không) → <strong>đối chiếu chính sách và pháp luật</strong> → quyết (cho làm / cho làm khi sửa lại / từ chối) → <strong>ghi lại kết quả và lý do</strong>.</li>
+<li>Quyết định cuối về con người <strong>không giao hẳn cho AI</strong>, vì <strong>cần phán đoán và trách nhiệm của con người</strong>, không phải chỉ vì &quot;hệ thống chưa ổn định&quot;.</li>
+</ul>
+<h3 id="6-2-du-lieu-nhay-cam-va-quyen-rieng-tu">6.2 Dữ liệu nhạy cảm và quyền riêng tư</h3>
+<ul>
+<li><strong>Cần che hoặc ẩn danh:</strong> số định danh, số thẻ, số tài khoản, lương kèm tên, hồ sơ sức khoẻ hay nhân sự, địa chỉ nhà, mã nhân viên kèm ngày vào làm, mật khẩu.<ul>
+<li><strong>Không cần che:</strong> chức danh công khai, mô tả sản phẩm, thông cáo báo chí.</li>
+</ul>
+</li>
+<li><strong>Câu mẫu chính thức</strong> (bảng tính có tên và số tài khoản, chính sách hạn chế): chọn <strong>bỏ hoặc ẩn danh thông tin định danh TRƯỚC khi tải lên</strong>.<ul>
+<li><span class="lbl l-drop">Loại:</span> tải nguyên vì nội bộ; tải rồi dặn Claude đừng lưu; bỏ hẳn việc phân tích.</li>
+</ul>
+</li>
+<li><strong>Bước đầu với tài liệu lẫn dữ liệu nhạy cảm:</strong> <strong>phân loại nội dung, chỉ ra trường nào nhạy cảm</strong>.</li>
+<li><strong>Dữ liệu của người khác (khảo sát):</strong> <strong>kiểm sự đồng ý và chính sách</strong> → bỏ trường không cần → chạy việc, đọc lại kết quả → ghi lại đã bỏ gì.</li>
+<li><strong>Nguyên tắc: chỉ đưa vào những gì việc cần.</strong><ul>
+<li><span class="lbl l-drop">Loại:</span> đổi trường nhạy cảm này lấy trường nhạy cảm khác; gửi cả hồ sơ rồi dặn &quot;đừng nhắc&quot;; thêm tên khách &quot;cho có bối cảnh&quot;.</li>
+</ul>
+</li>
+<li><strong>Incognito:</strong><ul>
+<li>Có tác dụng: không lưu lịch sử, không dùng hay tạo memory, <strong>không dùng để cải thiện Claude</strong>.</li>
+<li><strong>Nhưng:</strong> vẫn được giữ <strong>30 ngày</strong>; trên Team/Ent vẫn nằm trong bản xuất dữ liệu của chủ tổ chức; <strong>KHÔNG thay được chính sách dữ liệu</strong> của tổ chức.</li>
+</ul>
+</li>
+<li><strong>Tắt Memory cho một chat:</strong> thông tin không thành memory, nhưng <strong>không thay được việc che dữ liệu</strong>.</li>
+<li><strong>Code execution cách ly:</strong> <strong>không thay được việc rà và che dữ liệu</strong>.</li>
+<li><strong>Giữ kín một con số chưa công bố:</strong> <strong>chat Incognito</strong>, hoặc <strong>tắt Memory cho chat đó</strong>.</li>
+<li><strong>Dữ liệu theo gói:</strong><ul>
+<li><strong>Gói cá nhân</strong> (Free / Pro / Max / Ultra): dùng để cải thiện model <strong>nếu bạn cho phép</strong>, nếu bị đánh dấu rà soát an toàn, hoặc nếu bạn tham gia.</li>
+<li><strong>Gói doanh nghiệp</strong> (Team / Enterprise / API): <strong>mặc định KHÔNG dùng để huấn luyện</strong>.</li>
+<li><strong>Bấm thumbs up/down: toàn bộ cuộc chat được lưu tới 5 năm.</strong> Owner Team/Ent có thể <strong>tắt tính năng đánh giá cho cả tổ chức</strong>.</li>
+</ul>
+</li>
+<li><strong>Rủi ro Project công khai chứa bảng lương:</strong> <strong>bất kỳ ai cũng hỏi ra được lương</strong> bằng câu hỏi bình thường.</li>
+<li><strong>Quy tắc chọn đáp án: xử lý dữ liệu TRƯỚC khi gửi.</strong> Loại các đáp án dựa vào lời dặn Claude, Incognito, môi trường cách ly, &quot;chỉ dùng nội bộ&quot;.</li>
+</ul>
+<h3 id="6-3-chinh-sach-ai-va-quan-tri-cua-to-chuc">6.3 Chính sách AI và quản trị của tổ chức</h3>
+<ul>
+<li><strong>Khung quản trị AI có 4 điều:</strong><ul>
+<li><strong>công cụ được duyệt</strong> (tài khoản công ty, không dùng tài khoản cá nhân)</li>
+<li><strong>dữ liệu được phép đưa vào</strong></li>
+<li><strong>khâu duyệt bắt buộc</strong></li>
+<li><strong>đường báo cáo sự cố</strong></li>
+<li>Không phải danh sách khoá học, bảng giá, hay bộ văn bản pháp lý.</li>
+</ul>
+</li>
+<li><strong>Chính sách cấm rõ</strong> (ví dụ thông tin điều tra nội bộ đang diễn ra): <strong>không đưa vào, hỏi người phụ trách cách được duyệt</strong>.<ul>
+<li><span class="lbl l-drop">Loại:</span> đợi điều tra xong; dùng Incognito; diễn đạt lại bỏ chi tiết định danh.</li>
+</ul>
+</li>
+<li><strong>Không chắc chính sách đòi gì:</strong> <strong>tìm hiểu chính sách trước khi gửi</strong>.<ul>
+<li><span class="lbl l-drop">Loại:</span> nhờ quản lý ký để chuyển trách nhiệm; hỏi khách; <strong>thêm dòng &quot;có dùng AI&quot; rồi gửi</strong> (bẫy hay gặp nhất: ghi chú minh bạch không thay được các bước khác mà chính sách đòi).</li>
+</ul>
+</li>
+<li><strong>Kết quả có thể đã lộ thông tin bị hạn chế:</strong> <strong>ngừng dùng → ghi lại (prompt, nguồn, con số) → báo qua kênh quản trị hoặc kênh sự cố</strong>.<ul>
+<li><span class="lbl l-drop">Loại:</span> mở chat mới coi như xong; dùng nội bộ; tự sửa rồi ghi sổ tay cá nhân mà không báo.</li>
+</ul>
+</li>
+<li><strong>Skill hoặc connector từ bên thứ ba lạ, 2 kiểm tra:</strong><ul>
+<li><strong>đối chiếu với danh sách được tổ chức duyệt</strong></li>
+<li><strong>xem quyền và khả năng nó yêu cầu có hợp với việc không</strong></li>
+<li>Đánh giá tốt ở bên ngoài không thay được 2 kiểm tra này. Ưu tiên skill do Owner cung cấp sẵn.</li>
+</ul>
+</li>
+<li><strong>Diligence:</strong> <strong>áp dụng chính sách nhất quán như thói quen, tự tìm chỗ lệch và sửa dần</strong>. Không phải ký cam kết một lần, không phải đẩy hết cho bộ phận tuân thủ.</li>
+</ul>
+<h3 id="6-4-dao-duc-khi-dung-ai">6.4 Đạo đức khi dùng AI</h3>
+<ul>
+<li><strong>2 rủi ro đạo đức lớn nhất:</strong><ul>
+<li><strong>kết quả có hệ thống gây bất lợi cho một nhóm được bảo vệ</strong> (giới tính, tuổi, tôn giáo, khuyết tật…)</li>
+<li><strong>quyết định ảnh hưởng lớn tới việc làm của một người mà không ai chịu trách nhiệm</strong></li>
+<li>Lỗi chính tả, gạch ngang, giọng văn <strong>không phải</strong> vấn đề đạo đức.</li>
+</ul>
+</li>
+<li><strong>Kiểm công bằng:</strong><ul>
+<li>câu hỏi phỏng vấn <strong>áp dụng như nhau cho mọi ứng viên, không giả định về xuất thân, bám yêu cầu thật của công việc</strong></li>
+<li>mô tả nhóm người <strong>theo hành vi và dữ liệu quan sát được</strong>, không theo khái quát nhân khẩu học</li>
+<li><span class="lbl l-drop">Loại:</span> xoay vòng thứ tự câu hỏi; thêm câu riêng theo CV từng người; chỉ chỉnh giọng và độ dài.</li>
+</ul>
+</li>
+<li><strong>Claude chấm điểm và tự loại ứng viên:</strong> Claude chỉ tóm tắt theo tiêu chí; <strong>người tuyển dụng đọc, quyết định, chịu trách nhiệm</strong>; ứng viên được biết có AI tham gia.</li>
+<li><strong>Minh bạch có 3 mức:</strong><ul>
+<li>với người bị ảnh hưởng</li>
+<li>với người đọc (<strong>AI diligence statement</strong>)</li>
+<li>trong chính nội dung: watermark hoặc Content Credentials theo EU AI Act, áp dụng cho model ra mắt ở EU từ 02/08/2026. Dấu này không thay việc tự nói rõ.</li>
+</ul>
+</li>
+<li><span class="lbl l-order">Thứ tự rà soát đạo đức trước khi công bố:</span> <strong>người đọc và tác động</strong> → <strong>nội dung</strong> (khái quát, công bằng, chính xác) → <strong>minh bạch</strong> → <strong>sửa hoặc báo lên</strong> nếu vượt thẩm quyền → <strong>ghi lại</strong>.</li>
+<li>Nghiên cứu của Anthropic (Claude 2.0): đổi thông tin nhân khẩu học thì có lúc kết quả đổi. Prompt cẩn thận giúp giảm. Anthropic <strong>không cho phép</strong> dùng model để tự động ra quyết định rủi ro cao.</li>
+</ul>
+<hr>
+<h2 id="domain-7-troubleshooting-amp-optimization">DOMAIN 7: Troubleshooting &amp; Optimization</h2>
+<h3 id="7-1-chan-doan-ket-qua-kem">7.1 Chẩn đoán kết quả kém</h3>
+<ul>
+<li><p><strong>5 bước:</strong> <strong>đọc hết, chỉ ra đúng chỗ kém</strong> → <strong>so với prompt</strong> → <strong>đặt giả thuyết</strong> → <strong>sửa MỘT chỗ, xem tác dụng</strong> → <strong>ghi nguyên nhân gốc và cách sửa</strong>.</p>
+<ul>
+<li>Sai thứ tự hay gặp: đặt giả thuyết trước khi đọc; so với prompt trước khi biết chỗ kém.</li>
+</ul>
+</li>
+<li><p><strong>Nguyên nhân gốc gần như luôn là prompt nêu thiếu:</strong></p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Triệu chứng</th>
+<th>Gốc</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Phân loại không nhất quán</td>
+<td>thiếu <strong>danh mục, khuôn đầu ra, tiêu chí chọn</strong></td>
+</tr>
+<tr>
+<td>Mỗi tuần lệch một kiểu</td>
+<td>thiếu <strong>người đọc, giọng, khuôn, các mục bắt buộc</strong></td>
+</tr>
+<tr>
+<td>Bỏ sót câu hỏi (hỏi 3 câu cách nhau bằng dấu phẩy)</td>
+<td>không <strong>đánh số từng câu</strong></td>
+</tr>
+<tr>
+<td>Mơ hồ, lạc đề</td>
+<td>chỉ nêu chủ đề, không nêu việc, người đọc, khuôn</td>
+</tr>
+</tbody></table>
+</div></li>
+<li><p><strong>&quot;Categorize this ticket&quot; ra danh mục không nhất quán:</strong> chọn <strong>viết lại prompt nêu danh mục, khuôn, tiêu chí</strong>.</p>
+<ul>
+<li><span class="lbl l-drop">Loại:</span> <strong>hạ temperature về 0</strong> (&quot;cố định sai&quot;; app Claude chỉ chỉnh được model, effort, thinking); thêm người kiểm (hậu kiểm, không sửa gốc); <strong>đổi model lớn hơn</strong>.</li>
+</ul>
+</li>
+<li><p><strong>Báo cáo tuần lệch:</strong> gốc là <strong>prompt thiếu người đọc, giọng, khuôn, mục bắt buộc</strong>.</p>
+<ul>
+<li><span class="lbl l-drop">Loại:</span> chuẩn hoá đầu vào; chấp nhận vì model ngẫu nhiên; tách thành 2 prompt.</li>
+</ul>
+</li>
+<li><p><strong>Prompt đã đủ mà kết quả vẫn kém, xem thêm:</strong></p>
+<ul>
+<li>chat quá dài thì <strong>tóm tắt trạng thái rồi làm tiếp</strong></li>
+<li>tài liệu hay chỉ dẫn Project cũ thì <strong>cập nhật</strong></li>
+<li>sai tính năng: tính toán thì dùng <strong>code execution</strong>, cần thông tin mới thì bật <strong>web search</strong></li>
+<li>việc rất khó thì <strong>nâng effort trước, rồi mới đổi model</strong></li>
+</ul>
+</li>
+</ul>
+<h3 id="7-2-dieu-chinh-theo-phan-hoi">7.2 Điều chỉnh theo phản hồi</h3>
+<ul>
+<li><strong>Phản hồi có ích khi:</strong> cụ thể, ghi lại <strong>sau mỗi lần chạy</strong>, biến thành thay đổi có chủ đích, rồi xem các lần sau có tốt hơn không.</li>
+<li><strong>Vòng hằng tuần:</strong> <strong>ghi phản hồi cụ thể</strong> → biến thành <strong>1–2 điều chỉnh</strong> → chạy, so với vòng trước → ghi đã đổi gì và tác dụng → <strong>quyết làm tiếp, đổi cách, hay báo lên</strong>.</li>
+<li><strong>Phản hồi mơ hồ (&quot;chưa ổn lắm&quot;, &quot;bỏ sót rủi ro&quot;):</strong> việc đầu là <strong>xin ví dụ cụ thể</strong> (kết quả đã viết gì, lẽ ra phải viết gì). Với &quot;bỏ sót rủi ro&quot;: <strong>xin 2 bản bị sót kèm tên rủi ro, so với nhật ký gốc</strong>.<ul>
+<li><span class="lbl l-drop">Loại:</span> chấm điểm 1–10; đổi sang bảng &quot;cho dễ thấy&quot;; viết lại ngay chỉ dẫn chung.</li>
+<li>8 người thử, 3 người nói &quot;chưa ổn&quot;: <strong>hỏi chính 3 người đó ví dụ cụ thể</strong>. Không dừng thử nghiệm, không hỏi 5 người hài lòng.</li>
+</ul>
+</li>
+<li><strong>Sửa lỗi mới thì lỗi cũ quay lại:</strong> rủi ro lớn nhất là <strong>không có văn bản ghi kết quả phải đáp ứng gì</strong>. Cách sửa: <strong>ghi danh sách yêu cầu, mỗi lượt sửa kiểm lại CẢ danh sách</strong>.</li>
+<li><strong>Càng sửa càng lệch:</strong> <strong>quay về phiên bản prompt gần đúng nhất, sửa tiếp từ đó</strong>. Vì vậy phải giữ các phiên bản prompt kèm ghi chú.</li>
+<li><strong>Muốn Anthropic ghi nhận lỗi:</strong> <strong>bấm thumbs down trên đúng câu trả lời sai</strong>, đồng thời tự sửa bản nháp. Gõ &quot;câu trước sai&quot; chỉ sửa trong chat đó. (Feedback lưu cả chat <strong>5 năm</strong>; Owner có thể tắt nút này.)</li>
+</ul>
+<h3 id="7-3-toi-uu-quy-trinh">7.3 Tối ưu quy trình</h3>
+<ul>
+<li><strong>Tối ưu ở cấp Associate là:</strong> <strong>bớt trùng lặp, bỏ bước ít giá trị, dùng Claude ở chỗ có giá trị đo được, VẪN GIỮ các khâu duyệt và kiểm bắt buộc</strong>.<ul>
+<li><span class="lbl l-drop">Loại:</span> cắt xuống ít bước nhất; thay mọi bước tay bằng Claude; ép mọi bước theo khuôn cố định.</li>
+</ul>
+</li>
+<li><strong>2 việc trước khi sửa:</strong><ul>
+<li><strong>đo chất lượng, thời gian, chi phí hiện tại</strong></li>
+<li><strong>tìm bước gây vấn đề nhiều nhất</strong></li>
+</ul>
+</li>
+<li><strong>5 bước:</strong> <strong>vẽ quy trình hiện tại</strong> → <strong>tìm điểm nghẽn bằng số liệu</strong> → <strong>sửa đúng bước đó</strong> → <strong>thử nhỏ, so với mức cũ</strong> → <strong>triển khai, ghi lại</strong>.</li>
+<li><strong>Thay đổi có tác dụng thật:</strong><ul>
+<li><strong>đưa tài liệu tham chiếu chuẩn vào Project</strong> (khỏi dán lại; nội dung Project <strong>được lưu đệm</strong>, tốn ít hạn mức hơn)</li>
+<li><strong>thêm khâu kiểm chất lượng trước khi kết quả sang bước sau</strong></li>
+<li><strong>Thay đổi bề ngoài</strong> (đổi tiêu đề, đặt tên bước, đổi tên workspace) không tính là tối ưu.</li>
+</ul>
+</li>
+<li><strong>Thói quen tiết kiệm hạn mức:</strong><ul>
+<li>đưa đủ yêu cầu và tài liệu vào tin đầu</li>
+<li>gom câu hỏi liên quan vào một tin</li>
+<li>dùng Project cho tài liệu dùng lại</li>
+<li><strong>việc mới thì mở chat mới</strong></li>
+<li>hạ effort xuống Low/Medium cho việc thường</li>
+<li>tắt connector không cần, hoặc dùng On demand</li>
+<li>đóng gói quy trình lặp lại thành skill</li>
+<li>Thứ tự đề hay hỏi: <strong>quyết định mình cần gì → đưa yêu cầu và tài liệu vào tin đầu → hỏi tiếp dựa trên tin đầu → việc mới thì mở chat mới</strong>.</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="bang-tra-nhanh-truoc-gio-thi">Bảng tra nhanh trước giờ thi</h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Đề hỏi…</th>
+<th>Chọn</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Bước đầu phân tích yêu cầu</td>
+<td>gom và gắn nhãn nguồn</td>
+</tr>
+<tr>
+<td>Yêu cầu mâu thuẫn</td>
+<td>đánh dấu, ghi nguồn, trả về người nêu</td>
+</tr>
+<tr>
+<td>Yêu cầu dạng giải pháp</td>
+<td>viết lại thành kết quả mong muốn, đánh dấu cần hỏi lại</td>
+</tr>
+<tr>
+<td>Bước đầu nghiên cứu</td>
+<td>câu hỏi nghiên cứu cụ thể</td>
+</tr>
+<tr>
+<td>So sánh nhiều đối tượng</td>
+<td>chốt đối tượng và tiêu chí trước</td>
+</tr>
+<tr>
+<td>Điểm nghẽn</td>
+<td>thời gian xử lý trung bình cao nhất</td>
+</tr>
+<tr>
+<td>Bước đầu thiết kế giải pháp</td>
+<td>vấn đề và ràng buộc</td>
+</tr>
+<tr>
+<td>Trước khi xin ý tưởng sáng tạo</td>
+<td>mục tiêu, thước đo + giọng, người dùng</td>
+</tr>
+<tr>
+<td>2 tiêu chí Delegation</td>
+<td>cần phán đoán / thấu cảm / sáng tạo? + đảo ngược được không, hậu quả?</td>
+</tr>
+<tr>
+<td>Automation / Augmentation / Agency</td>
+<td>AI làm theo lệnh / cùng làm / AI tự làm thay</td>
+</tr>
+<tr>
+<td>Giới hạn quan trọng nhất khi gửi ra ngoài</td>
+<td>nói chắc mà không căn cứ, cần người duyệt</td>
+</tr>
+<tr>
+<td>Thuyết phục người hoài nghi</td>
+<td>ví dụ đo được + chỗ người vẫn duyệt</td>
+</tr>
+<tr>
+<td>Bước đầu cấu hình Project</td>
+<td>mục đích và các việc lặp lại</td>
+</tr>
+<tr>
+<td>Chỉ dẫn hay knowledge</td>
+<td>quy tắc → chỉ dẫn; tài liệu, bài mẫu → knowledge</td>
+</tr>
+<tr>
+<td>Tài liệu hay đổi / cố định</td>
+<td>connector / tải lên Project</td>
+</tr>
+<tr>
+<td>Trước khi nối connector</td>
+<td>danh sách được phép + phân loại dữ liệu</td>
+</tr>
+<tr>
+<td>Chỉ dẫn tổ chức và cá nhân mâu thuẫn</td>
+<td>tổ chức thắng (3.000 ký tự, ≤1 giờ, không tắt được an toàn)</td>
+</tr>
+<tr>
+<td>Project trôi</td>
+<td>xem lại chỉ dẫn và tài liệu so với chuẩn hiện hành</td>
+</tr>
+<tr>
+<td>Thay tài liệu Project chung</td>
+<td>xoá bản cũ + báo người dùng đã đổi gì</td>
+</tr>
+<tr>
+<td>Bảo trì Memory</td>
+<td>xuất sao lưu → sửa, xoá, thêm</td>
+</tr>
+<tr>
+<td>Import memory thiếu</td>
+<td>tính năng thử nghiệm, thêm bằng tay</td>
+</tr>
+<tr>
+<td>AI tự quyết tín dụng, tuyển dụng, tuyển sinh</td>
+<td>từ chối; người đủ chuyên môn quyết + disclosure</td>
+</tr>
+<tr>
+<td>Thứ tự đánh giá cách dùng mới</td>
+<td>tác động, đảo ngược → dữ liệu → chính sách → quyết → ghi lại</td>
+</tr>
+<tr>
+<td>Dữ liệu định danh</td>
+<td>bỏ hoặc ẩn danh TRƯỚC khi tải lên</td>
+</tr>
+<tr>
+<td>Incognito</td>
+<td>không train, nhưng chính sách vẫn áp dụng</td>
+</tr>
+<tr>
+<td>Chính sách cấm</td>
+<td>không làm, hỏi người phụ trách</td>
+</tr>
+<tr>
+<td>Chính sách chưa rõ</td>
+<td>tìm hiểu trước khi gửi</td>
+</tr>
+<tr>
+<td>Có thể đã lộ thông tin</td>
+<td>ngừng → ghi lại → báo kênh quản trị</td>
+</tr>
+<tr>
+<td>Skill lạ</td>
+<td>danh sách được duyệt + quyền yêu cầu</td>
+</tr>
+<tr>
+<td>2 rủi ro đạo đức lớn nhất</td>
+<td>bất lợi cho nhóm được bảo vệ + không ai chịu trách nhiệm</td>
+</tr>
+<tr>
+<td>Gỡ lỗi</td>
+<td>đọc → so prompt → giả thuyết → sửa 1 chỗ → ghi</td>
+</tr>
+<tr>
+<td>Gốc của kết quả kém</td>
+<td>prompt nêu thiếu (không phải temperature hay model)</td>
+</tr>
+<tr>
+<td>Phản hồi mơ hồ</td>
+<td>xin ví dụ cụ thể, so với nguồn</td>
+</tr>
+<tr>
+<td>Sửa vòng quanh</td>
+<td>danh sách yêu cầu + quay về bản prompt tốt nhất</td>
+</tr>
+<tr>
+<td>Báo lỗi cho Anthropic</td>
+<td>thumbs down trên đúng câu sai</td>
+</tr>
+<tr>
+<td>Tối ưu quy trình</td>
+<td>đo → vẽ → điểm nghẽn → sửa → thử nhỏ → triển khai</td>
+</tr>
+<tr>
+<td>Thay đổi đáng làm</td>
+<td>tài liệu vào Project + thêm khâu kiểm chất lượng</td>
+</tr>
+</tbody></table>
+</div><h3 id="con-so-can-thuoc">Con số cần thuộc</h3>
+<ul>
+<li>Chat: <strong>500MB/file, 20 file</strong>. Project: <strong>30MB/file</strong>. RAG: <strong>gấp 10 lần</strong>.</li>
+<li>PDF <strong>≤100 trang</strong> đọc cả hình; <strong>101–1.000 trang</strong> chỉ đọc chữ.</li>
+<li>Connector: <strong>&lt;10</strong> thì dùng Always available; <strong>≥10</strong> thì dùng On demand.</li>
+<li>Chỉ dẫn tổ chức: <strong>3.000 ký tự</strong>, hiệu lực trong <strong>≤1 giờ</strong>.</li>
+<li>Incognito giữ <strong>30 ngày</strong>. Feedback thumbs up/down lưu <strong>5 năm</strong>.</li>
+<li>Usage Policy có hiệu lực từ <strong>12/11/2026</strong>. Watermark EU áp dụng từ <strong>02/08/2026</strong>.</li>
+</ul>
+
+</main>
+</div>
+<button class="top" type="button" aria-label="Lên đầu trang" onclick="scrollTo({top:0})">↑</button>
+<script>
+(function(){
+  var root=document.documentElement,key='ccao-theme';
+  try{var t=localStorage.getItem(key);if(t)root.dataset.theme=t;}catch(e){}
+  document.getElementById('theme').onclick=function(){
+    var dark=root.dataset.theme?root.dataset.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches;
+    root.dataset.theme=dark?'light':'dark';
+    try{localStorage.setItem(key,root.dataset.theme);}catch(e){}
+  };
+  if(matchMedia('(max-width:860px)').matches){document.querySelector('nav.toc details').removeAttribute('open');}
+  var links=[].slice.call(document.querySelectorAll('nav.toc a'));
+  var map={};links.forEach(function(a){map[a.getAttribute('href').slice(1)]=a;});
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){
+    if(e.isIntersecting){links.forEach(function(a){a.classList.remove('on')});var a=map[e.target.id];if(a)a.classList.add('on');}
+  });},{rootMargin:'0px 0px -75% 0px'});
+  document.querySelectorAll('main h2[id],main h3[id]').forEach(function(h){io.observe(h)});
+})();
+</script>
+</body>
+</html>
